@@ -19,9 +19,10 @@
   "bugs": {
     "url": "https://github.com/Cryptonomic/T2/issues"
   },
-  "keywords": ["tezos"],
+  "keywords": [""],
   "homepage": "https://github.com/Cryptonomic/T2",
   "dependencies": {
+    "conseiljs": "0.2.7",
     "i18next": "^17.0.6",
     "typescript": "3.5.1"
   }
