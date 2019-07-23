@@ -1,0 +1,28 @@
+{
+  "name": "t2",
+  "productName": "T2",
+  "version": "0.0.1",
+  "description": "T2, the next generation",
+  "scripts": {
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cryptonomic/T2.git"
+  },
+  "author": {
+    "name": "Cryptonomic Inc",
+    "email": "info@cryptonomic.tech",
+    "url": "https://github.com/Cryptonomic"
+  },
+  "license": "GPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/Cryptonomic/T2/issues"
+  },
+  "keywords": ["tezos"],
+  "homepage": "https://github.com/Cryptonomic/T2",
+  "dependencies": {
+    "i18next": "^17.0.6",
+    "typescript": "3.5.1"
+  }
+}
