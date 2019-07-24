@@ -8,8 +8,10 @@ copy-config:
 
 build-local:
 	echo "Build source from local machine"
+	sudo rm -rf ./node_modules
 	docker cp . ${containerId}:T2/
 	docker exec -it ${containerId} bash -c "cd /T2 && npm install && npm run build"
+	sudo npm install
 
 build-git:
 	echo "Build source from git"
