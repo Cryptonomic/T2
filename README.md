@@ -1,17 +1,17 @@
 # T2
 T, the next generation
 
-#Both processes have to be started simultaneously in different console tabs:
+# Both processes have to be started simultaneously in different console tabs:
 
 npm run start-renderer-dev
 npm run start-main-dev
 This will start the application with hot-reload so you can instantly start developing your application.
 
-#You can also run do the following to start both in a single process:
+# You can also run do the following to start both in a single process:
 
 npm run start-dev
 
-#Packaging
+# Packaging
 We use Electron builder to build and package the application. By default you can run the following to package for your current platform:
 
 npm run dist

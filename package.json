@@ -68,18 +68,18 @@
     ],
     "dmg": {
       "contents": [
-       {
-         "x": 110,
-         "y": 150
-       },
-       {
-         "x": 240,
-         "y": 150,
-         "type": "link",
-         "path": "/Applications"
-       }
-     ]
-   },
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
     "linux": {
       "target": "deb"
     },
@@ -147,6 +147,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "electron-store": "^4.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.3",
