@@ -14,9 +14,11 @@ RUN apt-get install curl \
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs mesa-utils
+RUN apt-get install -y git
 
-WORKDIR /app
-COPY . ./
+RUN git clone https://github.com/freelife2010/T2.git
+
+WORKDIR /T2
 
 RUN npm install
 
