@@ -8,12 +8,20 @@ copy-config:
 
 build-local:
 	echo "Build source from local machine"
-	sudo rm -rf ./node_modules
-	docker cp . ${containerId}:T2/
-	docker exec -it ${containerId} bash -c "cd /T2 && npm install && npm run build"
-	sudo npm install
+	docker cp src/. ${containerId}:T2/
+	docker cp test/. ${containerId}:T2/
+	docker cp package.json ${containerId}:T2/
+	docker cp tsconfig.json ${containerId}:T2/
+	docker cp tslint.json ${containerId}:T2/
+	docker cp webpack.base.config.js ${containerId}:T2/
+	docker cp webpack.main.config.js ${containerId}:T2/
+	docker cp webpack.main.prod.config.js ${containerId}:T2/
+	docker cp webpack.renderer.config.js ${containerId}:T2/
+	docker cp webpack.renderer.dev.config.js ${containerId}:T2/
+	docker cp webpack.renderer.prod.config.js ${containerId}:T2/
+	docker exec -it ${containerId} bash -c "cd /T2 && npm install && npm run dist -- -mwl"
 
 build-git:
 	echo "Build source from git"
 	docker exec -it ${containerId} bash \
-		-c "cd /T2 && git checkout -- . && git checkout ${branch} && git pull origin ${branch} && npm install && npm run build"
+		-c "cd /T2 && git checkout -- . && git checkout ${branch} && git pull origin ${branch} && npm install && npm run dist -- -mwl"
