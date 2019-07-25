@@ -10,7 +10,8 @@ RUN apt-get install curl \
     libxss1 \
     libasound2 \
     build-essential \
-    python2.7 -y
+    python2.7 -y \
+    wine64 \
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs mesa-utils
