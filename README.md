@@ -37,6 +37,10 @@ sudo make containerId="container ID" jenkins-start
 sudo make containerId="container ID" copy-assets
 sudo make containerId="container ID" copy-config
 
+## Install Wine32/64 to Ubuntu docker container to build Window version
+apt-get install wine64
+dpkg --add-architecture i386 && apt-get update && apt-get install wine32
+
 ## Build source in container from host machine or git
 sudo make containerId="container ID" build-local
 sudo make containerId="container ID" branch="branch name" build-git
