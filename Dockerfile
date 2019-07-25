@@ -10,8 +10,7 @@ RUN apt-get install curl \
     libxss1 \
     libasound2 \
     build-essential \
-    python2.7 -y \
-    wine64 \
+    python2.7 -y
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs mesa-utils
@@ -20,7 +19,3 @@ RUN apt-get install -y git
 RUN git clone https://github.com/freelife2010/T2.git
 
 WORKDIR /T2
-
-RUN npm install
-
-RUN npm run build

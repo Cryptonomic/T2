@@ -1,3 +1,20 @@
+run-container:
+	echo "Create docker image, run container"
+	sudo docker build . -t ${imageName}
+	sudo docker run -i -t ${imageName} /bin/bash
+
+start-container:
+	docker start ${containerId}
+
+stop-container:
+	docker stop ${containerId}
+
+dive-container:
+	docker exec -it ${containerId} bash
+
+jenkins-start:
+	docker exec -it ${containerId} bash -c "service start jenkins"
+
 copy-assets:
 	echo "Copy assets folder into container"
 	docker cp assets/. ${containerId}:T2/assets
