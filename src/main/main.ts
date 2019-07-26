@@ -19,7 +19,14 @@ const createWindow = async () => {
         await installExtensions();
     }
 
-    win = new BrowserWindow({ width: 800, height: 600, title: 'Cryptonomic' });
+    win = new BrowserWindow({
+        webPreferences: {
+            nodeIntegration: true
+        },
+        width: 800,
+        height: 600,
+        title: 'Cryptonomic'
+    });
 
     if (process.env.NODE_ENV !== 'production') {
         process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';

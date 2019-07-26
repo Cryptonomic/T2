@@ -1,9 +1,9 @@
 import { Reducer } from 'redux';
-
-import { DECREMENT, INCREMENT, CounterAction } from '../actions/counterActions';
+import { setData, getData } from '../../localData';
+import { SETTING, DECREMENT, INCREMENT, CounterAction } from '../actions/counterActions';
 
 export interface CounterState {
-    readonly value: number;
+    value: number;
 }
 
 const defaultState: CounterState = {
@@ -15,12 +15,20 @@ export const counterReducer: Reducer<CounterState> = (
     action: CounterAction
 ) => {
     switch (action.type) {
+        case SETTING:
+            const countNumber = getData('setting.number');
+            return {
+                ...state,
+                value: Number(countNumber) || 0
+            };
         case INCREMENT:
+            setData({ setting: { number: state.value + 1 } });
             return {
                 ...state,
                 value: state.value + 1
             };
         case DECREMENT:
+            setData({ setting: { number: state.value - 1 } });
             return {
                 ...state,
                 value: state.value - 1
