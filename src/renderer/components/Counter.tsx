@@ -21,7 +21,7 @@ class Counter extends React.Component<Props> {
 
         return (
             <div className="counter">
-                <p id="counter-value">Current value: {value}</p>
+                <p id="counter-value">value: {value}</p>
                 <p>
                     <button id="increment" onClick={incrementValue}>
                         Increment
