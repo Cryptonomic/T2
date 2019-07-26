@@ -34,26 +34,27 @@ sudo make containerId="container ID" dive-container
 sudo make containerId="container ID" jenkins-start
 
 ## Copy assets/config folder into container source
-sudo make containerId="container ID" copy-assets
-sudo make containerId="container ID" copy-config
+1. sudo make containerId="container ID" copy-assets
+2. sudo make containerId="container ID" copy-config
 
 ## Install Wine32/64 to Ubuntu docker container to build Window version
-apt-get install wine64
-dpkg --add-architecture i386 && apt-get update && apt-get install wine32
+1. apt-get install wine64
+2. dpkg --add-architecture i386 && apt-get update && apt-get install wine32
 
 ## Build source in container from host machine or git
-sudo make containerId="container ID" build-local
-sudo make containerId="container ID" branch="branch name" build-git
+1. sudo make containerId="container ID" build-local
+2. sudo make containerId="container ID" branch="branch name" build-git
 
 ## Jenkins Install to Linux
 https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/
 
 ## Execute Shell in Jenkins Build
-set +e
-chmod -R 777 /YOUR REPO
-cd /YOUR REPO
-git checkout -- .
-git checkout master
-git pull origin master
-npm install
-GH_TOKEN=(your github personal token) npm run dist -- -wl
+
+1. set +e
+2. chmod -R 777 /YOUR REPO
+3. cd /YOUR REPO
+4. git checkout -- .
+5. git checkout master
+6. git pull origin master
+7. npm install
+8. GH_TOKEN=(your github personal token) npm run dist -- -wl
