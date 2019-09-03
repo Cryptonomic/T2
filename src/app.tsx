@@ -12,14 +12,14 @@ document.body.appendChild(mainElement);
 
 // Render components
 const render = (Component: () => JSX.Element) => {
-    ReactDOM.render(
-        <AppContainer>
-            <Provider store={store}>
-                <Component />
-            </Provider>
-        </AppContainer>,
-        mainElement
-    );
+  ReactDOM.render(
+    <AppContainer>
+      <Provider store={store}>
+        <Component />
+      </Provider>
+    </AppContainer>,
+    mainElement
+  );
 };
 
 render(Application);

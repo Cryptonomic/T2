@@ -11,7 +11,7 @@
         "trailing-comma": false,
         "ter-indent": [
             true,
-            4,
+            2,
             {
                 "SwitchCase": 1
             }

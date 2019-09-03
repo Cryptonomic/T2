@@ -1,29 +1,27 @@
 import { Action, ActionCreator } from 'redux';
 
-export const SETTING = 'SETTING';
-export const INCREMENT = 'INCREMENT';
-export const DECREMENT = 'DECREMENT';
+import { SETTING, INCREMENT, DECREMENT } from './types';
 
 export interface SettingAction extends Action {
-    type: 'SETTING';
+  type: 'SETTING';
 }
 export interface IncrementAction extends Action {
-    type: 'INCREMENT';
+  type: 'INCREMENT';
 }
 export interface DecrementAction extends Action {
-    type: 'DECREMENT';
+  type: 'DECREMENT';
 }
 
 export const setDefaultSetting: ActionCreator<SettingAction> = () => ({
-    type: SETTING
+  type: SETTING
 });
 
 export const increment: ActionCreator<IncrementAction> = () => ({
-    type: INCREMENT
+  type: INCREMENT
 });
 
 export const decrement: ActionCreator<DecrementAction> = () => ({
-    type: DECREMENT
+  type: DECREMENT
 });
 
-export type CounterAction = SettingAction | IncrementAction | DecrementAction;
+export type WalletAction = SettingAction | IncrementAction | DecrementAction;
