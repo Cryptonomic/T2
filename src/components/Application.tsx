@@ -4,9 +4,9 @@ import * as React from 'react';
 import CounterContainer from '../containers/CounterContainer';
 
 const Application = () => (
-    <div>
-        <CounterContainer />
-    </div>
+  <div>
+    <CounterContainer />
+  </div>
 );
 
 export default hot(Application);
