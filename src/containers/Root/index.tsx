@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { ThemeProvider } from 'styled-components';
 import { hot } from 'react-hot-loader/root';
-import theme from '../../utils/theme';
+import theme from '../../styles/theme';
 import Routes from '../../Routes';
 // import { getLocale } from '../../reduxContent/settings/selectors';
 
