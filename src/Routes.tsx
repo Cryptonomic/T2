@@ -1,12 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router';
 import App from './containers/App';
-import CounterContainer from './containers/CounterContainer';
+import Home from './containers/Home';
 
 const Routes = () => (
   <App>
     <Switch>
-      <Route path="/" component={CounterContainer} />
+      <Route path="/" component={Home} />
     </Switch>
   </App>
 );
