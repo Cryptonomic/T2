@@ -13,14 +13,14 @@ import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 // import { getNewVersion } from '../../reduxContent/message/selectors';
 // import { initLedgerTransport } from '../../utils/wallet';
 
-import Loader from '../../components/Loader/';
-import TopBar from '../../components/TopBar/';
-import NodesStatus from '../../components/NodesStatus/';
-// import VersionStatus from '../../components/VersionStatus';
+import Loader from '../../components/Loader';
+import TopBar from '../../components/TopBar';
+import NodesStatus from '../../components/NodesStatus';
+import VersionStatus from '../../components/VersionStatus';
 
-// import HomeAddresses from './../HomeAddresses/';
-// import HomeAddAddress from './../HomeAddAddress/';
-// import HomeSettings from './../HomeSettings/';
+// import HomeAddresses from './../HomeAddresses';
+// import HomeAddAddress from './../HomeAddAddress';
+// import HomeSettings from './../HomeSettings';
 
 type Props = {
   identities: any[];
@@ -73,6 +73,7 @@ class HomePage extends Component<Props> {
       <Fragment>
         {/* <TopBar isExtended={!!newVersion} /> */}
         <TopBar isExtended={true} />
+        <VersionStatus version="1.0.1" />
         {/* {newVersion && <VersionStatus version={newVersion} />} */}
         <NodesStatus />
         {/* <Switch>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { withTheme } from 'styled-components';
-import LoaderSpinner from '../LoaderSpinner/';
+import LoaderSpinner from '../LoaderSpinner';
 
 const ShowBox = styled.div`
   position: absolute;
