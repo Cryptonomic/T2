@@ -191,9 +191,9 @@ export function getNodesError({ tezos, conseil }) {
 //     ;
 // }
 
-// export function openLink(link) {
-//   shell.openExternal(link);
-// }
+export function openLink(link) {
+  shell.openExternal(link);
+}
 
 // export function openLinkToBlockExplorer( url ) {
 //   openLink(blockExplorerHost + url);
@@ -206,12 +206,12 @@ export function getNodesError({ tezos, conseil }) {
 //   return operationId;
 // }
 
-// export const getVersionFromApi = async () => {
-//   try {
-//     let response = await fetch('https://galleon-wallet.tech/version.json');
-//     let responseJson = await response.json();
-//     return responseJson;
-//    } catch(error) {
-//     console.error(error);
-//   }
-// }
+export const getVersionFromApi = async () => {
+  try {
+    const response = await fetch('https://galleon-wallet.tech/version.json');
+    const responseJson = await response.json();
+    return responseJson;
+  } catch (error) {
+    console.error(error);
+  }
+};

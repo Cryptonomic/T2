@@ -23,7 +23,8 @@
         "jsx-self-close": true,
         "import-name": [false],
         "object-shorthand-properties-first": false,
-        "interface-name": false
+        "interface-name": false,
+        "jsx-no-lambda": false
     },
     "rulesDirectory": []
 }
