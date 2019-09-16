@@ -143,6 +143,7 @@
   "dependencies": {
     "@material-ui/core": "^4.4.0",
     "@material-ui/icons": "^4.2.1",
+    "@types/rc-tooltip": "^3.7.1",
     "bignumber.js": "^9.0.0",
     "connected-react-router": "^6.5.2",
     "conseiljs": "^0.2.9",
@@ -155,6 +156,7 @@
     "install": "^0.13.0",
     "npm": "^6.11.3",
     "polished": "^3.4.1",
+    "rc-tooltip": "^3.7.3",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-i18next": "^10.12.2",
