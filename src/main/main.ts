@@ -1,6 +1,8 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+
+import { menuTemplate } from '../menuTemplate';
 
 let win: BrowserWindow | null;
 
@@ -47,6 +49,8 @@ const createWindow = async () => {
             win!.webContents.openDevTools();
         });
     }
+
+    Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
 
     win.on('closed', () => {
         win = null;
