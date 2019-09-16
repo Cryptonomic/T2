@@ -58,3 +58,7 @@ https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/
 6. git pull origin master
 7. npm install
 8. GH_TOKEN=(your github personal token) npm run dist -- -wl
+
+## Reference
+
+https://www.npmjs.com/package/electron-store
