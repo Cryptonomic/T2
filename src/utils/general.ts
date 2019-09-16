@@ -18,7 +18,7 @@ import {
 // import { TEZOS, CONSEIL } from '../constants/NodesTypes';
 // import { SEND, TRANSACTIONS } from '../constants/TabConstants';
 // import { getSelectedNode } from './nodes';
-// import { blockExplorerHost } from '../config.json';
+import { blockExplorerHost } from '../config.json';
 
 const util = require('util');
 const { Mnemonic, Hardware } = StoreType;
@@ -195,9 +195,9 @@ export function openLink(link) {
   shell.openExternal(link);
 }
 
-// export function openLinkToBlockExplorer( url ) {
-//   openLink(blockExplorerHost + url);
-// }
+export function openLinkToBlockExplorer(url) {
+  openLink(blockExplorerHost + url);
+}
 
 // export function clearOperationId( operationId ) {
 //   if ( typeof operationId === 'string' ) {

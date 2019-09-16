@@ -143,6 +143,7 @@
   "dependencies": {
     "@material-ui/core": "^4.4.0",
     "@material-ui/icons": "^4.2.1",
+    "bignumber.js": "^9.0.0",
     "connected-react-router": "^6.5.2",
     "conseiljs": "^0.2.9",
     "electron-store": "^4.0.0",
@@ -151,6 +152,8 @@
     "i18next-electron-language-detector": "0.0.10",
     "i18next-xhr-backend": "^3.1.2",
     "immutable": "^4.0.0-rc.12",
+    "install": "^0.13.0",
+    "npm": "^6.11.3",
     "polished": "^3.4.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
