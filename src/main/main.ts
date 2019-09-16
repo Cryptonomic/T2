@@ -18,14 +18,14 @@ const createWindow = async () => {
     if (process.env.NODE_ENV !== 'production') {
         await installExtensions();
     }
-
     win = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true
         },
         width: 800,
         height: 600,
-        title: 'Cryptonomic'
+        title: 'Cryptonomic',
+        icon: path.join(__dirname, 'assets/icons/png/64x64.png')
     });
 
     if (process.env.NODE_ENV !== 'production') {

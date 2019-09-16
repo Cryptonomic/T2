@@ -1,6 +1,10 @@
 # T2
 T, the next generation
 
+## Customize Icon
+1. npm install -g electron-icon-maker
+2. electron-icon-maker --input=/absolute/path/file.png --output=./relative/path/to/folder
+
 ## Both processes have to be started simultaneously in different console tabs:
 
 npm run start-renderer-dev
