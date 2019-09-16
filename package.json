@@ -130,14 +130,14 @@
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.4.1",
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.1",
+    "wine": "^0.9.8"
   },
   "dependencies": {
     "electron-store": "^4.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.3",
-    "redux": "^4.0.1",
-    "wine": "^0.9.8"
+    "redux": "^4.0.1"
   }
 }
