@@ -11,7 +11,7 @@
         "trailing-comma": false,
         "ter-indent": [
             true,
-            4,
+            2,
             {
                 "SwitchCase": 1
             }
@@ -20,7 +20,11 @@
         "jsx-alignment": true,
         "jsx-equals-spacing": [true, "never"],
         "jsx-no-string-ref": true,
-        "jsx-self-close": true
+        "jsx-self-close": true,
+        "import-name": [false],
+        "object-shorthand-properties-first": false,
+        "interface-name": false,
+        "jsx-no-lambda": false
     },
     "rulesDirectory": []
 }
