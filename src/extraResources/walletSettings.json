@@ -1,0 +1,18 @@
+{
+  "tezosSelectedNode": "Cryptonomic-Nautilus",
+  "conseilSelectedNode": "Cryptonomic-Conseil",
+  "nodesList": [
+    {
+      "name": "Cryptonomic-Nautilus",
+      "type": "TEZOS",
+      "url": "https://tezos-dev.cryptonomic-infra.tech:443",
+      "apiKey": ""
+    },
+    {
+      "name": "Cryptonomic-Conseil",
+      "type": "CONSEIL",
+      "url": "https://conseil-dev.cryptonomic-infra.tech:443",
+      "apiKey": "hooman"
+    }
+  ]
+}
