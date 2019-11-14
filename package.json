@@ -70,7 +70,10 @@
       "target": "deb"
     },
     "win": {
-      "target": "nsis"
+      "target": [
+        "nsis",
+        "msi"
+      ]
     }
   },
   "repository": {
@@ -79,16 +82,10 @@
   },
   "author": {
     "name": "Cryptonomic",
-    "email": "Your email"
+    "email": "info@cryptonomic.tech"
   },
-  "license": "SEE LICENSE",
+  "license": "GPL-3.0-only",
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@babel/polyfill": "^7.4.4",
-    "@babel/preset-env": "^7.4.5",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.3.3",
     "@hot-loader/react-dom": "^16.9.0",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/history": "^4.7.3",
@@ -103,8 +100,7 @@
     "@types/redux-logger": "^3.0.7",
     "@types/styled-components": "^4.1.18",
     "@types/webdriverio": "^5.0.0",
-    "@types/webpack-env": "^1.13.3",
-    "babel-loader": "^8.0.6",
+    "@types/webpack-env": "^1.14.1",
     "copy-webpack-plugin": "^5.0.4",
     "cross-env": "^5.2.1",
     "css-loader": "^3.2.0",
@@ -129,6 +125,7 @@
     "spectron": "^8.0.0",
     "style-loader": "^1.0.0",
     "ts-jest": "^24.0.2",
+    "ts-loader": "^6.2.1",
     "tslint": "^5.19.0",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
@@ -153,8 +150,6 @@
     "i18next-electron-language-detector": "0.0.10",
     "i18next-xhr-backend": "^3.1.2",
     "immutable": "^4.0.0-rc.12",
-    "install": "^0.13.0",
-    "npm": "^6.11.3",
     "polished": "^3.4.1",
     "rc-tooltip": "^3.7.3",
     "react": "^16.9.0",
@@ -167,7 +162,6 @@
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
-    "styled-components": "^4.3.2",
-    "wine": "^0.9.8"
+    "styled-components": "^4.3.2"
   }
 }
