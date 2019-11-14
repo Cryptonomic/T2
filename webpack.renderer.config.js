@@ -9,29 +9,14 @@ const baseConfig = require('./webpack.base.config');
 module.exports = merge.smart(baseConfig, {
     target: 'electron-renderer',
     entry: {
-        app: ['@babel/polyfill','./src/app.tsx']
+        app: ['./src/app.tsx']
     },
     module: {
         rules: [
             {
                 test: /\.ts[x]?$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader',
-                options: {
-                    cacheDirectory: true,
-                    babelrc: false,
-                    presets: [
-                        [
-                            '@babel/preset-env',
-                            { targets: { browsers: 'last 2 versions ' } }
-                        ],
-                        '@babel/preset-typescript',
-                        '@babel/preset-react'
-                    ],
-                    plugins: [
-                        ['@babel/plugin-proposal-class-properties', { loose: true }]
-                    ]
-                }
+                loader: 'ts-loader'
             },
             {
                 test: /\.scss$/,

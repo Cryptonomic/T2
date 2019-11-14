@@ -11,8 +11,8 @@ const rootReducer = createRootReducer(history);
 
 const configureStore = (initialState?: RootState): Store<RootState | undefined> => {
   // Redux Configuration
-  const middleware = [];
-  const enhancers = [];
+  const middleware: any[] = [];
+  const enhancers: any[] = [];
 
   // Thunk Middleware
   middleware.push(reduxThunk);
