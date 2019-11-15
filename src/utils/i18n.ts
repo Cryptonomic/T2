@@ -23,14 +23,14 @@ i18n
   //   },
   // });
   .init({
-    preload: ['en', 'de', 'es', 'fr', 'ja', 'ko', 'pt-BR', 'tr', 'zh-CN'],
+    preload: ['en', 'de', 'es', 'fr', 'ja', 'ko', 'pt', 'tr', 'zh'],
     load: 'languageOnly',
     debug: true,
     backend: {
       loadPath: 'locales/{{lng}}.json'
     },
     fallbackLng: 'en',
-    whitelist: ['en', 'de', 'es', 'fr', 'ja', 'ko', 'pt-BR', 'tr', 'zh-CN'],
+    whitelist: ['en', 'de', 'es', 'fr', 'ja', 'ko', 'pt', 'tr', 'zh'],
     interpolation: {
       escapeValue: false
     },

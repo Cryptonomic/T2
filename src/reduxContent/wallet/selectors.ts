@@ -1,51 +1,52 @@
 import { createSelector } from 'reselect';
+import { RootState } from '../../types/store';
 
-export const getWallet = (state: any) => state.wallet;
+export const getWallet = (state: RootState) => state.wallet;
 
 export const getWalletName = createSelector(
   getWallet,
   wallet => {
-    const fileName = wallet.get('walletFileName');
+    const fileName = wallet.walletFileName;
     const walletName = fileName.split('.');
     return walletName[0];
   }
 );
 
-export const getWalletIsLoading = createSelector(
-  getWallet,
-  wallet => wallet.get('isLoading')
-);
+// export const getWalletIsLoading = createSelector(
+//   getWallet,
+//   wallet => wallet.get('isLoading')
+// );
 
-export const getWalletIsSyncing = createSelector(
-  getWallet,
-  wallet => wallet.get('isWalletSyncing')
-);
+// export const getWalletIsSyncing = createSelector(
+//   getWallet,
+//   wallet => wallet.get('isWalletSyncing')
+// );
 
-export const getNodesStatus = createSelector(
-  getWallet,
-  wallet => wallet.get('nodesStatus')
-);
+// export const getNodesStatus = createSelector(
+//   getWallet,
+//   wallet => wallet.get('nodesStatus')
+// );
 
-export const getTotalBalance = createSelector(
-  getWallet,
-  wallet => {
-    const identities = wallet.get('identities').toJS();
-    const balances = identities.map((identity: any) => identity.balance);
-    return balances.reduce((acc: any, curr: any) => acc + curr, 0);
-  }
-);
+// export const getTotalBalance = createSelector(
+//   getWallet,
+//   wallet => {
+//     const identities = wallet.get('identities').toJS();
+//     const balances = identities.map((identity: any) => identity.balance);
+//     return balances.reduce((acc: any, curr: any) => acc + curr, 0);
+//   }
+// );
 
-export const getIdentities = createSelector(
-  getWallet,
-  wallet => wallet.get('identities')
-);
+// export const getIdentities = createSelector(
+//   getWallet,
+//   wallet => wallet.get('identities')
+// );
 
-export const getIsLedger = createSelector(
-  getWallet,
-  wallet => wallet.get('isLedger')
-);
+// export const getIsLedger = createSelector(
+//   getWallet,
+//   wallet => wallet.get('isLedger')
+// );
 
-export const getIsLedgerConnecting = createSelector(
-  getWallet,
-  wallet => wallet.get('isLedgerConnecting')
-);
+// export const getIsLedgerConnecting = createSelector(
+//   getWallet,
+//   wallet => wallet.get('isLedgerConnecting')
+// );

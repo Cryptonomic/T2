@@ -5,5 +5,5 @@ export function placeHolder() {
 }
 
 export function ms(step) {
-  return modularScale(step, '1rem', 'minorThird').replace('em', 'rem');
+  return modularScale(step, '1rem', 'minorThird');
 }

@@ -29,7 +29,7 @@ const Container = styled.div`
   position: relative;
 `;
 
-type Props = {
+interface Props {
   text: string;
   spanClicked?: boolean;
   color: string;
@@ -40,7 +40,7 @@ type Props = {
   format?: number;
   className?: string;
   showTooltip?: boolean;
-};
+}
 
 class CopyIcon extends Component<Props> {
   public static defaultProps = {

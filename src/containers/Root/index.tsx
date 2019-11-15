@@ -16,10 +16,10 @@ const App = () => {
   );
 };
 
-type Props = {
+interface Props {
   store: any;
   history: any;
-};
+}
 
 const Root = ({ store, history }: Props) => (
   <Provider store={store}>

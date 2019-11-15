@@ -16,13 +16,13 @@ const Icon = styled.span<{ size?: string; color: string }>`
   -moz-osx-font-smoothing: grayscale;
 `;
 
-type Props = {
+interface Props {
   iconName?: string;
   color: string;
   size?: string;
   onClick?: () => {};
   className?: string;
-};
+}
 
 const getIconByName = iconName => {
   const toUnicode = unicode => String.fromCharCode(parseInt(unicode, 16));

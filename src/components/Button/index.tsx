@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { lighten } from 'polished';
@@ -56,7 +54,7 @@ interface ButtonProps {
 }
 
 const StyledButton = styled.button<Pick<ButtonProps, 'small' | 'buttonTheme' | 'type'>>`
-  padding: ${ms(0)} ${ms(6)};
+  padding: 0;
   border: 0;
   border-radius: ${ms(3)};
   font-family: ${({ theme }) => theme.typo.fontFamily.primary};
@@ -86,15 +84,15 @@ const StyledButton = styled.button<Pick<ButtonProps, 'small' | 'buttonTheme' | '
   ${({ buttonTheme }) => chooseTheme(buttonTheme)};
 `;
 
-type Props = {
+interface Props {
   className?: string;
   children?: any;
   disabled?: boolean;
   buttonTheme: 'primary' | 'secondary' | 'plain';
   small?: boolean;
   type?: string;
-  onClick?: () => {};
-};
+  onClick?: () => void;
+}
 
 function Button(props: Props) {
   const {

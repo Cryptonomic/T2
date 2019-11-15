@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled, { withTheme } from 'styled-components';
 import LoaderSpinner from '../LoaderSpinner';
 
@@ -24,9 +24,9 @@ const Wrapper = styled.div`
   }
 `;
 
-type Props = {
+interface Props {
   theme: any;
-};
+}
 
 const Loader = (props: Props) => {
   const { theme } = props;
