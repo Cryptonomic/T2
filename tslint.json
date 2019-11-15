@@ -1,13 +1,15 @@
 {
     "defaultSeverity": "error",
     "extends": [
-        "tslint-config-airbnb",
+        "tslint:recommended",
         "tslint-react",
         "tslint-config-prettier"
     ],
     "jsRules": {},
     "rules": {
         "max-line-length": [true, 120],
+        "ordered-imports": false,
+        "object-literal-sort-keys": false,
         "trailing-comma": false,
         "ter-indent": [
             true,
@@ -24,7 +26,9 @@
         "import-name": [false],
         "object-shorthand-properties-first": false,
         "interface-name": false,
-        "jsx-no-lambda": false
+        "jsx-no-lambda": false,
+        "no-console": false,
+        "member-access": false
     },
     "rulesDirectory": []
 }

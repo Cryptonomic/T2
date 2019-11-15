@@ -1,6 +1,4 @@
-// @flow
 import React from 'react';
-import { compose } from 'redux';
 import styled, { withTheme } from 'styled-components';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
@@ -40,12 +38,12 @@ const Details = styled.div`
   cursor: pointer;
 `;
 
-type Props = {
+interface Props {
   firstIconName: string;
   operationName: string;
   operationId: string;
   lastIconName: string;
-};
+}
 
 function Info(props: Props) {
   const { firstIconName, operationName, operationId, lastIconName } = props;

@@ -51,9 +51,9 @@ const CopyContent = styled.span`
   font-size: ${ms(0)};
 `;
 
-type ContentProps = {
+interface ContentProps {
   formatedBalance: string;
-};
+}
 
 const Content = (props: ContentProps) => {
   const { formatedBalance } = props;
@@ -65,7 +65,7 @@ const Content = (props: ContentProps) => {
   );
 };
 
-type Props = {
+interface Props {
   amount: number;
   color: string;
   iconName?: string;
@@ -74,7 +74,7 @@ type Props = {
   format: number;
   className?: string;
   showTooltip?: boolean;
-};
+}
 
 const TezosAmount = (props: Props) => {
   const { size, color, amount, iconName, weight, className, showTooltip, format } = props;
