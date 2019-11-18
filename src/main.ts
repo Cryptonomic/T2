@@ -24,8 +24,10 @@ const createWindow = async () => {
     webPreferences: {
       nodeIntegration: true
     },
-    width: 800,
-    height: 600,
+    width: 1199,
+    height: 768,
+    minHeight: 758,
+    minWidth: 1024,
     title: 'Cryptonomic'
   });
 

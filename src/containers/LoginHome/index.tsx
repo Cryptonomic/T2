@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter, RouteProps } from 'react-router-dom';
 import { Trans, withTranslation, WithTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 import Checkbox from '../../components/Checkbox/';
 import TermsModal from '../../components/TermsModal';
-// import LanguageSelectModal from '../../components/LanguageSelectModal';
+import LanguageSelectModal from '../../components/LanguageSelectModal';
 import { name } from '../../config.json';
 // import { setLocale, fetchNetwork } from '../../reduxContent/settings/thunks';
 // import {
@@ -95,7 +96,7 @@ function LoginHome(props: Props) {
     setSelectedLanguage(lang);
     // const { setLocale } = this.props;
     // setLocale(lang);
-    // i18n.changeLanguage(lang);
+    i18n.changeLanguage(lang);
   }
 
   function goToTermsModal() {
@@ -219,12 +220,12 @@ function LoginHome(props: Props) {
           </Trans>
         </Description>
       </TermsAndPolicySection>
-      {/* <LanguageSelectModal
+      <LanguageSelectModal
         isOpen={!isLanguageSelected}
-        onLanguageChange={this.onChangeLanguage}
+        onLanguageChange={onChangeLanguage}
         selectedLanguage={selectedLanguage}
-        onContinue={this.goToTermsModal}
-      /> */}
+        onContinue={() => goToTermsModal()}
+      />
       <TermsModal
         goTo={goTo}
         isOpen={!isAgreement && isLanguageSelected}
