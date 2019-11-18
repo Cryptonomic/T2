@@ -3,11 +3,6 @@ import { connect } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router';
 // import Transport from '@ledgerhq/hw-transport-node-hid';
 
-import {
-  getIdentities,
-  getWalletIsLoading,
-  getIsLedger
-} from '../../reduxContent/wallet/selectors';
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 // import { addMessage } from '../../reduxContent/message/thunks';
 // import { getNewVersion } from '../../reduxContent/message/selectors';
@@ -22,15 +17,17 @@ import VersionStatus from '../../components/VersionStatus';
 // import HomeAddAddress from './../HomeAddAddress';
 // import HomeSettings from './../HomeSettings';
 
-type Props = {
+import { RootState } from '../../types/store';
+
+interface Props {
   identities: any[];
   isLoading: boolean;
   // match: object,
-  goHomeAndClearState: () => {};
+  // goHomeAndClearState: () => {};
   // addMessage: () => {},
   // isLedger: boolean,
   // newVersion: string
-};
+}
 
 class HomePage extends Component<Props> {
   constructor(props: Props) {
@@ -38,7 +35,7 @@ class HomePage extends Component<Props> {
     this.onDetectLedger();
   }
 
-  onDetectLedger = async () => {
+  public onDetectLedger = async () => {
     // const { isLedger } = this.props;
     // Transport.listen({
     //   next: e => {
@@ -53,15 +50,15 @@ class HomePage extends Component<Props> {
     // });
   };
 
-  onLogout = () => {
-    const { goHomeAndClearState } = this.props;
+  public onLogout = () => {
+    // const { goHomeAndClearState } = this.props;
     // const { goHomeAndClearState, addMessage } = this.props;
     // initLedgerTransport();
     goHomeAndClearState();
     // addMessage('general.errors.no_ledger_detected', true);
   };
 
-  render() {
+  public render() {
     // const { match, identities, isLoading, newVersion } = this.props;
     const { identities, isLoading } = this.props;
     // const redirectTo =
@@ -88,15 +85,15 @@ class HomePage extends Component<Props> {
   }
 }
 
-const mapStateToProps = state => ({
-  identities: getIdentities(state),
-  isLoading: getWalletIsLoading(state),
-  isLedger: getIsLedger(state)
-  // newVersion: getNewVersion(state)
+const mapStateToProps = (state: RootState) => ({
+  identities: state.wallet.identities,
+  isLoading: state.wallet.isLoading,
+  isLedger: state.wallet.isLedger,
+  newVersion: state.wallet.newVersion
 });
 
 const mapDispatchToProps = dispatch => ({
-  goHomeAndClearState: () => dispatch(goHomeAndClearState())
+  // goHomeAndClearState: () => dispatch(goHomeAndClearState())
 });
 
 export default connect(

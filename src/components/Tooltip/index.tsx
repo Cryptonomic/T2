@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import RCTooltip from 'rc-tooltip';
 
@@ -7,10 +6,10 @@ import { stripUnit, lighten } from 'polished';
 import { ms } from '../../styles/helpers';
 import { string } from 'prop-types';
 
-type AdapterProps = {
+interface AdapterProps {
   className: string;
   offset: string;
-};
+}
 
 const TooltipAdapter = ({ className, offset, ...props }: AdapterProps) => {
   return (
@@ -227,7 +226,7 @@ const StyledTooltip = styled(TooltipAdapter)<
   }
 `;
 
-type Props = {
+interface Props {
   content?: any;
   trigger?: string[];
   children?: any;
@@ -235,7 +234,7 @@ type Props = {
   position?: string;
   arrowPos?: object;
   offset?: string;
-};
+}
 
 function Tooltip(props: Props) {
   const { children, className, content, position, arrowPos, offset, ...restOfProps } = props;

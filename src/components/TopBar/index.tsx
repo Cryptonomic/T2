@@ -8,6 +8,8 @@ import { getWalletName } from '../../reduxContent/wallet/selectors';
 import { ms } from '../../styles/helpers';
 import Logo from './../Logo';
 
+import { RootState } from '../../types/store';
+
 const Container = styled.div<{ isExtended?: boolean }>`
   display: flex;
   justify-content: space-between;
@@ -32,11 +34,11 @@ const Text = styled.span`
   letter-spacing: 0.9px;
 `;
 
-type Props = {
+interface Props {
   onlyLogo?: boolean;
   walletName: string;
   isExtended?: boolean;
-};
+}
 
 const TopBar = (props: Props) => {
   const { onlyLogo, walletName, isExtended } = props;
@@ -56,7 +58,7 @@ TopBar.defaultProps = {
   walletName: 'Wallet'
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: RootState) => ({
   walletName: getWalletName(state)
 });
 

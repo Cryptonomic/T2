@@ -1,6 +1,4 @@
-// @flow
 import React from 'react';
-import { compose } from 'redux';
 import styled, { withTheme } from 'styled-components';
 import { StoreType } from 'conseiljs';
 import { ms } from '../../styles/helpers';
@@ -50,7 +48,7 @@ const Description = styled.div`
   font-size: ${ms(-0.5)};
 `;
 
-type Props = {
+interface Props {
   isManager?: boolean;
   isContract?: boolean;
   address?: {
@@ -67,7 +65,7 @@ type Props = {
     };
   };
   t: () => {};
-};
+}
 
 function AccountStatus(props: Props) {
   const { isManager, isContract, address, theme, t } = props;

@@ -1,5 +1,4 @@
-// @flow
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -231,11 +230,11 @@ const Container = styled.div`
   }
 `;
 
-type Props = {
+interface Props {
   bubblesStyle?: object;
   styles?: object;
   size?: string;
-};
+}
 
 const LoaderSpinner: React.FC<Props> = props => {
   const { styles, bubblesStyle, size } = props;

@@ -2,11 +2,13 @@ import * as React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { getNodesStatus } from '../../reduxContent/wallet/selectors';
+// import { getNodesStatus } from '../../reduxContent/wallet/selectors';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon/';
 
 import { getNodesError } from '../../utils/general';
+
+import { RootState } from '../../types/store';
 
 const Container = styled.div`
   display: flex;
@@ -31,7 +33,7 @@ type Props = OwnProps & WithTranslation;
 
 const NodesStatus = (props: Props) => {
   const { nodesStatus, t } = props;
-  const nodesErrorMessage = getNodesError(nodesStatus.toJS());
+  const nodesErrorMessage = getNodesError(nodesStatus);
 
   return nodesErrorMessage ? (
     <Container>
@@ -41,8 +43,8 @@ const NodesStatus = (props: Props) => {
   ) : null;
 };
 
-const mapStateToProps = state => ({
-  nodesStatus: getNodesStatus(state)
+const mapStateToProps = (state: RootState) => ({
+  nodesStatus: state.wallet.nodesStatus
 });
 
 export default connect(
