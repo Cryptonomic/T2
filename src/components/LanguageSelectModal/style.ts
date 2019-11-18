@@ -1,9 +1,7 @@
 import styled from 'styled-components';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import CheckCircle from '@material-ui/icons/CheckCircle';
-import Circle from '@material-ui/icons/PanoramaFishEye';
+import { RadioGroup, Radio, FormControlLabel } from '@material-ui/core';
+import { CheckCircle, PanoramaFishEye as Circle } from '@material-ui/icons';
+import Button from '../Button';
 
 export const Container = styled.div`
   background-color: ${({ theme: { colors } }) => colors.white};
@@ -47,7 +45,7 @@ export const GroupContainerWrapper = styled.div`
   position: relative;
 `;
 
-export const FadeOut = styled.div`
+const FadeOut = styled.div`
   position: absolute;
   width: 92%;
   height: 30px;
@@ -94,7 +92,7 @@ export const FormControlLabelWrapper = styled(FormControlLabel)`
     width: 92%;
     border-bottom: solid 1px ${({ theme: { colors } }) => colors.gray11};
     margin: 0px;
-    [class*='MuiFormControlLabel-label'] {
+    .MuiFormControlLabel-label {
       color: ${({ theme: { colors } }) => colors.primary};
       font-size: 18px;
       letter-spacing: 0.1px;
@@ -132,4 +130,8 @@ export const NonCheckedCircle = styled(Circle)`
     width: 21px;
     height: 21px;
   }
+`;
+
+export const ContinueButton = styled(Button)`
+  padding: 16px 47px;
 `;

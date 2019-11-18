@@ -1,3 +1,4 @@
+import { remote } from 'electron';
 import {
   SET_SELECTED,
   SET_LOCALE,
@@ -17,7 +18,7 @@ import {
 import { SettingsState } from '../../types/store';
 
 const initState: SettingsState = {
-  locale: 'en', // get electron locale here
+  locale: remote.app.getLocale(),
   tezosSelectedNode: '',
   conseilSelectedNode: '',
   nodesList: [],

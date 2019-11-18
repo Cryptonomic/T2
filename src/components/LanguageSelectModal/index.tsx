@@ -1,139 +1,132 @@
-// import React, { Component } from 'react';
-// import Modal from 'react-modal';
-// import RootRef from '@material-ui/core/RootRef';
+import React, { useState } from 'react';
+import Modal from 'react-modal';
+import RootRef from '@material-ui/core/RootRef';
 
-// import Button from '../Button';
-// import languageLogoIcon from '../../../resources/imgs/Language_Selection_img.svg';
-// import localesMap from '../../constants/LocalesMap';
+import languageLogoIcon from '../../../resources/imgs/Language_Selection_img.svg';
+import localesMap from '../../constants/LocalesMap';
 
-// import {
-//   Container, Title, Description, MainContainer,
-//   LanguageLogo, GroupContainerWrapper, FadeOut, FadeTop,
-//   FadeBottom, RadioGroupContainer, FormControlLabelWrapper,
-//   CustomRadio, ButtonContainer, CheckedCircle, NonCheckedCircle
-// } from './style';
+import {
+  Container,
+  Title,
+  Description,
+  MainContainer,
+  LanguageLogo,
+  GroupContainerWrapper,
+  FadeTop,
+  FadeBottom,
+  RadioGroupContainer,
+  FormControlLabelWrapper,
+  CustomRadio,
+  ButtonContainer,
+  CheckedCircle,
+  NonCheckedCircle,
+  ContinueButton
+} from './style';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-// const customStyles = {
-//   content: {
-//     alignItems: 'center',
-//     border: '0',
-//     borderRadius: '0',
-//     top: 'auto',
-//     bottom: 0,
-//     display: 'flex',
-//     justifyContent: 'center',
-//     left: 0,
-//     width: '100%'
-//   },
-//   overlay: {
-//     backgroundColor: 'rgba(155, 155, 155, 0.68)'
-//   }
-// };
+const customStyles = {
+  content: {
+    alignItems: 'center',
+    border: '0',
+    borderRadius: '0',
+    top: 'auto',
+    bottom: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    left: 0,
+    width: '100%'
+  },
+  overlay: {
+    backgroundColor: 'rgba(155, 155, 155, 0.68)'
+  }
+};
 
-// type Props = {
-//   isOpen: boolean,
-//   onLanguageChange: () => {},
-//   onContinue: () => {},
-//   selectedLanguage: string,
-//   t: () => {}
-// };
-// class LanguageSelectModal extends Component<Props> {
+interface OwnProps {
+  isOpen: boolean;
+  onLanguageChange: (scale: string) => void;
+  onContinue: () => void;
+  selectedLanguage: string;
+}
 
-//   constructor(props) {
-//     super(props);
-//     this.langScrollEl = null;
-//   }
+type Props = OwnProps & WithTranslation;
 
-//   state = {
-//     isTopFade: false,
-//     isBottomFade: false,
-//     numberOfLocales: 0
-//   };
+function LanguageSelectModal(props: Props) {
+  let langScrollEl: any = null;
+  const { isOpen, onLanguageChange, selectedLanguage, onContinue, t } = props;
+  const [isTopFade, setIsTopFade] = useState(false);
+  const [numberOfLocales, setNumberOfLocales] = useState(Object.keys(localesMap).length);
+  const [isBottomFade, setIsBottomFade] = useState(() => {
+    return numberOfLocales >= 6;
+  });
 
-//   componentWillMount = () => {
-//     const numberOfLocales = Object.keys(localesMap).length;
-//     if (numberOfLocales < 6) {
-//       this.setState({ isBottomFade: false, numberOfLocales });
-//     } else {
-//       this.setState({ isBottomFade: true, numberOfLocales });
-//     }
-//   }
+  function setLanguageScrollRef(element) {
+    langScrollEl = element;
+    if (langScrollEl) {
+      const index = Object.keys(localesMap).indexOf(selectedLanguage);
+      if (index > 4) {
+        langScrollEl.scrollTop = 40 * (index - 4);
+      }
+    }
+  }
 
-//   setLanguageScrollRef = (element) => {
-//     this.langScrollEl = element;
-//     if (this.langScrollEl) {
-//       const { selectedLanguage } = this.props;
-//       const index = Object.keys(localesMap).indexOf(selectedLanguage);
-//       if (index>4) {
-//         this.langScrollEl.scrollTop = 40 * (index - 4);
-//       }
-//     }
-//   }
+  function onScrollChange(event) {
+    const pos = event.target.scrollTop;
+    const remainCount = numberOfLocales - 5;
+    if (pos === 0) {
+      setIsTopFade(false);
+      setIsBottomFade(true);
+    } else if (pos < remainCount * 40) {
+      setIsTopFade(true);
+      setIsBottomFade(true);
+    } else {
+      setIsTopFade(true);
+      setIsBottomFade(false);
+    }
+  }
 
-//   onScrollChange = (event) => {
-//     const { numberOfLocales } = this.state;
-//     const pos = event.target.scrollTop;
-//     const remainCount = numberOfLocales - 5;
-//     if (pos === 0 ) {
-//       this.setState({isTopFade : false, isBottomFade: true });
-//     } else if (pos < remainCount*40) {
-//       this.setState({isTopFade : true, isBottomFade: true });
-//     } else {
-//       this.setState({isTopFade : true, isBottomFade: false });
-//     }
-//   }
+  return (
+    <Modal isOpen={isOpen} style={customStyles} ariaHideApp={false}>
+      <Container>
+        <Title>{t('components.languageSelectModal.choose_language')}</Title>
+        <Description>
+          {t('components.languageSelectModal.language_selection_description')}
+        </Description>
+        <MainContainer>
+          <LanguageLogo src={languageLogoIcon} />
+          <GroupContainerWrapper>
+            {isTopFade && <FadeTop />}
+            <RootRef rootRef={setLanguageScrollRef}>
+              <RadioGroupContainer
+                value={selectedLanguage}
+                onChange={event => onLanguageChange(event.target.value)}
+                onScroll={onScrollChange}
+              >
+                {Object.keys(localesMap).map(key => {
+                  return (
+                    <FormControlLabelWrapper
+                      value={key}
+                      key={key}
+                      control={
+                        <CustomRadio icon={<NonCheckedCircle />} checkedIcon={<CheckedCircle />} />
+                      }
+                      label={localesMap[key]}
+                    />
+                  );
+                })}
+              </RadioGroupContainer>
+            </RootRef>
 
-//   render() {
-//     const { isOpen, onLanguageChange, selectedLanguage, onContinue, t } = this.props;
-//     const { isTopFade, isBottomFade } = this.state;
-//     return (
-//       <Modal isOpen={isOpen} style={customStyles} ariaHideApp={false}>
-//         <Container>
-//           <Title>{t("components.languageSelectModal.choose_language")}</Title>
-//           <Description>{t("components.languageSelectModal.language_selection_description")}</Description>
-//           <MainContainer>
-//             <LanguageLogo src={languageLogoIcon} />
-//             <GroupContainerWrapper>
-//               {isTopFade && <FadeTop />}
-//               <RootRef rootRef={this.setLanguageScrollRef}>
-//                 <RadioGroupContainer
-//                   value={selectedLanguage}
-//                   onChange={(event)=>onLanguageChange(event.target.value)}
-//                   onScroll={this.onScrollChange}
-//                 >
-//                   {
-//                     Object.keys(localesMap).map((key) => {
-//                       return (
-//                         <FormControlLabelWrapper
-//                           value={key}
-//                           key={key}
-//                           control={
-//                             <CustomRadio
-//                               icon={<NonCheckedCircle />}
-//                               checkedIcon={<CheckedCircle />}
-//                             />
-//                           }
-//                           label={localesMap[key]}
-//                         />
-//                       );
-//                     })
-//                   }
-//                 </RadioGroupContainer>
-//               </RootRef>
+            {isBottomFade && <FadeBottom />}
+          </GroupContainerWrapper>
+        </MainContainer>
+        <ButtonContainer>
+          <ContinueButton buttonTheme="primary" onClick={onContinue}>
+            {t('general.verbs.continue')}
+          </ContinueButton>
+        </ButtonContainer>
+      </Container>
+    </Modal>
+  );
+}
 
-//               {isBottomFade && <FadeBottom />}
-//             </GroupContainerWrapper>
-
-//           </MainContainer>
-//           <ButtonContainer>
-//             <Button buttonTheme="primary" onClick={onContinue}>
-//               {t("general.verbs.continue")}
-//             </Button>
-//           </ButtonContainer>
-//         </Container>
-//       </Modal>
-//     );
-//   }
-// };
-
-// export default wrapComponent(LanguageSelectModal);
+export default withTranslation()(LanguageSelectModal);

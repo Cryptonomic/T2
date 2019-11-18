@@ -44,4 +44,4 @@ const mapStateToProps = (state: RootState) => ({
 export default connect(
   mapStateToProps,
   null
-)(Login);
+)(Login) as React.ComponentType<any>;

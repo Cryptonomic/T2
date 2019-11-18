@@ -1,6 +1,6 @@
-import * as Store from 'electron-store';
+import Store from 'electron-store';
 
-// const store = new Store();
+const store = new Store();
 
 // Set data in store
 export const setData = (data: any) => {
