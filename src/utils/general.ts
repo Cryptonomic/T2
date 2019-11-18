@@ -20,7 +20,7 @@ import {
 // import { getSelectedNode } from './nodes';
 import { blockExplorerHost } from '../config.json';
 
-const util = require('util');
+// const util = require('util');
 const { Mnemonic, Hardware } = StoreType;
 
 // export async function getNodesStatus(nodes, network) {
