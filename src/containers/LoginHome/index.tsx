@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { withRouter, RouteProps } from 'react-router-dom';
+import { useHistory, RouteComponentProps } from 'react-router-dom';
 import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import i18n from 'i18next';
 
@@ -65,10 +65,11 @@ interface OwnProps {
   isLedgerConnecting: boolean;
   activePath: string;
 }
-type Props = OwnProps & WithTranslation & RouteProps;
+type Props = OwnProps & WithTranslation & RouteComponentProps<{ path: string }>;
 
 function LoginHome(props: Props) {
-  const { locale, isLedgerConnecting, activePath, t } = props;
+  const history = useHistory();
+  const { locale, match, isLedgerConnecting, activePath, t } = props;
   const [selectedLanguage, setSelectedLanguage] = useState(locale);
   const [isAgreement, setIsAgreement] = useState(() => {
     const agreement = localStorage.getItem(AGREEMENT_STORAGE);
@@ -89,7 +90,7 @@ function LoginHome(props: Props) {
 
   function updateStatusAgreement() {
     setIsAgreement(!isAgreement);
-    // localStorage.setItem(AGREEMENT_STORAGE, !isAgreement);
+    localStorage.setItem(AGREEMENT_STORAGE, String(!isAgreement));
   }
 
   function onChangeLanguage(lang: string) {
@@ -100,18 +101,17 @@ function LoginHome(props: Props) {
   }
 
   function goToTermsModal() {
-    // setIsLanguageSelected(!isLanguageSelected);
-    // localStorage.setItem(LANGUAGE_STORAGE, !isLanguageSelected);
+    setIsLanguageSelected(!isLanguageSelected);
+    localStorage.setItem(LANGUAGE_STORAGE, String(!isLanguageSelected));
   }
 
   function goToLanguageSelect() {
-    // localStorage.setItem(LANGUAGE_STORAGE, !isLanguageSelected);
+    localStorage.setItem(LANGUAGE_STORAGE, String(!isLanguageSelected));
     setIsLanguageSelected(!isLanguageSelected);
   }
 
   function goTo(route) {
-    // const { match, history } = this.props;
-    // history.push(`${match.path}/${route}`);
+    history.push(`${match.path}/${route}`);
   }
 
   async function onLedgerConnect() {
@@ -143,14 +143,16 @@ function LoginHome(props: Props) {
             <CardImg src={keystoreImg} />
             <CardTitle>{t('containers.loginHome.keystore_wallet')}</CardTitle>
             <CreateWalletButton
-              buttonTheme="primary"
+              color="secondary"
+              variant="extended"
               onClick={() => goTo('create')}
               disabled={!isAgreement}
             >
               {t('containers.loginHome.create_new_wallet_btn')}
             </CreateWalletButton>
             <UnlockWalletButton
-              buttonTheme="secondary"
+              color="primary"
+              variant="outlined"
               onClick={() => goTo('import')}
               disabled={!isAgreement}
             >
@@ -175,7 +177,8 @@ function LoginHome(props: Props) {
 
             <CardTitle>{t('containers.loginHome.ledger_wallet')}</CardTitle>
             <CreateWalletButton
-              buttonTheme="primary"
+              color="secondary"
+              variant="extended"
               onClick={() => onLedgerConnect()}
               disabled={!isAgreement}
             >
@@ -256,7 +259,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default compose(
-  withRouter,
   withTranslation(),
   connect(
     mapStateToProps,
