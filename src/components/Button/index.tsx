@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { lighten } from 'polished';
 
@@ -91,7 +91,7 @@ interface Props {
   buttonTheme: 'primary' | 'secondary' | 'plain';
   small?: boolean;
   type?: string;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent) => void;
 }
 
 function Button(props: Props) {

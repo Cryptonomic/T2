@@ -20,7 +20,7 @@ interface Props {
   iconName?: string;
   color: string;
   size?: string;
-  onClick?: () => {};
+  onClick?: () => void;
   className?: string;
 }
 
