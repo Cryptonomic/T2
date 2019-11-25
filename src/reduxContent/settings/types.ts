@@ -1,25 +1,53 @@
-export const SET_SELECTED = 'SET_SELECTED';
-export const SET_LOCALE = 'SET_LOCALE';
-export const SET_PATH = 'SET_PATH';
+import { Node, Path } from '../../types/general';
+export const CHANGE_LOCALE = 'SET_LOCALE';
+export const CHANGE_NODE = 'SET_NODE';
 export const ADD_NODE = 'ADD_NODE';
 export const REMOVE_NODE = 'REMOVE_NODE';
-export const UPDATE_NODE = 'UPDATE_NODE';
-export const CLEAR_STATE = 'CLEAR_STATE';
-export const HIDE_DELEGATE_TOOLTIP = 'HIDE_DELEGATE_TOOLTIP';
+export const CHANGE_PATH = 'SET_PATH';
 export const ADD_PATH = 'ADD_PATH';
 export const REMOVE_PATH = 'REMOVE_PATH';
-export const UPDATE_PATH = 'UPDATE_PATH';
-export const SET_NETWORK = 'SET_NETWORK';
+export const CLEAR_STATE = 'CLEAR_STATE';
+export const HIDE_DELEGATE_TOOLTIP = 'HIDE_DELEGATE_TOOLTIP';
 
-export interface SetSelectedAction {
-  type: typeof SET_SELECTED;
-  selected: string;
-  target: any;
-}
-
-export interface SetLocaleAction {
-  type: typeof SET_LOCALE;
+export interface ChangeLocaleAction {
+  type: typeof CHANGE_LOCALE;
   locale: string;
 }
+export interface ChangeNodeAction {
+  type: typeof CHANGE_NODE;
+  name: string;
+}
 
-export type SettingsActionTypes = SetSelectedAction | SetLocaleAction;
+export interface AddNodeAction {
+  type: typeof ADD_NODE;
+  node: Node;
+}
+
+export interface RemoveNodeAction {
+  type: typeof REMOVE_NODE;
+  name: string;
+}
+
+export interface ChangePathAction {
+  type: typeof CHANGE_PATH;
+  label: string;
+}
+
+export interface AddPathAction {
+  type: typeof ADD_PATH;
+  path: Path;
+}
+
+export interface RemovePathAction {
+  type: typeof REMOVE_PATH;
+  label: string;
+}
+
+export type SettingsActionTypes =
+  | ChangeNodeAction
+  | ChangeLocaleAction
+  | AddNodeAction
+  | RemoveNodeAction
+  | AddPathAction
+  | ChangePathAction
+  | RemovePathAction;

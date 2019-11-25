@@ -11,6 +11,7 @@ const Container = styled(FormControl)`
 const InputWrapper = styled(Input)<{ right: number | undefined }>`
   &&& {
     padding-right: ${({ right }) => right}px;
+    font-weight: 300;
   }
 `;
 
@@ -21,6 +22,7 @@ const LabelWrapper = styled(InputLabel)`
     }
     color: rgba(0, 0, 0, 0.38);
     font-size: 16px;
+    font-weight: 300;
   }
 `;
 
