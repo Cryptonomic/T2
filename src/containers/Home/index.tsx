@@ -68,10 +68,6 @@ class HomePage extends Component<Props> {
 
     return (
       <Fragment>
-        {/* <TopBar isExtended={!!newVersion} /> */}
-        <TopBar isExtended={true} />
-        <VersionStatus version="1.0.1" />
-        {/* {newVersion && <VersionStatus version={newVersion} />} */}
         <NodesStatus />
         {/* <Switch>
           <Route path={`${match.path}/addresses`} component={HomeAddresses} />

@@ -8,7 +8,7 @@ export const getWalletName = createSelector(
   wallet => {
     const fileName = wallet.walletFileName;
     const walletName = fileName.split('.');
-    return walletName[0];
+    return walletName[0] || 'Wallet';
   }
 );
 

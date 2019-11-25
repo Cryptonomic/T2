@@ -1,3 +1,4 @@
+import { Path, Node } from './general';
 export interface WalletState {
   identities: any[];
   isLoading: boolean;
@@ -21,14 +22,11 @@ export interface MessageState {
 
 export interface SettingsState {
   locale: string;
-  tezosSelectedNode: string;
-  conseilSelectedNode: string;
-  nodesList: any[];
+  selectedNode: string;
+  nodesList: Node[];
   delegateTooltip: boolean;
   selectedPath: string;
-  pathsList: any[];
-  network: string;
-  platform: string;
+  pathsList: Path[];
 }
 
 export interface RootState {

@@ -1,18 +1,24 @@
 {
-  "tezosSelectedNode": "Cryptonomic-Nautilus",
-  "conseilSelectedNode": "Cryptonomic-Conseil",
+  "selectedNode": "babylonnet",
   "nodesList": [
     {
-      "name": "Cryptonomic-Nautilus",
-      "type": "TEZOS",
-      "url": "https://tezos-dev.cryptonomic-infra.tech:443",
-      "apiKey": ""
+      "displayName": "Tezos Babylonnet",
+      "platform": "tezos",
+      "network": "babylonnet",
+      "tezosUrl": "https://tezos-dev.cryptonomic-infra.tech:443",
+      "conseilUrl": "https://conseil-dev.cryptonomic-infra.tech:443",
+      "apiKey": "galleon"
+    }
+  ],
+  "selectedPath": "Default",
+  "pathsList": [
+    {
+      "label": "Default",
+      "derivation": "44'/1729'/0'/0'/0'"
     },
     {
-      "name": "Cryptonomic-Conseil",
-      "type": "CONSEIL",
-      "url": "https://conseil-dev.cryptonomic-infra.tech:443",
-      "apiKey": "hooman"
+      "label": "TezBox",
+      "derivation": "44'/1729'/0'/0'"
     }
   ]
 }
