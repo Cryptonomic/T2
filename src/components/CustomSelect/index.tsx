@@ -47,7 +47,7 @@ interface Props {
   label: string;
   value: string | number | object;
   children?: React.ReactNode;
-  renderValue?: (val: any) => void;
+  renderValue?: (val: any) => React.ReactNode;
   onChange: (event: any) => void;
 }
 
@@ -56,12 +56,7 @@ const CustomSelect = (props: Props) => {
   return (
     <SelectContainer>
       <LabelWrapper>{label}</LabelWrapper>
-      <SelectWrapper
-        value={value}
-        onChange={onChange}
-        // renderValue={renderValue}
-        {...others}
-      >
+      <SelectWrapper value={value} onChange={onChange} renderValue={renderValue} {...others}>
         {children}
       </SelectWrapper>
     </SelectContainer>

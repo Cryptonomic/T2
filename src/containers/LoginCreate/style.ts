@@ -1,5 +1,6 @@
-import styled, { css } from 'styled-components';
-import Button from '../../components/Button';
+import styled from 'styled-components';
+import Fab from '@material-ui/core/Fab';
+import Button from '@material-ui/core/Button';
 import TezosIcon from '../../components/TezosIcon/';
 
 export const WalletFileName = styled.div`
@@ -51,7 +52,7 @@ export const WalletTitle = styled.h3`
   color: #1a325f;
   font-size: 36px;
   font-weight: 300;
-  margin: 1.5rem 0 0.75rem 0;
+  margin: 0 0 0.75rem 0;
 `;
 
 export const WalletDescription = styled.div`
@@ -63,16 +64,11 @@ export const WalletDescription = styled.div`
   max-width: 659px;
 `;
 
-export const ActionButtonContainer = styled.div`
-  width: 194px;
-  margin-top: 37px;
-  display: flex;
-  align-self: center;
-`;
-
-export const ActionButton = styled(Button)`
-  width: 194px;
-  height: 50px;
+export const ActionButton = styled(Fab)`
+  &&& {
+    margin-top: 39px;
+    width: 194px;
+  }
 `;
 
 export const FormContainer = styled.div`
@@ -92,13 +88,18 @@ export const CreateFileEmptyIcon = styled.img`
 `;
 
 export const CreateFileButton = styled(Button)`
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  width: 9.18rem !important;
-  margin-bottom: 1.6rem !important;
+  &&& {
+    width: 147px;
+    border-radius: 20px;
+    margin-bottom: 1.6rem;
+  }
 `;
 
 export const WalletFileSection = styled.div`
   text-align: center;
   margin-bottom: 1.125rem;
+`;
+
+export const BackButtonContainer = styled.div`
+  margin-bottom: 16px;
 `;

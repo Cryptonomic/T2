@@ -1,24 +1,17 @@
 import React, { useState } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { goBack as goBackToWallet } from 'react-router-redux';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import Close from '@material-ui/icons/Close';
 
-import BackCaret from '@material-ui/icons/KeyboardArrowLeft';
-import AddCircle from '@material-ui/icons/AddCircle';
-import Check from '@material-ui/icons/Check';
-
+import BackButton from '../../components/BackButton';
 import { H2 } from '../../components/Heading/';
 import AddNodeModal from '../../components/AddNodeModal';
 import AddPathModal from '../../components/AddPathModal';
 import CustomSelect from '../../components/CustomSelect/';
 import LanguageSelector from '../../components/LanguageSelector';
-// import { getNodeUrl } from '../../utils/settings';
 
-// import {
-//   syncWallet,
-//   goHomeAndClearState
-// } from '../../reduxContent/wallet/thunks';
 import {
   removePathThunk,
   removeNodeThunk,
@@ -31,26 +24,24 @@ import {
 
 import {
   Container,
-  BackToWallet,
+  BackButtonContainer,
   Content,
   Content6,
   ContentTitle,
   RowForParts,
   Part,
-  SelectOption,
-  OptionStatus,
   OptionLabel,
   NodeName,
   NodeUrl,
   NodeUrlSpan,
   ItemWrapper,
   SelectRenderWrapper,
-  RemoveIconWrapper,
-  RemoveIcon
+  RemoveIconBtn,
+  AddIcon,
+  CheckIcon
 } from './style';
 import { RootState } from '../../types/store';
 import { Node, Path } from '../../types/general';
-import { ms } from '../../styles/helpers';
 
 interface OwnProps {
   selectedNode: string;
@@ -58,22 +49,19 @@ interface OwnProps {
   selectedPath: string;
   pathsList: Path[];
   locale: string;
-  // syncWallet: () => void,
-  // setSelected: () => void,
   changePath: (label: string) => void;
   removeNode: (name: string) => void;
   removePath: (label: string) => void;
-  // goBack: () => void,
   changeLocale: (locale: string) => void;
   changeNode: (name: string) => void;
   addNode: (node: Node) => void;
   addPath: (path: Path) => void;
-  // goHomeAndClearState: () => void
 }
 
 type Props = OwnProps & WithTranslation;
 
 function SettingsPage(props: Props) {
+  const history = useHistory();
   const {
     t,
     locale,
@@ -91,32 +79,32 @@ function SettingsPage(props: Props) {
   } = props;
   const [isNodeModalOpen, setIsNodeModalOpen] = useState(false);
   const [isPathModalOpen, setIsPathModalOpen] = useState(false);
-  const [isPathChanged, setIsPathChanged] = useState('');
+  const [isPathChanged, setIsPathChanged] = useState(false);
 
-  async function onRemovePath(event, label) {
+  function onRemovePath(event, label) {
     event.stopPropagation();
-    await removePath(label);
     if (label === selectedPath) {
-      if (pathsList.length > 2) {
-        const parser = JSON.parse(localStorage.settings);
-        const listLength = parser.pathsList.length;
-        const labelToAdd = parser.pathsList[listLength - 1].label;
-        await changePath(labelToAdd);
-      } else {
-        await changePath('Default');
-      }
+      setIsPathChanged(true);
     }
+    removePath(label);
   }
 
-  async function onRemoveNode(event, name) {
+  function onRemoveNode(event, name) {
     event.stopPropagation();
-    // const localStorageSettings = JSON.parse(localStorage.settings);
-    // if (conseilNodeToRemove) {
-    //   await removeNode(name);
-    //   if (name === localStorageSettings.conseilSelectedNode) {
-    //     await this.handleConseilChange('Cryptonomic-Conseil');
-    //   }
-    // }
+    if (name === selectedNode) {
+      setIsPathChanged(true);
+    }
+    removeNode(name);
+  }
+
+  function onAddNode(node: Node) {
+    setIsPathChanged(true);
+    addNode(node);
+  }
+
+  function onAddPath(path: Path) {
+    setIsPathChanged(true);
+    addPath(path);
   }
 
   function getPath() {
@@ -131,31 +119,16 @@ function SettingsPage(props: Props) {
   function renderNodes() {
     return nodesList.map((node, index) => {
       const isSelected = selectedNode === node.displayName;
-      const option = (
-        <SelectOption>
-          <OptionStatus>
-            {isSelected && (
-              <Check
-                style={{
-                  fill: 'red', // theme.colors.blue1,
-                  height: ms(1.5),
-                  width: ms(1.5)
-                }}
-              />
-            )}
-          </OptionStatus>
-          <OptionLabel isActive={isSelected}>
-            <NodeName>{name}</NodeName>
-          </OptionLabel>
-        </SelectOption>
-      );
       return (
         <ItemWrapper key={index} value={node.displayName}>
-          {option}
+          {isSelected && <CheckIcon />}
+          <OptionLabel isActive={isSelected}>
+            <NodeName>{node.displayName}</NodeName>
+          </OptionLabel>
           {index > 0 && (
-            <RemoveIconWrapper onClick={event => onRemoveNode(event, name)}>
-              <RemoveIcon />
-            </RemoveIconWrapper>
+            <RemoveIconBtn onClick={event => onRemoveNode(event, name)}>
+              <Close />
+            </RemoveIconBtn>
           )}
         </ItemWrapper>
       );
@@ -165,65 +138,43 @@ function SettingsPage(props: Props) {
   function renderPaths() {
     return pathsList.map((path, index) => {
       const isSelected = selectedPath === path.label;
-      const option = (
-        <SelectOption>
-          {isSelected && (
-            <OptionStatus>
-              <Check
-                style={{
-                  fill: 'red', // theme.colors.blue1,
-                  height: ms(1.5),
-                  width: ms(1.5)
-                }}
-              />
-            </OptionStatus>
-          )}
+      return (
+        <ItemWrapper key={index} value={path.label}>
+          {isSelected && <CheckIcon />}
           <OptionLabel isActive={isSelected}>
             <NodeName>{path.label}</NodeName>
             <NodeUrl>{path.derivation}</NodeUrl>{' '}
           </OptionLabel>
-        </SelectOption>
-      );
-      return (
-        <ItemWrapper key={index} value={path.label}>
-          {option}
           {path.label !== 'Default' && (
-            <RemoveIconWrapper onClick={event => onRemovePath(event, path.label)}>
-              <RemoveIcon />
-            </RemoveIconWrapper>
+            <RemoveIconBtn aria-label="delete" onClick={event => onRemovePath(event, path.label)}>
+              <Close />
+            </RemoveIconBtn>
           )}
         </ItemWrapper>
       );
     });
   }
 
+  const backTitle = isPathChanged
+    ? t('containers.homeSettings.back_to_login')
+    : t('containers.homeSettings.back_to_wallet');
+
   return (
     <Container>
-      <BackToWallet
-        onClick={() => {
-          if (isPathChanged) {
-            // goHomeAndClearState();
-          } else {
-            // goBack();
-            // syncWallet();
-          }
-        }}
-      >
-        <BackCaret
-          style={{
-            fill: '#4486f0',
-            height: '28px',
-            width: '28px',
-            marginRight: '5px',
-            marginLeft: '-9px'
+      <BackButtonContainer>
+        <BackButton
+          label={backTitle}
+          onClick={() => {
+            history.goBack();
+            // if (isPathChanged) {
+            //   // goHomeAndClearState();
+            // } else {
+            //   // goBack();
+            //   // syncWallet();
+            // }
           }}
         />
-        <span>
-          {isPathChanged
-            ? t('containers.homeSettings.back_to_login')
-            : t('containers.homeSettings.back_to_wallet')}
-        </span>
-      </BackToWallet>
+      </BackButtonContainer>
       <H2>{t('containers.homeSettings.general_settings')}</H2>
 
       <Content6>
@@ -244,32 +195,27 @@ function SettingsPage(props: Props) {
               value={selectedNode}
               onChange={event => {
                 const newValue = event.target.value;
-                if (newValue !== 'add-more') {
-                  changeNode(newValue);
-                } else {
+                if (newValue === 'add-more') {
                   setIsNodeModalOpen(true);
+                  return true;
                 }
+                if (newValue !== selectedPath) {
+                  // todo syncwallet
+                  setIsPathChanged(true);
+                  changeNode(newValue);
+                  return true;
+                }
+                return true;
               }}
-              // renderValue={value => {
-              //   const url = getNodeUrl(conseilNodes, value);
-              //   return (
-              //     <SelectRenderWrapper>
-              //       <span>{value} </span>
-              //       <NodeUrlSpan>({url})</NodeUrlSpan>
-              //     </SelectRenderWrapper>
-              //   );
-              // }}
+              renderValue={value => (
+                <SelectRenderWrapper>
+                  <span>{value}</span>
+                </SelectRenderWrapper>
+              )}
             >
               {renderNodes()}
               <ItemWrapper value="add-more">
-                <AddCircle
-                  style={{
-                    fill: '#7B91C0',
-                    height: ms(1),
-                    width: ms(1),
-                    marginRight: '10px'
-                  }}
-                />
+                <AddIcon />
                 {t('containers.homeSettings.add_custom_node')}
               </ItemWrapper>
             </CustomSelect>
@@ -279,7 +225,7 @@ function SettingsPage(props: Props) {
 
       <AddNodeModal
         isOpen={isNodeModalOpen}
-        onAdd={newNode => addNode(newNode)}
+        onAdd={newNode => onAddNode(newNode)}
         onClose={() => setIsNodeModalOpen(false)}
       />
 
@@ -299,8 +245,8 @@ function SettingsPage(props: Props) {
                   return true;
                 }
                 if (newValue !== selectedPath) {
-                  // this.onChangedDerivationPath();
-                  // this.handlePathChange(newValue);
+                  setIsPathChanged(true);
+                  changePath(newValue);
                   return true;
                 }
                 return true;
@@ -317,14 +263,7 @@ function SettingsPage(props: Props) {
             >
               {renderPaths()}
               <ItemWrapper value="add-more">
-                <AddCircle
-                  style={{
-                    fill: '#7B91C0',
-                    height: ms(1),
-                    width: ms(1),
-                    marginRight: '10px'
-                  }}
-                />
+                <AddIcon />
                 {t('containers.homeSettings.add_derivation_path')}
               </ItemWrapper>
             </CustomSelect>
@@ -335,7 +274,7 @@ function SettingsPage(props: Props) {
       <AddPathModal
         isOpen={isPathModalOpen}
         onClose={() => setIsPathModalOpen(false)}
-        onAdd={newPath => addPath(newPath)}
+        onAdd={newPath => onAddPath(newPath)}
       />
     </Container>
   );

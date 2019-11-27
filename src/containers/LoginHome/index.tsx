@@ -9,11 +9,7 @@ import Checkbox from '../../components/Checkbox/';
 import TermsModal from '../../components/TermsModal';
 import LanguageSelectModal from '../../components/LanguageSelectModal';
 import { name } from '../../config.json';
-// import { setLocale, fetchNetwork } from '../../reduxContent/settings/thunks';
-// import {
-//   getLocale,
-//   getActivePath
-// } from '../../reduxContent/settings/selectors';
+import { setLocalData, getLocalData } from '../../utils/localData';
 // import { connectLedger } from '../../reduxContent/wallet/thunks';
 
 import {
@@ -57,8 +53,8 @@ import keystoreImg from '../../../resources/imgs/Keystore.svg';
 import ledgerUnconnectedImg from '../../../resources/ledger-unconnected.svg';
 import ledgerConnectedImg from '../../../resources/ledger-connect.svg';
 
-const LANGUAGE_STORAGE = 'isShowedSelecteLanguageScene';
-const AGREEMENT_STORAGE = 'isTezosTermsAndPolicyAgreementAccepted';
+const LANGUAGE_STORAGE = 'isShowedLanguageScene';
+const AGREEMENT_STORAGE = 'isPPAccepted';
 
 interface OwnProps {
   locale: string;
@@ -71,26 +67,17 @@ function LoginHome(props: Props) {
   const history = useHistory();
   const { locale, match, isLedgerConnecting, activePath, t } = props;
   const [selectedLanguage, setSelectedLanguage] = useState(locale);
-  const [isAgreement, setIsAgreement] = useState(() => {
-    const agreement = localStorage.getItem(AGREEMENT_STORAGE);
-    return agreement ? JSON.parse(agreement) : false;
-  });
+  const [isAgreement, setIsAgreement] = useState(() => getLocalData(AGREEMENT_STORAGE));
 
-  const [isLanguageSelected, setIsLanguageSelected] = useState(() => {
-    const languageStorage = localStorage.getItem(LANGUAGE_STORAGE);
-    return languageStorage ? JSON.parse(languageStorage) : false;
-  });
+  const [isLanguageSelected, setIsLanguageSelected] = useState(() =>
+    getLocalData(LANGUAGE_STORAGE)
+  );
 
   const ledgerImg = isLedgerConnecting ? ledgerConnectedImg : ledgerUnconnectedImg;
 
-  // componentDidMount = () => {
-  //   const { fetchNetwork } = this.props;
-  //   fetchNetwork();
-  // };
-
   function updateStatusAgreement() {
     setIsAgreement(!isAgreement);
-    localStorage.setItem(AGREEMENT_STORAGE, String(!isAgreement));
+    setLocalData(AGREEMENT_STORAGE, !isAgreement);
   }
 
   function onChangeLanguage(lang: string) {
@@ -102,7 +89,7 @@ function LoginHome(props: Props) {
 
   function goToTermsModal() {
     setIsLanguageSelected(!isLanguageSelected);
-    localStorage.setItem(LANGUAGE_STORAGE, String(!isLanguageSelected));
+    setLocalData(LANGUAGE_STORAGE, !isLanguageSelected);
   }
 
   function goToLanguageSelect() {

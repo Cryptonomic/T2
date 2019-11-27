@@ -1,4 +1,5 @@
 import { remote } from 'electron';
+import { getWalletSettings } from '../../utils/settings';
 import {
   CHANGE_LOCALE,
   CHANGE_NODE,
@@ -14,16 +15,18 @@ import {
 
 import { SettingsState } from '../../types/store';
 
-const initState: SettingsState = {
-  locale: remote.app.getLocale(),
+const baseDefaults: SettingsState = {
+  locale: 'en-US',
   selectedNode: '',
   nodesList: [],
   delegateTooltip: false,
   selectedPath: '',
   pathsList: []
 };
+const walletSettings = getWalletSettings();
+const initialState = { ...baseDefaults, ...walletSettings };
 
-export function settingsReducer(state = initState, action: SettingsActionTypes): SettingsState {
+export function settingsReducer(state = initialState, action: SettingsActionTypes): SettingsState {
   switch (action.type) {
     case CHANGE_LOCALE: {
       return { ...state, locale: action.locale };
@@ -32,21 +35,35 @@ export function settingsReducer(state = initState, action: SettingsActionTypes):
       return { ...state, selectedNode: action.name };
     }
     case ADD_NODE: {
-      return { ...state, nodesList: [...state.nodesList, action.node] };
+      const selectedNode = action.node.displayName;
+      return { ...state, selectedNode, nodesList: [...state.nodesList, action.node] };
     }
     case REMOVE_NODE: {
       const nodesList = state.nodesList.filter(item => item.displayName !== action.name);
-      return { ...state, nodesList: [...nodesList] };
+      let selectedNode = '';
+      if (action.name === state.selectedNode) {
+        selectedNode = nodesList[nodesList.length - 1].displayName;
+      } else {
+        selectedNode = state.selectedNode;
+      }
+      return { ...state, nodesList: [...nodesList], selectedNode };
     }
     case CHANGE_PATH: {
       return { ...state, selectedPath: action.label };
     }
     case ADD_PATH: {
-      return { ...state, pathsList: [...state.pathsList, action.path] };
+      const selectedPath = action.path.label;
+      return { ...state, selectedPath, pathsList: [...state.pathsList, action.path] };
     }
     case REMOVE_PATH: {
       const pathsList = state.pathsList.filter(item => item.label !== action.label);
-      return { ...state, pathsList: [...pathsList] };
+      let selectedPath = '';
+      if (action.label === state.selectedPath) {
+        selectedPath = pathsList[pathsList.length - 1].label;
+      } else {
+        selectedPath = state.selectedPath;
+      }
+      return { ...state, pathsList: [...pathsList], selectedPath };
     }
     default:
       return state;
