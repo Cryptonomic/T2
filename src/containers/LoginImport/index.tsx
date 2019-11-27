@@ -9,7 +9,6 @@ import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 
 import BackButton from '../../components/BackButton';
-// import Button from '../../components/Button/';
 import Loader from '../../components/Loader';
 import PasswordInput from '../../components/PasswordInput';
 import { IMPORT } from '../../constants/CreationTypes';
@@ -33,11 +32,15 @@ const WalletContainers = styled.div`
   min-width: 500px;
 `;
 
+export const BackButtonContainer = styled.div`
+  margin-bottom: 16px;
+`;
+
 const WalletTitle = styled.h3`
   color: #1a325f;
   font-size: 36px;
   font-weight: 300;
-  margin: 1rem 0 1.7rem 0;
+  margin: 0 0 1.7rem 0;
 `;
 
 const ImportButtonContainer = styled.div`
@@ -121,7 +124,9 @@ function LoginImport(props: Props) {
     <CreateContainer onKeyDown={event => onEnterPress(event.key, isDisabled)}>
       {isLoading && <Loader />}
       <WalletContainers>
-        <BackButton />
+        <BackButtonContainer>
+          <BackButton label={t('general.back')} />
+        </BackButtonContainer>
         <WalletTitle>{t('containers.loginImport.open_wallet_label')}</WalletTitle>
         <ImportButtonContainer>
           <SelectBtn size="small" color="secondary" variant="outlined" onClick={openFile}>

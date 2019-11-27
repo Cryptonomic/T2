@@ -1,6 +1,8 @@
 import styled, { css } from 'styled-components';
 import MenuItem from '@material-ui/core/MenuItem';
-import Close from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
+import AddCircle from '@material-ui/icons/AddCircle';
+import Check from '@material-ui/icons/Check';
 
 import { ms } from '../../styles/helpers';
 
@@ -10,12 +12,8 @@ export const Container = styled.div`
   padding: ${ms(3)} ${ms(4)};
 `;
 
-export const BackToWallet = styled.div`
-  display: flex;
-  align-items: center;
-  color: #4486f0;
-  cursor: pointer;
-  margin-bottom: 2.5rem;
+export const BackButtonContainer = styled.div`
+  margin-bottom: 30px;
 `;
 
 export const Content = styled.div`
@@ -51,18 +49,6 @@ export const Part = styled.div`
   width: 48%;
 `;
 
-export const SelectOption = styled.div`
-  ${RowCss};
-  padding: 10px 0px;
-`;
-
-export const OptionStatus = styled.div`
-  ${RowCss};
-  flex-direction: column;
-  align-items: center;
-  width: 24px;
-`;
-
 export const OptionLabel = styled.div<{ isActive: boolean }>`
   ${RowCss};
   flex-direction: column;
@@ -92,10 +78,12 @@ export const NodeUrlSpan = styled(NodeUrl)`
 
 export const ItemWrapper = styled(MenuItem)`
   &&& {
-    &[class*='selected'] {
+    &.Mui-selected {
       color: ${({ theme: { colors } }) => colors.primary};
     }
-    width: 100%;
+    position: relative;
+    padding: 0 16px 0 37px;
+    height: 48px;
     font-size: 16px;
     font-weight: 300;
     background-color: ${({ value, theme: { colors } }) =>
@@ -109,14 +97,31 @@ export const SelectRenderWrapper = styled.div`
   text-overflow: ellipsis;
 `;
 
-export const RemoveIconWrapper = styled.span`
-  margin-right: 30px;
-  margin-left: auto;
+export const RemoveIconBtn = styled(IconButton)`
+  &&& {
+    color: #d3d3d3;
+    margin-left: auto;
+    &:hover {
+      color: ${({ theme: { colors } }) => colors.accent};
+    }
+  }
 `;
 
-export const RemoveIcon = styled(Close)`
-  color: #d3d3d3;
-  &:hover {
-    color: ${({ theme: { colors } }) => colors.accent};
+export const AddIcon = styled(AddCircle)`
+  &&& {
+    fill: ${({ theme: { colors } }) => colors.secondary};
+    height: 19px;
+    width: 19px;
+    margin-right: 10px;
+  }
+`;
+
+export const CheckIcon = styled(Check)`
+  &&& {
+    fill: ${({ theme: { colors } }) => colors.blue1};
+    height: 21px;
+    width: 21px;
+    position: absolute;
+    left: 16px;
   }
 `;

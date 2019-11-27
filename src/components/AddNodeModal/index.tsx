@@ -173,9 +173,4 @@ function AddNodeModal(props: Props) {
   );
 }
 
-const mapDispatchToProps = dispatch => ({
-  // addNode: () => dispatch(goHomeAndClearState()),
-  // setSelected,
-});
-
 export default withTranslation()(AddNodeModal);

@@ -7,8 +7,7 @@ import {
   addPathAction,
   removePathAction
 } from './actions';
-
-import { setWalletSettings } from '../../utils/settings';
+import { setLocalData } from '../../utils/localData';
 import { Node, Path } from '../../types/general';
 // export function hideDelegateTooltip(boolean) {
 //   return (dispatch, state) => {
@@ -20,48 +19,52 @@ import { Node, Path } from '../../types/general';
 export function changeLocaleThunk(locale: string) {
   return (dispatch, state) => {
     dispatch(changeLocaleAction(locale));
-    setWalletSettings(state.settings);
+    setLocalData('settings.locale', locale);
   };
 }
 
 export function changeNodeThunk(name: string) {
   return (dispatch, state) => {
     dispatch(changeNodeAction(name));
-    setWalletSettings(state.settings);
+    setLocalData('settings.selectedNode', name);
   };
 }
 
 export function addNodeThunk(node: Node) {
   return (dispatch, state) => {
     dispatch(addNodeAction(node));
-    setWalletSettings(state.settings);
+    setLocalData('settings.nodesList', state.settings.nodesList);
+    setLocalData('settings.selectedNode', state.settings.selectedNode);
   };
 }
 
 export function removeNodeThunk(name: string) {
   return (dispatch, state) => {
     dispatch(removeNodeAction(name));
-    setWalletSettings(state.settings);
+    setLocalData('settings.nodesList', state.settings.nodesList);
+    setLocalData('settings.selectedNode', state.settings.selectedNode);
   };
 }
 
 export function changePathThunk(label: string) {
   return (dispatch, state) => {
     dispatch(changePathAction(label));
-    setWalletSettings(state.settings);
+    setLocalData('settings.selectedPath', label);
   };
 }
 
 export function addPathThunk(path: Path) {
   return (dispatch, state) => {
     dispatch(addPathAction(path));
-    setWalletSettings(state.settings);
+    setLocalData('settings.pathsList', state.settings.pathsList);
+    setLocalData('settings.selectedPath', state.settings.selectedPath);
   };
 }
 
 export function removePathThunk(label: string) {
   return (dispatch, state) => {
     dispatch(removePathAction(label));
-    setWalletSettings(state.settings);
+    setLocalData('settings.pathsList', state.settings.pathsList);
+    setLocalData('settings.selectedPath', state.settings.selectedPath);
   };
 }

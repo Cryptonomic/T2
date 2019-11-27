@@ -5,7 +5,6 @@ import { remote } from 'electron';
 import path from 'path';
 import zxcvbn from 'zxcvbn';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 
 import { ms } from '../../styles/helpers';
 import { CREATE } from '../../constants/CreationTypes';
@@ -16,6 +15,7 @@ import BackButton from '../../components/BackButton';
 import createFileEmptyIcon from '../../../resources/createFileEmpty.svg';
 
 import {
+  BackButtonContainer,
   WalletFileName,
   CheckIcon,
   CreateFileSelector,
@@ -23,7 +23,6 @@ import {
   WalletContainers,
   WalletTitle,
   WalletDescription,
-  ActionButtonContainer,
   ActionButton,
   FormContainer,
   PasswordsContainer,
@@ -43,7 +42,6 @@ type Props = WithTranslation & OwnProps;
 const dialogFilters = [{ name: 'Tezos Wallet', extensions: ['tezwallet'] }];
 
 function LoginCreate(props: Props) {
-  const history = useHistory();
   const { t, isLoading, login } = props;
   const [walletLocation, setWalletLocation] = useState('');
   const [walletFileName, setWalletFileName] = useState('');
@@ -58,10 +56,6 @@ function LoginCreate(props: Props) {
   const [pwdSuggestion, setPwdSuggestion] = useState('');
   const [confirmPwdScore, setConfirmPwdScore] = useState(0);
   const [confirmPwdText, setConfirmPwdText] = useState('');
-
-  function goBack() {
-    history.goBack();
-  }
 
   function saveFile(event) {
     if (event.detail === 0 && walletLocation && walletFileName) {
@@ -134,14 +128,12 @@ function LoginCreate(props: Props) {
     setConfirmPassword(pwd);
   }
 
-  // login = async loginType => {
-  //   const { walletLocation, walletFileName, password } = this.state;
-  //   const { login, setIsLoading } = this.props;
-  //   await setIsLoading(true);
-  //   await setTimeout(() => {
-  //     login(loginType, walletLocation, walletFileName, password);
-  //   }, 1);
-  // };
+  function onLogin(loginType: string) {
+    // await setIsLoading(true);
+    // await setTimeout(() => {
+    //   login(loginType, walletLocation, walletFileName, password);
+    // }, 1);
+  }
 
   function onPasswordShow(index: number) {
     if (index === 1) {
@@ -173,9 +165,11 @@ function LoginCreate(props: Props) {
 
   return (
     <CreateContainer onKeyDown={event => onEnterPress(event.key, isDisabled)}>
-      {/* {isLoading && <Loader />} */}
       <WalletContainers>
-        <BackButton />
+        <BackButtonContainer>
+          <BackButton label={t('general.back')} />
+        </BackButtonContainer>
+
         <WalletTitle>{t('containers.loginCreate.create_wallet_title')}</WalletTitle>
         <WalletDescription>
           {t('containers.loginCreate.create_wallet_description')}
@@ -184,9 +178,10 @@ function LoginCreate(props: Props) {
           <CreateFileSelector>
             {getWalletFileSection()}
             <CreateFileButton
-              buttonTheme="secondary"
-              // onClick={evt => saveFile(evt)}
-              small={true}
+              size="small"
+              color="secondary"
+              variant="outlined"
+              onClick={evt => saveFile(evt)}
             >
               {t('containers.loginCreate.create_new_wallet_btn')}
             </CreateFileButton>
@@ -212,15 +207,14 @@ function LoginCreate(props: Props) {
             />
           </PasswordsContainer>
         </FormContainer>
-        <ActionButtonContainer>
-          <ActionButton
-            buttonTheme="primary"
-            // onClick={() => this.login(CREATE)}
-            disabled={isDisabled}
-          >
-            {t('containers.loginCreate.create_wallet_btn')}
-          </ActionButton>
-        </ActionButtonContainer>
+        <ActionButton
+          onClick={() => onLogin(CREATE)}
+          color="secondary"
+          variant="extended"
+          disabled={isDisabled}
+        >
+          {t('containers.loginCreate.create_wallet_btn')}
+        </ActionButton>
       </WalletContainers>
     </CreateContainer>
   );
