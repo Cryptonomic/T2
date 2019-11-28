@@ -1,16 +1,20 @@
-import { Path, Node } from './general';
-export interface WalletState {
-  identities: any[];
+import { Path, Node, NodeStatus } from './general';
+
+export interface AppState {
   isLoading: boolean;
   isWalletSyncing: boolean;
-  walletFileName: string;
-  walletLocation: string;
-  password: string;
-  nodesStatus: any;
+  nodesStatus: NodeStatus;
   time: any;
   isLedger: boolean;
   isLedgerConnecting: boolean;
   newVersion: string;
+  selectedAccountHash: string;
+}
+export interface WalletState {
+  identities: any[];
+  walletFileName: string;
+  walletLocation: string;
+  password: string;
 }
 
 export interface MessageState {
@@ -34,4 +38,5 @@ export interface RootState {
   wallet: WalletState;
   message: MessageState;
   settings: SettingsState;
+  app: AppState;
 }

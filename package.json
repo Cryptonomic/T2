@@ -152,6 +152,7 @@
     "i18next-electron-language-detector": "0.0.10",
     "i18next-xhr-backend": "^3.2.2",
     "immutable": "^4.0.0-rc.12",
+    "lodash": "^4.17.15",
     "polished": "^3.4.1",
     "rc-tooltip": "^3.7.3",
     "react": "^16.9.0",

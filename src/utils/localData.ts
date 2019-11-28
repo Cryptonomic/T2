@@ -22,6 +22,24 @@ const schema = {
       default: []
     }
   },
+  wallet: {
+    identities: {
+      type: 'array',
+      default: []
+    },
+    walletFileName: {
+      type: 'string',
+      default: ''
+    },
+    walletLocation: {
+      type: 'string',
+      default: ''
+    },
+    password: {
+      type: 'string',
+      default: ''
+    }
+  },
   isShowedLanguageScene: {
     type: 'boolean',
     default: false

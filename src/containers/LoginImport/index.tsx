@@ -12,8 +12,7 @@ import BackButton from '../../components/BackButton';
 import Loader from '../../components/Loader';
 import PasswordInput from '../../components/PasswordInput';
 import { IMPORT } from '../../constants/CreationTypes';
-// import { login } from '../../reduxContent/wallet/thunks';
-import { setIsLoading } from '../../reduxContent/wallet/actions';
+import { loginThunk } from '../../reduxContent/wallet/thunks';
 
 import { RootState } from '../../types/store';
 
@@ -71,7 +70,7 @@ const ActionButton = styled(Fab)`
 `;
 
 interface OwnProps {
-  login: () => void;
+  login: (loginType: string, location: string, fileName: string, password: string) => void;
   isLoading: boolean;
 }
 
@@ -108,13 +107,12 @@ function LoginImport(props: Props) {
   }
 
   async function onLogin(loginType: string) {
-    // await setIsLoading(true);
-    // await login(loginType, walletLocation, walletFileName, password);
+    await login(loginType, walletLocation, walletFileName, password);
   }
 
   function onEnterPress(keyVal: string, disabled: boolean) {
     if (keyVal === 'Enter' && !disabled) {
-      // this.login(IMPORT);
+      onLogin(IMPORT);
     }
   }
 
@@ -155,13 +153,12 @@ function LoginImport(props: Props) {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  isLoading: state.wallet.isLoading
+  isLoading: state.app.isLoading
 });
 
 const mapDispatchToProps = dispatch => ({
-  // setIsLoading: () => dispatch(goHomeAndClearState()),
-  // login,
-  // goBack
+  login: (loginType: string, location: string, fileName: string, password: string) =>
+    dispatch(loginThunk(loginType, location, fileName, password))
 });
 
 export default compose(

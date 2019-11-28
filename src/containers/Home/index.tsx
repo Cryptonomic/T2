@@ -83,9 +83,9 @@ class HomePage extends Component<Props> {
 
 const mapStateToProps = (state: RootState) => ({
   identities: state.wallet.identities,
-  isLoading: state.wallet.isLoading,
-  isLedger: state.wallet.isLedger,
-  newVersion: state.wallet.newVersion
+  isLoading: state.app.isLoading,
+  isLedger: state.app.isLedger,
+  newVersion: state.app.newVersion
 });
 
 const mapDispatchToProps = dispatch => ({
