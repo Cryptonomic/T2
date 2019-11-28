@@ -8,8 +8,7 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 
 import { ms } from '../../styles/helpers';
 import { CREATE } from '../../constants/CreationTypes';
-// import { login } from '../../reduxContent/wallet/thunks';
-import { setIsLoading } from '../../reduxContent/wallet/actions';
+import { loginThunk } from '../../reduxContent/wallet/thunks';
 import ValidInput from '../../components/ValidInput';
 import BackButton from '../../components/BackButton';
 import createFileEmptyIcon from '../../../resources/createFileEmpty.svg';
@@ -33,7 +32,7 @@ import {
 import { RootState } from '../../types/store';
 
 interface OwnProps {
-  login: () => {};
+  login: (loginType: string, location: string, fileName: string, password: string) => void;
   isLoading: boolean;
 }
 
@@ -129,10 +128,7 @@ function LoginCreate(props: Props) {
   }
 
   function onLogin(loginType: string) {
-    // await setIsLoading(true);
-    // await setTimeout(() => {
-    //   login(loginType, walletLocation, walletFileName, password);
-    // }, 1);
+    login(loginType, walletLocation, walletFileName, password);
   }
 
   function onPasswordShow(index: number) {
@@ -145,7 +141,7 @@ function LoginCreate(props: Props) {
 
   function onEnterPress(keyVal: string, disabled: boolean) {
     if (keyVal === 'Enter' && !disabled) {
-      // this.login(CREATE);
+      onLogin(CREATE);
     }
   }
   function getWalletFileSection() {
@@ -221,13 +217,12 @@ function LoginCreate(props: Props) {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  isLoading: state.wallet.isLoading
+  isLoading: state.app.isLoading
 });
 
 const mapDispatchToProps = dispatch => ({
-  // setIsLoading: () => dispatch(goHomeAndClearState()),
-  // login,
-  // goBack
+  login: (loginType: string, location: string, fileName: string, password: string) =>
+    dispatch(loginThunk(loginType, location, fileName, password))
 });
 
 export default compose(

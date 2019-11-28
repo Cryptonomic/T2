@@ -10,6 +10,7 @@ import TermsModal from '../../components/TermsModal';
 import LanguageSelectModal from '../../components/LanguageSelectModal';
 import { name } from '../../config.json';
 import { setLocalData, getLocalData } from '../../utils/localData';
+import { changeLocaleThunk } from '../../reduxContent/settings/thunks';
 // import { connectLedger } from '../../reduxContent/wallet/thunks';
 
 import {
@@ -60,15 +61,14 @@ interface OwnProps {
   locale: string;
   isLedgerConnecting: boolean;
   activePath: string;
+  changeLocale: (locale: string) => void;
 }
 type Props = OwnProps & WithTranslation & RouteComponentProps<{ path: string }>;
 
 function LoginHome(props: Props) {
   const history = useHistory();
-  const { locale, match, isLedgerConnecting, activePath, t } = props;
-  const [selectedLanguage, setSelectedLanguage] = useState(locale);
+  const { locale, match, isLedgerConnecting, activePath, changeLocale, t } = props;
   const [isAgreement, setIsAgreement] = useState(() => getLocalData(AGREEMENT_STORAGE));
-
   const [isLanguageSelected, setIsLanguageSelected] = useState(() =>
     getLocalData(LANGUAGE_STORAGE)
   );
@@ -81,9 +81,7 @@ function LoginHome(props: Props) {
   }
 
   function onChangeLanguage(lang: string) {
-    setSelectedLanguage(lang);
-    // const { setLocale } = this.props;
-    // setLocale(lang);
+    changeLocale(lang);
     i18n.changeLanguage(lang);
   }
 
@@ -93,7 +91,7 @@ function LoginHome(props: Props) {
   }
 
   function goToLanguageSelect() {
-    localStorage.setItem(LANGUAGE_STORAGE, String(!isLanguageSelected));
+    setLocalData(LANGUAGE_STORAGE, !isLanguageSelected);
     setIsLanguageSelected(!isLanguageSelected);
   }
 
@@ -213,7 +211,7 @@ function LoginHome(props: Props) {
       <LanguageSelectModal
         isOpen={!isLanguageSelected}
         onLanguageChange={onChangeLanguage}
-        selectedLanguage={selectedLanguage}
+        selectedLanguage={locale}
         onContinue={() => goToTermsModal()}
       />
       <TermsModal
@@ -235,12 +233,12 @@ function LoginHome(props: Props) {
 
 const mapStateToProps = (state: RootState) => ({
   locale: state.settings.locale,
-  isLedgerConnecting: state.wallet.isLedgerConnecting,
+  isLedgerConnecting: state.app.isLedgerConnecting,
   activePath: state.settings.selectedPath // todo
 });
 
 const mapDispatchToProps = dispatch => ({
-  // setLocale: () => dispatch(goHomeAndClearState()),
+  changeLocale: (locale: string) => dispatch(changeLocaleThunk(locale))
   // connectLedger,
   // fetchNetwork
 });

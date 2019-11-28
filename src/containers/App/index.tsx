@@ -26,11 +26,12 @@ interface Props {
   newVersion: string;
   isLoading: boolean;
   walletName: string;
+  isLedger: boolean;
 }
 
 function App(props: Props) {
-  const { wallet, newVersion, isLoading, walletName } = props;
-  const isLoggedIn = getLoggedIn(wallet);
+  const { wallet, newVersion, isLoading, walletName, isLedger } = props;
+  const isLoggedIn = getLoggedIn(wallet, isLedger);
   return (
     <Container>
       <TopBar walletName={walletName} isLoggedIn={isLoggedIn} isExtended={!!newVersion} />
@@ -75,9 +76,10 @@ function App(props: Props) {
 
 const mapStateToProps = (state: RootState) => ({
   wallet: state.wallet,
-  newVersion: state.wallet.newVersion,
-  isLoading: state.wallet.isLoading,
-  walletName: getWalletName(state)
+  newVersion: state.app.newVersion,
+  isLoading: state.app.isLoading,
+  walletName: getWalletName(state),
+  isLedger: state.app.isLedger
 });
 
 export default connect(

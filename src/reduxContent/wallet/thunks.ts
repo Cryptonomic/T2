@@ -1,4 +1,4 @@
-// import path from 'path';
+import path from 'path';
 import { push } from 'react-router-redux';
 import {
   TezosFileWallet,
@@ -7,8 +7,8 @@ import {
   TezosNodeWriter,
   StoreType
 } from 'conseiljs';
-// import { addMessage } from '../../reduxContent/message/thunks';
-// import { CREATE, IMPORT } from '../../constants/CreationTypes';
+import { createMessageAction } from '../../reduxContent/message/actions';
+import { CREATE, IMPORT } from '../../constants/CreationTypes';
 // import {
 //   FUNDRAISER,
 //   GENERATE_MNEMONIC,
@@ -24,45 +24,48 @@ import {
 //   syncAccountWithState
 // } from '../../utils/account';
 
-// import {
-//   findIdentity,
-//   findIdentityIndex,
-//   createIdentity,
-//   getSyncIdentity,
-//   syncIdentityWithState
-// } from '../../utils/identity';
-
-// import {
-//   clearOperationId,
-//   getNodesStatus,
-//   getNodesError,
-//   getSelectedKeyStore
-// } from '../../utils/general';
-
-// import {
-//   saveUpdatedWallet,
-//   loadPersistedState,
-//   persistWalletState,
-//   loadWalletFromLedger
-// } from '../../utils/wallet';
+import {
+  // findIdentity,
+  // findIdentityIndex,
+  createIdentity,
+  getSyncIdentity,
+  syncIdentityWithState
+} from '../../utils/identity';
 
 import {
-  logout,
-  setWallet,
-  setIsLoading,
-  setWalletIsSyncing,
-  setIdentities,
-  setNodesStatus,
-  addNewIdentity,
-  updateIdentity,
-  updateFetchedTime,
-  setLedger,
-  setIsLedgerConnecting
+  // clearOperationId,
+  getNodesStatus,
+  getNodesError
+  // getSelectedKeyStore
+} from '../../utils/general';
+
+import {
+  // saveUpdatedWallet,
+  loadPersistedState,
+  persistWalletState
+  // loadWalletFromLedger
+} from '../../utils/wallet';
+
+import {
+  setWalletAction,
+  setIdentitiesAction,
+  addNewIdentityAction,
+  updateIdentityAction
 } from './actions';
 
-// import { getSelectedNode } from '../../utils/nodes';
-// import { getCurrentPath } from '../../utils/paths';
+import {
+  logoutAction,
+  setIsLoadingAction,
+  setWalletIsSyncingAction,
+  setNodesStatusAction,
+  updateFetchedTimeAction,
+  setLedgerAction,
+  setIsLedgerConnectingAction
+} from '../app/actions';
+
+import { getMainNode } from '../../utils/settings';
 import { ACTIVATION } from '../../constants/TransactionTypes';
+import { WalletState } from '../../types/store';
 
 const { unlockFundraiserIdentity, unlockIdentityWithMnemonic } = TezosWalletUtil;
 const { createWallet } = TezosFileWallet;
@@ -70,33 +73,33 @@ const { createWallet } = TezosFileWallet;
 const { getAccount } = TezosConseilClient;
 
 const { sendIdentityActivationOperation } = TezosNodeWriter;
-const currentAccountRefreshInterval: any = null;
+let currentAccountRefreshInterval: any = null;
 
 export function goHomeAndClearState() {
   return dispatch => {
-    dispatch(logout());
+    dispatch(logoutAction());
     clearAutomaticAccountRefresh();
     dispatch(push('/'));
   };
 }
 
-// export function automaticAccountRefresh() {
-//   return dispatch => {
-//     const oneSecond = 1000; // milliseconds
-//     const oneMinute = 60 * oneSecond;
-//     const minutes = 1;
-//     const REFRESH_INTERVAL = minutes * oneMinute;
+export function automaticAccountRefresh() {
+  return dispatch => {
+    const oneSecond = 1000; // milliseconds
+    const oneMinute = 60 * oneSecond;
+    const minutes = 1;
+    const REFRESH_INTERVAL = minutes * oneMinute;
 
-//     if (currentAccountRefreshInterval) {
-//       clearAutomaticAccountRefresh();
-//     }
+    if (currentAccountRefreshInterval) {
+      clearAutomaticAccountRefresh();
+    }
 
-//     currentAccountRefreshInterval = setInterval(
-//       () => dispatch(syncWallet()),
-//       REFRESH_INTERVAL
-//     );
-//   };
-// }
+    currentAccountRefreshInterval = setInterval(
+      () => dispatch(syncWalletThunk()),
+      REFRESH_INTERVAL
+    );
+  };
+}
 
 export function clearAutomaticAccountRefresh() {
   clearInterval(currentAccountRefreshInterval);
@@ -242,73 +245,61 @@ export function clearAutomaticAccountRefresh() {
 //   };
 // }
 
-// export function syncWallet() {
-//   return async (dispatch, state) => {
-//     dispatch(setWalletIsSyncing(true));
-//     const settings = state().settings.toJS();
-//     const { network } = settings;
-//     const isLedger = state().wallet.get('isLedger');
+export function syncWalletThunk() {
+  return async (dispatch, state) => {
+    dispatch(setWalletIsSyncingAction(true));
+    const { selectedNode, nodesList } = state().settings;
+    const { selectedAccountHash } = state().app;
 
-//     const nodesStatus = await getNodesStatus(settings, network);
-//     dispatch(setNodesStatus(nodesStatus));
-//     const res = getNodesError(nodesStatus);
-//     console.log('-debug: res, nodesStatus', res, nodesStatus);
+    const mainNode = getMainNode(nodesList, selectedNode);
 
-//     if (getNodesError(nodesStatus)) {
-//       dispatch(setWalletIsSyncing(false));
-//       return false;
-//     }
+    const nodesStatus = await getNodesStatus(mainNode);
+    dispatch(setNodesStatusAction(nodesStatus));
+    const res = getNodesError(nodesStatus);
+    console.log('-debug: res, nodesStatus', res, nodesStatus);
 
-//     let stateIdentities = state()
-//       .wallet.get('identities')
-//       .toJS();
+    if (res) {
+      dispatch(setWalletIsSyncingAction(false));
+      return false;
+    }
 
-//     const syncIdentities = await Promise.all(
-//       (stateIdentities || []).map(async identity => {
-//         const { publicKeyHash } = identity;
+    const { identities } = state().wallet;
+    const syncIdentities: any[] = await Promise.all(
+      (identities || []).map(async identity => {
+        const { publicKeyHash } = identity;
+        const syncIdentity = await getSyncIdentity(identity, mainNode, selectedAccountHash).catch(
+          e => {
+            console.log(`-debug: Error in: syncIdentity for: ${publicKeyHash}`);
+            console.error(e);
+            return identity;
+          }
+        );
+        return syncIdentity;
+      })
+    );
 
-//         const syncIdentity = await getSyncIdentity(
-//           stateIdentities,
-//           identity,
-//           settings,
-//           isLedger,
-//           network
-//         ).catch(e => {
-//           console.log(`-debug: Error in: syncIdentity for: ${publicKeyHash}`);
-//           console.error(e);
-//           return identity;
-//         });
-//         return syncIdentity;
-//       })
-//     );
+    const newIdentities = identities.filter(stateIdentity => {
+      const syncIdentityIndex = syncIdentities.findIndex(
+        syncIdentity => stateIdentity.publicKeyHash === syncIdentity.publicKeyHash
+      );
 
-//     stateIdentities = state()
-//       .wallet.get('identities')
-//       .toJS();
+      if (syncIdentityIndex > -1) {
+        syncIdentities[syncIdentityIndex] = syncIdentityWithState(
+          syncIdentities[syncIdentityIndex],
+          stateIdentity
+        );
+        return false;
+      }
 
-//     const newIdentities = stateIdentities.filter(stateIdentity => {
-//       const syncIdentityIndex = syncIdentities.findIndex(
-//         syncIdentity =>
-//           stateIdentity.publicKeyHash === syncIdentity.publicKeyHash
-//       );
+      return true;
+    });
 
-//       if (syncIdentityIndex > -1) {
-//         syncIdentities[syncIdentityIndex] = syncIdentityWithState(
-//           syncIdentities[syncIdentityIndex],
-//           stateIdentity
-//         );
-//         return false;
-//       }
-
-//       return true;
-//     });
-
-//     dispatch(setIdentities(syncIdentities.concat(newIdentities)));
-//     dispatch(updateFetchedTime(new Date()));
-//     await persistWalletState(state().wallet.toJS());
-//     dispatch(setWalletIsSyncing(false));
-//   };
-// }
+    dispatch(setIdentitiesAction([...syncIdentities, ...newIdentities]));
+    dispatch(updateFetchedTimeAction(new Date()));
+    await persistWalletState(state().wallet);
+    dispatch(setWalletIsSyncingAction(false));
+  };
+}
 
 // export function syncAccountOrIdentity(selectedAccountHash, selectedParentHash) {
 //   return async dispatch => {
@@ -480,49 +471,46 @@ export function clearAutomaticAccountRefresh() {
 // }
 
 // // todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
-// export function login(loginType, walletLocation, walletFileName, password) {
-//   return async dispatch => {
-//     const completeWalletPath = path.join(walletLocation, walletFileName);
-//     dispatch(addMessage('', true));
-//     dispatch(setLedger(false));
-//     try {
-//       let wallet = {};
-//       if (loginType === CREATE) {
-//         wallet = await createWallet(completeWalletPath, password);
-//       } else if (loginType === IMPORT) {
-//         wallet = await loadPersistedState(completeWalletPath, password);
-//       }
+export function loginThunk(loginType, walletLocation, walletFileName, password) {
+  return async dispatch => {
+    const completeWalletPath = path.join(walletLocation, walletFileName);
+    dispatch(setIsLoadingAction(true));
+    dispatch(createMessageAction('', false));
+    dispatch(setLedgerAction(false));
+    try {
+      let wallet: WalletState = {
+        identities: [],
+        walletFileName: '',
+        walletLocation: '',
+        password: ''
+      };
 
-//       const identities = wallet.identities.map((identity, identityIndex) => {
-//         return createIdentity({
-//           ...identity,
-//           order: identity.order || identityIndex + 1
-//         });
-//       });
+      if (loginType === CREATE) {
+        wallet = await createWallet(completeWalletPath, password);
+      } else if (loginType === IMPORT) {
+        wallet = await loadPersistedState(completeWalletPath, password);
+      }
 
-//       dispatch(
-//         setWallet(
-//           {
-//             identities,
-//             walletLocation,
-//             walletFileName,
-//             password
-//           },
-//           'wallet'
-//         )
-//       );
+      const identities = wallet.identities.map((identity, identityIndex) => {
+        return createIdentity({
+          ...identity,
+          order: identity.order || identityIndex + 1
+        });
+      });
 
-//       dispatch(automaticAccountRefresh());
-//       dispatch(setIsLoading(false));
-//       dispatch(push('/home'));
-//       await dispatch(syncWallet());
-//     } catch (e) {
-//       console.error(e);
-//       dispatch(setIsLoading(false));
-//       dispatch(addMessage(e.name, true));
-//     }
-//   };
-// }
+      dispatch(setWalletAction(identities, walletLocation, walletFileName, password));
+
+      dispatch(automaticAccountRefresh());
+      dispatch(setIsLoadingAction(false));
+      dispatch(push('/home'));
+      await dispatch(syncWalletThunk());
+    } catch (e) {
+      console.error(e);
+      dispatch(setIsLoadingAction(false));
+      dispatch(createMessageAction(e.name, true));
+    }
+  };
+}
 
 // // todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
 // export function connectLedger() {
