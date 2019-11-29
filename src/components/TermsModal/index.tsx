@@ -120,7 +120,7 @@ function TermsModal(props: Props) {
           </Description>
         </MainContainer>
         <BottomContainer>
-          <BackButton onClick={() => onBack()} />
+          <BackButton label={t('general.back')} onClick={() => onBack()} />
           <AgreeButton buttonTheme="primary" onClick={() => agreeTermsAndPolicy()}>
             {t('components.termsModal.i_agree')}
           </AgreeButton>

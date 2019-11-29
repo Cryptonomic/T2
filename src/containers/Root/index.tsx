@@ -6,17 +6,9 @@ import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { hot } from 'react-hot-loader/root';
 import theme from '../../styles/theme';
 import muiTheme from '../../styles/muiTheme';
-import Routes from '../../Routes';
+import App from '../App';
 import Loader from '../../components/Loader';
 // import { getLocale } from '../../reduxContent/settings/selectors';
-
-const App = store => {
-  return (
-    <Suspense fallback={<Loader />}>
-      <Routes store={store} />
-    </Suspense>
-  );
-};
 
 interface Props {
   store: any;
@@ -28,7 +20,9 @@ const Root = ({ store, history }: Props) => (
     <MuiThemeProvider theme={muiTheme}>
       <ThemeProvider theme={theme}>
         <ConnectedRouter history={history}>
-          <App store={store} />
+          <Suspense fallback={<Loader />}>
+            <App />
+          </Suspense>
         </ConnectedRouter>
       </ThemeProvider>
     </MuiThemeProvider>

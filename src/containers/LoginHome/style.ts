@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
-import Button from '../../components/Button';
+import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 
 export const SectionContainer = styled.div`
   display: flex;
@@ -65,21 +66,18 @@ const BaseButtonCss = css`
   height: 9.5%;
 `;
 
-export const CreateWalletButton = styled(Button)`
-  ${BaseButtonCss};
-  margin-top: 8%;
+export const CreateWalletButton = styled(Fab)`
+  &&& {
+    ${BaseButtonCss};
+    margin-top: 8%;
+  }
 `;
 
 export const UnlockWalletButton = styled(Button)`
-  ${BaseButtonCss};
-  margin-top: 5%;
-  color: black;
-  border-color: black;
-  background-color: rgba(255, 255, 255, 0.2);
-  &:hover {
-    color: #5d4444;
-    border-color: #5d4444;
-    background-color: rgba(255, 255, 255, 0.5);
+  &&& {
+    ${BaseButtonCss};
+    border-radius: 20px;
+    margin-top: 5%;
   }
 `;
 

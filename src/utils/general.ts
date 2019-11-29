@@ -1,6 +1,5 @@
 import { shell } from 'electron';
 import { pick } from 'lodash';
-import { fromJS } from 'immutable';
 import {
   ConseilQueryBuilder,
   ConseilOperator,
@@ -10,11 +9,12 @@ import {
   TezosWalletUtil,
   StoreType
 } from 'conseiljs';
+import { Node, NodeStatus, Identity, Account } from '../types/general';
 
 // import { findAccount, createSelectedAccount } from './account';
 // import { findIdentity } from './identity';
 // import { createTransaction } from './transaction';
-// import * as status from '../constants/StatusTypes';
+import * as status from '../constants/StatusTypes';
 // import { TEZOS, CONSEIL } from '../constants/NodesTypes';
 // import { SEND, TRANSACTIONS } from '../constants/TabConstants';
 // import { getSelectedNode } from './nodes';
@@ -23,56 +23,40 @@ import { blockExplorerHost } from '../config.json';
 // const util = require('util');
 const { Mnemonic, Hardware } = StoreType;
 
-// export async function getNodesStatus(nodes, network) {
-//   const selectedTezosNode = getSelectedNode(nodes, TEZOS);
-//   const tezRes = await TezosNodeReader.getBlockHead(selectedTezosNode.url)
-//     .catch((err) => { console.error(err); return false; });
-//   const selectedConseilNode = getSelectedNode(nodes, CONSEIL);
-//   const consRes = await TezosConseilClient
-//     .getBlockHead({ url: selectedConseilNode.url, apiKey: selectedConseilNode.apiKey }, network)
-//     .catch((err) => { console.error(err); return false; });
-//   console.log(`-debug: tezos status: ${JSON.stringify(tezRes)}, conseil status: ${JSON.stringify(consRes)}`);
+export async function getNodesStatus(node: Node): Promise<NodeStatus> {
+  const { tezosUrl, conseilUrl, apiKey, network } = node;
+  const tezRes: any = await TezosNodeReader.getBlockHead(tezosUrl).catch(err => {
+    console.error(err);
+    return false;
+  });
 
-//   return {
-//     tezos: Object.assign(
-//       {
-//         responsive: false,
-//         level: null
-//       },
-//       tezRes && tezRes.header &&
-//       {
-//         responsive: true,
-//         level: Number(tezRes.header.level)
-//       },
-//     ),
-//     conseil: Object.assign(
-//       {
-//         responsive: false,
-//         level: null
-//       },
-//       consRes && consRes[0] &&
-//       {
-//         responsive: true,
-//         level: Number(consRes[0].level)
-//       },
-//     )
-//   };
-// }
+  const consRes = await TezosConseilClient.getBlockHead({ url: conseilUrl, apiKey }, network).catch(
+    err => {
+      console.error(err);
+      return false;
+    }
+  );
 
-export function getNodesError({ tezos, conseil }) {
-  if (!tezos.responsive || !conseil.responsive) {
+  return {
+    tezos: tezRes && tezRes.header ? Number(tezRes.header.level) : 0,
+    conseil: consRes && consRes[0] ? Number(consRes[0].level) : 0
+  };
+}
+
+export function getNodesError({ tezos, conseil }: NodeStatus): string {
+  if (!tezos || !conseil) {
     return 'nodes.errors.wrong_server';
   }
 
-  if (conseil.level - tezos.level > 5) {
+  if (conseil - tezos > 5) {
     return 'nodes.errors.wrong_network';
   }
 
-  if (tezos.level - conseil.level > 5) {
+  if (tezos - conseil > 5) {
     return 'nodes.errors.not_synced';
   }
 
-  return false;
+  return '';
 }
 
 /**
@@ -121,51 +105,40 @@ export function getNodesError({ tezos, conseil }) {
 //   };
 // }
 
-// export async function activateAndUpdateAccount(account, keyStore, nodes, isLedger = false, network) {
-//   const { url, apiKey } = getSelectedNode(nodes, CONSEIL);
-//   if (account.status === status.READY) {
-//     const accountHash = account.publicKeyHash || account.account_id;
-//     const updatedAccount = await TezosConseilClient.getAccount({url: url, apiKey: apiKey}, network, accountHash)
-//       .catch((error) => {
-//         console.log('-debug: Error in: status.READY for:' + accountHash);
-//         console.error(error);
-//         return null;
-//     });
-//     if (updatedAccount && updatedAccount[0]) {
-//       console.log('ready ' + util.inspect(updatedAccount, false, null, false));
-//       account.balance = parseInt(updatedAccount[0].balance);
-//     }
-//     return account;
-//   }
+export async function activateAndUpdateAccount(account, node: Node) {
+  const { conseilUrl, network, apiKey } = node;
+  const accountHash = account.publicKeyHash || account.account_id;
+  if (account.status === status.READY || account.status === status.CREATED) {
+    const updatedAccount: any = await TezosConseilClient.getAccount(
+      { url: conseilUrl, apiKey },
+      network,
+      accountHash
+    ).catch(error => {
+      console.log('-debug: Error in: status.READY for:' + accountHash);
+      console.error(error);
+      return null;
+    });
 
-//   if (account.status === status.INACTIVE) {
-//     //  delete account
-//   }
+    if (updatedAccount) {
+      return {
+        ...account,
+        delegate_value: updatedAccount.delegate_value,
+        balance: Number(updatedAccount.balance),
+        status: status.READY
+      };
+    }
+  }
 
-//   if (account.status === status.CREATED) {
-//     const accountHash = account.publicKeyHash || account.account_id;
+  if (account.status === status.FOUND) {
+    return {
+      ...account,
+      status: status.READY
+    };
+  }
 
-//     const updatedAccount = await TezosConseilClient.getAccount({url: url, apiKey: apiKey}, network, accountHash)
-//       .catch((error) => {
-//         console.log('-debug: Error in: status.CREATED for:' + accountHash);
-//         console.error(error);
-//         return null;
-//     });
-
-//     if (updatedAccount && updatedAccount[0]) {
-//       console.log('created ' + util.inspect(updatedAccount, false, null, false));
-//       account.balance = parseInt(updatedAccount[0].balance);
-//       account.status = status.FOUND;
-//     }
-//   }
-
-//   if (account.status === status.FOUND) {
-//     account.status = status.READY;
-//   }
-
-//   console.log('-debug: account.status ', account.status);
-//   return account;
-// }
+  console.log('-debug: account.status ', account.status);
+  return account;
+}
 
 // export function generateNewMnemonic() {
 //   return TezosWalletUtil.generateMnemonic();

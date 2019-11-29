@@ -44,7 +44,7 @@ const NodesStatus = (props: Props) => {
 };
 
 const mapStateToProps = (state: RootState) => ({
-  nodesStatus: state.wallet.nodesStatus
+  nodesStatus: state.app.nodesStatus
 });
 
 export default connect(
