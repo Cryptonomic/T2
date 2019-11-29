@@ -1,34 +1,45 @@
 import React from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import BackCaret from '@material-ui/icons/KeyboardArrowLeft';
+import ArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import Button from '@material-ui/core/Button';
 
-const Back = styled.div`
-  display: flex;
-  align-items: center;
-  color: ${({ theme: { colors } }) => colors.blue3};
-  cursor: pointer;
+const Container = styled(Button)`
+  &&& {
+    padding: 0;
+    &.MuiButton-textSecondary:hover {
+      background-color: transparent;
+    }
+  }
 `;
 
-interface OwnProps {
-  onClick: () => void;
+const BackCaret = styled(ArrowLeft)`
+  &&& {
+    height: 28px;
+    width: 28px;
+  }
+`;
+
+interface Props {
+  label: string;
+  onClick?: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function BackButton(props: Props) {
-  const { onClick, t } = props;
+  const history = useHistory();
+  const { label, onClick } = props;
+  function goBack() {
+    if (!onClick) {
+      history.goBack();
+    } else {
+      onClick();
+    }
+  }
   return (
-    <Back onClick={onClick}>
-      <BackCaret
-        style={{
-          fill: '#4486f0',
-          marginRight: '8px'
-        }}
-      />
-      <span>{t('general.back')}</span>
-    </Back>
+    <Container color="secondary" disableRipple={true} onClick={goBack} startIcon={<BackCaret />}>
+      {label}
+    </Container>
   );
 }
 
-export default withTranslation()(BackButton);
+export default BackButton;

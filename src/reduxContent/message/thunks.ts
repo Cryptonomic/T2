@@ -1,12 +1,13 @@
-import { createMessage } from './actions';
+import { createMessageAction } from './actions';
 
 export function placeHolder() {
   // just noop
 }
 
-// export function addMessage(message, isError, hash = '', localeParam = 0) {
+// export function addMessageThunk(message, isError, hash = '', localeParam = 0) {
 //   return dispatch => {
-//     dispatch(createMessage(message, isError, hash, localeParam));
+//     const newMessage = {message, isError, hash, localeParam};
+//     dispatch(createMessage(newMessage));
 //   };
 // }
 

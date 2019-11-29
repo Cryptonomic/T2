@@ -68,10 +68,6 @@ class HomePage extends Component<Props> {
 
     return (
       <Fragment>
-        {/* <TopBar isExtended={!!newVersion} /> */}
-        <TopBar isExtended={true} />
-        <VersionStatus version="1.0.1" />
-        {/* {newVersion && <VersionStatus version={newVersion} />} */}
         <NodesStatus />
         {/* <Switch>
           <Route path={`${match.path}/addresses`} component={HomeAddresses} />
@@ -87,9 +83,9 @@ class HomePage extends Component<Props> {
 
 const mapStateToProps = (state: RootState) => ({
   identities: state.wallet.identities,
-  isLoading: state.wallet.isLoading,
-  isLedger: state.wallet.isLedger,
-  newVersion: state.wallet.newVersion
+  isLoading: state.app.isLoading,
+  isLedger: state.app.isLedger,
+  newVersion: state.app.newVersion
 });
 
 const mapDispatchToProps = dispatch => ({

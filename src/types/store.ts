@@ -1,15 +1,20 @@
-export interface WalletState {
-  identities: any[];
+import { Path, Node, NodeStatus } from './general';
+
+export interface AppState {
   isLoading: boolean;
   isWalletSyncing: boolean;
-  walletFileName: string;
-  walletLocation: string;
-  password: string;
-  nodesStatus: any;
+  nodesStatus: NodeStatus;
   time: any;
   isLedger: boolean;
   isLedgerConnecting: boolean;
   newVersion: string;
+  selectedAccountHash: string;
+}
+export interface WalletState {
+  identities: any[];
+  walletFileName: string;
+  walletLocation: string;
+  password: string;
 }
 
 export interface MessageState {
@@ -21,14 +26,11 @@ export interface MessageState {
 
 export interface SettingsState {
   locale: string;
-  tezosSelectedNode: string;
-  conseilSelectedNode: string;
-  nodesList: any[];
+  selectedNode: string;
+  nodesList: Node[];
   delegateTooltip: boolean;
   selectedPath: string;
-  pathsList: any[];
-  network: string;
-  platform: string;
+  pathsList: Path[];
 }
 
 export interface RootState {
@@ -36,4 +38,5 @@ export interface RootState {
   wallet: WalletState;
   message: MessageState;
   settings: SettingsState;
+  app: AppState;
 }

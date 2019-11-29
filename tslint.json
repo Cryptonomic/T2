@@ -28,7 +28,8 @@
         "interface-name": false,
         "jsx-no-lambda": false,
         "no-console": false,
-        "member-access": false
+        "member-access": false,
+        "no-var-requires": false
     },
     "rulesDirectory": []
 }

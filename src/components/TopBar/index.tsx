@@ -1,14 +1,11 @@
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
+import React from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { getWalletName } from '../../reduxContent/wallet/selectors';
-// import SettingsController from '../SettingsController/';
 import { ms } from '../../styles/helpers';
-import Logo from './../Logo';
-
-import { RootState } from '../../types/store';
+import Logo from '../Logo';
+import TezosIcon from '../TezosIcon';
+import Button from '../Button';
 
 const Container = styled.div<{ isExtended?: boolean }>`
   display: flex;
@@ -22,6 +19,7 @@ const Container = styled.div<{ isExtended?: boolean }>`
 const InfoContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-right: auto;
 `;
 
 const Text = styled.span`
@@ -34,14 +32,45 @@ const Text = styled.span`
   letter-spacing: 0.9px;
 `;
 
-interface Props {
-  onlyLogo?: boolean;
+const ButtonContainer = styled(Button)`
+  text-align: center;
+  min-width: 57px;
+  margin: 0 15px;
+  color: ${({ theme: { colors } }) => colors.primary};
+  opacity: 0.6;
+`;
+
+const ButtonText = styled.div`
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.4px;
+  line-height: 28px;
+`;
+const Icon = styled(TezosIcon)`
+  cursor: pointer;
+`;
+
+const Separator = styled.div`
+  border-right: 2px solid #a8b6d5;
+  margin-top: -11px;
+  height: 40px;
+`;
+
+interface OwnProps {
+  isLoggedIn: boolean;
   walletName: string;
-  isExtended?: boolean;
+  isExtended: boolean;
 }
 
+type Props = WithTranslation & OwnProps;
+
 const TopBar = (props: Props) => {
-  const { onlyLogo, walletName, isExtended } = props;
+  const history = useHistory();
+  const { isLoggedIn, walletName, isExtended, t } = props;
+
+  function goToSettings() {
+    history.push('/settings');
+  }
 
   return (
     <Container isExtended={isExtended}>
@@ -49,20 +78,20 @@ const TopBar = (props: Props) => {
         <Logo />
         <Text>{walletName}</Text>
       </InfoContainer>
-      {/* <SettingsController onlySettings={onlyLogo} /> */}
+      <ButtonContainer onClick={() => goToSettings()} buttonTheme="plain">
+        <Icon size={ms(2.2)} color="primary" iconName="settings" />
+        <ButtonText>{t('components.settingController.settings')}</ButtonText>
+      </ButtonContainer>
+      {isLoggedIn && <Separator />}
+      {isLoggedIn && (
+        // <ButtonContainer onClick={goHomeAndClearState} buttonTheme="plain">
+        <ButtonContainer buttonTheme="plain">
+          <Icon size={ms(2.2)} color="primary" iconName="logout" />
+          <ButtonText>{t('components.settingController.logout')}</ButtonText>
+        </ButtonContainer>
+      )}
     </Container>
   );
 };
 
-TopBar.defaultProps = {
-  walletName: 'Wallet'
-};
-
-const mapStateToProps = (state: RootState) => ({
-  walletName: getWalletName(state)
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(TopBar);
+export default withTranslation()(TopBar);
