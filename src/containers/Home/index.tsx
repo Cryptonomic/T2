@@ -1,6 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { compose } from 'redux';
 // import Transport from '@ledgerhq/hw-transport-node-hid';
 
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
@@ -8,20 +10,18 @@ import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 // import { getNewVersion } from '../../reduxContent/message/selectors';
 // import { initLedgerTransport } from '../../utils/wallet';
 
-import Loader from '../../components/Loader';
-import TopBar from '../../components/TopBar';
 import NodesStatus from '../../components/NodesStatus';
-import VersionStatus from '../../components/VersionStatus';
-
 // import HomeAddresses from './../HomeAddresses';
-// import HomeAddAddress from './../HomeAddAddress';
-// import HomeSettings from './../HomeSettings';
+import HomeAdd from './../HomeAdd';
 
+import { getNodesError } from '../../utils/general';
 import { RootState } from '../../types/store';
+import { NodeStatus } from '../../types/general';
 
-interface Props {
+interface OwnProps {
   identities: any[];
   isLoading: boolean;
+  nodesStatus: NodeStatus;
   // match: object,
   // goHomeAndClearState: () => {};
   // addMessage: () => {},
@@ -29,13 +29,13 @@ interface Props {
   // newVersion: string
 }
 
-class HomePage extends Component<Props> {
-  constructor(props: Props) {
-    super(props);
-    this.onDetectLedger();
-  }
+type Props = OwnProps & WithTranslation;
 
-  public onDetectLedger = async () => {
+function HomePage(props: Props) {
+  const { identities, nodesStatus, isLoading, t } = props;
+  const nodesErrorMessage = getNodesError(nodesStatus);
+
+  async function onDetectLedger() {
     // const { isLedger } = this.props;
     // Transport.listen({
     //   next: e => {
@@ -48,51 +48,46 @@ class HomePage extends Component<Props> {
     //   },
     //   complete: () => {}
     // });
-  };
+  }
 
-  public onLogout = () => {
+  function onLogout() {
     // const { goHomeAndClearState } = this.props;
     // const { goHomeAndClearState, addMessage } = this.props;
     // initLedgerTransport();
     goHomeAndClearState();
     // addMessage('general.errors.no_ledger_detected', true);
-  };
-
-  public render() {
-    // const { match, identities, isLoading, newVersion } = this.props;
-    const { identities, isLoading } = this.props;
-    // const redirectTo =
-    //   !identities || !identities.size
-    //     ? `${match.url}/addAddress`
-    //     : `${match.url}/addresses`;
-
-    return (
-      <Fragment>
-        <NodesStatus />
-        {/* <Switch>
-          <Route path={`${match.path}/addresses`} component={HomeAddresses} />
-          <Route path={`${match.path}/addAddress`} component={HomeAddAddress} />
-          <Route path={`${match.path}/settings`} component={HomeSettings} />
-          <Redirect to={redirectTo} />
-        </Switch> */}
-        {isLoading && <Loader />}
-      </Fragment>
-    );
   }
+
+  const redirectTo = identities.length > 0 ? '/home/main' : '/home/add';
+
+  return (
+    <Fragment>
+      {nodesErrorMessage && <NodesStatus message={t(nodesErrorMessage)} />}
+      <Switch>
+        {/* <Route path='/home/main' component={HomeAddresses} /> */}
+        <Route path="/home/add" component={HomeAdd} />
+        <Redirect to={redirectTo} />
+      </Switch>
+    </Fragment>
+  );
 }
 
 const mapStateToProps = (state: RootState) => ({
   identities: state.wallet.identities,
   isLoading: state.app.isLoading,
   isLedger: state.app.isLedger,
-  newVersion: state.app.newVersion
+  newVersion: state.app.newVersion,
+  nodesStatus: state.app.nodesStatus
 });
 
 const mapDispatchToProps = dispatch => ({
   // goHomeAndClearState: () => dispatch(goHomeAndClearState())
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HomePage);
+export default compose(
+  withTranslation(),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
+)(HomePage) as React.ComponentType<any>;

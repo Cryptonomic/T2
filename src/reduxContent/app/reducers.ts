@@ -19,8 +19,8 @@ const initState: AppState = {
   isLoading: false,
   isWalletSyncing: false,
   nodesStatus: {
-    conseil: 0,
-    tezos: 0
+    conseil: -1,
+    tezos: -1
   },
   time: new Date(),
   newVersion: '',

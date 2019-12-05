@@ -66,7 +66,7 @@ interface Props {
   errorText?: string | React.ReactNode;
   disabled?: boolean;
   right?: number;
-  value: string;
+  value?: string;
   onChange: (val: string) => void;
 }
 
