@@ -9,7 +9,6 @@ import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 
 import BackButton from '../../components/BackButton';
-import Loader from '../../components/Loader';
 import PasswordInput from '../../components/PasswordInput';
 import { IMPORT } from '../../constants/CreationTypes';
 import { loginThunk } from '../../reduxContent/wallet/thunks';
@@ -79,11 +78,10 @@ type Props = WithTranslation & OwnProps;
 const dialogFilters = [{ name: 'Tezos Wallet', extensions: ['tezwallet'] }];
 
 function LoginImport(props: Props) {
-  const { t, isLoading, login } = props;
+  const { t, login, isLoading } = props;
   const [walletLocation, setWalletLocation] = useState('');
   const [walletFileName, setWalletFileName] = useState('');
   const [password, setPassword] = useState('');
-  const [isShowedPwd, setIsShowedPwd] = useState(false);
 
   function openFile(event) {
     if (event.detail === 0) {
@@ -120,7 +118,6 @@ function LoginImport(props: Props) {
 
   return (
     <CreateContainer onKeyDown={event => onEnterPress(event.key, isDisabled)}>
-      {isLoading && <Loader />}
       <WalletContainers>
         <BackButtonContainer>
           <BackButton label={t('general.back')} />
@@ -134,10 +131,8 @@ function LoginImport(props: Props) {
         </ImportButtonContainer>
         <PasswordInput
           label={t('general.nouns.wallet_password')}
-          isShowed={isShowedPwd}
           password={password}
           changFunc={pwd => setPassword(pwd)}
-          onShow={() => setIsShowedPwd(!isShowedPwd)}
         />
         <ActionButton
           onClick={() => onLogin(IMPORT)}

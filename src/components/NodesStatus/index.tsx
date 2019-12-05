@@ -1,14 +1,7 @@
-import * as React from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
+import React from 'react';
 import styled from 'styled-components';
-// import { getNodesStatus } from '../../reduxContent/wallet/selectors';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon/';
-
-import { getNodesError } from '../../utils/general';
-
-import { RootState } from '../../types/store';
 
 const Container = styled.div`
   display: flex;
@@ -25,29 +18,18 @@ const WarningIcon = styled(TezosIcon)`
   margin-right: ${ms(-1.5)};
 `;
 
-interface OwnProps {
-  nodesStatus: any;
+interface Props {
+  message: string;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const NodesStatus = (props: Props) => {
-  const { nodesStatus, t } = props;
-  const nodesErrorMessage = getNodesError(nodesStatus);
-
-  return nodesErrorMessage ? (
+  const { message } = props;
+  return (
     <Container>
       <WarningIcon color="white" iconName="warning" />
-      <span>{t(nodesErrorMessage)}</span>
+      <span>{message}</span>
     </Container>
-  ) : null;
+  );
 };
 
-const mapStateToProps = (state: RootState) => ({
-  nodesStatus: state.app.nodesStatus
-});
-
-export default connect(
-  mapStateToProps,
-  {}
-)(withTranslation()(NodesStatus));
+export default NodesStatus;

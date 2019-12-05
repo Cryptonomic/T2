@@ -8,6 +8,7 @@ import './styles/app.scss';
 
 // Create main element
 const mainElement = document.createElement('div');
+mainElement.setAttribute('id', 'root');
 document.body.appendChild(mainElement);
 
 const store = configureStore();

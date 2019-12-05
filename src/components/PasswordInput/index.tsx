@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import TextField from '../TextField';
@@ -18,17 +18,16 @@ const ShowHidePwd = styled.div`
 
 interface OwnProps {
   label: string;
-  isShowed?: boolean;
   containerStyle?: object;
   password: string;
   changFunc: (val: string) => void;
-  onShow: () => void;
 }
 
 type Props = OwnProps & WithTranslation;
 
 function PasswordInput(props: Props) {
-  const { label, password, isShowed, changFunc, onShow, containerStyle, t } = props;
+  const { label, password, changFunc, containerStyle, t } = props;
+  const [isShowed, setIsShowed] = useState(false);
   return (
     <Container style={containerStyle}>
       <TextField
@@ -38,7 +37,7 @@ function PasswordInput(props: Props) {
         onChange={(newVal: string) => changFunc(newVal)}
         right={42}
       />
-      <ShowHidePwd style={{ cursor: 'pointer' }} onClick={onShow}>
+      <ShowHidePwd style={{ cursor: 'pointer' }} onClick={() => setIsShowed(!isShowed)}>
         {t(isShowed ? 'general.verbs.hide' : 'general.verbs.show')}
       </ShowHidePwd>
     </Container>
@@ -46,7 +45,6 @@ function PasswordInput(props: Props) {
 }
 
 PasswordInput.defaultProps = {
-  isShowed: false,
   containerStyle: {}
 };
 
