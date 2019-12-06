@@ -27,6 +27,7 @@ export default createMuiTheme({
       root: {
         textTransform: 'capitalize',
         fontSize: '16px',
+        fontWeight: 300,
         '&$disabled': {
           color: '#fff',
           backgroundColor: '#2c7df7',
@@ -42,7 +43,8 @@ export default createMuiTheme({
     MuiButton: {
       root: {
         textTransform: 'capitalize',
-        fontSize: '16px'
+        fontSize: '16px',
+        fontWeight: 300
       },
       outlined: {
         fontSize: '16px'

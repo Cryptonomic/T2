@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import TezosIcon from '../TezosIcon';
-import CopyIcon from '../CopyIcon';
+import CopyIcon from '../CopyButton';
 import Tooltip from '../Tooltip';
 import { formatAmount } from '../../utils/currancy';
 import { ms } from '../../styles/helpers';

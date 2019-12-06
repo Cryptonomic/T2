@@ -39,7 +39,7 @@ export async function getNodesStatus(node: Node): Promise<NodeStatus> {
 
   return {
     tezos: tezRes && tezRes.header ? Number(tezRes.header.level) : 0,
-    conseil: consRes && consRes[0] ? Number(consRes[0].level) : 0
+    conseil: consRes ? Number(consRes.level) : 0
   };
 }
 
@@ -140,9 +140,9 @@ export async function activateAndUpdateAccount(account, node: Node) {
   return account;
 }
 
-// export function generateNewMnemonic() {
-//   return TezosWalletUtil.generateMnemonic();
-// }
+export function generateNewMnemonic() {
+  return TezosWalletUtil.generateMnemonic();
+}
 
 // export async function fetchAverageFees(settings, operationKind) {
 //   const { url, apiKey } = getSelectedNode(settings, CONSEIL);
