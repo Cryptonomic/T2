@@ -4,11 +4,11 @@ import RCTooltip from 'rc-tooltip';
 import styled from 'styled-components';
 import { stripUnit, lighten } from 'polished';
 import { ms } from '../../styles/helpers';
-import { string } from 'prop-types';
 
 interface AdapterProps {
   className: string;
-  offset: string;
+  offset: [];
+  overlay: string | React.ReactNode;
 }
 
 const TooltipAdapter = ({ className, offset, ...props }: AdapterProps) => {
@@ -18,7 +18,6 @@ const TooltipAdapter = ({ className, offset, ...props }: AdapterProps) => {
       overlayClassName={`${className}__overlay`}
       prefixCls={`${className}__tooltip`}
       align={{ offset }}
-      overlay={null}
     />
   );
 };
@@ -227,13 +226,13 @@ const StyledTooltip = styled(TooltipAdapter)<
 `;
 
 interface Props {
-  content?: any;
+  content: string | React.ReactNode;
   trigger?: string[];
-  children?: any;
+  children?: React.ReactNode;
   className?: string;
   position?: string;
   arrowPos?: object;
-  offset?: string;
+  offset?: [];
 }
 
 function Tooltip(props: Props) {
@@ -254,7 +253,7 @@ function Tooltip(props: Props) {
 
 Tooltip.defaultProps = {
   trigger: ['hover'],
-  offset: '-22%'
+  offset: ['-22%', 0]
 };
 
 export default Tooltip;
