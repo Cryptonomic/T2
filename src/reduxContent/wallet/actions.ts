@@ -15,13 +15,15 @@ import {
   UpdateIdentityAction
 } from './types';
 
+import { WalletState } from '../../types/store';
+
 export function setWalletAction(
   identities: any[],
   walletLocation: string,
   walletFileName: string,
   password: string
 ): SetWalletAction {
-  const payload = { identities, walletLocation, walletFileName, password };
+  const payload: WalletState = { identities, walletLocation, walletFileName, password };
   return {
     type: SET_WALLET,
     payload

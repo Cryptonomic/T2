@@ -16,7 +16,8 @@ import {
   AddNewVersionAction,
   SetNodesStatusAction,
   UpdateFetchedTimeAction,
-  ChangeAccountAction
+  ChangeAccountAction,
+  ChangeAccountType
 } from './types';
 import { NodeStatus } from '../../types/general';
 
@@ -77,9 +78,19 @@ export function updateFetchedTimeAction(time: any): UpdateFetchedTimeAction {
   };
 }
 
-export function changeAccountAction(hash: string): ChangeAccountAction {
-  return {
-    type: CHANGE_ACCOUNT_HASH,
-    hash
+export function changeAccountAction(
+  accountHash: string,
+  parentHash: string,
+  accountIndex: number,
+  parentIndex: number,
+  isManager: boolean
+): ChangeAccountAction {
+  const payload: ChangeAccountType = {
+    selectedAccountHash: accountHash,
+    selectedParentHash: parentHash,
+    selectedParentIndex: parentIndex,
+    selectedAccountIndex: accountIndex,
+    isManager
   };
+  return { type: CHANGE_ACCOUNT_HASH, payload };
 }

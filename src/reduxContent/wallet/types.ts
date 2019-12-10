@@ -1,3 +1,5 @@
+import { WalletState } from '../../types/store';
+
 export const SET_WALLET = 'SET_WALLET';
 export const SET_WALLET_FILENAME = 'SET_WALLET_FILENAME';
 export const SET_WALLET_LOCATION = 'SET_WALLET_LOCATION';
@@ -8,7 +10,7 @@ export const UPDATE_IDENTITY = 'UPDATE_IDENTITY';
 
 export interface SetWalletAction {
   type: typeof SET_WALLET;
-  payload: any;
+  payload: WalletState;
 }
 
 export interface SetWalletFileNameAction {
