@@ -4,6 +4,7 @@ import {
   ConseilDataClient,
   ConseilSortDirection
 } from 'conseiljs';
+import * as blakejs from 'blakejs';
 import * as status from '../constants/StatusTypes';
 import { TEZOS, CONSEIL } from '../constants/NodesTypes';
 import { TRANSACTIONS } from '../constants/TabConstants';
@@ -14,7 +15,7 @@ import {
   // getSelectedHash
 } from './general';
 
-import { Node } from '../types/general';
+import { Node, AddressType } from '../types/general';
 
 export function createAccount(account, identity) {
   return {
@@ -38,21 +39,15 @@ export function createAccount(account, identity) {
   };
 }
 
-// export function findAccount(identity, accountId) {
-//   return (
-//     identity &&
-//     (identity.accounts || []).find(account => account.account_id === accountId)
-//   );
-// }
+export function findAccount(identity, accountId) {
+  return identity && (identity.accounts || []).find(account => account.account_id === accountId);
+}
 
-// export function findAccountIndex(identity, accountId) {
-//   return (
-//     identity &&
-//     (identity.accounts || []).findIndex(
-//       account => account.account_id === accountId
-//     )
-//   );
-// }
+export function findAccountIndex(identity, accountId) {
+  return (
+    identity && (identity.accounts || []).findIndex(account => account.account_id === accountId)
+  );
+}
 
 // export function createSelectedAccount({ balance = 0, transactions = [] } = {}) {
 //   return { balance, transactions };
@@ -154,4 +149,19 @@ export function syncAccountWithState(syncAccount, stateAccount) {
     activeTab: stateAccount.activeTab,
     transactions: syncTransactionsWithState(syncAccount.transactions, stateAccount.transactions)
   };
+}
+
+export function getAddressType(address: string, script: string | undefined): AddressType {
+  if (address.startsWith('tz1') || address.startsWith('tz2') || address.startsWith('tz3')) {
+    return AddressType.Manager;
+  }
+  if (script !== undefined && script.length > 0 && address.startsWith('KT1')) {
+    const k = Buffer.from(blakejs.blake2s(script.toString(), null, 16)).toString('hex');
+
+    if (k === '023fc21b332d338212185c817801f288') {
+      return AddressType.Delegated;
+    }
+    return AddressType.Smart;
+  }
+  return AddressType.None;
 }

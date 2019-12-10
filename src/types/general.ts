@@ -51,3 +51,10 @@ export interface Identity {
   transactions: any[]; // todo transaction type
   delegate_value: string;
 }
+
+export enum AddressType {
+  Manager,
+  Smart,
+  Delegated,
+  None
+}

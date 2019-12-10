@@ -37,6 +37,14 @@ export function createIdentity(identity) {
   };
 }
 
+export function findIdentity(identities, publicKeyHash) {
+  return (identities || []).find(identity => identity.publicKeyHash === publicKeyHash);
+}
+
+export function findIdentityIndex(identities, pkh: string): number {
+  return (identities || []).findIndex(identity => identity.publicKeyHash === pkh);
+}
+
 export async function getSyncIdentity(identity, node: Node, selectedAccountHash: string) {
   const { publicKeyHash, accounts } = identity;
 
@@ -79,7 +87,7 @@ export async function getSyncIdentity(identity, node: Node, selectedAccountHash:
     return accountIndices.indexOf(account.account_id) === -1;
   });
 
-  serverAccounts = serverAccounts.concat(accountsToConcat);
+  serverAccounts = [...serverAccounts, ...accountsToConcat];
 
   identity.accounts = await Promise.all(
     (serverAccounts || []).map(async (account, index) => {
@@ -130,7 +138,7 @@ export function syncIdentityWithState(syncIdentity, stateIdentity) {
   return {
     ...syncIdentity,
     activeTab: stateIdentity.activeTab,
-    accounts: [...syncIdentity.accounts, newAccounts],
+    accounts: [...syncIdentity.accounts, ...newAccounts],
     transactions: syncTransactionsWithState(syncIdentity.transactions, stateIdentity.transactions)
   };
 }

@@ -78,7 +78,7 @@ const PkhTooltip = t => {
 };
 
 interface OwnProps {
-  importAddress: (activeTab, seed, pkh, activationCode, username, passPhrase) => void;
+  importAddress: (activeTab, seed, pkh?, activationCode?, username?, passPhrase?) => void;
   isLoading: boolean;
 }
 
@@ -97,17 +97,10 @@ function AddAddress(props: Props) {
   const [isError, setIsError] = useState(false);
 
   const onImport = () => {
-    // const input = seeds.toString();
-    // const words = input.replace(/["\s]/g, '');
-    // const inputVal = words.replace(/,/g, ' ');
-    // importAddress(
-    //   activeTab,
-    //   inputVal,
-    //   pkh,
-    //   activationCode,
-    //   username,
-    //   passPhrase
-    // );
+    const input = seeds.toString();
+    const words = input.replace(/["\s]/g, '');
+    const inputVal = words.replace(/,/g, ' ');
+    importAddress(activeTab, inputVal, pkh, activationCode, username, passPhrase);
   };
 
   function renderAddBody() {
@@ -115,7 +108,7 @@ function AddAddress(props: Props) {
       isError || passPhrase === '' || activationCode === '' || pkh === '' || seeds.length < 15;
     switch (activeTab) {
       case ADD_ADDRESS_TYPES.GENERATE_MNEMONIC:
-        return <CreateAccountSlide onImport={onImport} />;
+        return <CreateAccountSlide importAddress={importAddress} />;
       case ADD_ADDRESS_TYPES.RESTORE:
         return <RestoreBackup />;
       case ADD_ADDRESS_TYPES.FUNDRAISER:

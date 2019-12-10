@@ -24,7 +24,11 @@ const initState: AppState = {
   },
   time: new Date(),
   newVersion: '',
-  selectedAccountHash: ''
+  selectedAccountHash: '',
+  selectedParentHash: '',
+  selectedParentIndex: 0,
+  selectedAccountIndex: 0,
+  isManager: true
 };
 
 export function appReducer(state: AppState = initState, action: AppActionTypes) {
@@ -46,7 +50,7 @@ export function appReducer(state: AppState = initState, action: AppActionTypes) 
     case ADD_NEW_VERSION:
       return { ...state, newVersion: action.newVersion };
     case CHANGE_ACCOUNT_HASH:
-      return { ...state, selectedAccountHash: action.hash };
+      return { ...state, ...action.payload };
     default:
       return state;
   }

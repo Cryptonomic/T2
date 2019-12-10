@@ -1,3 +1,4 @@
+import path from 'path';
 import { TezosFileWallet, TezosLedgerWallet, StoreType } from 'conseiljs';
 import { omit, pick } from 'lodash';
 
@@ -5,6 +6,11 @@ import { getLocalData, setLocalData } from './localData';
 import { WalletState } from '../types/store';
 
 const { saveWallet, loadWallet } = TezosFileWallet;
+
+export async function saveUpdatedWallet(identities, walletLocation, walletFileName, password) {
+  const completeWalletPath = path.join(walletLocation, walletFileName);
+  return await saveWallet(completeWalletPath, { identities }, password);
+}
 
 function prepareToPersist(walletState: WalletState) {
   walletState.identities = walletState.identities.map(identity => {
@@ -20,7 +26,7 @@ function prepareToPersist(walletState: WalletState) {
 }
 
 export function persistWalletState(walletState: WalletState) {
-  setLocalData('wallet', prepareToPersist(walletState));
+  // setLocalData('wallet', prepareToPersist(walletState));
 }
 
 // todo type

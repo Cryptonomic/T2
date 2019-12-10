@@ -9,6 +9,10 @@ export interface AppState {
   isLedgerConnecting: boolean;
   newVersion: string;
   selectedAccountHash: string;
+  selectedParentHash: string;
+  selectedParentIndex: number;
+  selectedAccountIndex: number;
+  isManager: boolean;
 }
 export interface WalletState {
   identities: any[];
