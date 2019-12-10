@@ -49,9 +49,17 @@ export interface UpdateFetchedTimeAction {
   time: any;
 }
 
+export interface ChangeAccountType {
+  selectedAccountHash: string;
+  selectedParentHash: string;
+  selectedParentIndex: number;
+  selectedAccountIndex: number;
+  isManager: boolean;
+}
+
 export interface ChangeAccountAction {
   type: typeof CHANGE_ACCOUNT_HASH;
-  hash: string;
+  payload: ChangeAccountType;
 }
 
 export type AppActionTypes =

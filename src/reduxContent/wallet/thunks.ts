@@ -9,38 +9,32 @@ import {
 } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
-// import {
-//   FUNDRAISER,
-//   GENERATE_MNEMONIC,
-//   RESTORE
-// } from '../../constants/AddAddressTypes';
+import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
 // import { CONSEIL, TEZOS } from '../../constants/NodesTypes';
-// import { CREATED } from '../../constants/StatusTypes';
-// import { createTransaction } from '../../utils/transaction';
+import { CREATED } from '../../constants/StatusTypes';
+import { createTransaction } from '../../utils/transaction';
 
-// import {
-//   findAccountIndex,
-//   getSyncAccount,
-//   syncAccountWithState
-// } from '../../utils/account';
+import { findAccountIndex, getSyncAccount, syncAccountWithState } from '../../utils/account';
 
 import {
-  // findIdentity,
-  // findIdentityIndex,
+  findIdentity,
+  findIdentityIndex,
   createIdentity,
   getSyncIdentity,
   syncIdentityWithState
 } from '../../utils/identity';
 
+import { resetLocalData } from '../../utils/localData';
+
 import {
-  // clearOperationId,
+  clearOperationId,
   getNodesStatus,
   getNodesError
   // getSelectedKeyStore
 } from '../../utils/general';
 
 import {
-  // saveUpdatedWallet,
+  saveUpdatedWallet,
   loadPersistedState,
   persistWalletState
   // loadWalletFromLedger
@@ -60,7 +54,8 @@ import {
   setNodesStatusAction,
   updateFetchedTimeAction,
   setLedgerAction,
-  setIsLedgerConnectingAction
+  setIsLedgerConnectingAction,
+  changeAccountAction
 } from '../app/actions';
 
 import { getMainNode } from '../../utils/settings';
@@ -105,145 +100,101 @@ export function clearAutomaticAccountRefresh() {
   clearInterval(currentAccountRefreshInterval);
 }
 
-// export function updateAccountActiveTab(
-//   selectedAccountHash,
-//   selectedParentHash,
-//   activeTab
-// ) {
-//   return async (dispatch, state) => {
-//     const identities = state()
-//       .wallet.get('identities')
-//       .toJS();
-//     const identity = findIdentity(identities, selectedParentHash);
-//     const foundIndex = findAccountIndex(identity, selectedAccountHash);
-//     const account = identity.accounts[foundIndex];
+export function updateAccountActiveTab(selectedAccountHash, selectedParentHash, activeTab) {
+  return async (dispatch, state) => {
+    const { identities } = state().wallet;
+    const identity = findIdentity(identities, selectedParentHash);
+    const foundIndex = findAccountIndex(identity, selectedAccountHash);
+    const account = identity.accounts[foundIndex];
 
-//     if (foundIndex > -1) {
-//       identity.accounts[foundIndex] = {
-//         ...account,
-//         activeTab
-//       };
+    if (foundIndex > -1) {
+      identity.accounts[foundIndex] = {
+        ...account,
+        activeTab
+      };
 
-//       dispatch(updateIdentity(identity));
-//     }
-//   };
-// }
+      dispatch(updateIdentityAction(identity));
+    }
+  };
+}
 
-// export function updateIdentityActiveTab(selectedAccountHash, activeTab) {
-//   return async (dispatch, state) => {
-//     const identities = state()
-//       .wallet.get('identities')
-//       .toJS();
-//     const identity = findIdentity(identities, selectedAccountHash);
-//     if (identity) {
-//       dispatch(
-//         updateIdentity({
-//           ...identity,
-//           activeTab
-//         })
-//       );
-//     }
-//   };
-// }
+export function updateIdentityActiveTab(selectedAccountHash, activeTab) {
+  return async (dispatch, state) => {
+    const { identities } = state().wallet;
+    const identity = findIdentity(identities, selectedAccountHash);
+    if (identity) {
+      dispatch(
+        updateIdentityAction({
+          ...identity,
+          activeTab
+        })
+      );
+    }
+  };
+}
 
-// export function updateActiveTab(
-//   selectedAccountHash,
-//   selectedParentHash,
-//   activeTab
-// ) {
-//   return async dispatch => {
-//     if (selectedAccountHash === selectedParentHash) {
-//       dispatch(updateIdentityActiveTab(selectedAccountHash, activeTab));
-//     } else {
-//       dispatch(
-//         updateAccountActiveTab(
-//           selectedAccountHash,
-//           selectedParentHash,
-//           activeTab
-//         )
-//       );
-//     }
-//   };
-// }
+export function updateActiveTabThunk(selectedAccountHash, selectedParentHash, activeTab) {
+  return async dispatch => {
+    if (selectedAccountHash === selectedParentHash) {
+      dispatch(updateIdentityActiveTab(selectedAccountHash, activeTab));
+    } else {
+      dispatch(updateAccountActiveTab(selectedAccountHash, selectedParentHash, activeTab));
+    }
+  };
+}
 
-// export function syncAccount(selectedAccountHash, selectedParentHash) {
-//   return async (dispatch, state) => {
-//     const settings = state().settings.toJS();
-//     const { network } = settings;
-//     const isLedger = state().wallet.get('isLedger');
-//     let identities = state()
-//       .wallet.get('identities')
-//       .toJS();
-//     let identity = findIdentity(identities, selectedParentHash);
-//     const foundIndex = findAccountIndex(identity, selectedAccountHash);
-//     let syncAccount = identity.accounts[foundIndex];
+export function syncAccountThunk(selectedAccountHash, selectedParentHash) {
+  return async (dispatch, state) => {
+    const { selectedNode, nodesList } = state().settings;
+    const { identities } = state().wallet;
+    const mainNode = getMainNode(nodesList, selectedNode);
 
-//     if (foundIndex > -1) {
-//       syncAccount = await getSyncAccount(
-//         identities,
-//         syncAccount,
-//         settings,
-//         selectedAccountHash,
-//         selectedParentHash,
-//         isLedger,
-//         network
-//       ).catch(e => {
-//         console.log(
-//           `-debug: Error in: syncAccount for:${identity.publicKeyHash}`
-//         );
-//         console.error(e);
-//         return syncAccount;
-//       });
-//     }
+    const identity = findIdentity(identities, selectedParentHash);
+    const accountIndex = findAccountIndex(identity, selectedAccountHash);
+    let localAccount = {};
+    let syncAccount = {};
 
-//     identities = state()
-//       .wallet.get('identities')
-//       .toJS();
-//     identity = findIdentity(identities, selectedParentHash);
-//     identity.accounts[foundIndex] = syncAccountWithState(
-//       syncAccount,
-//       identity.accounts[foundIndex]
-//     );
-//     dispatch(updateIdentity(identity));
-//     await persistWalletState(state().wallet.toJS());
-//   };
-// }
+    if (accountIndex > -1) {
+      localAccount = { ...identity.accounts[accountIndex] };
+      syncAccount = await getSyncAccount(
+        syncAccount,
+        mainNode,
+        selectedAccountHash,
+        selectedAccountHash
+      ).catch(e => {
+        console.log(`-debug: Error in: syncAccount for:${identity.publicKeyHash}`);
+        console.error(e);
+        return syncAccount;
+      });
+    }
 
-// export function syncIdentity(publicKeyHash) {
-//   return async (dispatch, state) => {
-//     const settings = state().settings.toJS();
-//     const { network } = settings;
-//     const identities = state()
-//       .wallet.get('identities')
-//       .toJS();
-//     const selectedAccountHash = state().wallet.get('selectedAccountHash');
-//     let stateIdentity = findIdentity(identities, publicKeyHash);
+    identity.accounts[accountIndex] = syncAccountWithState(syncAccount, localAccount);
+    dispatch(updateIdentityAction(identity));
+    await persistWalletState(state().wallet);
+  };
+}
 
-//     const syncIdentity = await getSyncIdentity(
-//       identities,
-//       stateIdentity,
-//       settings,
-//       selectedAccountHash,
-//       network
-//     ).catch(e => {
-//       console.log(`-debug: Error in: syncIdentity for:${publicKeyHash}`);
-//       console.error(e);
-//       return stateIdentity;
-//     });
+export function syncIdentityThunk(publicKeyHash) {
+  return async (dispatch, state) => {
+    const { selectedNode, nodesList } = state().settings;
+    const { selectedAccountHash } = state().app;
 
-//     stateIdentity = findIdentity(
-//       state()
-//         .wallet.get('identities')
-//         .toJS(),
-//       publicKeyHash
-//     );
+    const mainNode = getMainNode(nodesList, selectedNode);
+    const { identities } = state().wallet;
+    const stateIdentity = findIdentity(identities, publicKeyHash);
 
-//     dispatch(
-//       updateIdentity(syncIdentityWithState(syncIdentity, stateIdentity))
-//     );
-//     await persistWalletState(state().wallet.toJS());
-//   };
-// }
+    const syncIdentity = await getSyncIdentity(stateIdentity, mainNode, selectedAccountHash).catch(
+      e => {
+        console.log(`-debug: Error in: syncIdentity for:${publicKeyHash}`);
+        console.error(e);
+        return stateIdentity;
+      }
+    );
+
+    dispatch(updateIdentityAction(syncIdentityWithState(syncIdentity, stateIdentity)));
+    await persistWalletState(state().wallet);
+  };
+}
 
 export function syncWalletThunk() {
   return async (dispatch, state) => {
@@ -278,6 +229,8 @@ export function syncWalletThunk() {
       })
     );
 
+    console.log('syncIdentities-------', syncIdentities);
+
     const newIdentities = identities.filter(stateIdentity => {
       const syncIdentityIndex = syncIdentities.findIndex(
         syncIdentity => stateIdentity.publicKeyHash === syncIdentity.publicKeyHash
@@ -293,6 +246,7 @@ export function syncWalletThunk() {
 
       return true;
     });
+    console.log('newIdentities-------', newIdentities);
 
     dispatch(setIdentitiesAction([...syncIdentities, ...newIdentities]));
     dispatch(updateFetchedTimeAction(new Date()));
@@ -301,160 +255,147 @@ export function syncWalletThunk() {
   };
 }
 
-// export function syncAccountOrIdentity(selectedAccountHash, selectedParentHash) {
-//   return async dispatch => {
-//     try {
-//       dispatch(setWalletIsSyncing(true));
-//       if (selectedAccountHash === selectedParentHash) {
-//         await dispatch(syncIdentity(selectedAccountHash));
-//       } else {
-//         await dispatch(syncAccount(selectedAccountHash, selectedParentHash));
-//       }
-//     } catch (e) {
-//       console.log(
-//         `-debug: Error in: syncAccountOrIdentity for:${selectedAccountHash}`,
-//         selectedParentHash
-//       );
-//       console.error(e);
-//       dispatch(addMessage(e.name, true));
-//     }
-//     dispatch(setWalletIsSyncing(false));
-//   };
-// }
+export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHash) {
+  return async dispatch => {
+    try {
+      dispatch(setWalletIsSyncingAction(true));
+      if (selectedAccountHash === selectedParentHash) {
+        await dispatch(syncIdentityThunk(selectedAccountHash));
+      } else {
+        await dispatch(syncAccountThunk(selectedAccountHash, selectedParentHash));
+      }
+    } catch (e) {
+      console.log(
+        `-debug: Error in: syncAccountOrIdentity for:${selectedAccountHash}`,
+        selectedParentHash
+      );
+      console.error(e);
+      dispatch(createMessageAction(e.name, true));
+    }
+    dispatch(setWalletIsSyncingAction(false));
+  };
+}
 
 export function importAddressThunk(activeTab, seed, pkh, activationCode, username, passPhrase) {
-  // return async (dispatch, state) => {
-  //   const settings = state().settings.toJS();
-  //   const { wallet } = state();
-  //   let identities = wallet.get('identities');
-  //   const walletLocation = wallet.get('walletLocation');
-  //   const walletFileName = wallet.get('walletFileName');
-  //   const password = wallet.get('password');
-  //   const { network } = settings;
-  //   // TODO: clear out message bar
-  //   dispatch(addMessage('', true));
-  //   dispatch(setIsLoading(true));
-  //   try {
-  //     let identity = null;
-  //     let activating;
-  //     switch (activeTab) {
-  //       case GENERATE_MNEMONIC:
-  //         identity = await unlockIdentityWithMnemonic(seed, '');
-  //         identity.storeType = StoreType.Mnemonic;
-  //         break;
-  //       case FUNDRAISER: {
-  //         identity = await unlockFundraiserIdentity(
-  //           seed,
-  //           username.trim(),
-  //           passPhrase.trim(),
-  //           pkh.trim()
-  //         );
-  //         identity.storeType = StoreType.Fundraiser;
-  //         const conseilNode = getSelectedNode(settings, CONSEIL);
-  //         const account = await getAccount(
-  //           { url: conseilNode.url, apiKey: conseilNode.apiKey },
-  //           network,
-  //           identity.publicKeyHash
-  //         ).catch(() => []);
-  //         if (!account || account.length === 0) {
-  //           const tezosNode = getSelectedNode(settings, TEZOS);
-  //           activating = await sendIdentityActivationOperation(
-  //             tezosNode.url,
-  //             identity,
-  //             activationCode
-  //           ).catch(err => {
-  //             const error = err;
-  //             error.name = err.message;
-  //             throw error;
-  //           });
-  //           const operationId = clearOperationId(activating.operationGroupID);
-  //           dispatch(
-  //             addMessage(
-  //               'components.messageBar.messages.success_account_activation',
-  //               false,
-  //               operationId
-  //             )
-  //           );
-  //           identity.operations = {
-  //             [CREATED]: operationId
-  //           };
-  //         }
-  //         break;
-  //       }
-  //       case RESTORE: {
-  //         identity = await unlockIdentityWithMnemonic(seed, passPhrase);
-  //         const storeTypesMap = {
-  //           0: StoreType.Mnemonic,
-  //           1: StoreType.Fundraiser
-  //         };
-  //         identity.storeType = storeTypesMap[identity.storeType];
-  //         const conseilNode = getSelectedNode(settings, CONSEIL);
-  //         const account = await getAccount(
-  //           { url: conseilNode.url, apiKey: conseilNode.apiKey },
-  //           network,
-  //           identity.publicKeyHash
-  //         ).catch(() => []);
-  //         if (!account || account.length === 0) {
-  //           const title = 'components.messageBar.messages.account_not_exist';
-  //           const err = new Error(title);
-  //           err.name = title;
-  //           throw err;
-  //         }
-  //         break;
-  //       }
-  //       default:
-  //         break;
-  //     }
-  //     if (identity) {
-  //       const { publicKeyHash } = identity;
-  //       const jsIdentities = identities.toJS();
-  //       if (findIdentityIndex(jsIdentities, publicKeyHash) === -1) {
-  //         delete identity.seed;
-  //         identity.order = jsIdentities.length + 1;
-  //         identity = createIdentity(identity);
-  //         if (activating !== undefined) {
-  //           identity.transactions.push(
-  //             createTransaction({
-  //               kind: ACTIVATION,
-  //               timestamp: Date.now(),
-  //               operation_group_hash: identity.operations.Created,
-  //               amount:
-  //                 activating.results.contents[0].metadata.balance_updates[0]
-  //                   .change
-  //             })
-  //           );
-  //         }
-  //         dispatch(addNewIdentity(identity));
-  //         identities = state()
-  //           .wallet.get('identities')
-  //           .toJS();
-  //         await saveUpdatedWallet(
-  //           identities,
-  //           walletLocation,
-  //           walletFileName,
-  //           password
-  //         );
-  //         await persistWalletState(state().wallet.toJS());
-  //         dispatch(setIsLoading(false));
-  //         dispatch(push('/home'));
-  //         await dispatch(syncAccountOrIdentity(publicKeyHash, publicKeyHash));
-  //       } else {
-  //         dispatch(
-  //           addMessage('components.messageBar.messages.identity_exist', true)
-  //         );
-  //       }
-  //     }
-  //   } catch (e) {
-  //     console.log(`-debug: Error in: importAddress for:${activeTab}`);
-  //     console.error(e);
-  //     if (e.name === "The provided string doesn't look like hex data") {
-  //       dispatch(addMessage('general.errors.no_hex_data', true));
-  //     } else {
-  //       dispatch(addMessage(e.name, true));
-  //     }
-  //     dispatch(setIsLoading(false));
-  //   }
-  // };
+  return async (dispatch, state) => {
+    const { walletLocation, walletFileName, password, identities } = state().wallet;
+    const { selectedNode, nodesList } = state().settings;
+    const mainNode = getMainNode(nodesList, selectedNode);
+    const { network, conseilUrl, tezosUrl, apiKey } = mainNode;
+    // TODO: clear out message bar
+    dispatch(createMessageAction('', false));
+    dispatch(setIsLoadingAction(true));
+    try {
+      let identity: any = null;
+      let activating;
+      switch (activeTab) {
+        case GENERATE_MNEMONIC:
+          identity = await unlockIdentityWithMnemonic(seed, '');
+          identity.storeType = StoreType.Mnemonic;
+          break;
+        case FUNDRAISER: {
+          identity = await unlockFundraiserIdentity(
+            seed,
+            username.trim(),
+            passPhrase.trim(),
+            pkh.trim()
+          );
+          identity.storeType = StoreType.Fundraiser;
+          const account = await getAccount(
+            { url: conseilUrl, apiKey, network },
+            network,
+            identity.publicKeyHash
+          ).catch(() => false);
+          if (!account) {
+            activating = await sendIdentityActivationOperation(
+              tezosUrl,
+              identity,
+              activationCode
+            ).catch(err => {
+              const error = err;
+              error.name = err.message;
+              throw error;
+            });
+            const operationId = clearOperationId(activating.operationGroupID);
+            dispatch(
+              createMessageAction(
+                'components.messageBar.messages.success_account_activation',
+                false,
+                operationId
+              )
+            );
+            identity.operations = {
+              [CREATED]: operationId
+            };
+          }
+          break;
+        }
+        case RESTORE: {
+          identity = await unlockIdentityWithMnemonic(seed, passPhrase);
+          const storeTypesMap = {
+            0: StoreType.Mnemonic,
+            1: StoreType.Fundraiser
+          };
+          identity.storeType = storeTypesMap[identity.storeType];
+          const account = await getAccount(
+            { url: conseilUrl, apiKey, network },
+            network,
+            identity.publicKeyHash
+          ).catch(() => false);
+          if (!account) {
+            const title = 'components.messageBar.messages.account_not_exist';
+            const err = new Error(title);
+            err.name = title;
+            throw err;
+          }
+          break;
+        }
+        default:
+          break;
+      }
+      if (identity) {
+        const { publicKeyHash } = identity;
+        if (findIdentityIndex(identities, publicKeyHash) === -1) {
+          delete identity.seed;
+          identity.order = identities.length + 1;
+          identity = createIdentity(identity);
+          if (activating !== undefined) {
+            identity.transactions.push(
+              createTransaction({
+                kind: ACTIVATION,
+                timestamp: Date.now(),
+                operation_group_hash: identity.operations.Created,
+                amount: activating.results.contents[0].metadata.balance_updates[0].change
+              })
+            );
+          }
+          dispatch(addNewIdentityAction(identity));
+          dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, true));
+          await saveUpdatedWallet(
+            state().wallet.identities,
+            walletLocation,
+            walletFileName,
+            password
+          );
+          await persistWalletState(state().wallet);
+          dispatch(setIsLoadingAction(false));
+          dispatch(push('/home'));
+          await dispatch(syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash));
+        } else {
+          dispatch(createMessageAction('components.messageBar.messages.identity_exist', true));
+        }
+      }
+    } catch (e) {
+      console.log(`-debug: Error in: importAddress for:${activeTab}`);
+      console.error(e);
+      if (e.name === "The provided string doesn't look like hex data") {
+        dispatch(createMessageAction('general.errors.no_hex_data', true));
+      } else {
+        dispatch(createMessageAction(e.name, true));
+      }
+      dispatch(setIsLoadingAction(false));
+    }
+  };
 }
 
 // // todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
@@ -486,6 +427,10 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
       });
 
       dispatch(setWalletAction(identities, walletLocation, walletFileName, password));
+      if (identities.length > 0) {
+        const { publicKeyHash } = identities[0];
+        dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, true));
+      }
 
       dispatch(automaticAccountRefresh());
       dispatch(setIsLoadingAction(false));

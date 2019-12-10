@@ -5,16 +5,31 @@ import ContentCopy from '@material-ui/icons/FileCopyOutlined';
 import { Tooltip, Button, IconButton } from '@material-ui/core';
 import { withTranslation, WithTranslation } from 'react-i18next';
 
-const Container = styled(Button)`
+const Container = styled(Button)<{ realcolor: string }>`
   &&& {
     padding: 0;
     font-size: 14px;
+    color: ${({ realcolor, theme: { colors } }) => colors[realcolor]};
     &.MuiButton-textSecondary:hover {
       background-color: transparent;
     }
     .MuiButton-startIcon {
       margin-right: 5px;
     }
+  }
+`;
+
+const IconButtonWrapper = styled(IconButton)<{ realcolor: string }>`
+  &&& {
+    color: ${({ realcolor, theme: { colors } }) => colors[realcolor]};
+    margin-left: 5px;
+  }
+`;
+
+const CopyIconWrapper = styled(ContentCopy)`
+  &&& {
+    width: 19px;
+    height: 19px;
   }
 `;
 
@@ -60,17 +75,17 @@ function CopyButton(props: Props) {
     >
       {title ? (
         <Container
-          color="secondary"
-          startIcon={<ContentCopy />}
+          realcolor={color}
+          startIcon={<CopyIconWrapper />}
           disableRipple={true}
           onClick={() => copyToClipboard()}
         >
           {title}
         </Container>
       ) : (
-        <IconButton color="secondary" onClick={() => copyToClipboard()}>
-          <ContentCopy />
-        </IconButton>
+        <IconButtonWrapper size="small" realcolor={color} onClick={() => copyToClipboard()}>
+          <CopyIconWrapper />
+        </IconButtonWrapper>
       )}
     </Tooltip>
   );

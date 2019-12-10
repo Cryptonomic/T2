@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import TezosIcon from '../TezosIcon';
 import CopyIcon from '../CopyButton';
@@ -72,35 +72,21 @@ interface Props {
   size?: string;
   weight: string;
   format: number;
-  className?: string;
   showTooltip?: boolean;
 }
 
 const TezosAmount = (props: Props) => {
-  const { size, color, amount, iconName, weight, className, showTooltip, format } = props;
+  const { size, color, amount, iconName, weight, showTooltip, format } = props;
   const formatedBalance = `${formatAmount(amount)}`;
   return showTooltip ? (
     <Tooltip position="bottom" content={<Content formatedBalance={formatedBalance} />}>
-      <Amount
-        className={className}
-        color={color}
-        size={size}
-        weight={weight}
-        style={SelectableText}
-      >
+      <Amount color={color} size={size} weight={weight} style={SelectableText}>
         {format === 6 ? formatAmount(amount) : `~${formatAmount(amount, format)}`}
         {iconName && <Icon size={size} color={color} iconName={iconName} />}
       </Amount>
     </Tooltip>
   ) : (
-    <Amount
-      className={className}
-      color={color}
-      size={size}
-      weight={weight}
-      format={format}
-      style={SelectableText}
-    >
+    <Amount color={color} size={size} weight={weight} format={format} style={SelectableText}>
       {format === 6 ? formatAmount(amount) : `~${formatAmount(amount, format)}`}
       {iconName && <Icon size={size} color={color} iconName={iconName} />}
     </Amount>

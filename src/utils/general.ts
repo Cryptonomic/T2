@@ -16,7 +16,7 @@ import { Node, NodeStatus, Identity, Account } from '../types/general';
 // import { createTransaction } from './transaction';
 import * as status from '../constants/StatusTypes';
 // import { TEZOS, CONSEIL } from '../constants/NodesTypes';
-// import { SEND, TRANSACTIONS } from '../constants/TabConstants';
+import { SEND, TRANSACTIONS } from '../constants/TabConstants';
 // import { getSelectedNode } from './nodes';
 import { blockExplorerHost } from '../config.json';
 
@@ -30,12 +30,13 @@ export async function getNodesStatus(node: Node): Promise<NodeStatus> {
     return false;
   });
 
-  const consRes = await TezosConseilClient.getBlockHead({ url: conseilUrl, apiKey }, network).catch(
-    err => {
-      console.error(err);
-      return false;
-    }
-  );
+  const consRes = await TezosConseilClient.getBlockHead(
+    { url: conseilUrl, apiKey, network },
+    network
+  ).catch(err => {
+    console.error(err);
+    return false;
+  });
 
   return {
     tezos: tezRes && tezRes.header ? Number(tezRes.header.level) : 0,
@@ -110,7 +111,7 @@ export async function activateAndUpdateAccount(account, node: Node) {
   const accountHash = account.publicKeyHash || account.account_id;
   if (account.status === status.READY || account.status === status.CREATED) {
     const updatedAccount: any = await TezosConseilClient.getAccount(
-      { url: conseilUrl, apiKey },
+      { url: conseilUrl, apiKey, network },
       network,
       accountHash
     ).catch(error => {
@@ -153,16 +154,14 @@ export function generateNewMnemonic() {
 //   return {low: fees[0]['low'], medium: fees[0]['medium'], high: fees[0]['high']};
 // }
 
-// export function isReady(addressStatus, storeType, tab) {
-//   return addressStatus === status.READY
-//     ||
-//     (storeType === Mnemonic && addressStatus === status.CREATED && tab !== SEND)
-//     ||
-//     (storeType === Mnemonic && addressStatus !== status.CREATED && tab === TRANSACTIONS)
-//     ||
-//     (storeType === Hardware && addressStatus === status.CREATED && tab !== SEND)
-//     ;
-// }
+export function isReady(addressStatus, storeType?, tab?) {
+  return (
+    addressStatus === status.READY ||
+    (storeType === Mnemonic && addressStatus === status.CREATED && tab !== SEND) ||
+    (storeType === Mnemonic && addressStatus !== status.CREATED && tab === TRANSACTIONS) ||
+    (storeType === Hardware && addressStatus === status.CREATED && tab !== SEND)
+  );
+}
 
 export function openLink(link) {
   shell.openExternal(link);
@@ -172,12 +171,12 @@ export function openLinkToBlockExplorer(url) {
   openLink(blockExplorerHost + url);
 }
 
-// export function clearOperationId( operationId ) {
-//   if ( typeof operationId === 'string' ) {
-//     return operationId.replace(/\\|"|\n|\r/g, '');
-//   }
-//   return operationId;
-// }
+export function clearOperationId(operationId) {
+  if (typeof operationId === 'string') {
+    return operationId.replace(/\\|"|\n|\r/g, '');
+  }
+  return operationId;
+}
 
 export const getVersionFromApi = async () => {
   try {

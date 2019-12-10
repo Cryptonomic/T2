@@ -5,7 +5,6 @@ import BackButton from '../../components/BackButton';
 import BackUpSeedPhrase from './BackUpSeedPhrase';
 import ShowSeedPhrase from './ShowSeedPhrase';
 import { GENERATE_MNEMONIC } from '../../constants/AddAddressTypes';
-// import { importAddress } from '../../reduxContent/wallet/thunks';
 import { generateNewMnemonic } from '../../utils/general';
 import useEventListener from '../../customHooks/useEventListener';
 
@@ -18,13 +17,13 @@ import {
 } from './style';
 
 interface OwnProps {
-  onImport: () => void;
+  importAddress: (activeTab: string, seed: string) => void;
 }
 
 type Props = OwnProps & WithTranslation;
 
 function CreateAccountSlide(props: Props) {
-  const { t } = props;
+  const { t, importAddress } = props;
   const [isDisabled, setIsDisabled] = useState(false);
   const [seed, setSeed] = useState(generateNewMnemonic());
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -34,7 +33,7 @@ function CreateAccountSlide(props: Props) {
   }
 
   function onImport() {
-    // setTimeout(() => this.props.importAddress(GENERATE_MNEMONIC, seed), 1);
+    importAddress(GENERATE_MNEMONIC, seed);
   }
 
   function onAction() {

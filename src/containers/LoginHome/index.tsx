@@ -9,7 +9,7 @@ import Checkbox from '../../components/Checkbox/';
 import TermsModal from '../../components/TermsModal';
 import LanguageSelectModal from '../../components/LanguageSelectModal';
 import { name } from '../../config.json';
-import { setLocalData, getLocalData } from '../../utils/localData';
+import { setLocalData, getLocalData, resetLocalData } from '../../utils/localData';
 import { changeLocaleThunk } from '../../reduxContent/settings/thunks';
 // import { connectLedger } from '../../reduxContent/wallet/thunks';
 
@@ -74,6 +74,7 @@ function LoginHome(props: Props) {
   );
 
   const ledgerImg = isLedgerConnecting ? ledgerConnectedImg : ledgerUnconnectedImg;
+  // resetLocalData('wallet');
 
   function updateStatusAgreement() {
     setIsAgreement(!isAgreement);
