@@ -11,7 +11,7 @@ import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 // import { initLedgerTransport } from '../../utils/wallet';
 
 import NodesStatus from '../../components/NodesStatus';
-// import HomeAddresses from './../HomeAddresses';
+import HomeMain from './../HomeMain';
 import HomeAdd from './../HomeAdd';
 
 import { getNodesError } from '../../utils/general';
@@ -64,7 +64,7 @@ function HomePage(props: Props) {
     <Fragment>
       {nodesErrorMessage && <NodesStatus message={t(nodesErrorMessage)} />}
       <Switch>
-        {/* <Route path='/home/main' component={HomeAddresses} /> */}
+        <Route path="/home/main" component={HomeMain} />
         <Route path="/home/add" component={HomeAdd} />
         <Redirect to={redirectTo} />
       </Switch>

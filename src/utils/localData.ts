@@ -50,6 +50,24 @@ const schema = {
   }
 };
 
+const defaultStore = {
+  settings: {
+    locale: 'en-US',
+    selectedNode: '',
+    nodesList: [],
+    selectedPath: '',
+    pathsList: []
+  },
+  wallet: {
+    identities: [],
+    walletFileName: '',
+    walletLocation: '',
+    password: ''
+  },
+  isShowedLanguageScene: false,
+  isPPAccepted: false
+};
+
 const store = new Store({ schema });
 
 // Set data in store
@@ -65,4 +83,10 @@ export function getLocalData(key: string) {
 // Remove data in store
 export function removeLocalData(key: string) {
   store.delete(key);
+}
+
+// reset data in store
+export function resetLocalData(key: string) {
+  // store.set(key, defaultStore[key]);
+  store.set(defaultStore);
 }

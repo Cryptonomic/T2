@@ -3,10 +3,14 @@ import { Node } from '../types/general';
 
 export function getWalletSettings() {
   const localSettings = getLocalData('settings');
+  if (localSettings.selectedNode) {
+    return localSettings;
+  }
   try {
     const fileSettings = require('../extraResources/walletSettings.json');
-    return { ...fileSettings, ...localSettings };
+    return fileSettings;
   } catch (err) {
+    console.error('load setting error', err);
     return localSettings;
   }
 }

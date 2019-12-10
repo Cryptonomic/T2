@@ -99,7 +99,7 @@ export async function getTransactions(accountHash, node: Node) {
 
   return Promise.all(
     [target, origin].map(q =>
-      TezosConseilClient.getOperations({ url: conseilUrl, apiKey }, network, q)
+      TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)
     )
   ).then(responses =>
     responses.reduce((result, r) => {
