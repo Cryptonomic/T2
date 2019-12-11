@@ -17,7 +17,10 @@
       "invoke": "Recurrir",
       "deploy": "Abrir",
       "cancel": "Cancelar",
-      "proceed": "Continuar"
+      "proceed": "Continuar",
+      "close": "Close",
+      "withdraw": "Withdraw",
+      "deposit": "Deposit"
     },
     "nouns": {
       "amount": "Monto",
@@ -79,7 +82,8 @@
     },
     "actionPanel": {
       "description": "Esto está bastante vacío. Empieza <1> a mandar</1> y a <3>recibir</3> tez desde esta dirección",
-      "empty-title": "No has hecho ninguna transacción"
+      "empty-title": "No has hecho ninguna transacción",
+      "invoke_manager": "Manage Delegation"
     },
     "addDelegateModal": {
       "gas_tool_tip": "La red necesita {{gas}} tz para crear una dirección delegada",
@@ -98,7 +102,7 @@
       "storage_limit": "Límite de almacenamiento",
       "gas_limit": "Límite de gas",
       "parameters": "Parámetros",
-      "view_scan": "VER EN TZSCAN",
+      "view_scan": "Ver en Mininax",
       "initial_storage": "Almacenamiento inicial",
       "paste_micheline_code": "Pegar en tu código Micheline del contrato inteligente"
     },
@@ -289,7 +293,7 @@
     },
     "send": {
       "send_xtz": "Enviar XTZ",
-      "recepient_address": "Dirección del Beneficiario",
+      "recipient_address": "Dirección del Beneficiario",
       "burn_tooltip_title": "¿Por qué hay tasa de quema?",
       "burn_tooltip_content": "La dirección beneficiante que ingresaste tiene un balance de cero. Enviar fondos a una dirección administradora (tz1,2,3) requiere una tasa de quema única de <1> 0.257 </1>XTZ.",
       "fee_tooltip_title": "¿Por qué las tasas son altas para esta transacción?",
@@ -390,7 +394,7 @@
       "want_to_import_fundraiser_paper_wallet": "¿Quieres importar tu billetera de papel de la Fundraiser?",
       "create_named_wallet": "<1><0>Crear una billetera <1>{{name}}</1></0></1>primero",
       "tagline": "Una billetera comunitaria para Tezos",
-      "app_name": "Tezori",
+      "app_name": "Galleon",
       "keystore_wallet": "Keystore Monedero",
       "ledger_wallet": "Ledger Monedero",
       "connect_ledger": "Conectar con Ledger",

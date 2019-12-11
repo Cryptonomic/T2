@@ -17,7 +17,10 @@
       "invoke": "Invoquer",
       "deploy": "Deployer",
       "cancel": "Annuller",
-      "proceed": "Continuer"
+      "proceed": "Continuer",
+      "close": "Close",
+      "withdraw": "Withdraw",
+      "deposit": "Deposit"
     },
     "nouns": {
       "amount": "Montant",
@@ -79,7 +82,8 @@
     },
     "actionPanel": {
       "description": "C`est assez vide ici. Commencez par <1> envoyer et <3> recevoir tez de cette adresse",
-      "empty-title": "Vous n`avez pas encore fait de transactions"
+      "empty-title": "Vous n`avez pas encore fait de transactions",
+      "invoke_manager": "Manage Delegation"
     },
     "addDelegateModal": {
       "gas_tool_tip": "{{gas}} tz sont requis par le réseau afin de créer une adresse de délégation",
@@ -98,7 +102,7 @@
       "storage_limit": "Limite de Stockage",
       "gas_limit": "Limite de Gaz",
       "parameters": "Paramètres",
-      "view_scan": "VOIR SUR TZSCAN",
+      "view_scan": "Voir sur Mininax",
       "initial_storage": "Stockage Initial",
       "paste_micheline_code": "Coller dans votre contrat intelligent en code Micheline"
     },
@@ -289,7 +293,7 @@
     },
     "send": {
       "send_xtz": "Envoyer XTZ",
-      "recepient_address": "Adresse du destinataire",
+      "recipient_address": "Adresse du destinataire",
       "burn_tooltip_title": "Pouquoi y a-t-il une commission de brûlage ?",
       "burn_tooltip_content": "L`adresse du destinataire que vous avez paramétré à une balance nulle. Envoyer des fonds à une adresse de Manager vide (tz1,2,3) nécéssite une commission de brûlage unique de <1> 0.257 </1>XTZ .",
       "fee_tooltip_title": "Pourquoi la commission est un peu plus élévée pour cette transaction ?",
@@ -390,7 +394,7 @@
       "want_to_import_fundraiser_paper_wallet": "Vous voulez importez votre papier de levée de fonds",
       "create_named_wallet": "wallet? <1><0>Créer un <1>{{name}}</1> wallet</0></1> en premier.",
       "tagline": "Un wallet communautaire pour Tezos",
-      "app_name": "Tezori",
+      "app_name": "Galleon",
       "keystore_wallet": "Keystore Wallet",
       "ledger_wallet": "Ledger Wallet",
       "connect_ledger": "Se connecter au Ledger",

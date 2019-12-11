@@ -17,7 +17,10 @@
       "invoke": "Çalıştır",
       "deploy": "Oluştur",
       "cancel": "Vazgeç",
-      "proceed": "Devam Et"
+      "proceed": "Devam Et",
+      "close": "Close",
+      "withdraw": "Withdraw",
+      "deposit": "Deposit"
     },
     "nouns": {
       "amount": "Miktar",
@@ -79,7 +82,8 @@
     },
     "actionPanel": {
       "description": "Burası çok boş. Bu adresten tez <1> göndermeye</1> ve<3> almaya</3> başlayın.",
-      "empty-title": "Henüz bir işlem gerçekleştirmediniz."
+      "empty-title": "Henüz bir işlem gerçekleştirmediniz.",
+      "invoke_manager": "Manage Delegation"
     },
     "addDelegateModal": {
       "gas_tool_tip": "Delege adres oluşturmak için Tezos ağının {{gas}} tz gaz yakması gerekiyor.",
@@ -98,7 +102,7 @@
       "storage_limit": "Depolama Limiti",
       "gas_limit": "Gaz Limiti",
       "parameters": "Parametreler",
-      "view_scan": "TZSCAN'DE GÖRÜNTÜLE",
+      "view_scan": "Mininax'DE GÖRÜNTÜLE",
       "initial_storage": "İlk Depolama",
       "paste_micheline_code": "Akıllı Sözleşme'nizin Micheline kodunu yapıştırın"
     },
@@ -289,7 +293,7 @@
     },
     "send": {
       "send_xtz": "XTZ Gönder",
-      "recepient_address": "Alıcının Adresi",
+      "recipient_address": "Alıcının Adresi",
       "burn_tooltip_title": "Neden bir yakım ücreti var?",
       "burn_tooltip_content": "Girdiğiniz alıcı adresinin bakiyesi sıfır. Bakiyesiz yönetici adreslere (tz1,2,3) gönderi yapmak bir kerelik <1> 0.257 </1>XTZ yakım ücretine tabidir.",
       "fee_tooltip_title": "Bu işlem için ücretler neden normalden yüksek?",
@@ -390,7 +394,7 @@
       "want_to_import_fundraiser_paper_wallet": "Proje Destek zamanı oluşturulan kağıt",
       "create_named_wallet": "cüzdana mı erişmek istiyorsun? Öncelikle <1><0>yeni bir <1>{{name}}</1> cüzdanı oluştur</0></1>.",
       "tagline": "Tezos ailesi için bir cüzdan",
-      "app_name": "Tezori",
+      "app_name": "Galleon",
       "keystore_wallet": "Anahtar Dosyalı Cüzdan",
       "ledger_wallet": "Ledger Cüzdan",
       "connect_ledger": "Ledger ile Bağlan",

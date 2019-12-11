@@ -6,7 +6,6 @@ import IconButton from '@material-ui/core/IconButton';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
 import Tooltip from '../Tooltip';
-import Button from '../Button';
 import TezosAmount from '../TezosAmount';
 
 const Container = styled.div<{ isActive: boolean | undefined }>`

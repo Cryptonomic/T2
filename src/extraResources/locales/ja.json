@@ -17,7 +17,10 @@
       "invoke": "呼び出す",
       "deploy": "展開する",
       "cancel": "キャンセル",
-      "proceed": "続行"
+      "proceed": "続行",
+      "close": "Close",
+      "withdraw": "Withdraw",
+      "deposit": "Deposit"
     },
     "nouns": {
       "amount": "金額",
@@ -79,7 +82,8 @@
     },
     "actionPanel": {
       "description": "ここはかなり空です。このアドレスからtezの<1>送金</1>と<3>受け取り</3>を始めます。",
-      "empty-title": "まだ取引をしていません"
+      "empty-title": "まだ取引をしていません",
+      "invoke_manager": "Manage Delegation"
     },
     "addDelegateModal": {
       "gas_tool_tip": "デリゲートされたアドレスを作成するために、{{gas}} tzにはネットワークが必要です。",
@@ -98,7 +102,7 @@
       "storage_limit": "ストレージ制限",
       "gas_limit": "ガスリミット",
       "parameters": "パラメーター",
-      "view_scan": "TZSCANのビュー",
+      "view_scan": "Mininaxのビュー",
       "initial_storage": "初期ストレージ",
       "paste_micheline_code": "スマートコントラクトMichelineコードにペースト"
     },
@@ -289,7 +293,7 @@
     },
     "send": {
       "send_xtz": "XTZを送る",
-      "recepient_address": "受取人アドレス",
+      "recipient_address": "受取人アドレス",
       "burn_tooltip_title": "バーン費用がかかる理由は？",
       "burn_tooltip_content": "入力した受取人アドレスには残高がありません。空のマネージャーアドレス(tz1,2,3)に資金を送るためには、一度限り<1> 0.257 </1>XTZ バーン費用が必要です。",
       "fee_tooltip_title": "この取引の費用が少し高い理由は？",
@@ -390,7 +394,7 @@
       "want_to_import_fundraiser_paper_wallet": "Fundraiser ペーパーウォレットをインポートしますか？",
       "create_named_wallet": "<1><0><1> {{name}}</1>ウォレットを最初に作成してください。</0></1>",
       "tagline": "Tezosのコミュニティウォレット",
-      "app_name": "Tezori",
+      "app_name": "Galleon",
       "keystore_wallet": "Keystore Wallet",
       "ledger_wallet": "Ledger Wallet",
       "connect_ledger": "Connect with Ledgerと接続",
