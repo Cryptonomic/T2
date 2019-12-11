@@ -1,5 +1,5 @@
 import { getLocalData } from '../utils/localData';
-import { Node } from '../types/general';
+import { Node, Path } from '../types/general';
 
 export function getWalletSettings() {
   const localSettings = getLocalData('settings');
@@ -22,4 +22,13 @@ export function getSavedLocale(): string {
 export function getMainNode(nodes: Node[], name: string): Node {
   const selectedNode = nodes.find(node => node.displayName === name) || nodes[0];
   return selectedNode;
+}
+
+export function getMainPath(pathsList: Path[], selectedPath: string): string {
+  let path = '';
+  const foundPath = pathsList.find(item => item.label === selectedPath);
+  if (foundPath) {
+    path = foundPath.derivation;
+  }
+  return path;
 }

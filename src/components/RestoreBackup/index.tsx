@@ -165,7 +165,7 @@ function RestoreBackup(props: Props) {
             <PasswordInput
               label={t('components.restoreBackup.seed_phrase_password')}
               password={password}
-              changFunc={val => setPassword(val)}
+              onChange={val => setPassword(val)}
               containerStyle={{ width: '60%' }}
             />
           )}

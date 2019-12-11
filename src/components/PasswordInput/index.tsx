@@ -20,13 +20,13 @@ interface OwnProps {
   label: string;
   containerStyle?: object;
   password: string;
-  changFunc: (val: string) => void;
+  onChange: (val: string) => void;
 }
 
 type Props = OwnProps & WithTranslation;
 
 function PasswordInput(props: Props) {
-  const { label, password, changFunc, containerStyle, t } = props;
+  const { label, password, onChange, containerStyle, t } = props;
   const [isShowed, setIsShowed] = useState(false);
   return (
     <Container style={containerStyle}>
@@ -34,7 +34,7 @@ function PasswordInput(props: Props) {
         label={label}
         type={isShowed ? 'text' : 'password'}
         value={password}
-        onChange={(newVal: string) => changFunc(newVal)}
+        onChange={(newVal: string) => onChange(newVal)}
         right={42}
       />
       <ShowHidePwd style={{ cursor: 'pointer' }} onClick={() => setIsShowed(!isShowed)}>

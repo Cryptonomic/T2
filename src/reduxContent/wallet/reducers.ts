@@ -41,7 +41,7 @@ export function walletReducer(state: WalletState = defaultState, action: WalletA
 
       if (indexFound > -1) {
         stateIdentities[indexFound] = action.identity;
-        return { ...state, identities: [...state.identities] };
+        return { ...state, identities: [...stateIdentities] };
       }
       return state;
     }

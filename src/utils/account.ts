@@ -6,44 +6,32 @@ import {
 } from 'conseiljs';
 import * as blakejs from 'blakejs';
 import * as status from '../constants/StatusTypes';
-import { TEZOS, CONSEIL } from '../constants/NodesTypes';
 import { TRANSACTIONS } from '../constants/TabConstants';
 import { getSyncTransactions, syncTransactionsWithState } from './transaction';
-import {
-  activateAndUpdateAccount
-  // getSelectedKeyStore,
-  // getSelectedHash
-} from './general';
+import { activateAndUpdateAccount } from './general';
 
-import { Node, AddressType } from '../types/general';
+import { Node, AddressType, Account, Identity } from '../types/general';
 
-export function createAccount(account, identity) {
+export function createAccount(account: Account): Account {
   return {
-    account_id: '',
-    balance: 0,
-    block_id: '',
-    counter: 0,
-    delegate_setable: false,
-    delegate_value: null,
-    manager: '',
-    script: '',
-    spendable: true,
-    transactions: [],
-    activeTab: TRANSACTIONS,
-    status: status.CREATED,
-    operations: {},
-    order: 0,
-    publicKey: identity.publicKey,
-    privateKey: identity.privateKey,
-    ...account
+    account_id: account.account_id || '',
+    balance: account.balance || 0,
+    delegate_value: account.delegate_value || '',
+    script: account.script || '',
+    storage: account.storage || '',
+    transactions: account.transactions || [],
+    activeTab: account.activeTab || TRANSACTIONS,
+    status: account.status || status.CREATED,
+    operations: account.operations || {},
+    order: account.order || 0
   };
 }
 
-export function findAccount(identity, accountId) {
+export function findAccount(identity: Identity, accountId: string): Account | undefined {
   return identity && (identity.accounts || []).find(account => account.account_id === accountId);
 }
 
-export function findAccountIndex(identity, accountId) {
+export function findAccountIndex(identity: Identity, accountId: string): number {
   return (
     identity && (identity.accounts || []).findIndex(account => account.account_id === accountId)
   );
@@ -126,7 +114,7 @@ export async function getAccountsForIdentity(node: Node, pkh: string) {
 }
 
 export async function getSyncAccount(
-  account,
+  account: Account,
   node: Node,
   accountHash: string,
   selectedAccountHash: string

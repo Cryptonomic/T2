@@ -132,7 +132,7 @@ function LoginImport(props: Props) {
         <PasswordInput
           label={t('general.nouns.wallet_password')}
           password={password}
-          changFunc={pwd => setPassword(pwd)}
+          onChange={pwd => setPassword(pwd)}
         />
         <ActionButton
           onClick={() => onLogin(IMPORT)}

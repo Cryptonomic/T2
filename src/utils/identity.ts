@@ -1,15 +1,10 @@
 import { StoreType } from 'conseiljs';
 import { TRANSACTIONS } from '../constants/TabConstants';
 import { CREATED, READY } from '../constants/StatusTypes';
-import { Node } from '../types/general';
+import { Node, Identity } from '../types/general';
 
-import {
-  activateAndUpdateAccount
-  // getSelectedKeyStore,
-  // getSelectedHash
-} from './general';
+import { activateAndUpdateAccount } from './general';
 import { getSyncTransactions, syncTransactionsWithState } from './transaction';
-
 import {
   createAccount,
   getAccountsForIdentity,
@@ -17,9 +12,7 @@ import {
   syncAccountWithState
 } from './account';
 
-const { Fundraiser } = StoreType;
-
-export function createIdentity(identity) {
+export function createIdentity(identity: Identity): Identity {
   return {
     balance: 0,
     accounts: [],
@@ -28,7 +21,7 @@ export function createIdentity(identity) {
     privateKey: '',
     operations: {},
     order: 0,
-    storeType: Fundraiser,
+    storeType: StoreType.Fundraiser,
     activeTab: TRANSACTIONS,
     status: CREATED,
     transactions: [],
@@ -37,15 +30,15 @@ export function createIdentity(identity) {
   };
 }
 
-export function findIdentity(identities, publicKeyHash) {
-  return (identities || []).find(identity => identity.publicKeyHash === publicKeyHash);
+export function findIdentity(identities: Identity[], pkh: string): Identity {
+  return (identities || []).find(identity => identity.publicKeyHash === pkh) || identities[0];
 }
 
-export function findIdentityIndex(identities, pkh: string): number {
+export function findIdentityIndex(identities: Identity[], pkh: string): number {
   return (identities || []).findIndex(identity => identity.publicKeyHash === pkh);
 }
 
-export async function getSyncIdentity(identity, node: Node, selectedAccountHash: string) {
+export async function getSyncIdentity(identity: Identity, node: Node, selectedAccountHash: string) {
   const { publicKeyHash, accounts } = identity;
 
   identity = await activateAndUpdateAccount(identity, node);
@@ -79,7 +72,7 @@ export async function getSyncIdentity(identity, node: Node, selectedAccountHash:
         transactions: existAccount.transactions
       };
     }
-    return createAccount(newAccount, identity);
+    return createAccount(newAccount);
   });
 
   // the accounts which only exist in local
@@ -118,7 +111,7 @@ export async function getSyncIdentity(identity, node: Node, selectedAccountHash:
   return identity;
 }
 
-export function syncIdentityWithState(syncIdentity, stateIdentity) {
+export function syncIdentityWithState(syncIdentity: Identity, stateIdentity: Identity) {
   const newAccounts = stateIdentity.accounts.filter(stateAcc => {
     const syncAccIndex = syncIdentity.accounts.findIndex(
       syncIdentityAccount => syncIdentityAccount.account_id === stateAcc.account_id

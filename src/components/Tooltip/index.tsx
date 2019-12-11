@@ -232,7 +232,7 @@ interface Props {
   className?: string;
   position?: string;
   arrowPos?: object;
-  offset?: [];
+  offset?: any[];
 }
 
 function Tooltip(props: Props) {

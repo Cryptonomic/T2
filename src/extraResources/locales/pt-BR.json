@@ -17,7 +17,10 @@
       "invoke": "Chamar",
       "deploy": "Implantar",
       "cancel": "Cancelar",
-      "proceed": "Prosseguir"
+      "proceed": "Prosseguir",
+      "close": "Close",
+      "withdraw": "Withdraw",
+      "deposit": "Deposit"
     },
     "nouns": {
       "amount": "Quantia",
@@ -79,7 +82,8 @@
     },
     "actionPanel": {
       "description": "Está bem vazio aqui. Comece a <1>enviar</1> e <3>receber</3> tezos à partir desse endereço.",
-      "empty-title": "Você ainda não fez nenhuma transação"
+      "empty-title": "Você ainda não fez nenhuma transação",
+      "invoke_manager": "Manage Delegation"
     },
     "addDelegateModal": {
       "gas_tool_tip": "É necessário {{gas}} tz  para que a rede crie um endereço delegado",
@@ -98,7 +102,7 @@
       "storage_limit": "Limite de armazenamento",
       "gas_limit": "Limiste de Gas",
       "parameters": "Parâmetros",
-      "view_scan": "VER NO TZSCAN",
+      "view_scan": "Ver no Mininax",
       "initial_storage": "Armazenamento inicial",
       "paste_micheline_code": "Cole no código Micheline do seu contrato inteligente"
     },
@@ -289,7 +293,7 @@
     },
     "send": {
       "send_xtz": "Enviar XTZ",
-      "recepient_address": "Endereço do destinatário",
+      "recipient_address": "Endereço do destinatário",
       "burn_tooltip_title": "Por que existe uma taxa de queima?",
       "burn_tooltip_content": "O endereço do destinatário que você inseriu tem saldo zero. Enviar fundos para um endereço Gerente (tz1,2,3) requer uma taxa de queima não recorrente de <1> 0.257 </1>XTZ.",
       "fee_tooltip_title": "Por que as taxas estão um pouco mais altas nesta transação?",
@@ -390,7 +394,7 @@
       "want_to_import_fundraiser_paper_wallet": "Deseja importar sua paper wallet do Fundraiser?",
       "create_named_wallet": "<1><0>Criar uma carteira <1>{{name}}</1></0></1> primeiro.",
       "tagline": "Uma carteira de Tezos da comunidade",
-      "app_name": "Tezori",
+      "app_name": "Galleon",
       "keystore_wallet": "Carteira Keystore",
       "ledger_wallet": "Carteira Ledger",
       "connect_ledger": "Conectar à Ledger",
