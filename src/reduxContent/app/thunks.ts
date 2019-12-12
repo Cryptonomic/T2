@@ -49,16 +49,14 @@ export function getAccountThunk(pkh: string) {
   };
 }
 
-export function getIsRevealThunk() {
+export function getIsRevealThunk(isManager: boolean = false) {
   return async (dispatch, state) => {
     const { selectedNode, nodesList } = state().settings;
     const mainNode = getMainNode(nodesList, selectedNode);
     const { tezosUrl } = mainNode;
-    const { selectedAccountHash } = state().app;
-    const isReveal = await TezosNodeReader.isManagerKeyRevealedForAccount(
-      tezosUrl,
-      selectedAccountHash
-    );
+    const { selectedAccountHash, selectedParentHash } = state().app;
+    const pkh = isManager ? selectedParentHash : selectedAccountHash;
+    const isReveal = await TezosNodeReader.isManagerKeyRevealedForAccount(tezosUrl, pkh);
     return isReveal;
   };
 }
