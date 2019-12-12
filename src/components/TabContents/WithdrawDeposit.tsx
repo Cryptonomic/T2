@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import { OperationKindType } from 'conseiljs';
 
 import TezosNumericInput from '../TezosNumericInput';
 import Fees from '../Fees';
 import PasswordInput from '../PasswordInput';
-// import WithdrawLedgerConfirmationModal from '../WithdrawLedgerConfirmationModal';
+import WithdrawLedgerConfirmationModal from '../ConfirmModals/WithdrawLedgerConfirmationModal';
 import InputError from './InputError';
 import TezosIcon from '../TezosIcon';
 
@@ -15,10 +16,10 @@ import { getIsRevealThunk, fetchFeesThunk } from '../../reduxContent/app/thunks'
 import { withdrawThunk, depositThunk } from '../../reduxContent/invoke/thunks';
 import { setIsLoadingAction } from '../../reduxContent/app/actions';
 
-import { OPERATIONFEE } from '../../constants/LowFeeValue';
+import { OPERATIONFEE } from '../../constants/FeeValue';
 import { WITHDRAW } from '../../constants/TabConstants';
 import { RootState } from '../../types/store';
-import { RegularAddress } from '../../types/general';
+import { RegularAddress, AverageFees } from '../../types/general';
 
 import {
   Container,
@@ -46,8 +47,8 @@ interface StoreProps {
   isLoading: boolean;
   selectedAccountHash: string;
   selectedParentHash: string;
-  fetchFees: (op: string) => any;
-  getIsReveal: () => boolean;
+  fetchFees: (op: string) => Promise<AverageFees>;
+  getIsReveal: () => Promise<boolean>;
   withdraw: (fee: number, amount: string, password: string) => void;
   deposit: (fee: number, amount: string, password: string, selectedAccountHash: string) => void;
   setIsLoading: (flag: boolean) => void;
@@ -83,7 +84,7 @@ function WithdrawDeposit(props: Props) {
   } = props;
 
   async function getFees() {
-    const newFees = await fetchFees('transaction');
+    const newFees = await fetchFees(OperationKindType.Transaction);
     if (newFees.low < OPERATIONFEE) {
       newFees.low = OPERATIONFEE;
       setAverageFees(newFees);
@@ -208,16 +209,16 @@ function WithdrawDeposit(props: Props) {
           {buttonTitle}
         </InvokeButton>
       </PasswordButtonContainer>
-      {/* {isLedger && isOpenLedgerConfirm && (
+      {isLedger && open && (
         <WithdrawLedgerConfirmationModal
           amount={amount}
           fee={fee}
           source={selectedAccountHash}
-          open={isOpenLedgerConfirm}
-          onCloseClick={() => onLedgerConfirmation(false)}
+          open={open}
+          onClose={() => setOpen(false)}
           isLoading={isLoading}
         />
-      )} */}
+      )}
     </Container>
   );
 }
@@ -231,7 +232,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = dispatch => ({
   setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  fetchFees: (op: string) => dispatch(fetchFeesThunk(op)),
+  fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
   getIsReveal: () => dispatch(getIsRevealThunk()),
   deposit: (fee: number, amount: string, password: string, selectedAccountHash: string) =>
     dispatch(depositThunk(fee, amount, password, selectedAccountHash)),
@@ -241,8 +242,5 @@ const mapDispatchToProps = dispatch => ({
 
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(WithdrawDeposit) as React.ComponentType<OwnProps>;

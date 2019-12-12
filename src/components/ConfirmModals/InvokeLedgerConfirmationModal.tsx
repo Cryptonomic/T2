@@ -102,7 +102,7 @@ interface OwnProps {
   fee: number;
   amount: string;
   parameters: string;
-  storage: string;
+  storage: number;
 }
 
 type Props = OwnProps & WithTranslation;

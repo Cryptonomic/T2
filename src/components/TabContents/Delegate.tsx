@@ -2,21 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { OperationKindType } from 'conseiljs';
 
 import InputAddress from '../InputAddress';
 import Fees from '../Fees';
 import PasswordInput from '../PasswordInput';
 import Tooltip from '../Tooltip';
 import TezosIcon from '../TezosIcon';
-// import DelegateLedgerConfirmationModal from '../DelegateLedgerConfirmationModal';
+import DelegateLedgerConfirmationModal from '../ConfirmModals/DelegateLedgerConfirmationModal';
 import { ms } from '../../styles/helpers';
 
 import { getIsRevealThunk, fetchFeesThunk } from '../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../reduxContent/app/actions';
 import { delegateThunk } from '../../reduxContent/delegate/thunks';
 
-import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/LowFeeValue';
+import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
 import { RootState } from '../../types/store';
+import { AverageFees } from '../../types/general';
 
 import {
   Container,
@@ -42,9 +44,9 @@ interface StoreProps {
   isLedger: boolean;
   isLoading: boolean;
   selectedAccountHash: string;
-  fetchFees: (op: string) => any;
-  getIsReveal: () => boolean;
-  delegate: (delegateAddress: string, fee: number, password: string) => boolean;
+  fetchFees: (op: OperationKindType) => Promise<AverageFees>;
+  getIsReveal: () => Promise<boolean>;
+  delegate: (delegateAddress: string, fee: number, password: string) => Promise<boolean>;
   setIsLoading: (flag: boolean) => void;
 }
 
@@ -79,7 +81,7 @@ function Delegate(props: Props) {
     !isReady || isLoading || isAddressIssue || !newAddress || (!passPhrase && !isLedger);
 
   async function getFeesAndReveals() {
-    const newFees = await fetchFees('delegation');
+    const newFees = await fetchFees(OperationKindType.Delegation);
     const isRevealed = await getIsReveal();
     let miniLowFee = OPERATIONFEE;
     if (!isRevealed) {
@@ -183,16 +185,16 @@ function Delegate(props: Props) {
           {t('components.delegate.change_delegate')}
         </InvokeButton>
       </PasswordButtonContainer>
-      {/* {isLedger && open && (
+      {isLedger && open && (
         <DelegateLedgerConfirmationModal
           fee={fee}
           address={newAddress}
           source={selectedAccountHash}
-          open={isOpenLedgerConfirm}
-          onCloseClick={() => setOpen(false)}
+          open={open}
+          onClose={() => setOpen(false)}
           isLoading={isLoading}
         />
-      )} */}
+      )}
     </Container>
   );
 }
@@ -205,7 +207,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = dispatch => ({
   setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  fetchFees: (op: string) => dispatch(fetchFeesThunk(op)),
+  fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
   getIsReveal: () => dispatch(getIsRevealThunk()),
   delegate: (delegateAddress: string, fee: number, password: string) =>
     dispatch(delegateThunk(delegateAddress, fee, password))
@@ -213,8 +215,5 @@ const mapDispatchToProps = dispatch => ({
 
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(Delegate) as React.ComponentType<OwnProps>;
