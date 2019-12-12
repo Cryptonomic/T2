@@ -1,8 +1,8 @@
 export function sortArr({ sortOrder, sortBy }) {
   return (a, b) => {
     const asc = sortOrder === 'asc';
-    const aOrder = a.get(sortBy);
-    const bOrder = b.get(sortBy);
+    const aOrder = a[sortBy];
+    const bOrder = b[sortBy];
 
     if (aOrder < bOrder) {
       return asc ? -1 : 1;

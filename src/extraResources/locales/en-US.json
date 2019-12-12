@@ -17,7 +17,10 @@
       "invoke": "Invoke",
       "deploy": "Deploy",
       "cancel": "Cancel",
-      "proceed": "Proceed"
+      "proceed": "Proceed",
+      "close": "Close",
+      "withdraw": "Withdraw",
+      "deposit": "Deposit"
     },
     "nouns": {
       "amount": "Amount",
@@ -48,8 +51,7 @@
       "burn": "Burn",
       "smart_contract": "Smart Contract",
       "code": "Code",
-      "platform": "Platform",
-      "network": "Network"
+      "format": "Format"
     },
     "errors": {
       "no_hex_data": "The provided string doesn't look like hex data",
@@ -81,32 +83,35 @@
     },
     "actionPanel": {
       "description": "It's pretty empty here. Get started<1> sending</1> and<3> receiving</3> tez from this address.",
-      "empty-title": "You have not made any transactions yet"
+      "empty-title": "You have not made any transactions yet",
+      "invoke_manager": "Manage Delegation"
     },
     "addDelegateModal": {
       "gas_tool_tip": "{{gas}} tz is required by the network to create a delegated address",
       "warning1": "Total exceeds available funds",
       "warning2": "Manager Addresses are not yet allowed to have less than 1 µtz",
-      "add_delegate_title": "Add a Delegate"
+      "add_delegate_title": "Add a Delegate",
+      "deploy_delegation": "Deploy Delegation..."
     },
     "interactModal": {
       "interact_contract": "Interact with Contracts",
       "invoke_contract": "Invoke an Existing Contract",
       "deploy_contract": "Deploy a New Contract",
       "title": "Interact with Smart Contracts",
-      "smart_address": "Smart Contract Address",
+      "smart_address": "Contract Address",
       "invoke_from": "Invoke from",
       "deploy_from": "Deploy from",
       "storage_limit": "Storage Limit",
       "gas_limit": "Gas Limit",
       "parameters": "Parameters",
-      "view_scan": "VIEW ON TZSCAN",
+      "view_scan": "View on Mininax",
       "initial_storage": "Initial Storage",
-      "paste_micheline_code": "Paste in your smart contract Micheline code"
+      "paste_micheline_code": "Paste in your smart contract {{format}} code",
+      "entry_point": "Entry Point"
     },
     "addNodeModal": {
       "error": "Node's protocol must be https",
-      "title": "Set Up Your Custom Node",
+      "title": "Set Up Your Custom {{title}} Node",
       "labels": {
         "node_name": "Node Name",
         "api_key": "API Key"
@@ -119,7 +124,8 @@
     },
     "address": {
       "manager_address": "Manager Address",
-      "delegated_address": "Delegated Address {{index}}"
+      "delegated_address": "Delegated Address {{index}}",
+      "delegation_contract": "Delegation Contract {{index}}"
     },
     "addressBlock": {
       "descriptions": {
@@ -142,7 +148,13 @@
     },
     "balanceBanner": {
       "breadcrumbs": "Account {{parentIndex}} > {{addressLabel}}",
-      "delegated_to": "Delegated to "
+      "delegated_to": "Delegated to ",
+      "secret_key": "Secret Key",
+      "reveal_key": "Click to reveal secret key.",
+      "hide_key": "Click to hide secret key.",
+      "warning": "Warning!",
+      "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
+      "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
     },
     "copyIcon": {
       "copied": "Copied!"
@@ -291,9 +303,9 @@
     },
     "send": {
       "send_xtz": "Send XTZ",
-      "recepient_address": "Recepient Address",
+      "recipient_address": "Recipient Address",
       "burn_tooltip_title": "Why is there a burn fee?",
-      "burn_tooltip_content": "The recepient address you entered has a zero balance. Sending funds to an empty Manager address (tz1,2,3) requires a one-time<1> 0.257 </1>XTZ burn fee.",
+      "burn_tooltip_content": "The recipient address you entered has a zero balance. Sending funds to an empty Manager address (tz1,2,3) requires a one-time<1> 0.257 </1>XTZ burn fee.",
       "fee_tooltip_title": "Why are fees a bit higher for this transaction?",
       "fee_tooltip_content": "This address is not revealed on the blockchain. We have added<1> 0.001300 XTZ </1>for Public Key Reveal to your regular send operation fee.",
       "warnings": {
@@ -331,14 +343,14 @@
       "activitation": "ACTIVATION",
       "updated_delegate": "UPDATED DELEGATE",
       "origination": "ORIGINATION",
-      "sent": "SENT",
-      "received": "RECEIVED",
+      "sent": "Sent",
+      "received": "Received",
       "this_address": "this address",
       "your_manager_address": "<0>your</0> Account 1 Manager Address",
       "invoke_function": "INVOKED FUNCTION",
       "add_delegate": "ORIGINATION - DELEGATED ADDRESS",
       "deployment": "ORIGINATION - SMART CONTRACT",
-      "invoked": "INVOKED"
+      "invoked": "Invoked"
     },
     "update": {
       "last_updated": "Last updated {{date}}"
@@ -349,6 +361,10 @@
     "comingSoon": {
       "coming_soon": "Coming Soon!",
       "working_hard": "We are working hard on making this page."
+    },
+    "withdrawDeposit": {
+      "withdraw_warning": "Transfer balance to the manager account at {{managerAddress}}.",
+      "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}"
     }
   },
   "containers": {
@@ -392,7 +408,7 @@
       "want_to_import_fundraiser_paper_wallet": "Want to import your Fundraiser paper",
       "create_named_wallet": "wallet? <1><0>Create a <1>{{name}}</1> wallet</0></1> first.",
       "tagline": "A community wallet for Tezos",
-      "app_name": "Tezori",
+      "app_name": "Galleon",
       "keystore_wallet": "Keystore Wallet",
       "ledger_wallet": "Ledger Wallet",
       "connect_ledger": "Connect with Ledger",

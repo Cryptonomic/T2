@@ -67,7 +67,8 @@ interface Props {
   disabled?: boolean;
   right?: number;
   value?: string;
-  onChange: (val: string) => void;
+  defaultValue?: string;
+  onChange?: (val: string) => void;
 }
 
 function TextField(props: Props) {
@@ -79,7 +80,11 @@ function TextField(props: Props) {
         id="custom-input"
         key={label}
         type={type}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          if (onChange) {
+            onChange(event.target.value);
+          }
+        }}
         error={!!errorText}
         disabled={disabled}
         right={right}

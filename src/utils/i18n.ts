@@ -10,7 +10,7 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    preload: ['en-US', 'de', 'es', 'fr', 'ja', 'ko', 'pt-BR', 'tr', 'zh-CN'],
+    preload: ['en-US', 'de', 'es', 'fr', 'ja', 'ko', 'pt-BR', 'tr', 'ru', 'zh-CN'],
     load: 'currentOnly',
     debug: true,
     backend: {

@@ -3,6 +3,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { darken } from 'polished';
+import IconButton from '@material-ui/core/IconButton';
 import AddCircle from '@material-ui/icons/AddCircle';
 import CloseIcon from '@material-ui/icons/Close';
 import { StoreType } from 'conseiljs';
@@ -139,6 +140,16 @@ const CloseIconWrapper = styled(CloseIcon)`
   cursor: pointer;
 `;
 
+const AddCircleWrapper = styled(AddCircle)<{ active: number }>`
+  &&& {
+    fill: #7b91c0;
+    width: ${ms(1)};
+    height: ${ms(1)};
+    opacity: ${({ active }) => (active ? 1 : 0.5)};
+    cursor: ${({ active }) => (active ? 'pointer' : 'default')};
+  }
+`;
+
 interface OwnProps {
   // hideDelegateTooltip: () => void,
   delegateTooltip: boolean;
@@ -188,28 +199,28 @@ function AddressBlock(props: Props) {
   }
 
   const getAddresses = addresses => {
-    const newAddresses: any[] = [];
-    const delegatedAddresses: any[] = [];
-    const smartAddresses: any[] = [];
-    let smartBalance = 0;
+    const addresses1: any[] = [];
+    const addresses2: any[] = [];
+    const addresses3: any[] = [];
+    let totalBalance = 0;
     addresses.forEach(address => {
-      const { balance, status, script, account_id } = address;
+      const { script, account_id } = address;
       const addressType = getAddressType(account_id, script);
       if (addressType === AddressType.Delegated) {
-        delegatedAddresses.push(address);
+        addresses2.push(address);
       } else if (addressType === AddressType.Smart) {
-        smartAddresses.push(address);
+        addresses3.push(address);
       }
 
-      if (status === READY || status === PENDING) {
-        smartBalance += balance;
+      if (address.status === READY || address.status === PENDING) {
+        totalBalance += address.balance;
       }
     });
     return {
-      newAddresses,
-      delegatedAddresses: delegatedAddresses.sort((a, b) => a.order - b.order),
-      smartAddresses: smartAddresses.sort((a, b) => a.order - b.order),
-      smartBalance
+      newAddresses: addresses1,
+      delegatedAddresses: addresses2.sort((a, b) => a.order - b.order),
+      smartAddresses: addresses3.sort((a, b) => a.order - b.order),
+      smartBalance: totalBalance
     };
   };
 
@@ -269,35 +280,18 @@ function AddressBlock(props: Props) {
       <Fragment>
         <AddDelegateLabel>
           <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
-          {isManagerReady && (
-            <AddCircle
-              style={{
-                fill: '#7B91C0',
-                height: ms(1),
-                width: ms(1),
-                cursor: 'pointer'
-              }}
-              onClick={() => setIsDelegateModalOpen(true)}
-            />
-          )}
-          {!isManagerReady && (
+          {isManagerReady ? (
+            <AddCircleWrapper active={1} onClick={() => setIsDelegateModalOpen(true)} />
+          ) : (
             <Tooltip
               position="bottom"
               content={
                 <NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>
               }
             >
-              <Button buttonTheme="plain">
-                <AddCircle
-                  style={{
-                    fill: '#7B91C0',
-                    height: ms(1),
-                    width: ms(1),
-                    opacity: 0.5,
-                    cursor: 'default'
-                  }}
-                />
-              </Button>
+              <IconButton size="small" color="primary">
+                <AddCircleWrapper active={0} />
+              </IconButton>
             </Tooltip>
           )}
         </AddDelegateLabel>
@@ -331,18 +325,9 @@ function AddressBlock(props: Props) {
 
       <InteractContractLabel>
         <DelegateTitle>{t('components.interactModal.interact_contract')}</DelegateTitle>
-        {isManagerReady && (
-          <AddCircle
-            style={{
-              fill: '#7B91C0',
-              height: ms(1),
-              width: ms(1),
-              cursor: 'pointer'
-            }}
-            onClick={() => onCheckInteractModal()}
-          />
-        )}
-        {!isManagerReady && (
+        {isManagerReady ? (
+          <AddCircleWrapper active={1} onClick={() => onCheckInteractModal()} />
+        ) : (
           <Tooltip
             position="bottom"
             content={
@@ -351,17 +336,9 @@ function AddressBlock(props: Props) {
               </NoFundTooltip>
             }
           >
-            <Button buttonTheme="plain">
-              <AddCircle
-                style={{
-                  fill: '#7B91C0',
-                  height: ms(1),
-                  width: ms(1),
-                  opacity: 0.5,
-                  cursor: 'default'
-                }}
-              />
-            </Button>
+            <IconButton size="small" color="primary">
+              <AddCircleWrapper active={0} />
+            </IconButton>
           </Tooltip>
         )}
       </InteractContractLabel>

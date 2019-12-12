@@ -1,6 +1,7 @@
 import React from 'react';
-import styled, { withTheme } from 'styled-components';
+import styled from 'styled-components';
 import { StoreType } from 'conseiljs';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 import LoaderSpinner from '../LoaderSpinner';
@@ -48,77 +49,59 @@ const Description = styled.div`
   font-size: ${ms(-0.5)};
 `;
 
-interface Props {
-  isManager?: boolean;
-  isContract?: boolean;
-  address?: {
-    get: (
-      obj
-    ) => {
-      toJS(): {};
-    };
-  };
-
-  theme?: {
-    colors: {
-      accent: string;
-    };
-  };
-  t: () => {};
+interface OwnProps {
+  isManager: boolean;
+  isContract: boolean;
+  address: any;
 }
 
+type Props = OwnProps & WithTranslation;
+
 function AccountStatus(props: Props) {
-  const { isManager, isContract, address, theme, t } = props;
+  const { isManager, isContract, address, t } = props;
   let storeType;
   let status;
   let operations;
   if (address) {
-    storeType = address.get('storeType');
-    status = address.get('status');
-    operations = address.get('operations').toJS();
+    storeType = address.storeType;
+    status = address.status;
+    operations = address.operations;
   }
 
-  let icon = (
-    <LoaderSpinner
-      size="x4"
-      styles={{
-        color: theme && theme.colors && theme.colors.accent
-      }}
-    />
-  );
+  let icon = <LoaderSpinner size="x4" />;
   let title = '';
   let description = '';
   let info;
   if (isContract) {
-    title = i18n.t('components.addressStatus.deploying_title');
+    title = t('components.addressStatus.deploying_title');
     const opName = operations[statuses.CREATED]
       ? operations[statuses.CREATED]
       : operations[statuses.FOUND];
     info = (
       <Info
         firstIconName="icon-star"
-        operationName={i18n.t('components.accountStatus.origination_operation_id')}
+        operationName={t('components.accountStatus.origination_operation_id')}
         operationId={opName}
         lastIconName="icon-new-window"
       />
     );
   } else {
-    const typeText = i18n.t(isManager ? 'general.nouns.account' : 'general.nouns.address');
+    const typeText = t(isManager ? 'general.nouns.account' : 'general.nouns.address');
     switch (status) {
       case statuses.CREATED:
         if (storeType === Mnemonic || storeType === Hardware) {
           icon = (
             <Image
-              alt={i18n.t('components.accountStatus.creating_ccount')}
+              alt={t('components.accountStatus.creating_ccount')}
               src={transactionsEmptyState}
             />
           );
-          title = i18n.t('components.accountStatus.titles.ready');
-          description = i18n.t('components.accountStatus.descriptions.mnemonic_first_transaction');
+          title = t('components.accountStatus.titles.ready');
+          description = t('components.accountStatus.descriptions.mnemonic_first_transaction');
         } else {
-          title = i18n.t('components.accountStatus.titles.retrieving', { typeText });
+          title = t('components.accountStatus.titles.retrieving', { typeText });
           if (operations[statuses.CREATED]) {
-            const operationName = i18n.t(
+            const operationName = t(
               isManager
                 ? 'components.accountStatus.activation_operation_id'
                 : 'components.accountStatus.origination_operation_id'
@@ -136,9 +119,9 @@ function AccountStatus(props: Props) {
         break;
       case statuses.FOUND:
       case statuses.PENDING:
-        title = i18n.t('components.accountStatus.titles.pending', { typeText });
+        title = t('components.accountStatus.titles.pending', { typeText });
         if (operations[statuses.FOUND]) {
-          const operationName = i18n.t('components.accountStatus.public_key_reveal_operation_id');
+          const operationName = t('components.accountStatus.public_key_reveal_operation_id');
           info = (
             <Info
               firstIconName="icon-broadcast"
@@ -156,10 +139,9 @@ function AccountStatus(props: Props) {
           }
           const { amount } = transaction[0];
           const formattedAmount = formatAmount(amount, 2);
-          description = i18n.t(
-            'components.accountStatus.descriptions.first_transaction_confirmation',
-            { formattedAmount }
-          );
+          description = t('components.accountStatus.descriptions.first_transaction_confirmation', {
+            formattedAmount
+          });
         }
         break;
       default:
@@ -177,4 +159,4 @@ function AccountStatus(props: Props) {
   );
 }
 
-export default withTheme(AccountStatus);
+export default withTranslation()(AccountStatus);
