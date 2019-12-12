@@ -7,12 +7,13 @@ import {
   TezosConseilClient,
   TezosNodeReader,
   TezosWalletUtil,
-  StoreType
+  StoreType,
+  KeyStore
 } from 'conseiljs';
 import { Node, NodeStatus, Identity, Account } from '../types/general';
 
 // import { findAccount, createSelectedAccount } from './account';
-// import { findIdentity } from './identity';
+import { findIdentity } from './identity';
 // import { createTransaction } from './transaction';
 import * as status from '../constants/StatusTypes';
 // import { TEZOS, CONSEIL } from '../constants/NodesTypes';
@@ -96,15 +97,22 @@ export function getNodesError({ tezos, conseil }: NodeStatus): string {
 //   return fromJS(selectedAccount || createSelectedAccount() );
 // }
 
-// export function getSelectedKeyStore( identities, selectedAccountHash, selectedParentHash ) {
-//   var selectedAccount = getSelectedAccount( identities, selectedAccountHash, selectedParentHash );
-//   const { publicKey, privateKey, publicKeyHash, account_id } = selectedAccount.toJS();
-//   return {
-//     publicKey,
-//     privateKey,
-//     publicKeyHash: publicKeyHash || account_id
-//   };
-// }
+export function getSelectedKeyStore(
+  identities: any[],
+  selectedAccountHash: string,
+  selectedParentHash: string,
+  isLedger: boolean = false
+): KeyStore {
+  const identity = findIdentity(identities, selectedParentHash);
+  const { publicKey, privateKey } = identity;
+  return {
+    publicKey,
+    privateKey,
+    publicKeyHash: selectedAccountHash,
+    seed: '',
+    storeType: isLedger ? StoreType.Hardware : StoreType.Mnemonic
+  };
+}
 
 export async function activateAndUpdateAccount(account, node: Node) {
   const { conseilUrl, network, apiKey } = node;

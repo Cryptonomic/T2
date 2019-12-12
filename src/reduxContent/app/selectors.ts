@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 import { RootState } from '../../types/store';
-import { getWallet } from '../wallet/selectors';
-import { getAddressType, findAccount } from '../../utils/account';
+import { getAddressType } from '../../utils/account';
 import { AddressType } from '../../types/general';
 import { TRANSACTIONS } from '../../constants/TabConstants';
 
@@ -29,19 +28,9 @@ export const getAccountSelector = createSelector(
   selectedParentHashSelector,
   identitiesSelector,
   (accountHash, parentHash, identites) => {
-    console.log('identitiesSelector-----', identites, parentHash, accountHash);
     const selectedIdentity = identites.find(identity => identity.publicKeyHash === parentHash);
     if (selectedIdentity) {
-      const {
-        accounts,
-        publicKeyHash,
-        balance,
-        transactions,
-        privateKey,
-        storeType,
-        delegate_value,
-        status
-      } = selectedIdentity;
+      const { accounts, publicKeyHash, balance, privateKey } = selectedIdentity;
       const regularAddresses = [{ pkh: publicKeyHash, balance }];
 
       accounts.forEach(acc => {
@@ -55,32 +44,19 @@ export const getAccountSelector = createSelector(
       if (accountHash === parentHash) {
         return {
           ...defaultAccount,
-          status,
-          balance,
           regularAddresses,
-          transactions,
-          privateKey,
-          storeType,
-          delegate_value
+          ...selectedIdentity
         };
       }
       const selectedAccount = accounts.find(acc => acc.account_id === accountHash);
-      return {
-        ...defaultAccount,
-        privateKey,
-        regularAddresses,
-        transactions: selectedAccount.transactions,
-        storeType: selectedAccount.storeType,
-        delegate_value: selectedAccount.delegate_value,
-        script: selectedAccount.script,
-        storage: selectedAccount.storage,
-        balance: selectedAccount.balance,
-        status: selectedAccount.status
-      };
+      if (selectedAccount) {
+        return {
+          ...defaultAccount,
+          privateKey,
+          ...selectedAccount
+        };
+      }
     }
-    // if (accountHash === parentHash) {
-    //   return { ...selectedIdentify };
-    // }
     return defaultAccount;
   }
 );

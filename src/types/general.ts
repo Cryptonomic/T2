@@ -21,26 +21,20 @@ export interface NodeStatus {
 export interface Account {
   account_id: string;
   balance: number;
-  block_id: string;
-  counter: number;
-  delegate_setable: boolean;
-  delegate_value: string;
-  manager: string;
+  delegate_value?: string;
   script: string;
-  spendable: boolean;
+  storage?: string;
   transactions: any[];
-  activeTab: string;
-  status: string;
+  activeTab?: string;
+  status?: string;
   operations: any; // todo type
   order: number;
-  publicKey: string; // todo identity.publicKey
-  privateKey: string;
 }
 
 export interface Identity {
+  publicKeyHash: string;
   balance: number;
   accounts: Account[];
-  publicKeyHash: string;
   publicKey: string;
   privateKey: string;
   operations: any;
@@ -57,4 +51,9 @@ export enum AddressType {
   Smart,
   Delegated,
   None
+}
+
+export interface RegularAddress {
+  pkh: string;
+  balance: number;
 }

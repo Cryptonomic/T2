@@ -9,16 +9,13 @@ import Button from '../Button';
 import BalanceBanner from '../BalanceBanner';
 import EmptyState from '../EmptyState';
 import PageNumbers from '../PageNumbers';
-// import Transactions from '../Transactions';
-// import Send from '../Send';
-// import Receive from '../Receive';
-// import Invoke from '../Invoke';
-// import InvokeManager from '../InvokeManager';
-// import CodeStorage from '../CodeStorage';
+import Transactions from '../Transactions';
+
 import Loader from '../Loader';
 import AccountStatus from '../AccountStatus';
-// import WithdrawDeposit from '../TabContents/WithdrawDeposit';
-// import Delegate from '../TabContents/Delegate';
+
+import { Send, Receive, Invoke, CodeStorage, WithdrawDeposit, Delegate } from '../TabContents';
+
 import {
   TRANSACTIONS,
   SEND,
@@ -48,11 +45,11 @@ const Container = styled.section`
   flex-grow: 1;
 `;
 
-const Tab = styled(Button)<{ isActive: boolean; isReady: boolean }>`
+const Tab = styled(Button)<{ isActive: boolean; ready: boolean }>`
   background: ${({ isActive, theme: { colors } }) => (isActive ? colors.white : colors.accent)};
   color: ${({ isActive, theme: { colors } }) =>
     isActive ? colors.primary : lighten(0.4, colors.accent)};
-  cursor: ${({ isReady }) => (isReady ? 'pointer' : 'initial')};
+  cursor: ${({ ready }) => (ready ? 'pointer' : 'initial')};
   text-align: center;
   font-weight: 500;
   padding: ${ms(-1)} ${ms(1)};
@@ -66,8 +63,8 @@ const TabList = styled.div<{ count: number }>`
   grid-column-gap: 50px;
 `;
 
-const TabText = styled.span<{ isReady: boolean }>`
-  opacity: ${({ isReady }) => (isReady ? '1' : '0.5')};
+const TabText = styled.span<{ ready: boolean }>`
+  opacity: ${({ ready }) => (ready ? '1' : '0.5')};
 `;
 
 const SectionContainer = styled.div`
@@ -107,7 +104,7 @@ const Description = (props: DescriptionProps) => {
 };
 
 interface OwnProps {
-  updateActiveTab: () => void;
+  updateActiveTab: (activeTab) => void;
   selectedAccount: any;
   isLoading: boolean;
   isWalletSyncing: boolean;
@@ -136,7 +133,8 @@ function ActionPanel(props: Props) {
     isLedger,
     isWalletSyncing,
     syncWallet,
-    isLoading
+    isLoading,
+    updateActiveTab
   } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const [addressType, setAddressType] = useState(AddressType.Manager);
@@ -177,129 +175,110 @@ function ActionPanel(props: Props) {
   }, [selectedAccountHash, script]);
 
   function onChangeTab(newTab: string) {
-    // updateActiveTab(selectedAccountHash, selectedParentHash, activeTab);
+    updateActiveTab(newTab);
   }
 
-  // function renderSection() {
-  //   const ready = status === READY;
-  //   switch (activeTab) {
-  //     case DELEGATE:
-  //       return (
-  //         <Delegate
-  //           isReady={ready}
-  //           selectedAccountHash={selectedAccountHash}
-  //           selectedParentHash={selectedParentHash}
-  //         />
-  //       );
-  //     case RECEIVE:
-  //       return <Receive address={selectedAccountHash} />;
-  //     case SEND:
-  //       return (
-  //         <Send
-  //           isReady={ready}
-  //           selectedAccountHash={selectedAccountHash}
-  //           selectedParentHash={selectedParentHash}
-  //           addressBalance={balance}
-  //           isManager={isManager}
-  //         />
-  //       );
-  //     case CODE:
-  //       return <CodeStorage code={script.replace(/\\n/g, '\n')} />;
-  //     case STORAGE:
-  //       return <CodeStorage code={storage} />;
-  //     case INVOKE:
-  //       return (
-  //         <Invoke
-  //           isReady={ready}
-  //           addresses={regularAddresses}
-  //           selectedParentHash={selectedParentHash}
-  //           selectedAccountHash={selectedAccountHash}
-  //           onSuccess={() => onChangeTab(TRANSACTIONS)}
-  //         />
-  //       );
-  //     case INVOKE_MANAGER:
-  //       return (
-  //         <InvokeManager
-  //           balance={balance}
-  //           isReady={ready}
-  //           addresses={regularAddresses}
-  //           selectedParentHash={selectedParentHash}
-  //           selectedAccountHash={selectedAccountHash}
-  //           onSuccess={() => onChangeTab(TRANSACTIONS)}
-  //         />
-  //       );
-  //     case WITHDRAW:
-  //     case DEPOSIT:
-  //       return (
-  //         <WithdrawDeposit
-  //           balance={balance}
-  //           isReady={ready}
-  //           addresses={regularAddresses}
-  //           selectedParentHash={selectedParentHash}
-  //           selectedAccountHash={selectedAccountHash}
-  //           format={activeTab}
-  //           onSuccess={() => onChangeTab(TRANSACTIONS)}
-  //         />
-  //       );
-  //     case TRANSACTIONS:
-  //     default: {
-  //       if (!ready) {
-  //         return (
-  //           <AccountStatus
-  //             address={selectedAccount}
-  //             isContract={isContractAddress}
-  //             isManager={selectedAccountHash === selectedParentHash}
-  //           />
-  //         );
-  //       }
+  function renderSection() {
+    const ready = status === READY;
+    switch (activeTab) {
+      case DELEGATE:
+        return <Delegate isReady={ready} />;
+      case RECEIVE:
+        return <Receive address={selectedAccountHash} />;
+      case SEND:
+        return <Send isReady={ready} addressBalance={balance} />;
+      case CODE:
+        return <CodeStorage code={script.replace(/\\n/g, '\n')} />;
+      case STORAGE:
+        return <CodeStorage code={storage} />;
+      case INVOKE:
+        return (
+          <Invoke
+            isReady={ready}
+            addresses={regularAddresses}
+            onSuccess={() => onChangeTab(TRANSACTIONS)}
+          />
+        );
+      // case INVOKE_MANAGER:
+      //   return (
+      //     <InvokeManager
+      //       balance={balance}
+      //       isReady={ready}
+      //       addresses={regularAddresses}
+      //       selectedParentHash={selectedParentHash}
+      //       selectedAccountHash={selectedAccountHash}
+      //       onSuccess={() => onChangeTab(TRANSACTIONS)}
+      //     />
+      //   );
+      case WITHDRAW:
+      case DEPOSIT:
+        return (
+          <WithdrawDeposit
+            balance={balance}
+            isReady={ready}
+            addresses={regularAddresses}
+            format={activeTab}
+            onSuccess={() => onChangeTab(TRANSACTIONS)}
+          />
+        );
+      case TRANSACTIONS:
+      default: {
+        if (!ready) {
+          return null;
+          // return (
+          //   <AccountStatus
+          //     address={selectedAccount}
+          //     isContract={true}
+          //     isManager={isManager}
+          //   />
+          // );
+        }
 
-  //       const JSTransactions = transactions
-  //         .sort(sortArr({ sortOrder: 'desc', sortBy: 'timestamp' }));
-  //       const itemsCount = 5;
-  //       const pageCount = Math.ceil(JSTransactions.length / itemsCount);
+        const JSTransactions = transactions.sort(
+          sortArr({ sortOrder: 'desc', sortBy: 'timestamp' })
+        );
+        const itemsCount = 5;
+        const pageCount = Math.ceil(JSTransactions.length / itemsCount);
 
-  //       const firstNumber = (currentPage - 1) * itemsCount;
-  //       let lastNumber = currentPage * itemsCount;
-  //       if (lastNumber > JSTransactions.length) {
-  //         lastNumber = JSTransactions.length;
-  //       }
-  //       const showedTransactions = JSTransactions.slice(
-  //         firstNumber,
-  //         lastNumber
-  //       );
-  //       return transactions.length === 0 ? (
-  //         <EmptyState
-  //           imageSrc={transactionsEmptyState}
-  //           title={t('components.actionPanel.empty-title')}
-  //           description={
-  //             <Description
-  //               onReceiveClick={() => onChangeTab(RECEIVE)}
-  //               onSendClick={() => onChangeTab(SEND)}
-  //             />
-  //           }
-  //         />
-  //       ) : (
-  //         <Fragment>
-  //           <Transactions
-  //             transactions={showedTransactions}
-  //             selectedAccountHash={selectedAccountHash}
-  //             selectedParentHash={selectedParentHash}
-  //           />
-  //           {pageCount > 1 && (
-  //             <PageNumbers
-  //               currentPage={currentPage}
-  //               totalNumber={JSTransactions.length}
-  //               firstNumber={firstNumber}
-  //               lastNumber={lastNumber}
-  //               onClick={val => setCurrentPage(val)}
-  //             />
-  //           )}
-  //           {this.props.isLoadingTransactions && <Loader />}
-  //         </Fragment>
-  //       );
-  //     }
-  //   }
-  // };
+        const firstNumber = (currentPage - 1) * itemsCount;
+        let lastNumber = currentPage * itemsCount;
+        if (lastNumber > JSTransactions.length) {
+          lastNumber = JSTransactions.length;
+        }
+        const showedTransactions = JSTransactions.slice(firstNumber, lastNumber);
+        return transactions.length === 0 ? (
+          <EmptyState
+            imageSrc={transactionsEmptyState}
+            title={t('components.actionPanel.empty-title')}
+            description={
+              <Description
+                onReceiveClick={() => onChangeTab(RECEIVE)}
+                onSendClick={() => onChangeTab(SEND)}
+              />
+            }
+          />
+        ) : (
+          <Fragment>
+            <Transactions
+              transactions={showedTransactions}
+              selectedAccountHash={selectedAccountHash}
+              selectedParentHash={selectedParentHash}
+            />
+            {pageCount > 1 && (
+              <PageNumbers
+                currentPage={currentPage}
+                totalNumber={JSTransactions.length}
+                firstNumber={firstNumber}
+                lastNumber={lastNumber}
+                onClick={val => setCurrentPage(val)}
+              />
+            )}
+            {isLoading && <Loader />}
+          </Fragment>
+        );
+      }
+    }
+  }
 
   // const parentIdentity = findIdentity(jsIdentities, selectedParentHash);
   // const parentIndex = findIdentityIndex(jsIdentities, selectedParentHash) + 1;
@@ -340,7 +319,7 @@ function ActionPanel(props: Props) {
             <Tab
               isActive={activeTab === tab}
               key={tab}
-              isReady={ready}
+              ready={ready}
               buttonTheme="plain"
               onClick={() => {
                 if (ready) {
@@ -348,12 +327,12 @@ function ActionPanel(props: Props) {
                 }
               }}
             >
-              <TabText isReady={ready}>{t(tab)}</TabText>
+              <TabText ready={ready}>{t(tab)}</TabText>
             </Tab>
           );
         })}
       </TabList>
-      <SectionContainer>{/* {renderSection()} */}</SectionContainer>
+      <SectionContainer>{renderSection()}</SectionContainer>
     </Container>
   );
 }
@@ -371,8 +350,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateActiveTab: (selectedAccountHash, selectedParentHash, activeTab) =>
-    dispatch(updateActiveTabThunk(selectedAccountHash, selectedParentHash, activeTab)),
+  updateActiveTab: activeTab => dispatch(updateActiveTabThunk(activeTab)),
   syncWallet: () => dispatch(syncWalletThunk())
 });
 

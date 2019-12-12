@@ -1,4 +1,3 @@
-import { remote } from 'electron';
 import { getWalletSettings } from '../../utils/settings';
 import {
   CHANGE_LOCALE,

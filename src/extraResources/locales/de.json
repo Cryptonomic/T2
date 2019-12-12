@@ -17,7 +17,10 @@
       "invoke": "Aufrufen",
       "deploy": "Bereitstellen",
       "cancel": "Abbrechen",
-      "proceed": "Fortfahren"
+      "proceed": "Fortfahren",
+      "close": "Close",
+      "withdraw": "Withdraw",
+      "deposit": "Deposit"
     },
     "nouns": {
       "amount": "Betrag",
@@ -79,7 +82,8 @@
     },
     "actionPanel": {
       "description": "Es ist ziemlich leer hier. Los gehts<1> Sende</1> und<3> Empfange</3> Tez von dieser Adresse.",
-      "empty-title": "Sie haben noch keine Transaktionen"
+      "empty-title": "Sie haben noch keine Transaktionen",
+      "invoke_manager": "Manage Delegation"
     },
     "addDelegateModal": {
       "gas_tool_tip": "{{gas}} tz wird vom Netzwerk benötigt, um eine delegierte Adresse zu erstellen",
@@ -92,13 +96,13 @@
       "invoke_contract": "Rufe einen existierenden Contract auf",
       "deploy_contract": "Stelle einen neuen Contract bereit",
       "title": "Interagiere mit Smart Contracts",
-      "smart_address": "Smart Contract Adresse",
+      "smart_address": "Contract Adresse",
       "invoke_from": "Aufrufen von",
       "deploy_from": "Bereitstellen von",
       "storage_limit": "Storage Limit",
       "gas_limit": "Gas Limit",
       "parameters": "Parameter",
-      "view_scan": "Auf TZSCAN anschauen",
+      "view_scan": "Auf Mininax anschauen",
       "initial_storage": "Initial Storage",
       "paste_micheline_code": "Füge deinen Smart Contract Micheline Code hinzu"
     },
@@ -289,7 +293,7 @@
     },
     "send": {
       "send_xtz": "Sende XTZ",
-      "recepient_address": "Empfänger Adresse",
+      "recipient_address": "Empfänger Adresse",
       "burn_tooltip_title": "Warum gibt es eine burn Gebühr",
       "burn_tooltip_content": "Die von Ihnen eingegebene Empfängeradresse hat einen Nullsaldo. Das Senden von Geld an eine leere Manageradresse (tz1,2,3) benötigt eine einmalige <1> 0.257 </1>XTZ burn Gebühr.",
       "fee_tooltip_title": "Warum sind die Gebühren höher, für diese Transaktion?",
@@ -390,7 +394,7 @@
       "want_to_import_fundraiser_paper_wallet": "Wollen Sie ein Papierwallet aus dem Fundraiser importieren?",
       "create_named_wallet": "Wallet? <1><0>Erstelle <1>{{name}}</1> zuerst ein</0></1> neues Wallet.",
       "tagline": "Ein Community Wallet für Tezos",
-      "app_name": "Tezori",
+      "app_name": "Galleon",
       "keystore_wallet": "Keystore Wallet",
       "ledger_wallet": "Ledger Wallet",
       "connect_ledger": "Verbinde mit Ledger",

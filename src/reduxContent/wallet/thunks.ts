@@ -29,8 +29,8 @@ import { resetLocalData } from '../../utils/localData';
 import {
   clearOperationId,
   getNodesStatus,
-  getNodesError
-  // getSelectedKeyStore
+  getNodesError,
+  getSelectedKeyStore
 } from '../../utils/general';
 
 import {
@@ -133,8 +133,9 @@ export function updateIdentityActiveTab(selectedAccountHash, activeTab) {
   };
 }
 
-export function updateActiveTabThunk(selectedAccountHash, selectedParentHash, activeTab) {
-  return async dispatch => {
+export function updateActiveTabThunk(activeTab) {
+  return async (dispatch, state) => {
+    const { selectedAccountHash, selectedParentHash } = state().app;
     if (selectedAccountHash === selectedParentHash) {
       dispatch(updateIdentityActiveTab(selectedAccountHash, activeTab));
     } else {
@@ -151,13 +152,13 @@ export function syncAccountThunk(selectedAccountHash, selectedParentHash) {
 
     const identity = findIdentity(identities, selectedParentHash);
     const accountIndex = findAccountIndex(identity, selectedAccountHash);
-    let localAccount = {};
-    let syncAccount = {};
+    let localAccount;
+    let syncAccount;
 
     if (accountIndex > -1) {
       localAccount = { ...identity.accounts[accountIndex] };
       syncAccount = await getSyncAccount(
-        syncAccount,
+        localAccount,
         mainNode,
         selectedAccountHash,
         selectedAccountHash
@@ -229,8 +230,6 @@ export function syncWalletThunk() {
       })
     );
 
-    console.log('syncIdentities-------', syncIdentities);
-
     const newIdentities = identities.filter(stateIdentity => {
       const syncIdentityIndex = syncIdentities.findIndex(
         syncIdentity => stateIdentity.publicKeyHash === syncIdentity.publicKeyHash
@@ -246,7 +245,6 @@ export function syncWalletThunk() {
 
       return true;
     });
-    console.log('newIdentities-------', newIdentities);
 
     dispatch(setIdentitiesAction([...syncIdentities, ...newIdentities]));
     dispatch(updateFetchedTimeAction(new Date()));
@@ -483,31 +481,6 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
 //     }
 //     dispatch(setIsLoading(false));
 //     dispatch(setIsLedgerConnecting(false));
-//   };
-// }
-
-// export function getIsReveal(selectedAccountHash, selectedParentHash) {
-//   return async (dispatch, state) => {
-//     const identities = state()
-//       .wallet.get('identities')
-//       .toJS();
-//     const settings = state().settings.toJS();
-//     const isLedger = state().wallet.get('isLedger');
-//     const keyStore = getSelectedKeyStore(
-//       identities,
-//       selectedAccountHash,
-//       selectedParentHash
-//     );
-//     if (isLedger) {
-//       keyStore.storeType = 2;
-//     }
-//     const { url } = getSelectedNode(settings, TEZOS);
-
-//     const isReveal = await TezosNodeWriter.isManagerKeyRevealedForAccount(
-//       url,
-//       keyStore
-//     );
-//     return isReveal;
 //   };
 // }
 

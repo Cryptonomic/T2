@@ -6,10 +6,10 @@ import { useHistory } from 'react-router-dom';
 import Close from '@material-ui/icons/Close';
 
 import BackButton from '../../components/BackButton';
-import { H2 } from '../../components/Heading/';
+import { H2 } from '../../components/Heading';
 import AddNodeModal from '../../components/AddNodeModal';
 import AddPathModal from '../../components/AddPathModal';
-import CustomSelect from '../../components/CustomSelect/';
+import CustomSelect from '../../components/CustomSelect';
 import LanguageSelector from '../../components/LanguageSelector';
 
 import {
@@ -21,6 +21,8 @@ import {
   addNodeThunk,
   addPathThunk
 } from '../../reduxContent/settings/thunks';
+
+import { getMainPath } from '../../utils/settings';
 
 import {
   Container,
@@ -105,15 +107,6 @@ function SettingsPage(props: Props) {
   function onAddPath(path: Path) {
     setIsPathChanged(true);
     addPath(path);
-  }
-
-  function getPath() {
-    let path = '';
-    const foundPath = pathsList.find(item => item.label === selectedPath);
-    if (foundPath) {
-      path = foundPath.derivation;
-    }
-    return path;
   }
 
   function renderNodes() {
@@ -252,7 +245,7 @@ function SettingsPage(props: Props) {
                 return true;
               }}
               renderValue={value => {
-                const path = getPath();
+                const path = getMainPath(pathsList, selectedPath);
                 return (
                   <SelectRenderWrapper>
                     <span>{value} </span>
