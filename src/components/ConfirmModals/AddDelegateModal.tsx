@@ -3,31 +3,29 @@ import { withTranslation, WithTranslation, Trans } from 'react-i18next';
 import { compose } from 'redux';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { TezosParameterFormat } from 'conseiljs';
+import { TezosParameterFormat, OperationKindType } from 'conseiljs';
 import TextField from '../TextField';
-import TezosNumericInput from '../TezosNumericInput/';
+import TezosNumericInput from '../TezosNumericInput';
 
 import Modal from '../CustomModal';
 import Tooltip from '../Tooltip/';
 import { ms } from '../../styles/helpers';
-import TezosIcon from '../TezosIcon/';
+import TezosIcon from '../TezosIcon';
 import Button from '../Button/';
 import Loader from '../Loader/';
 import Fees from '../Fees/';
-import PasswordInput from '../PasswordInput/';
-import InputAddress from '../InputAddress/';
-import TezosAmount from '../TezosAmount/';
-
+import PasswordInput from '../PasswordInput';
+import InputAddress from '../InputAddress';
+import TezosAmount from '../TezosAmount';
 import AddDelegateLedgerModal from './AddDelegateLedgerModal';
 
 import { originateContractThunk } from '../../reduxContent/originate/thunks';
-
 import { getIsRevealThunk, fetchFeesThunk } from '../../reduxContent/app/thunks';
-
 import { setIsLoadingAction } from '../../reduxContent/app/actions';
 
-import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/LowFeeValue';
+import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
 import { RootState } from '../../types/store';
+import { AverageFees } from '../../types/general';
 
 const InputAddressContainer = styled.div`
   padding: 0 76px;
@@ -208,8 +206,8 @@ interface StoreProps {
   isLedger: boolean;
   isLoading: boolean;
   selectedParentHash: string;
-  fetchFees: (op: string) => any;
-  getIsReveal: (isManger: boolean) => boolean;
+  fetchFees: (op: OperationKindType) => Promise<AverageFees>;
+  getIsReveal: (isManger: boolean) => Promise<boolean>;
   originateContract: (
     delegate: string,
     amount: string,
@@ -222,7 +220,7 @@ interface StoreProps {
     storage?: string,
     codeFormat?: TezosParameterFormat,
     isSmartContract?: boolean
-  ) => boolean;
+  ) => Promise<boolean>;
   setIsLoading: (flag: boolean) => void;
 }
 
@@ -278,7 +276,7 @@ function AddDelegateModal(props: Props) {
   }
 
   async function getFeesAndReveals() {
-    const newFees = await fetchFees('origination');
+    const newFees = await fetchFees(OperationKindType.Origination);
     const isRevealed = await getIsReveal(true);
     let miniLowFee = OPERATIONFEE;
     if (!isRevealed) {
@@ -347,7 +345,10 @@ function AddDelegateModal(props: Props) {
       Math.floor(fee),
       passPhrase,
       selectedParentHash
-    );
+    ).catch(err => {
+      console.error(err);
+      return false;
+    });
     setOpen(false);
     setIsLoading(false);
     if (isCreated) {
@@ -544,7 +545,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = dispatch => ({
   setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  fetchFees: (op: string) => dispatch(fetchFeesThunk(op)),
+  fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
   getIsReveal: (isManger: boolean = false) => dispatch(getIsRevealThunk(isManger)),
   originateContract: (
     delegate: string,
@@ -578,8 +579,5 @@ const mapDispatchToProps = dispatch => ({
 
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(AddDelegateModal) as React.ComponentType<OwnProps>;

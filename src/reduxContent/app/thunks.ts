@@ -4,14 +4,16 @@ import {
   ConseilDataClient,
   ConseilSortDirection,
   TezosConseilClient,
-  TezosNodeReader
+  TezosNodeReader,
+  OperationKindType
 } from 'conseiljs';
 import { getMainNode } from '../../utils/settings';
+import { AverageFees } from '../../types/general';
 
 const { executeEntityQuery } = ConseilDataClient;
 
-export function fetchFeesThunk(operationKind) {
-  return async (dispatch, state) => {
+export function fetchFeesThunk(operationKind: OperationKindType) {
+  return async (dispatch, state): Promise<AverageFees> => {
     const { selectedNode, nodesList } = state().settings;
     const mainNode = getMainNode(nodesList, selectedNode);
     const { conseilUrl, apiKey, network } = mainNode;

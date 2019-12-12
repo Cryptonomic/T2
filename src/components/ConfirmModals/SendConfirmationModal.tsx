@@ -79,13 +79,13 @@ const ConfirmButton = styled(Button)`
 `;
 
 interface OwnProps {
-  onEnterPress: () => {};
+  onEnterPress: (event) => void;
   amount: string;
   password: string;
   address: string;
   open: boolean;
   onClose: () => void;
-  onPasswordChange: () => void;
+  onPasswordChange: (val: string) => void;
   onSend: () => void;
   isLoading: boolean;
   source: string;

@@ -24,13 +24,14 @@ export function invokeAddressThunk(
   gas: number,
   parameters: string,
   password: string,
+  selectedInvokeAddress: string,
   entryPoint: string,
   parameterFormat: TezosParameterFormat
 ) {
   return async (dispatch, state) => {
     const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
     const { identities, walletPassword } = state().wallet;
-    const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+    const { selectedParentHash, isLedger } = state().app;
     const mainNode = getMainNode(nodesList, selectedNode);
     const { tezosUrl } = mainNode;
 
@@ -42,7 +43,7 @@ export function invokeAddressThunk(
 
     const keyStore = getSelectedKeyStore(
       identities,
-      selectedAccountHash,
+      selectedInvokeAddress,
       selectedParentHash,
       isLedger
     );
@@ -115,10 +116,10 @@ export function invokeAddressThunk(
         consumed_gas: consumedGas
       });
 
-      if (selectedParentHash === selectedAccountHash) {
+      if (selectedParentHash === selectedInvokeAddress) {
         identity.transactions.push(transaction);
       } else {
-        const index = findAccountIndex(identity, selectedAccountHash);
+        const index = findAccountIndex(identity, selectedInvokeAddress);
         if (index > -1) {
           identity.accounts[index].transactions.push(transaction);
         }

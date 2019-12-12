@@ -47,6 +47,10 @@ const schema = {
   isPPAccepted: {
     type: 'boolean',
     default: false
+  },
+  isNotShowMessage: {
+    type: 'boolean',
+    default: false
   }
 };
 
@@ -65,10 +69,11 @@ const defaultStore = {
     password: ''
   },
   isShowedLanguageScene: false,
-  isPPAccepted: false
+  isPPAccepted: false,
+  isNotShowMessage: false
 };
 
-const store = new Store({ schema });
+const store = new Store({ schema, defaults: defaultStore });
 
 // Set data in store
 export function setLocalData(key: string, data: any) {
