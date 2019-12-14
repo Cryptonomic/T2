@@ -4,23 +4,23 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import MenuItem from '@material-ui/core/MenuItem';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { TezosParameterFormat } from 'conseiljs';
+import { TezosParameterFormat, OperationKindType } from 'conseiljs';
 
 import Button from '../Button/';
 import TezosNumericInput from '../TezosNumericInput';
 import TextField from '../TextField';
 import Fees from '../Fees';
 import PasswordInput from '../PasswordInput';
-// import InvokeLedgerConfirmationModal from '../InvokeLedgerConfirmationModal';
+import InvokeLedgerConfirmationModal from '../ConfirmModals/InvokeLedgerConfirmationModal';
 import FormatSelector from '../FormatSelector';
 
 import { fetchFeesThunk } from '../../reduxContent/app/thunks';
 import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';
 import { setIsLoadingAction } from '../../reduxContent/app/actions';
 
-import { OPERATIONFEE } from '../../constants/LowFeeValue';
+import { OPERATIONFEE } from '../../constants/FeeValue';
 import { RootState } from '../../types/store';
-import { RegularAddress } from '../../types/general';
+import { RegularAddress, AverageFees } from '../../types/general';
 
 const Container = styled.div`
   display: flex;
@@ -134,10 +134,9 @@ interface OwnProps {
 interface StoreProps {
   isLedger: boolean;
   isLoading: boolean;
-  selectedParentHash: string;
   selectedAccountHash: string;
-  fetchFees: (op: string) => any;
-  setIsLoading: (flag: boolean) => void;
+  fetchFees: (op: OperationKindType) => Promise<AverageFees>;
+  setIsLoading: (flag: boolean) => Promise<boolean>;
   invokeAddress: (
     address: string,
     fee: number,
@@ -146,9 +145,10 @@ interface StoreProps {
     gas: number,
     parameters: string,
     password: string,
+    selectedInvokeAddress: string,
     entryPoint: string,
     format: TezosParameterFormat
-  ) => boolean;
+  ) => Promise<boolean>;
 }
 
 type Props = OwnProps & StoreProps & WithTranslation;
@@ -171,7 +171,7 @@ function Invoke(props: Props) {
     medium: 2840,
     high: 5680
   });
-  const [fee, setFee] = useState(averageFees.low);
+  const [fee, setFee] = useState(averageFees.medium);
   const [gas, setGas] = useState(0);
   const [storage, setStorage] = useState(0);
   const [selected, setSelected] = useState(0);
@@ -185,14 +185,15 @@ function Invoke(props: Props) {
   const [open, setOpen] = useState(false);
 
   const isDisabled = !isReady || isLoading || !amount || (!passPhrase && !isLedger);
+  const selectedInvokeAddress = addresses[selected].pkh;
 
   async function getFees() {
-    const newFees = await fetchFees('transaction');
+    const newFees = await fetchFees(OperationKindType.Transaction);
     if (newFees.low < OPERATIONFEE) {
       newFees.low = OPERATIONFEE;
     }
     setAverageFees({ ...newFees });
-    setFee(newFees.low);
+    setFee(newFees.medium);
   }
 
   useEffect(() => {
@@ -215,10 +216,6 @@ function Invoke(props: Props) {
     // this.setState({ selectedInvokeAddress: pkh, balance: address.balance });
   }
 
-  // onLedgerConfirmation = val => {
-  //   this.setState({ isOpenLedgerConfirm: val });
-  // };
-
   function onEnterPress(keyVal) {
     if (keyVal === 'Enter' && !isDisabled) {
       onInvokeOperation();
@@ -240,9 +237,13 @@ function Invoke(props: Props) {
       gas,
       parameters,
       passPhrase,
+      selectedInvokeAddress,
       entryPoint,
       codeFormat
-    );
+    ).catch(err => {
+      console.error(err);
+      return false;
+    });
     setOpen(false);
     setIsLoading(false);
 
@@ -326,7 +327,7 @@ function Invoke(props: Props) {
         </InvokeButton>
       </PasswordButtonContainer>
 
-      {/* {isLedger && isOpenLedgerConfirm && (
+      {isLedger && open && (
         <InvokeLedgerConfirmationModal
           amount={amount}
           fee={fee}
@@ -334,11 +335,11 @@ function Invoke(props: Props) {
           storage={storage}
           address={selectedAccountHash}
           source={selectedInvokeAddress}
-          open={isOpenLedgerConfirm}
-          onCloseClick={() => this.closeLedgerConfirmation(false)}
+          open={open}
+          onClose={() => setOpen(false)}
           isLoading={isLoading}
         />
-      )} */}
+      )}
     </Container>
   );
 }
@@ -346,12 +347,12 @@ function Invoke(props: Props) {
 const mapStateToProps = (state: RootState) => ({
   isLoading: state.app.isLoading,
   isLedger: state.app.isLedger,
-  selectedParentHash: state.app.selectedParentHash
+  selectedAccountHash: state.app.selectedAccountHash
 });
 
 const mapDispatchToProps = dispatch => ({
   setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  fetchFees: (op: string) => dispatch(fetchFeesThunk(op)),
+  fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
   invokeAddress: (
     address: string,
     fee: number,
@@ -360,6 +361,7 @@ const mapDispatchToProps = dispatch => ({
     gas: number,
     parameters: string,
     password: string,
+    selectedInvokeAddress: string,
     entryPoint: string,
     format: TezosParameterFormat
   ) =>
@@ -373,25 +375,13 @@ const mapDispatchToProps = dispatch => ({
         parameters,
         password,
         entryPoint,
+        selectedInvokeAddress,
         format
       )
     )
 });
 
-// const mapDispatchToProps = dispatch =>
-//   bindActionCreators(
-//     {
-//       fetchAverageFees,
-//       invokeAddress,
-//       setIsLoading
-//     },
-//     dispatch
-//   );
-
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(Invoke) as React.ComponentType<OwnProps>;

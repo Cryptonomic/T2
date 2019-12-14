@@ -10,6 +10,8 @@ import {
   WalletActionTypes
 } from './types';
 
+import { LOGOUT, LogoutAction } from '../app/types';
+
 const defaultState: WalletState = {
   identities: [],
   password: '',
@@ -17,7 +19,10 @@ const defaultState: WalletState = {
   walletLocation: ''
 };
 
-export function walletReducer(state: WalletState = defaultState, action: WalletActionTypes) {
+export function walletReducer(
+  state: WalletState = defaultState,
+  action: WalletActionTypes | LogoutAction
+) {
   switch (action.type) {
     case SET_WALLET:
       return { ...state, ...action.payload };
@@ -44,6 +49,9 @@ export function walletReducer(state: WalletState = defaultState, action: WalletA
         return { ...state, identities: [...stateIdentities] };
       }
       return state;
+    }
+    case LOGOUT: {
+      return defaultState;
     }
     default:
       return state;

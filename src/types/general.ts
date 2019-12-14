@@ -57,3 +57,9 @@ export interface RegularAddress {
   pkh: string;
   balance: number;
 }
+
+export interface AverageFees {
+  low: number;
+  medium: number;
+  high: number;
+}

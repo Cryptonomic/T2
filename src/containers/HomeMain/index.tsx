@@ -1,8 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { ms } from '../../styles/helpers';
-
 import { RootState } from '../../types/store';
 
 import AddressBlock from '../../components/AddressBlock';
@@ -24,7 +21,7 @@ function HomeMain(props: Props) {
           .sort(sortArr({ sortOrder: 'asc', sortBy: 'order' }))
           .map((accountBlock, index) => (
             <AccountItem key={index}>
-              <AddressBlock accountBlock={accountBlock} accountIndex={index + 1} />
+              <AddressBlock accountBlock={accountBlock} identityIndex={index} />
             </AccountItem>
           ))}
       </SideBarContainer>
@@ -37,7 +34,4 @@ const mapStateToProps = (state: RootState) => ({
   identities: state.wallet.identities
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(HomeMain);
+export default connect(mapStateToProps, null)(HomeMain);

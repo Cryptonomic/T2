@@ -224,14 +224,9 @@ function ActionPanel(props: Props) {
       case TRANSACTIONS:
       default: {
         if (!ready) {
-          return null;
-          // return (
-          //   <AccountStatus
-          //     address={selectedAccount}
-          //     isContract={true}
-          //     isManager={isManager}
-          //   />
-          // );
+          return (
+            <AccountStatus address={selectedAccount} isContract={!!script} isManager={isManager} />
+          );
         }
 
         const JSTransactions = transactions.sort(
@@ -279,20 +274,6 @@ function ActionPanel(props: Props) {
       }
     }
   }
-
-  // const parentIdentity = findIdentity(jsIdentities, selectedParentHash);
-  // const parentIndex = findIdentityIndex(jsIdentities, selectedParentHash) + 1;
-  // const isManagerAddress = selectedAccountHash === selectedParentHash;
-  // const balance = selectedAccount.get('balance');
-  // const activeTab = selectedAccount.get('activeTab') || TRANSACTIONS;
-
-  // const storeType = selectedAccount.get('storeType');
-  // const status = selectedAccount.get('status');
-  // const { tabs, isSmartContract } = this.getTabList(
-  //   selectedAccountHash,
-  //   selectedAccount.get('script')
-  // );
-  // const regularAddresses = this.getRegularAddresses(parentIdentity);
   return (
     <Container>
       <BalanceBanner
@@ -356,8 +337,5 @@ const mapDispatchToProps = dispatch => ({
 
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(ActionPanel) as React.ComponentType<any>;

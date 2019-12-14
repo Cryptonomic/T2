@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { debounce } from 'throttle-debounce';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import IconButton from '@material-ui/core/IconButton';
 
 import TextField from '../TextField';
 import TezosIcon from '../TezosIcon';
@@ -20,9 +21,6 @@ const TooltipContainer = styled.div`
   color: #000;
   font-size: 14px;
   max-width: 312px;
-  .customArrow .rc-tooltip-arrow {
-    left: 66%;
-  }
 `;
 
 const TooltipTitle = styled.div`
@@ -40,20 +38,18 @@ const TooltipContent2 = styled.div`
   padding: 12px 0;
 `;
 
-const HelpIcon = styled(TezosIcon)`
-  padding: 0 0 0 ${ms(-4)};
-`;
-
 const DelegateContainer = styled.div`
   width: 100%;
   position: relative;
   padding-top: 14px;
 `;
 
-const TextfieldTooltip = styled(Button)`
-  position: absolute;
-  right: 10px;
-  top: 38px;
+const TextfieldTooltip = styled(IconButton)`
+  &&& {
+    position: absolute;
+    right: 0px;
+    top: 35px;
+  }
 `;
 
 interface OwnProps {
@@ -164,16 +160,9 @@ function InputAddress(props: Props) {
     <DelegateContainer>
       <TextField label={label} onChange={value => inputDebounce(value)} errorText={error} />
       {tooltip && (
-        <Tooltip
-          position="bottom"
-          content={renderToolTipComponent()}
-          offset={[70, 0]}
-          arrowPos={{
-            left: '71%'
-          }}
-        >
-          <TextfieldTooltip buttonTheme="plain">
-            <HelpIcon iconName="help" size={ms(1)} color="gray5" />
+        <Tooltip position="bottom" content={renderToolTipComponent()}>
+          <TextfieldTooltip size="small">
+            <TezosIcon iconName="help" size={ms(1)} color="gray5" />
           </TextfieldTooltip>
         </Tooltip>
       )}
@@ -187,8 +176,5 @@ const mapDispatchToProps = dispatch => ({
 
 export default compose(
   withTranslation(),
-  connect(
-    null,
-    mapDispatchToProps
-  )
+  connect(null, mapDispatchToProps)
 )(InputAddress) as React.ComponentType<OwnProps>;

@@ -1,11 +1,11 @@
 import React from 'react';
-import styled, { withTheme } from 'styled-components';
+import styled from 'styled-components';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
 
 import { limitLength } from '../../utils/strings';
 import { openLinkToBlockExplorer } from '../../utils/general';
-import i18n from '../../utils/i18n';
 
 const Container = styled.div`
   display: flex;
@@ -38,15 +38,17 @@ const Details = styled.div`
   cursor: pointer;
 `;
 
-interface Props {
+interface OwnProps {
   firstIconName: string;
   operationName: string;
   operationId: string;
   lastIconName: string;
 }
 
+type Props = OwnProps & WithTranslation;
+
 function Info(props: Props) {
-  const { firstIconName, operationName, operationId, lastIconName } = props;
+  const { firstIconName, operationName, operationId, lastIconName, t } = props;
 
   return (
     <Container>
@@ -58,16 +60,16 @@ function Info(props: Props) {
           openLinkToBlockExplorer(operationId);
         }}
       >
-        {i18n.t('general.nouns.details')}
+        {t('general.nouns.details')}
       </Details>
       <InfoIcon
         size={ms(1)}
         color="primary"
         iconName={lastIconName}
-        onClick={() => openLinkToBlockExplorer(operationId) as any}
+        onClick={() => openLinkToBlockExplorer(operationId)}
       />
     </Container>
   );
 }
 
-export default withTheme(Info as any);
+export default withTranslation()(Info);

@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 
-const TodayYesterdayFormat = {
+const DateFormat = {
   lastDay: '[Yesterday]',
-  sameDay: '[Today]'
+  sameDay: '[Today]',
+  sameElse: 'MMMM DD'
 };
 
 const DateContainer = styled.div`
@@ -23,15 +24,12 @@ const TransactionsDate = styled.div`
 `;
 
 interface Props {
-  date: string;
+  date: Date;
 }
 
 function TransactionsLabel(props: Props) {
   const { date } = props;
-  const isToday = moment(date).isBetween(moment().subtract(2, 'days'), moment());
-  const time = isToday
-    ? moment(date).calendar(undefined, TodayYesterdayFormat)
-    : moment(date).format('MMMM DD');
+  const time = moment(date).calendar(undefined, DateFormat);
   return (
     <DateContainer>
       <TransactionsDate>{time}</TransactionsDate>

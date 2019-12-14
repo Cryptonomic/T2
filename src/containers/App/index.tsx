@@ -10,6 +10,8 @@ import Loader from '../../components/Loader';
 import TopBar from '../../components/TopBar';
 import VersionStatus from '../../components/VersionStatus';
 
+import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
+import { getIsNodesSelector } from '../../reduxContent/settings/selectors';
 import { getWalletName } from '../../reduxContent/wallet/selectors';
 import { getLoggedIn } from '../../utils/login';
 import { RootState, WalletState } from '../../types/store';
@@ -27,22 +29,29 @@ interface Props {
   isLoading: boolean;
   walletName: string;
   isLedger: boolean;
+  isNodes: boolean;
+  logout: () => void;
 }
 
 function App(props: Props) {
-  const { wallet, newVersion, isLoading, walletName, isLedger } = props;
+  const { wallet, newVersion, isLoading, walletName, isLedger, isNodes, logout } = props;
   const isLoggedIn = getLoggedIn(wallet, isLedger);
   return (
     <Container>
-      <TopBar walletName={walletName} isLoggedIn={isLoggedIn} isExtended={!!newVersion} />
+      <TopBar
+        walletName={walletName}
+        isLoggedIn={isLoggedIn}
+        isExtended={!!newVersion}
+        logout={logout}
+      />
       {newVersion && <VersionStatus version={newVersion} />}
       <Switch>
         <Route
           path="/home"
           render={routerProps => {
-            // if (!hasNodes(state)) {
-            //   return <Redirect to="/walletNodesRequired" />;
-            // }
+            if (!isNodes) {
+              return <Redirect to="/walletNodesRequired" />;
+            }
 
             if (!isLoggedIn) {
               return <Redirect to="/login" />;
@@ -56,9 +65,9 @@ function App(props: Props) {
         <Route
           path="/login"
           render={routerProps => {
-            // if (!hasNodes(state)) {
-            //   return <Redirect to="/walletNodesRequired" />;
-            // }
+            if (!isNodes) {
+              return <Redirect to="/walletNodesRequired" />;
+            }
 
             if (isLoggedIn) {
               return <Redirect to="/home" />;
@@ -79,10 +88,12 @@ const mapStateToProps = (state: RootState) => ({
   newVersion: state.app.newVersion,
   isLoading: state.app.isLoading,
   walletName: getWalletName(state),
-  isLedger: state.app.isLedger
+  isLedger: state.app.isLedger,
+  isNodes: getIsNodesSelector(state)
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(App) as React.ComponentType<any>;
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(goHomeAndClearState())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App) as React.ComponentType<any>;

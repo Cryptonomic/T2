@@ -34,19 +34,14 @@ const StyledPre = styled.pre`
 
 const preContent = `
   {
-    "tezosSelectedNode": "tezosName",
-    "conseilSelectedNode": "conseilName",
+    "selectedNode": "tezosName",
     "nodesList": [
       {
-        "name": "tezosName",
-        "type": "TEZOS",
-        "url": "https://127.0.0.1:8732/",
-        "apiKey": "apiKey"
-      },
-      {
-        "name": "conseilName",
-        "type": "CONSEIL",
-        "url": "https://127.0.0.1:1337/",
+        "displayName": "tezosName",
+        "platform": "tezos",
+        "network: "alphanet",
+        "tezosUrl": "https://127.0.0.1:8732/",
+        "conseilUrl": "https://127.0.0.1:8730/",
         "apiKey": "apiKey"
       }
     ]

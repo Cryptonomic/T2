@@ -60,12 +60,12 @@ function LoginCreate(props: Props) {
     if (event.detail === 0 && walletLocation && walletFileName) {
       return;
     }
-
     const currentWindow = remote.getCurrentWindow();
-    remote.dialog.showSaveDialog(currentWindow, { filters: dialogFilters }, filename => {
-      if (filename) {
-        setWalletLocation(path.dirname(filename));
-        setWalletFileName(path.basename(filename));
+    remote.dialog.showSaveDialog(currentWindow, { filters: dialogFilters }).then(result => {
+      const filePath = result.filePath;
+      if (filePath) {
+        setWalletLocation(path.dirname(filePath));
+        setWalletFileName(path.basename(filePath));
       }
     });
   }
@@ -227,8 +227,5 @@ const mapDispatchToProps = dispatch => ({
 
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(LoginCreate) as React.ComponentType<any>;
