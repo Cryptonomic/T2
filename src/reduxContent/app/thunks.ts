@@ -7,8 +7,11 @@ import {
   TezosNodeReader,
   OperationKindType
 } from 'conseiljs';
+import { changeAccountAction } from './actions';
+import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
 import { AverageFees } from '../../types/general';
+import { AVERAGEFEES } from '../../constants/FeeValue';
 
 const { executeEntityQuery } = ConseilDataClient;
 
@@ -21,9 +24,12 @@ export function fetchFeesThunk(operationKind: OperationKindType) {
       { url: conseilUrl, apiKey, network },
       network,
       operationKind
-    );
-    console.log('thunkfeess---', fees);
-    return fees[0];
+    ).catch(() => [AVERAGEFEES]);
+    return {
+      low: fees[0].low,
+      medium: fees[0].medium,
+      high: fees[0].high
+    };
   };
 }
 
@@ -70,5 +76,25 @@ export function getIsImplicitAndEmptyThunk(recipientHash: string) {
     const { tezosUrl } = mainNode;
     const isImplicitAndEmpty = await TezosNodeReader.isImplicitAndEmpty(tezosUrl, recipientHash);
     return isImplicitAndEmpty;
+  };
+}
+
+export function changeAccountThunk(
+  accountHash: string,
+  parentHash: string,
+  accountIndex: number,
+  parentIndex: number
+) {
+  return async dispatch => {
+    dispatch(
+      changeAccountAction(
+        accountHash,
+        parentHash,
+        accountIndex,
+        parentIndex,
+        accountHash === parentHash
+      )
+    );
+    dispatch(syncAccountOrIdentityThunk(accountHash, parentHash));
   };
 }

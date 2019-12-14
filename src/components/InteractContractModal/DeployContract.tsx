@@ -102,7 +102,12 @@ function DeployContract(props: Props) {
     t
   } = props;
 
-  const [state, setState] = useState(defaultState);
+  const [state, setState] = useState(() => {
+    return {
+      ...defaultState,
+      fee: averageFees.medium
+    };
+  });
   const {
     amount,
     fee,

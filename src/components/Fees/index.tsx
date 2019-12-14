@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
@@ -59,6 +59,11 @@ const WarningIcon = styled(TezosIcon)`
   top: 1px;
 `;
 
+const FeeContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 interface OwnProps {
   low: number;
   medium: number;
@@ -75,9 +80,35 @@ function Fee(props: Props) {
   const { onChange, low, medium, high, fee, miniFee, tooltip, t } = props;
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<React.ReactNode>('');
-  const [custom, setCustom] = useState(() => {
-    return fee === low || fee === medium || fee === high ? '' : formatAmount(fee);
-  });
+  const [custom, setCustom] = useState('');
+
+  const customAmount = tezToUtez(custom);
+
+  const isNewCustom = fee !== low && fee !== medium && fee !== high && fee !== customAmount;
+  const customFeeLabel = t('components.fees.custom_fee');
+
+  useEffect(() => {
+    setCustom(formatAmount(fee));
+  }, [isNewCustom]);
+
+  function getCustomMenuItem() {
+    if (isNewCustom) {
+      return (
+        <ItemWrapper value={fee}>
+          {customFeeLabel}: {formatAmount(fee)} <TezosIcon color="black" iconName="tezos" />
+        </ItemWrapper>
+      );
+    } else if (!!custom) {
+      return (
+        <ItemWrapper value={customAmount}>
+          {customFeeLabel}: {formatAmount(customAmount)}{' '}
+          <TezosIcon color="black" iconName="tezos" />
+        </ItemWrapper>
+      );
+    } else {
+      return null;
+    }
+  }
 
   function renderError() {
     return (
@@ -89,12 +120,13 @@ function Fee(props: Props) {
   }
 
   function handleCustomChange(val) {
-    const newError = val < formatAmount(miniFee) ? renderError() : '';
+    const newVal = val.replace(/,/g, '.');
+    const newError = newVal < formatAmount(miniFee) ? renderError() : '';
     setError(newError);
-    setCustom(val);
+    setCustom(newVal);
   }
   function handleSetCustom() {
-    onChange(tezToUtez(custom.replace(/,/g, '.')));
+    onChange(tezToUtez(custom));
     setOpen(false);
   }
 
@@ -107,10 +139,36 @@ function Fee(props: Props) {
     }
   }
 
-  const customFeeLabel = t('components.fees.custom_fee');
+  function onCloseModal() {
+    setCustom('');
+    setOpen(false);
+  }
+
   return (
     <Fragment>
-      <CustomSelect label={t('general.nouns.fee')} value={fee} onChange={onFeeChange}>
+      <CustomSelect
+        label={t('general.nouns.fee')}
+        value={fee}
+        onChange={onFeeChange}
+        renderValue={value => {
+          let feeTitle = 'components.fees.low_fee';
+          if (value === low) {
+            feeTitle = 'components.fees.low_fee';
+          } else if (value === medium) {
+            feeTitle = 'components.fees.medium_fee';
+          } else if (value === high) {
+            feeTitle = 'components.fees.high_fee';
+          } else {
+            feeTitle = 'components.fees.custom_fee';
+          }
+          return (
+            <FeeContentWrapper>
+              {t(feeTitle)}: {formatAmount(value)} <TezosIcon color="black" iconName="tezos" />
+              {tooltip}
+            </FeeContentWrapper>
+          );
+        }}
+      >
         <ItemWrapper value={low}>
           {t('components.fees.low_fee')}: {formatAmount(low)}{' '}
           <TezosIcon color="black" iconName="tezos" />
@@ -123,19 +181,10 @@ function Fee(props: Props) {
           {t('components.fees.high_fee')}: {formatAmount(high)}{' '}
           <TezosIcon color="black" iconName="tezos" />
         </ItemWrapper>
-        {custom ? (
-          <ItemWrapper value={tezToUtez(custom.replace(/,/g, '.'))}>
-            {customFeeLabel}: {formatAmount(tezToUtez(custom.replace(/,/g, '.')))}{' '}
-            <TezosIcon color="black" iconName="tezos" />
-          </ItemWrapper>
-        ) : null}
+        {getCustomMenuItem()}
         <ItemWrapper value="custom">{t('components.fees.custom')}</ItemWrapper>
       </CustomSelect>
-      <Modal
-        title={t('components.fees.enter_custom_amount')}
-        open={open}
-        onClose={() => setOpen(false)}
-      >
+      <Modal title={t('components.fees.enter_custom_amount')} open={open} onClose={onCloseModal}>
         <ModalContent>
           <MiniFeeTitle>
             <Trans

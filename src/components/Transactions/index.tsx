@@ -32,7 +32,7 @@ export default function Transactions(props: Props) {
 
   const renderDayTransactions = (day, grTransactions, grIndex) => (
     <SectionContainer key={grIndex}>
-      <TransactionsLabel date={day} />
+      <TransactionsLabel date={new Date(day)} />
       {grTransactions.map((transaction, index) => {
         return (
           <Transaction

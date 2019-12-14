@@ -13,35 +13,17 @@ import InvokeContract from './InvokeContract';
 
 import { fetchFeesThunk } from '../../reduxContent/app/thunks';
 import { OPERATIONFEE, AVERAGEFEES } from '../../constants/FeeValue';
-import { ModalWrapper, ModalContainer, ModalTitle, CloseIconWrapper } from './style';
+import {
+  ModalWrapper,
+  ModalContainer,
+  ModalTitle,
+  CloseIconWrapper,
+  TabsWrapper,
+  TabWrapper
+} from './style';
 import themes from '../../styles/theme';
 import { RootState } from '../../types/store';
 import { RegularAddress, AverageFees } from '../../types/general';
-
-const styles: any = {
-  tabsRoot: {},
-  tabsIndicator: {
-    height: 0
-  },
-  tabRoot: {
-    textTransform: 'initial',
-    opacity: 1,
-    height: '60px',
-    backgroundColor: themes.colors.accent,
-    color: themes.colors.white,
-    '&$tabSelected': {
-      color: themes.colors.primary,
-      backgroundColor: themes.colors.white
-    }
-  },
-  tabLabel: {
-    fontWeight: 500,
-    fontSize: '16px'
-  },
-  tabSelected: {}
-};
-
-const useStyles = makeStyles(styles);
 
 interface OwnProps {
   addresses: RegularAddress[];
@@ -58,7 +40,6 @@ interface StoreProps {
 type Props = OwnProps & StoreProps & WithTranslation;
 
 function InteractContractModal(props: Props) {
-  const classes = useStyles();
   const { fetchFees, selectedParentHash, isLoading, open, t, onClose, addresses } = props;
   const [activeTab, setActiveTab] = useState(0);
   const [averageFees, setAverageFees] = useState<AverageFees>(AVERAGEFEES);
@@ -89,32 +70,15 @@ function InteractContractModal(props: Props) {
         <ModalContainer>
           <CloseIconWrapper onClick={() => onClose()} />
           <ModalTitle>{t('components.interactModal.title')}</ModalTitle>
-          <Tabs
-            classes={{
-              root: classes.tabsRoot,
-              indicator: classes.tabsIndicator
-            }}
+          <TabsWrapper
             value={activeTab}
             onChange={(e, val) => setActiveTab(val)}
             variant="fullWidth"
+            textColor="primary"
           >
-            <Tab
-              classes={{
-                root: classes.tabRoot,
-                selected: classes.tabSelected
-                // label: classes.tabLabel
-              }}
-              label={t('components.interactModal.invoke_contract')}
-            />
-            <Tab
-              classes={{
-                root: classes.tabRoot,
-                selected: classes.tabSelected
-                // label: classes.tabLabel
-              }}
-              label={t('components.interactModal.deploy_contract')}
-            />
-          </Tabs>
+            <TabWrapper label={t('components.interactModal.invoke_contract')} />
+            <TabWrapper label={t('components.interactModal.deploy_contract')} />
+          </TabsWrapper>
 
           <SwipeableViews index={activeTab}>
             <InvokeContract

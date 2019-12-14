@@ -32,7 +32,7 @@ const ModalContainer = styled.div`
 `;
 
 const MainContainer = styled.div`
-  padding: 0 100px 25px 100px;
+  padding: 0 90px 25px 90px;
 `;
 
 const BottomContainer = styled.div`
@@ -87,6 +87,27 @@ const FormGroupWrapper = styled(FormGroup)`
   margin-top: 60px;
 `;
 
+const FormControlLabelWrapper = styled(FormControlLabel)`
+  &&& {
+    .MuiTypography-body1 {
+      color: ${({ theme: { colors } }) => colors.blue6};
+      font-weight: 300;
+      font-size: 16px;
+    }
+  }
+`;
+
+const CheckBoxWrapper = styled(Checkbox)`
+  &&& {
+    &.MuiCheckbox-root {
+      color: ${({ theme: { colors } }) => colors.blue6};
+    }
+    &.Mui-checked {
+      color: ${({ theme: { colors } }) => colors.accent};
+    }
+  }
+`;
+
 interface OwnProps {
   open: boolean;
   onClose: () => void;
@@ -127,9 +148,9 @@ function SecurityNoticeModal(props: Props) {
             <LinkIcon iconName="new-window" size={ms(0)} color="accent" />
           </LinkContainer>
           <FormGroupWrapper>
-            <FormControlLabel
+            <FormControlLabelWrapper
               control={
-                <Checkbox
+                <CheckBoxWrapper
                   checked={isUnderstand}
                   onChange={e => setIsUnderstand(e.target.checked)}
                   value="understand"
@@ -137,9 +158,9 @@ function SecurityNoticeModal(props: Props) {
               }
               label={t('components.securityNoticeModal.understand_check')}
             />
-            <FormControlLabel
+            <FormControlLabelWrapper
               control={
-                <Checkbox
+                <CheckBoxWrapper
                   checked={isNotShowMessage}
                   onChange={e => setIsNotShowMessage(e.target.checked)}
                   value="showmessage"

@@ -10,7 +10,6 @@ import { H4 } from '../Heading/';
 import * as statuses from '../../constants/StatusTypes';
 import { formatAmount } from '../../utils/currancy';
 import Info from './Info';
-import i18n from '../../utils/i18n';
 const { Mnemonic, Hardware } = StoreType;
 
 const Container = styled.section`
@@ -66,6 +65,8 @@ function AccountStatus(props: Props) {
     storeType = address.storeType;
     status = address.status;
     operations = address.operations;
+  } else {
+    return null;
   }
 
   let icon = <LoaderSpinner size="x4" />;

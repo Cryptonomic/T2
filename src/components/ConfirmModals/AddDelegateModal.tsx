@@ -4,6 +4,7 @@ import { compose } from 'redux';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { TezosParameterFormat, OperationKindType } from 'conseiljs';
+import IconButton from '@material-ui/core/IconButton';
 import TextField from '../TextField';
 import TezosNumericInput from '../TezosNumericInput';
 
@@ -11,8 +12,8 @@ import Modal from '../CustomModal';
 import Tooltip from '../Tooltip/';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
-import Button from '../Button/';
-import Loader from '../Loader/';
+import Button from '../Button';
+import Loader from '../Loader';
 import Fees from '../Fees/';
 import PasswordInput from '../PasswordInput';
 import InputAddress from '../InputAddress';
@@ -144,24 +145,12 @@ const ErrorContainer = styled.div`
   color: ${({ theme: { colors } }) => colors.error1};
 `;
 
-const TextfieldTooltip = styled(Button)`
-  position: absolute;
-  right: 10px;
-  top: 27px;
-`;
-
-const FeeTooltip = styled(Button)`
-  position: relative;
-  top: 3px;
-`;
-
-const BurnTooltip = styled(TextfieldTooltip)`
-  right: 115px;
-  top: 23px;
-`;
-
-const HelpIcon = styled(TezosIcon)`
-  padding: 0 0 0 ${ms(-4)};
+const BurnTooltip = styled(IconButton)`
+  &&& {
+    position: absolute;
+    right: 110px;
+    top: 20px;
+  }
 `;
 
 const TooltipContainer = styled.div`
@@ -169,10 +158,6 @@ const TooltipContainer = styled.div`
   color: #000;
   font-size: 14px;
   max-width: 312px;
-
-  .customArrow .rc-tooltip-arrow {
-    left: 66%;
-  }
 `;
 
 const TooltipTitle = styled.div`
@@ -243,6 +228,7 @@ const defaultState = {
 
 function AddDelegateModal(props: Props) {
   const {
+    open,
     isLoading,
     isLedger,
     managerBalance,
@@ -257,7 +243,7 @@ function AddDelegateModal(props: Props) {
   const [state, setState] = useState(defaultState);
   const [delegate, setDelegate] = useState('');
   const [passPhrase, setPassPhrase] = useState('');
-  const [open, setOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [isDelegateIssue, setIsDelegateIssue] = useState(false);
   const { amount, fee, miniFee, averageFees, gas, isDisplayedFeeTooltip, total, balance } = state;
 
@@ -288,8 +274,8 @@ function AddDelegateModal(props: Props) {
     if (newFees.low < miniLowFee) {
       newFees.low = miniLowFee;
     }
-    const newFee = averageFees.medium;
-    const newTotal = fee + gas;
+    const newFee = newFees.medium;
+    const newTotal = newFee + gas;
     updateState({
       averageFees: newFees,
       fee: newFee,
@@ -336,7 +322,7 @@ function AddDelegateModal(props: Props) {
   async function createAccount() {
     setIsLoading(true);
     if (isLedger) {
-      setOpen(true);
+      setConfirmOpen(true);
     }
 
     const isCreated = await originateContract(
@@ -349,7 +335,7 @@ function AddDelegateModal(props: Props) {
       console.error(err);
       return false;
     });
-    setOpen(false);
+    setConfirmOpen(false);
     setIsLoading(false);
     if (isCreated) {
       onClose();
@@ -452,17 +438,10 @@ function AddDelegateModal(props: Props) {
               onChange={changeFee}
               tooltip={
                 isDisplayedFeeTooltip ? (
-                  <Tooltip
-                    position="bottom"
-                    content={renderFeeToolTip()}
-                    offset={[70, 0]}
-                    arrowPos={{
-                      left: '71%'
-                    }}
-                  >
-                    <FeeTooltip buttonTheme="plain">
-                      <HelpIcon iconName="help" size={ms(1)} color="gray5" />
-                    </FeeTooltip>
+                  <Tooltip position="bottom" content={renderFeeToolTip()}>
+                    <IconButton size="small">
+                      <TezosIcon iconName="help" size={ms(1)} color="gray5" />
+                    </IconButton>
                   </Tooltip>
                 ) : null
               }
@@ -471,16 +450,9 @@ function AddDelegateModal(props: Props) {
           <GasInputContainer>
             <TextField disabled={true} label={t('general.nouns.gas')} defaultValue="0.257000" />
             <TezosIconInput color="gray5" iconName="tezos" />
-            <Tooltip
-              position="bottom"
-              content={renderGasToolTip()}
-              offset={[70, 0]}
-              arrowPos={{
-                left: '71%'
-              }}
-            >
-              <BurnTooltip buttonTheme="plain">
-                <HelpIcon iconName="help" size={ms(1)} color="gray5" />
+            <Tooltip position="bottom" content={renderGasToolTip()}>
+              <BurnTooltip size="small">
+                <TezosIcon iconName="help" size={ms(1)} color="gray5" />
               </BurnTooltip>
             </Tooltip>
           </GasInputContainer>
@@ -528,8 +500,8 @@ function AddDelegateModal(props: Props) {
           address={delegate}
           source={selectedParentHash}
           manager={selectedParentHash}
-          open={open}
-          onClose={() => setOpen(false)}
+          open={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
           isLoading={isLoading}
         />
       )}

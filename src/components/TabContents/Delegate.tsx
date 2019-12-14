@@ -59,7 +59,7 @@ function Delegate(props: Props) {
     medium: 2840,
     high: 5680
   });
-  const [fee, setFee] = useState(averageFees.low);
+  const [fee, setFee] = useState(averageFees.medium);
   const [newAddress, setAddress] = useState('');
   const [passPhrase, setPassPhrase] = useState('');
   const [isAddressIssue, setIsAddressIssue] = useState(false);
@@ -82,7 +82,7 @@ function Delegate(props: Props) {
 
   async function getFeesAndReveals() {
     const newFees = await fetchFees(OperationKindType.Delegation);
-    const isRevealed = await getIsReveal();
+    const isRevealed = await getIsReveal().catch(() => false);
     let miniLowFee = OPERATIONFEE;
     if (!isRevealed) {
       newFees.low += REVEALOPERATIONFEE;
@@ -94,7 +94,7 @@ function Delegate(props: Props) {
       newFees.low = miniLowFee;
     }
     setAverageFees({ ...newFees });
-    setFee(newFees.low);
+    setFee(newFees.medium);
     setMiniFee(miniLowFee);
     setIsDisplayedFeeTooltip(!isRevealed);
   }

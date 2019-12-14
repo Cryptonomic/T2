@@ -4,6 +4,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import styled from 'styled-components';
 import themes from '../../styles/theme';
 
 const styles: any = {
@@ -42,6 +43,48 @@ const styles: any = {
   }
 };
 
+const LabelWrapper = styled(InputLabel)`
+  &&& {
+    &.MuiInputLabel-root {
+      z-index: 10;
+      transform: translate(22px, 34px) scale(1);
+      font-size: 16px;
+    }
+    &.Mui-focused {
+      color: ${({ theme: { colors } }) => colors.gray3};
+    }
+    &.MuiInputLabel-shrink {
+      transform: translate(0, 1.5px) scale(0.75);
+    }
+  }
+`;
+
+const FormControlWrapper = styled(FormControl)`
+  width: 100%;
+`;
+
+const InputWrapper = styled(Input)`
+  &&& {
+    &.MuiInput-root {
+      background-color: ${({ theme: { colors } }) => colors.gray14};
+      border: 1px solid ${({ theme: { colors } }) => colors.gray14};
+      padding: 10px 22px 5px 22px;
+      font-size: 14px;
+      color: ${({ theme: { colors } }) => colors.blue5};
+    }
+  }
+`;
+
+const ErrorWrapper = styled(FormHelperText)`
+  &&& {
+    color: ${({ theme: { colors } }) => colors.error1};
+    font-size: 12px;
+    margin-top: 5px;
+    line-height: 18px;
+    height: 18px;
+  }
+`;
+
 interface Props {
   label: string;
   errorText?: string | React.ReactNode;
@@ -52,24 +95,9 @@ interface Props {
 const CustomTextArea = (props: Props) => {
   const { label, onChange, errorText, classes, ...other } = props;
   return (
-    <FormControl className={classes.cssContainer}>
-      <InputLabel
-        classes={{
-          formControl: classes.cssFormControl,
-          shrink: classes.cssShrink
-        }}
-        // FormLabelClasses={{
-        //   root: classes.cssLabel,
-        //   focused: classes.cssFocused
-        // }}
-        htmlFor="micheline-input"
-      >
-        {label}
-      </InputLabel>
-      <Input
-        classes={{
-          root: classes.cssInput
-        }}
+    <FormControlWrapper>
+      <LabelWrapper htmlFor="micheline-input">{label}</LabelWrapper>
+      <InputWrapper
         id="micheline-input"
         key={label}
         onChange={event => onChange(event.target.value)}
@@ -78,10 +106,8 @@ const CustomTextArea = (props: Props) => {
         rowsMax={5}
         {...other}
       />
-      <FormHelperText component="div" className={classes.cssText}>
-        {errorText}
-      </FormHelperText>
-    </FormControl>
+      <ErrorWrapper component="div">{errorText}</ErrorWrapper>
+    </FormControlWrapper>
   );
 };
 CustomTextArea.defaultProps = {

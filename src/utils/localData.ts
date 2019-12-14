@@ -51,6 +51,10 @@ const schema = {
   isNotShowMessage: {
     type: 'boolean',
     default: false
+  },
+  isHideDelegateTooltip: {
+    type: 'boolean',
+    default: false
   }
 };
 
@@ -70,7 +74,8 @@ const defaultStore = {
   },
   isShowedLanguageScene: false,
   isPPAccepted: false,
-  isNotShowMessage: false
+  isNotShowMessage: false,
+  isHideDelegateTooltip: false
 };
 
 const store = new Store({ schema, defaults: defaultStore });

@@ -60,13 +60,14 @@ interface OwnProps {
   isLoggedIn: boolean;
   walletName: string;
   isExtended: boolean;
+  logout: () => void;
 }
 
 type Props = WithTranslation & OwnProps;
 
 const TopBar = (props: Props) => {
   const history = useHistory();
-  const { isLoggedIn, walletName, isExtended, t } = props;
+  const { isLoggedIn, walletName, isExtended, logout, t } = props;
 
   function goToSettings() {
     history.push('/settings');
@@ -84,8 +85,7 @@ const TopBar = (props: Props) => {
       </ButtonContainer>
       {isLoggedIn && <Separator />}
       {isLoggedIn && (
-        // <ButtonContainer onClick={goHomeAndClearState} buttonTheme="plain">
-        <ButtonContainer buttonTheme="plain">
+        <ButtonContainer buttonTheme="plain" onClick={() => logout()}>
           <Icon size={ms(2.2)} color="primary" iconName="logout" />
           <ButtonText>{t('components.settingController.logout')}</ButtonText>
         </ButtonContainer>

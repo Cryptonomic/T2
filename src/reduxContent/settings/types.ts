@@ -7,7 +7,6 @@ export const CHANGE_PATH = 'SET_PATH';
 export const ADD_PATH = 'ADD_PATH';
 export const REMOVE_PATH = 'REMOVE_PATH';
 export const CLEAR_STATE = 'CLEAR_STATE';
-export const HIDE_DELEGATE_TOOLTIP = 'HIDE_DELEGATE_TOOLTIP';
 
 export interface ChangeLocaleAction {
   type: typeof CHANGE_LOCALE;
