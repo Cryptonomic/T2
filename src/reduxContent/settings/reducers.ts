@@ -8,7 +8,6 @@ import {
   ADD_PATH,
   REMOVE_PATH,
   CLEAR_STATE,
-  HIDE_DELEGATE_TOOLTIP,
   SettingsActionTypes
 } from './types';
 
@@ -18,7 +17,6 @@ const baseDefaults: SettingsState = {
   locale: 'en-US',
   selectedNode: '',
   nodesList: [],
-  delegateTooltip: false,
   selectedPath: '',
   pathsList: []
 };

@@ -23,11 +23,10 @@ import InteractContractModal from '../InteractContractModal';
 import SecurityNoticeModal from '../SecurityNoticeModal';
 import Tooltip from '../Tooltip';
 
-// import { hideDelegateTooltip } from '../../reduxContent/settings/thunks';
-import { changeAccountAction } from '../../reduxContent/app/actions';
+import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
 import { getAddressType } from '../../utils/account';
-import { getLocalData } from '../../utils/localData';
+import { getLocalData, setLocalData } from '../../utils/localData';
 
 import { RootState } from '../../types/store';
 import { AddressType, Node, Identity } from '../../types/general';
@@ -154,38 +153,48 @@ const AddCircleWrapper = styled(AddCircle)<{ active: number }>`
 `;
 
 interface OwnProps {
-  // hideDelegateTooltip: () => void,
-  delegateTooltip: boolean;
+  accountBlock: Identity;
+  identityIndex: number;
+}
+
+interface StoreProps {
   selectedNode: Node;
-  accountBlock: Identity; // TODO: type this
-  // syncAccountOrIdentity: () => void,
   selectedAccountHash: string;
   changeAccount: (
     accountHash: string,
     parentHash: string,
     accountIndex: number,
-    parentIndex: number,
-    isManager: boolean
+    parentIndex: number
   ) => void;
 }
 
-type Props = OwnProps & WithTranslation;
+type Props = OwnProps & StoreProps & WithTranslation;
 
 function AddressBlock(props: Props) {
-  const { accountBlock, selectedAccountHash, delegateTooltip, selectedNode, t } = props;
+  const {
+    accountBlock,
+    selectedAccountHash,
+    selectedNode,
+    changeAccount,
+    identityIndex,
+    t
+  } = props;
 
   const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
   const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+  const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() =>
+    getLocalData('isHideDelegateTooltip')
+  );
 
   const { publicKeyHash, balance, accounts, status, storeType } = accountBlock;
   let regularAddresses = [{ pkh: publicKeyHash, balance }];
   const isManagerActive = publicKeyHash === selectedAccountHash;
 
-  // openDelegateModal = () => this.setState({ isDelegateModalOpen: true });
-  // closeDelegateModal = () => this.setState({ isDelegateModalOpen: false });
-
-  // openInteractModal = () => this.setState({ isInteractModalOpen: true });
+  function hideDelegateTooltip() {
+    setIsDelegateTooltip(true);
+    setLocalData('isHideDelegateTooltip', true);
+  }
 
   const onCheckInteractModal = () => {
     const { tezosUrl } = selectedNode;
@@ -204,11 +213,7 @@ function AddressBlock(props: Props) {
   };
 
   function goToAccount(addressId, index) {
-    // const { history, syncAccountOrIdentity } = this.props;
-    // history.push(
-    //   `/home/addresses/${selectedAccountHash}/${selectedParentHash}/${index}`
-    // );
-    // syncAccountOrIdentity(selectedAccountHash, selectedParentHash);
+    changeAccount(addressId, publicKeyHash, index, identityIndex);
   }
 
   const getAddresses = addresses => {
@@ -256,7 +261,7 @@ function AddressBlock(props: Props) {
   regularAddresses = regularAddresses.concat(newAddresses);
 
   const isDelegateToolTip = !!(
-    delegateTooltip &&
+    isHideDelegateTooltip &&
     delegatedAddresses.length &&
     smartAddresses.length
   );
@@ -319,7 +324,7 @@ function AddressBlock(props: Props) {
               accountId={addressId}
               isActive={isDelegatedActive}
               balance={address.balance}
-              onClick={() => goToAccount(addressId, index + 1)}
+              onClick={() => goToAccount(addressId, index)}
             />
           ) : (
             <AddressStatus
@@ -327,7 +332,7 @@ function AddressBlock(props: Props) {
               isContract={true}
               isActive={isDelegatedActive}
               status={address.status}
-              onClick={() => goToAccount(addressId, index + 1)}
+              onClick={() => goToAccount(addressId, index)}
             />
           );
         })}
@@ -364,7 +369,7 @@ function AddressBlock(props: Props) {
             accountId={addressId}
             isActive={isActive}
             balance={address.balance}
-            onClick={() => goToAccount(addressId, index + 1)}
+            onClick={() => goToAccount(addressId, index)}
           />
         ) : (
           <AddressStatus
@@ -372,7 +377,7 @@ function AddressBlock(props: Props) {
             isActive={isActive}
             status={address.status}
             isContract={true}
-            onClick={() => goToAccount(addressId, index + 1)}
+            onClick={() => goToAccount(addressId, index)}
           />
         );
       })}
@@ -382,16 +387,21 @@ function AddressBlock(props: Props) {
           <TezosAmount color="primary" size={ms(0)} amount={balance + smartBalance} format={2} />
         ) : null}
       </AddressLabel>
-      <InteractContractModal
-        open={isInteractModalOpen}
-        onClose={() => setIsInteractModalOpen(false)}
-        addresses={regularAddresses}
-      />
-      <AddDelegateModal
-        open={isDelegateModalOpen}
-        onClose={() => setIsDelegateModalOpen(false)}
-        managerBalance={balance}
-      />
+      {isInteractModalOpen && (
+        <InteractContractModal
+          open={isInteractModalOpen}
+          onClose={() => setIsInteractModalOpen(false)}
+          addresses={regularAddresses}
+        />
+      )}
+
+      {isDelegateModalOpen && (
+        <AddDelegateModal
+          open={isDelegateModalOpen}
+          onClose={() => setIsDelegateModalOpen(false)}
+          managerBalance={balance}
+        />
+      )}
       <SecurityNoticeModal
         open={isSecurityModalOpen}
         onClose={() => setIsSecurityModalOpen(false)}
@@ -399,10 +409,7 @@ function AddressBlock(props: Props) {
       />
       {isDelegateToolTip && (
         <NoSmartAddressesContainer>
-          {/* <CloseIconWrapper
-            onClick={() => this.props.hideDelegateTooltip('true')}
-          /> */}
-          <CloseIconWrapper />
+          <CloseIconWrapper onClick={() => hideDelegateTooltip()} />
           <NoSmartAddressesTitle>
             {t('components.addressBlock.delegation_tips')}
           </NoSmartAddressesTitle>
@@ -423,7 +430,6 @@ function AddressBlock(props: Props) {
 
 const mapStateToProps = (state: RootState) => ({
   selectedNode: getSelectedNode(state),
-  delegateTooltip: state.settings.delegateTooltip,
   selectedAccountHash: state.app.selectedAccountHash
 });
 
@@ -432,13 +438,11 @@ const mapDispatchToProps = dispatch => ({
     accountHash: string,
     parentHash: string,
     accountIndex: number,
-    parentIndex: number,
-    isManager: boolean
-  ) => dispatch(changeAccountAction(accountHash, parentHash, accountIndex, parentIndex, isManager))
-  // hideDelegateTooltip: () => dispatch(hideDelegateTooltip())
+    parentIndex: number
+  ) => dispatch(changeAccountThunk(accountHash, parentHash, accountIndex, parentIndex))
 });
 
 export default compose(
   withTranslation(),
   connect(mapStateToProps, mapDispatchToProps)
-)(AddressBlock) as React.ComponentType<any>;
+)(AddressBlock) as React.ComponentType<OwnProps>;

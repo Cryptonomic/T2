@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -235,19 +235,15 @@ function LoginHome(props: Props) {
 const mapStateToProps = (state: RootState) => ({
   locale: state.settings.locale,
   isLedgerConnecting: state.app.isLedgerConnecting,
-  activePath: state.settings.selectedPath // todo
+  activePath: state.settings.selectedPath
 });
 
 const mapDispatchToProps = dispatch => ({
   changeLocale: (locale: string) => dispatch(changeLocaleThunk(locale))
-  // connectLedger,
-  // fetchNetwork
+  // connectLedger
 });
 
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(LoginHome) as React.ComponentType<any>;

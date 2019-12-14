@@ -32,7 +32,6 @@ export interface SettingsState {
   locale: string;
   selectedNode: string;
   nodesList: Node[];
-  delegateTooltip: boolean;
   selectedPath: string;
   pathsList: Path[];
 }

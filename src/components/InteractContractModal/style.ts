@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from '@material-ui/core/Modal';
 import MenuItem from '@material-ui/core/MenuItem';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import TezosIcon from '../TezosIcon';
 import Button from '../Button';
 
@@ -195,4 +197,25 @@ export const SelectRenderWrapper = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+`;
+
+export const TabsWrapper = styled(Tabs)`
+  .MuiTabs-indicator {
+    background-color: ${({ theme: { colors } }) => colors.white};
+    display: none;
+  }
+`;
+
+export const TabWrapper = styled(Tab)`
+  &.MuiTab-root {
+    height: 60px;
+    background-color: ${({ theme: { colors } }) => colors.accent};
+    color: ${({ theme: { colors } }) => colors.white};
+    text-transform: initial;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  &.Mui-selected {
+    background-color: ${({ theme: { colors } }) => colors.white};
+  }
 `;

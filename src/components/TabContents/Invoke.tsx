@@ -171,7 +171,7 @@ function Invoke(props: Props) {
     medium: 2840,
     high: 5680
   });
-  const [fee, setFee] = useState(averageFees.low);
+  const [fee, setFee] = useState(averageFees.medium);
   const [gas, setGas] = useState(0);
   const [storage, setStorage] = useState(0);
   const [selected, setSelected] = useState(0);
@@ -193,7 +193,7 @@ function Invoke(props: Props) {
       newFees.low = OPERATIONFEE;
     }
     setAverageFees({ ...newFees });
-    setFee(newFees.low);
+    setFee(newFees.medium);
   }
 
   useEffect(() => {

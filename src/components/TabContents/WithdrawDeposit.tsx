@@ -62,7 +62,7 @@ function WithdrawDeposit(props: Props) {
     medium: 2840,
     high: 5680
   });
-  const [fee, setFee] = useState(averageFees.low);
+  const [fee, setFee] = useState(averageFees.medium);
   const [amount, setAmount] = useState('');
   const [passPhrase, setPassPhrase] = useState('');
   const [open, setOpen] = useState(false);
@@ -88,7 +88,7 @@ function WithdrawDeposit(props: Props) {
     if (newFees.low < OPERATIONFEE) {
       newFees.low = OPERATIONFEE;
       setAverageFees(newFees);
-      setFee(newFees.low);
+      setFee(newFees.medium);
     }
   }
 

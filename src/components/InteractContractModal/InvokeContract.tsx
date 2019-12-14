@@ -100,7 +100,8 @@ function InvokeContract(props: Props) {
     return {
       ...defaultState,
       selectedInvokeAddress: addresses[0].pkh,
-      balance: addresses[0].balance
+      balance: addresses[0].balance,
+      fee: averageFees.medium
     };
   });
   const {

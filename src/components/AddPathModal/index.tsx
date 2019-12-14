@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import Fab from '@material-ui/core/Fab';
 import Modal from '../CustomModal';

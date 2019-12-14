@@ -11,3 +11,8 @@ export const getSelectedNode = createSelector(
   nodeListSelector,
   (selectedNode, nodesList): Node => getMainNode(nodesList, selectedNode)
 );
+
+export const getIsNodesSelector = createSelector(
+  nodeListSelector,
+  (nodesList): boolean => nodesList.length > 0
+);

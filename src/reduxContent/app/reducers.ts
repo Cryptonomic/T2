@@ -39,8 +39,8 @@ export function appReducer(state: AppState = initState, action: AppActionTypes) 
       return { ...state, nodesStatus: action.nodesStatus };
     case UPDATE_FETCHED_TIME:
       return { ...state, time: action.time };
-    // case LOGOUT:
-    //   return defaultState;
+    case LOGOUT:
+      return initState;
     case SET_LEDGER:
       return { ...state, isLedger: action.isLedger };
     case SET_IS_LEDGER_CONNECTIONG:

@@ -12,6 +12,7 @@ const InputWrapper = styled(Input)<{ right: number | undefined }>`
   &&& {
     padding-right: ${({ right }) => right}px;
     font-weight: 300;
+    color: ${({ theme: { colors } }) => colors.primary};
   }
 `;
 
@@ -22,7 +23,7 @@ const LabelWrapper = styled(InputLabel)`
     }
     color: rgba(0, 0, 0, 0.38);
     font-size: 16px;
-    font-weight: 300;
+    font-weight: 400;
   }
 `;
 

@@ -10,7 +10,6 @@ import {
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
-// import { CONSEIL, TEZOS } from '../../constants/NodesTypes';
 import { CREATED } from '../../constants/StatusTypes';
 import { createTransaction } from '../../utils/transaction';
 
@@ -24,20 +23,13 @@ import {
   syncIdentityWithState
 } from '../../utils/identity';
 
-import { resetLocalData } from '../../utils/localData';
-
-import {
-  clearOperationId,
-  getNodesStatus,
-  getNodesError,
-  getSelectedKeyStore
-} from '../../utils/general';
+import { clearOperationId, getNodesStatus, getNodesError } from '../../utils/general';
 
 import {
   saveUpdatedWallet,
   loadPersistedState,
-  persistWalletState
-  // loadWalletFromLedger
+  persistWalletState,
+  loadWalletFromLedger
 } from '../../utils/wallet';
 
 import {
@@ -58,7 +50,7 @@ import {
   changeAccountAction
 } from '../app/actions';
 
-import { getMainNode } from '../../utils/settings';
+import { getMainNode, getMainPath } from '../../utils/settings';
 import { ACTIVATION } from '../../constants/TransactionTypes';
 import { WalletState } from '../../types/store';
 
@@ -442,56 +434,34 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
   };
 }
 
-// // todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
-// export function connectLedger() {
-//   return async (dispatch, state) => {
-//     const settings = state().settings.toJS();
-//     const { derivation } = await getCurrentPath(settings);
-//     dispatch(setLedger(true));
-//     dispatch(setIsLedgerConnecting(true));
-//     dispatch(setIsLoading(true));
-//     dispatch(addMessage('', true));
-//     try {
-//       const wallet = await loadWalletFromLedger(derivation);
-//       const identities = wallet.identities.map((identity, identityIndex) => {
-//         return createIdentity({
-//           ...identity,
-//           order: identity.order || identityIndex + 1
-//         });
-//       });
+// todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
+export function connectLedger() {
+  return async (dispatch, state) => {
+    const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+    const derivation = getMainPath(pathsList, selectedPath);
+    dispatch(setLedgerAction(true));
+    dispatch(setIsLedgerConnectingAction(true));
+    dispatch(setIsLoadingAction(true));
+    dispatch(createMessageAction('', false));
+    try {
+      const wallet = await loadWalletFromLedger(derivation);
+      const identities = wallet.identities.map((identity, identityIndex) => {
+        return createIdentity({
+          ...identity,
+          order: identity.order || identityIndex + 1
+        });
+      });
 
-//       dispatch(
-//         setWallet(
-//           {
-//             isLoading: true,
-//             identities,
-//             walletLocation: '',
-//             walletFileName: `Ledger Nano S - ${derivation}`
-//           },
-//           'wallet'
-//         )
-//       );
+      dispatch(setWalletAction(identities, '', `Ledger Nano S - ${derivation}`, ''));
 
-//       dispatch(automaticAccountRefresh());
-//       dispatch(push('/home'));
-//       await dispatch(syncWallet());
-//     } catch (e) {
-//       console.error(e);
-//       dispatch(addMessage(e.name, true));
-//     }
-//     dispatch(setIsLoading(false));
-//     dispatch(setIsLedgerConnecting(false));
-//   };
-// }
-
-// export function getIsImplicitAndEmpty(recipientHash) {
-//   return async (dispatch, state) => {
-//     const settings = state().settings.toJS();
-//     const { url } = getSelectedNode(settings, TEZOS);
-//     const isImplicitAndEmpty = await TezosNodeWriter.isImplicitAndEmpty(
-//       url,
-//       recipientHash
-//     );
-//     return isImplicitAndEmpty;
-//   };
-// }
+      dispatch(automaticAccountRefresh());
+      dispatch(push('/home'));
+      await dispatch(syncWalletThunk());
+    } catch (e) {
+      console.error(e);
+      dispatch(createMessageAction(e.name, true));
+    }
+    dispatch(setIsLoadingAction(false));
+    dispatch(setIsLedgerConnectingAction(false));
+  };
+}

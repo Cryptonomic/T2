@@ -206,7 +206,7 @@ type Props = OwnProps & StoreProps & WithTranslation;
 const initialState = {
   toAddress: '',
   amount: '',
-  fee: 1420,
+  fee: 2840,
   miniFee: 0,
   isBurn: false,
   isFeeTooltip: false,
@@ -237,7 +237,12 @@ function Send(props: Props) {
     validateAmount,
     t
   } = props;
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState(() => {
+    return {
+      ...initialState,
+      balance: addressBalance
+    };
+  });
   const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false);
   const [addressType, setAddressType] = useState<AddressType>(AddressType.None);
@@ -256,7 +261,7 @@ function Send(props: Props) {
 
   async function getFeesAndReveals() {
     const newFees = await fetchFees(OperationKindType.Transaction);
-    const isRevealed = await getIsReveal();
+    const isRevealed = await getIsReveal().catch(() => false);
     let miniLowFee = OPERATIONFEE;
     if (!isRevealed) {
       newFees.low += REVEALOPERATIONFEE;
@@ -272,9 +277,8 @@ function Send(props: Props) {
       return {
         ...prevState,
         averageFees: newFees,
-        fee: newFees.low,
-        total: newFees.low,
-        balance: addressBalance,
+        fee: newFees.medium,
+        total: newFees.medium,
         isDisplayedFeeTooltip: !isRevealed,
         miniFee: miniLowFee
       };
