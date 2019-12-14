@@ -4,8 +4,6 @@ import { getAddressType } from '../../utils/account';
 import { AddressType } from '../../types/general';
 import { TRANSACTIONS } from '../../constants/TabConstants';
 
-export const getApp = (state: RootState) => state.app;
-
 const selectedAccountHashSelector = (state: RootState) => state.app.selectedAccountHash;
 const selectedParentHashSelector = (state: RootState) => state.app.selectedParentHash;
 const identitiesSelector = (state: RootState) => state.wallet.identities;

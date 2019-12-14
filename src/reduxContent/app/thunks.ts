@@ -4,14 +4,19 @@ import {
   ConseilDataClient,
   ConseilSortDirection,
   TezosConseilClient,
-  TezosNodeReader
+  TezosNodeReader,
+  OperationKindType
 } from 'conseiljs';
+import { changeAccountAction } from './actions';
+import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
+import { AverageFees } from '../../types/general';
+import { AVERAGEFEES } from '../../constants/FeeValue';
 
 const { executeEntityQuery } = ConseilDataClient;
 
-export function fetchFeesThunk(operationKind) {
-  return async (dispatch, state) => {
+export function fetchFeesThunk(operationKind: OperationKindType) {
+  return async (dispatch, state): Promise<AverageFees> => {
     const { selectedNode, nodesList } = state().settings;
     const mainNode = getMainNode(nodesList, selectedNode);
     const { conseilUrl, apiKey, network } = mainNode;
@@ -19,9 +24,12 @@ export function fetchFeesThunk(operationKind) {
       { url: conseilUrl, apiKey, network },
       network,
       operationKind
-    );
-    console.log('thunkfeess---', fees);
-    return fees[0];
+    ).catch(() => [AVERAGEFEES]);
+    return {
+      low: fees[0].low,
+      medium: fees[0].medium,
+      high: fees[0].high
+    };
   };
 }
 
@@ -49,16 +57,14 @@ export function getAccountThunk(pkh: string) {
   };
 }
 
-export function getIsRevealThunk() {
+export function getIsRevealThunk(isManager: boolean = false) {
   return async (dispatch, state) => {
     const { selectedNode, nodesList } = state().settings;
     const mainNode = getMainNode(nodesList, selectedNode);
     const { tezosUrl } = mainNode;
-    const { selectedAccountHash } = state().app;
-    const isReveal = await TezosNodeReader.isManagerKeyRevealedForAccount(
-      tezosUrl,
-      selectedAccountHash
-    );
+    const { selectedAccountHash, selectedParentHash } = state().app;
+    const pkh = isManager ? selectedParentHash : selectedAccountHash;
+    const isReveal = await TezosNodeReader.isManagerKeyRevealedForAccount(tezosUrl, pkh);
     return isReveal;
   };
 }
@@ -70,5 +76,25 @@ export function getIsImplicitAndEmptyThunk(recipientHash: string) {
     const { tezosUrl } = mainNode;
     const isImplicitAndEmpty = await TezosNodeReader.isImplicitAndEmpty(tezosUrl, recipientHash);
     return isImplicitAndEmpty;
+  };
+}
+
+export function changeAccountThunk(
+  accountHash: string,
+  parentHash: string,
+  accountIndex: number,
+  parentIndex: number
+) {
+  return async dispatch => {
+    dispatch(
+      changeAccountAction(
+        accountHash,
+        parentHash,
+        accountIndex,
+        parentIndex,
+        accountHash === parentHash
+      )
+    );
+    dispatch(syncAccountOrIdentityThunk(accountHash, parentHash));
   };
 }

@@ -89,19 +89,18 @@ function LoginImport(props: Props) {
     }
 
     const currentWindow = remote.getCurrentWindow();
-    remote.dialog.showOpenDialog(
-      currentWindow,
-      {
+    remote.dialog
+      .showOpenDialog(currentWindow, {
         properties: ['openFile'],
         filters: dialogFilters
-      },
-      filePaths => {
+      })
+      .then((result: any) => {
+        const filePaths = result.filePaths;
         if (filePaths && filePaths.length) {
           setWalletLocation(path.dirname(filePaths[0]));
           setWalletFileName(path.basename(filePaths[0]));
         }
-      }
-    );
+      });
   }
 
   async function onLogin(loginType: string) {
@@ -158,8 +157,5 @@ const mapDispatchToProps = dispatch => ({
 
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(LoginImport) as React.ComponentType<any>;

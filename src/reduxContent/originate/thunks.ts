@@ -1,4 +1,4 @@
-import { TezosNodeWriter, TezosProtocolHelper } from 'conseiljs';
+import { TezosNodeWriter, TezosProtocolHelper, TezosParameterFormat } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { displayError } from '../../utils/formValidation';
@@ -16,23 +16,23 @@ import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
 const { sendContractOriginationOperation } = TezosNodeWriter;
 const { deployManagerContract } = TezosProtocolHelper;
 
-export function originateContract(
-  delegate,
-  amount,
-  fee,
-  passPhrase,
-  publicKeyHash,
-  storageLimit = 0,
-  gasLimit = 0,
-  code,
-  storage,
-  codeFormat,
-  isSmartContract = false
+export function originateContractThunk(
+  delegate: string,
+  amount: string,
+  fee: number,
+  passPhrase: string,
+  publicKeyHash: string,
+  storageLimit: number = 0,
+  gasLimit: number = 0,
+  code: string,
+  storage: string,
+  codeFormat: TezosParameterFormat,
+  isSmartContract: boolean = false
 ) {
   return async (dispatch, state) => {
     const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
     const { identities, walletPassword } = state().wallet;
-    const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+    const { isLedger } = state().app;
     const mainNode = getMainNode(nodesList, selectedNode);
     const { tezosUrl } = mainNode;
 

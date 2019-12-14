@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router';
 import { withTranslation, WithTranslation } from 'react-i18next';
@@ -6,9 +6,9 @@ import { compose } from 'redux';
 // import Transport from '@ledgerhq/hw-transport-node-hid';
 
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
-// import { addMessage } from '../../reduxContent/message/thunks';
-// import { getNewVersion } from '../../reduxContent/message/selectors';
-// import { initLedgerTransport } from '../../utils/wallet';
+import { getIsIdentitesSelector } from '../../reduxContent/wallet/selectors';
+import { createMessageAction } from '../../reduxContent/message/actions';
+import { initLedgerTransport } from '../../utils/wallet';
 
 import NodesStatus from '../../components/NodesStatus';
 import HomeMain from './../HomeMain';
@@ -19,46 +19,44 @@ import { RootState } from '../../types/store';
 import { NodeStatus } from '../../types/general';
 
 interface OwnProps {
-  identities: any[];
-  isLoading: boolean;
+  isIdentities: boolean;
   nodesStatus: NodeStatus;
-  // match: object,
-  // goHomeAndClearState: () => {};
-  // addMessage: () => {},
-  // isLedger: boolean,
-  // newVersion: string
+  isLedger: boolean;
+  logout: () => void;
+  addMessage: (message: string, isError: boolean) => void;
 }
 
 type Props = OwnProps & WithTranslation;
 
 function HomePage(props: Props) {
-  const { identities, nodesStatus, isLoading, t } = props;
+  const { isIdentities, nodesStatus, isLedger, logout, addMessage, t } = props;
   const nodesErrorMessage = getNodesError(nodesStatus);
 
   async function onDetectLedger() {
-    // const { isLedger } = this.props;
     // Transport.listen({
     //   next: e => {
     //     if (e.type === 'remove' && isLedger) {
-    //       this.onLogout();
+    //       onLogout();
     //     }
     //   },
     //   error: e => {
     //     console.error(e);
-    //   },
-    //   complete: () => {}
+    //   }
     // });
   }
 
   function onLogout() {
-    // const { goHomeAndClearState } = this.props;
-    // const { goHomeAndClearState, addMessage } = this.props;
-    // initLedgerTransport();
-    goHomeAndClearState();
-    // addMessage('general.errors.no_ledger_detected', true);
+    initLedgerTransport();
+    logout();
+    addMessage('general.errors.no_ledger_detected', true);
   }
 
-  const redirectTo = identities.length > 0 ? '/home/main' : '/home/add';
+  useEffect(() => {
+    console.log('first------');
+    onDetectLedger();
+  }, []);
+
+  const redirectTo = isIdentities ? '/home/main' : '/home/add';
 
   return (
     <Fragment>
@@ -73,21 +71,18 @@ function HomePage(props: Props) {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  identities: state.wallet.identities,
-  isLoading: state.app.isLoading,
+  isIdentities: getIsIdentitesSelector(state),
   isLedger: state.app.isLedger,
   newVersion: state.app.newVersion,
   nodesStatus: state.app.nodesStatus
 });
 
 const mapDispatchToProps = dispatch => ({
-  // goHomeAndClearState: () => dispatch(goHomeAndClearState())
+  logout: () => dispatch(goHomeAndClearState()),
+  addMessage: (message: string, isError: boolean) => dispatch(createMessageAction(message, isError))
 });
 
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(HomePage) as React.ComponentType<any>;

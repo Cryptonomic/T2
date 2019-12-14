@@ -3,11 +3,12 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { OperationKindType } from 'conseiljs';
 
 import Button from '../Button/';
 import { ms } from '../../styles/helpers';
-// import SendConfirmationModal from '../SendConfirmationModal';
-// import SendLedgerConfirmationModal from '../SendLedgerConfirmationModal';
+import SendConfirmationModal from '../ConfirmModals/SendConfirmationModal';
+import SendLedgerConfirmationModal from '../ConfirmModals/SendLedgerConfirmationModal';
 import InputAddress from '../InputAddress';
 import TezosNumericInput from '../TezosNumericInput';
 import TezosAmount from '../TezosAmount';
@@ -29,9 +30,9 @@ import {
   fetchFeesThunk,
   getIsImplicitAndEmptyThunk
 } from '../../reduxContent/app/thunks';
-import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/LowFeeValue';
+import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
 import { RootState } from '../../types/store';
-import { AddressType } from '../../types/general';
+import { AddressType, AverageFees } from '../../types/general';
 
 const SendContainer = styled.div`
   display: flex;
@@ -190,9 +191,9 @@ interface StoreProps {
   isLoading: boolean;
   selectedAccountHash: string;
   selectedParentHash: string;
-  getIsImplicitAndEmpty: (address: string) => boolean;
-  fetchFees: (op: string) => any;
-  getIsReveal: () => boolean;
+  getIsImplicitAndEmpty: (address: string) => Promise<boolean>;
+  fetchFees: (op: OperationKindType) => Promise<AverageFees>;
+  getIsReveal: () => Promise<boolean>;
   setIsLoading: (flag: boolean) => void;
   sendTez: (password: string, toAddress: string, amount: string, fee: number) => boolean;
   sendDelegatedFunds: (password: string, toAddress: string, amount: string, fee: number) => void;
@@ -205,7 +206,7 @@ type Props = OwnProps & StoreProps & WithTranslation;
 const initialState = {
   toAddress: '',
   amount: '',
-  fee: 1420,
+  fee: 2840,
   miniFee: 0,
   isBurn: false,
   isFeeTooltip: false,
@@ -236,7 +237,12 @@ function Send(props: Props) {
     validateAmount,
     t
   } = props;
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState(() => {
+    return {
+      ...initialState,
+      balance: addressBalance
+    };
+  });
   const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false);
   const [addressType, setAddressType] = useState<AddressType>(AddressType.None);
@@ -254,8 +260,8 @@ function Send(props: Props) {
   } = state;
 
   async function getFeesAndReveals() {
-    const newFees = await fetchFees('transaction');
-    const isRevealed = await getIsReveal();
+    const newFees = await fetchFees(OperationKindType.Transaction);
+    const isRevealed = await getIsReveal().catch(() => false);
     let miniLowFee = OPERATIONFEE;
     if (!isRevealed) {
       newFees.low += REVEALOPERATIONFEE;
@@ -271,9 +277,8 @@ function Send(props: Props) {
       return {
         ...prevState,
         averageFees: newFees,
-        fee: newFees.low,
-        total: newFees.low,
-        balance: addressBalance,
+        fee: newFees.medium,
+        total: newFees.medium,
         isDisplayedFeeTooltip: !isRevealed,
         miniFee: miniLowFee
       };
@@ -305,8 +310,8 @@ function Send(props: Props) {
     });
   }
 
-  function onEnterPress(keyVal, disabled) {
-    if (keyVal === 'Enter' && !disabled) {
+  function onEnterPress(keyVal) {
+    if (keyVal === 'Enter') {
       onSend();
     }
   }
@@ -550,36 +555,32 @@ function Send(props: Props) {
         </SendButton>
       </BottomContainer>
 
-      {/* {!isLedger && (
+      {!isLedger ? (
         <SendConfirmationModal
-          onEnterPress={event => this.onEnterPress(event.key, isDisabled)}
+          onEnterPress={event => onEnterPress(event.key)}
           amount={amount}
           fee={fee}
           source={selectedAccountHash}
           password={password}
           address={toAddress}
-          open={isConfirmationModalOpen}
-          onCloseClick={this.closeConfirmation}
-          onPasswordChange={this.handlePasswordChange}
-          onSend={this.onSend}
+          open={open}
+          onClose={() => setOpen(false)}
+          onPasswordChange={val => setPassword(val)}
+          onSend={() => onSend()}
           isLoading={isLoading}
-          isShowedPwd={isShowedPwd}
-          isDisplayedBurn={isDisplayedBurn}
-          onShowPwd={() => this.setState({ isShowedPwd: !isShowedPwd })}
+          isBurn={isBurn}
         />
-      )}
-
-      {isLedger && (
+      ) : (
         <SendLedgerConfirmationModal
           amount={amount}
           fee={fee}
           address={toAddress}
           source={selectedAccountHash}
-          open={isConfirmationModalOpen}
-          onCloseClick={this.closeConfirmation}
+          open={open}
+          onClose={() => setOpen(false)}
           isLoading={isLoading}
         />
-      )} */}
+      )}
     </SendContainer>
   );
 }
@@ -593,7 +594,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = dispatch => ({
   setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  fetchFees: (op: string) => dispatch(fetchFeesThunk(op)),
+  fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
   getIsReveal: () => dispatch(getIsRevealThunk()),
   getIsImplicitAndEmpty: (address: string) => dispatch(getIsImplicitAndEmptyThunk(address)),
   sendTez: (password: string, toAddress: string, amount: string, fee: number) =>
@@ -608,8 +609,5 @@ const mapDispatchToProps = dispatch => ({
 
 export default compose(
   withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(Send) as React.ComponentType<OwnProps>;

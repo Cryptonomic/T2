@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
-import TezosIcon from '../../components/TezosIcon';
 import { H4 } from '../../components/Heading';
 import { ms } from '../../styles/helpers';
 
