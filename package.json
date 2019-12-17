@@ -18,7 +18,8 @@
     "test:e2e": "jest '(\\/test\\/e2e/).*'",
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps && npm run rebuild",
+    "rebuild": "electron-rebuild -f -w conseiljs"
   },
   "husky": {
     "hooks": {
@@ -109,6 +110,7 @@
     "electron": "^7.1.4",
     "electron-builder": "^21.2.0",
     "electron-devtools-installer": "^2.2.4",
+    "electron-rebuild": "^1.8.8",
     "file-loader": "^5.0.2",
     "fork-ts-checker-webpack-plugin": "^3.1.1",
     "html-webpack-plugin": "^3.2.0",
@@ -146,7 +148,7 @@
     "@material-ui/lab": "^4.0.0-alpha.35",
     "bignumber.js": "^9.0.0",
     "connected-react-router": "^6.6.1",
-    "conseiljs": "^0.3.3-beta",
+    "conseiljs": "file:../ConseilJS/conseiljs-0.3.5-beta.tgz",
     "downshift": "^3.4.8",
     "electron-store": "^5.1.0",
     "history": "^4.10.1",
@@ -171,6 +173,7 @@
     "react-swipeable-views": "^0.13.3",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
+    "regenerator-runtime": "^0.13.3",
     "reselect": "^4.0.0",
     "styled-components": "^4.4.1",
     "throttle-debounce": "^2.1.0"

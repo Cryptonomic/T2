@@ -6,6 +6,7 @@ import { getLocalData, setLocalData } from './localData';
 import { WalletState } from '../types/store';
 
 const { saveWallet, loadWallet } = TezosFileWallet;
+const { unlockAddress } = TezosLedgerWallet;
 
 export async function saveUpdatedWallet(identities, walletLocation, walletFileName, password) {
   const completeWalletPath = path.join(walletLocation, walletFileName);
@@ -70,7 +71,8 @@ export async function loadPersistedState(walletPath, password) {
 }
 
 export async function loadWalletFromLedger(derivationPath: string) {
-  const identity = await TezosLedgerWallet.unlockAddress(0, derivationPath).catch(err => {
+  console.log('TezosLedgerWallet---', unlockAddress);
+  const identity = await unlockAddress(0, derivationPath).catch(err => {
     const errorObj = {
       name: 'components.messageBar.messages.ledger_not_connect'
     };

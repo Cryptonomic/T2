@@ -435,9 +435,9 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
 }
 
 // todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
-export function connectLedger() {
+export function connectLedgerThunk() {
   return async (dispatch, state) => {
-    const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+    const { selectedPath, pathsList } = state().settings;
     const derivation = getMainPath(pathsList, selectedPath);
     dispatch(setLedgerAction(true));
     dispatch(setIsLedgerConnectingAction(true));
