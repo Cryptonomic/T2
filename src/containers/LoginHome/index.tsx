@@ -11,7 +11,7 @@ import LanguageSelectModal from '../../components/LanguageSelectModal';
 import { name } from '../../config.json';
 import { setLocalData, getLocalData, resetLocalData } from '../../utils/localData';
 import { changeLocaleThunk } from '../../reduxContent/settings/thunks';
-// import { connectLedger } from '../../reduxContent/wallet/thunks';
+import { connectLedgerThunk } from '../../reduxContent/wallet/thunks';
 
 import {
   SectionContainer,
@@ -61,13 +61,14 @@ interface OwnProps {
   locale: string;
   isLedgerConnecting: boolean;
   activePath: string;
+  connectLedger: () => void;
   changeLocale: (locale: string) => void;
 }
 type Props = OwnProps & WithTranslation & RouteComponentProps<{ path: string }>;
 
 function LoginHome(props: Props) {
   const history = useHistory();
-  const { locale, match, isLedgerConnecting, activePath, changeLocale, t } = props;
+  const { locale, match, isLedgerConnecting, activePath, connectLedger, changeLocale, t } = props;
   const [isAgreement, setIsAgreement] = useState(() => getLocalData(AGREEMENT_STORAGE));
   const [isLanguageSelected, setIsLanguageSelected] = useState(() =>
     getLocalData(LANGUAGE_STORAGE)
@@ -101,8 +102,7 @@ function LoginHome(props: Props) {
   }
 
   async function onLedgerConnect() {
-    // const { connectLedger } = this.props;
-    // await connectLedger();
+    await connectLedger();
   }
 
   function onDownload() {
@@ -239,8 +239,8 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeLocale: (locale: string) => dispatch(changeLocaleThunk(locale))
-  // connectLedger
+  changeLocale: (locale: string) => dispatch(changeLocaleThunk(locale)),
+  connectLedger: () => dispatch(connectLedgerThunk())
 });
 
 export default compose(
