@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { compose } from 'redux';
-import 'regenerator-runtime';
 import Transport from '@ledgerhq/hw-transport-node-hid';
 
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
