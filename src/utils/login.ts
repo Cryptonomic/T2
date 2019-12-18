@@ -1,5 +1,5 @@
 import { WalletState } from '../types/store';
-export function getLoggedIn(wallet: WalletState, isLedger: boolean) {
-  const { password, walletFileName, walletLocation } = wallet;
-  return (!!password && !!walletFileName && !!walletLocation) || isLedger;
+export function getLoggedIn(wallet: WalletState) {
+  const { walletFileName } = wallet;
+  return !!walletFileName;
 }

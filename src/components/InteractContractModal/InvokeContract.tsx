@@ -152,7 +152,7 @@ function InvokeContract(props: Props) {
     updateState({ isOpenLedgerConfirm: val });
   }
 
-  function openLink(link) {
+  function onOpenLink(link) {
     openLinkToBlockExplorer(link);
   }
 
@@ -210,14 +210,14 @@ function InvokeContract(props: Props) {
           />
           {!isAddressIssue && contractAddress && (
             <React.Fragment>
-              <ViewScan onClick={() => openLink(contractAddress)}>
+              <ViewScan onClick={() => onOpenLink(contractAddress)}>
                 {t('components.interactModal.view_scan')}
               </ViewScan>
               <LinkIcon
                 iconName="new-window"
                 size={ms(-1)}
                 color="primary"
-                onClick={() => openLink(contractAddress)}
+                onClick={() => onOpenLink(contractAddress)}
               />
             </React.Fragment>
           )}

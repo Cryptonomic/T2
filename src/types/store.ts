@@ -4,7 +4,7 @@ export interface AppState {
   isLoading: boolean;
   isWalletSyncing: boolean;
   nodesStatus: NodeStatus;
-  time: any;
+  time: Date;
   isLedger: boolean;
   isLedgerConnecting: boolean;
   newVersion: string;

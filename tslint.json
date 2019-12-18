@@ -5,6 +5,12 @@
         "tslint-react",
         "tslint-config-prettier"
     ],
+    "linterOptions": {
+        "exclude": [
+            "node_modules/**",
+            "src/node_modules/**"
+        ]
+    },
     "jsRules": {},
     "rules": {
         "max-line-length": [true, 120],

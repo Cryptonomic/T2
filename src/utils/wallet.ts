@@ -71,7 +71,6 @@ export async function loadPersistedState(walletPath, password) {
 }
 
 export async function loadWalletFromLedger(derivationPath: string) {
-  console.log('TezosLedgerWallet---', unlockAddress);
   const identity = await unlockAddress(0, derivationPath).catch(err => {
     const errorObj = {
       name: 'components.messageBar.messages.ledger_not_connect'
@@ -79,10 +78,9 @@ export async function loadWalletFromLedger(derivationPath: string) {
     console.error('TezosLedgerWallet.unlockAddress', err);
     throw errorObj;
   });
-  identity.storeType = StoreType.Hardware;
-  const ledgerWallet: any = { identities: [] };
-  ledgerWallet.identities.push(identity);
 
+  identity.storeType = StoreType.Hardware;
+  const ledgerWallet: any = { identities: [identity] };
   const localWallet = getLocalData('wallet');
   return prepareToLoad(ledgerWallet, localWallet);
 }

@@ -125,7 +125,7 @@ export function updateIdentityActiveTab(selectedAccountHash, activeTab) {
   };
 }
 
-export function updateActiveTabThunk(activeTab) {
+export function updateActiveTabThunk(activeTab: string) {
   return async (dispatch, state) => {
     const { selectedAccountHash, selectedParentHash } = state().app;
     if (selectedAccountHash === selectedParentHash) {
@@ -453,7 +453,8 @@ export function connectLedgerThunk() {
       });
 
       dispatch(setWalletAction(identities, '', `Ledger Nano S - ${derivation}`, ''));
-
+      const { publicKeyHash } = identities[0];
+      dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, true));
       dispatch(automaticAccountRefresh());
       dispatch(push('/home'));
       await dispatch(syncWalletThunk());

@@ -1,0 +1,21 @@
+{
+  "name": "galleon",
+  "productName": "Galleon",
+  "version": "0.9.3b",
+  "description": "A wallet for the Tezos blockchain.",
+  "main": "./main.prod.js",
+  "author": {
+    "name": "Cryptonomic Inc",
+    "email": "info@cryptonomic.tech",
+    "url": "https://github.com/cryptonomic"
+  },
+  "scripts": {
+    "electron-rebuild": "node ../scripts/ElectronRebuild.js",
+    "postinstall": "npm run electron-rebuild"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@ledgerhq/hw-transport-node-hid": "4.78.0",
+    "conseiljs": "file:../../ConseilJS/conseiljs-0.3.5-beta.tgz"
+  }
+}
