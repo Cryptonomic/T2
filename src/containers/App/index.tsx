@@ -35,7 +35,7 @@ interface Props {
 
 function App(props: Props) {
   const { wallet, newVersion, isLoading, walletName, isLedger, isNodes, logout } = props;
-  const isLoggedIn = getLoggedIn(wallet, isLedger);
+  const isLoggedIn = getLoggedIn(wallet);
   return (
     <Container>
       <TopBar
@@ -53,7 +53,7 @@ function App(props: Props) {
               return <Redirect to="/walletNodesRequired" />;
             }
 
-            if (!isLoggedIn) {
+            if (!isLoggedIn && !isLedger) {
               return <Redirect to="/login" />;
             }
 

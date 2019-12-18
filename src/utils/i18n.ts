@@ -14,7 +14,7 @@ i18n
     load: 'currentOnly',
     debug: true,
     backend: {
-      loadPath: 'locales/{{lng}}.json'
+      loadPath: './locales/{{lng}}.json'
     },
     lng: savedLocale,
     fallbackLng: 'en-US',

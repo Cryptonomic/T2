@@ -53,7 +53,6 @@ function HomePage(props: Props) {
   }
 
   useEffect(() => {
-    console.log('first------');
     onDetectLedger();
   }, []);
 
