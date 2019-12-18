@@ -22,12 +22,17 @@ module.exports = merge.smart(baseConfig, {
   target: 'electron-renderer',
 
   entry: path.join(__dirname, '..', 'src/index.tsx'),
-
   output: {
     path: path.join(__dirname, '..', 'dist'),
+    filename: 'renderer.prod.js',
     publicPath: './dist/',
-    filename: 'renderer.prod.js'
   },
+
+  // output: {
+  //   path: path.join(__dirname, '..', 'dist'),
+  //   publicPath: './dist/',
+  //   filename: 'renderer.prod.js'
+  // },
 
   module: {
     rules: [
@@ -36,10 +41,7 @@ module.exports = merge.smart(baseConfig, {
         test: /\.global\.css$/,
         use: [
           {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: './'
-            }
+            loader: MiniCssExtractPlugin.loader
           },
           {
             loader: 'css-loader',

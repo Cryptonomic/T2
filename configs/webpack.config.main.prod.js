@@ -21,9 +21,14 @@ module.exports = merge.smart(baseConfig, {
 
   entry: './src/main.dev',
 
+  // output: {
+  //   path: path.join(__dirname, '..'),
+  //   filename: './dist/main.prod.js'
+  // },
+
   output: {
     path: path.join(__dirname, '..'),
-    filename: './dist/main.prod.js'
+    filename: './src/main.prod.js'
   },
 
   optimization: {
