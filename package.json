@@ -69,7 +69,7 @@
     "productName": "Cryptonomic",
     "appId": "org.your.productname",
     "files": [
-      "src/dist/",
+      "dist/",
       "src/app.html",
       "src/main.prod.js",
       "src/main.prod.js.map",
