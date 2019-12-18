@@ -43,12 +43,15 @@ app.on('ready', async () => {
   }
 
   mainWindow = new BrowserWindow({
-    height: 720,
+    height: 768,
+    minHeight: 768,
+    minWidth: 1024,
+    show: false,
     title: 'Cryptonomic',
     webPreferences: {
       nodeIntegration: true
     },
-    width: 1024
+    width: 1120
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
