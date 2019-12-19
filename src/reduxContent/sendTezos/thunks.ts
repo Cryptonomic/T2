@@ -4,7 +4,7 @@ import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 
 import { tezToUtez } from '../../utils/currancy';
 import { displayError } from '../../utils/formValidation';
-import { persistWalletState } from '../../utils/wallet';
+import { saveIdentitiesToLocal } from '../../utils/wallet';
 import { createTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
@@ -134,7 +134,7 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
 
       dispatch(updateIdentityAction(identity));
 
-      await persistWalletState(state().wallet);
+      await saveIdentitiesToLocal(state().wallet.identities);
 
       dispatch(
         createMessageAction(
@@ -247,7 +247,7 @@ export function sendDelegatedFundsThunk(
 
       dispatch(updateIdentityAction(identity));
 
-      await persistWalletState(state().wallet);
+      await saveIdentitiesToLocal(state().wallet.identities);
 
       dispatch(
         createMessageAction(

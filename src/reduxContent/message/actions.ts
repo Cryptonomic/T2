@@ -8,12 +8,12 @@ export function clearMessageAction(): ClearMessageAction {
 }
 
 export function createMessageAction(
-  message: string,
+  text: string,
   isError: boolean,
   hash: string = '',
   localeParam: number = 0
 ): CreateMessageAction {
-  const payload: MessageState = { message, isError, hash, localeParam };
+  const payload: MessageState = { text, isError, hash, localeParam };
   return {
     type: ADD_MESSAGE,
     payload

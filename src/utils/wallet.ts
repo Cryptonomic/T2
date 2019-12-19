@@ -1,9 +1,11 @@
 import path from 'path';
 import { TezosFileWallet, TezosLedgerWallet, StoreType } from 'conseiljs';
-import { omit, pick } from 'lodash';
+import { omit, pick, unionBy, cloneDeep } from 'lodash';
 
 import { getLocalData, setLocalData } from './localData';
+import { createIdentity } from './identity';
 import { WalletState } from '../types/store';
+import { Identity } from '../types/general';
 
 const { saveWallet, loadWallet } = TezosFileWallet;
 const { unlockAddress } = TezosLedgerWallet;
@@ -13,51 +15,61 @@ export async function saveUpdatedWallet(identities, walletLocation, walletFileNa
   return await saveWallet(completeWalletPath, { identities }, password);
 }
 
-function prepareToPersist(walletState: WalletState) {
-  walletState.identities = walletState.identities.map(identity => {
+// function prepareToPersist(walletState: WalletState) {
+//   walletState.identities = walletState.identities.map(identity => {
+//     identity = omit(identity, ['publicKey', 'privateKey', 'activeTab']);
+//     identity.accounts = identity.accounts.map(account => {
+//       account = omit(account, ['activeTab']);
+//       return account;
+//     });
+
+//     return identity;
+//   });
+//   return pick(walletState, ['identities']);
+// }
+
+export function saveIdentitiesToLocal(identities: Identity[]) {
+  let newIdentities = cloneDeep(identities);
+  newIdentities = newIdentities.map(identity => {
     identity = omit(identity, ['publicKey', 'privateKey', 'activeTab']);
     identity.accounts = identity.accounts.map(account => {
       account = omit(account, ['activeTab']);
       return account;
     });
-
     return identity;
   });
-  return pick(walletState, ['identities']);
-}
-
-export function persistWalletState(walletState: WalletState) {
-  setLocalData('wallet', prepareToPersist({ ...walletState }));
+  // identities.map(identity => {
+  //   let newIdentity = { ...identity};
+  //   newIdentity = omit(newIdentity, ['publicKey', 'privateKey', 'activeTab']);
+  //   const accounts = newIdentity.accounts.map(account => {
+  //     let newAcc = { ...account };
+  //     newAcc = omit(newAcc, ['activeTab']);
+  //     return newAcc;
+  //   });
+  //   return { ...newIdentity, accounts};
+  // })
+  setLocalData('identities', newIdentities);
 }
 
 // todo type
-function prepareToLoad(savedWallet, localWallet): WalletState {
-  const newWalletState = { ...savedWallet, ...localWallet };
-  newWalletState.identities = savedWallet.identities.map(savedIdentity => {
-    const foundIdentity = localWallet.identities.find(
-      persistedIdentity => savedIdentity.publicKeyHash === persistedIdentity.publicKeyHash
+function prepareToLoad(serverIdentities, localIdentities): Identity[] {
+  return serverIdentities.map((identity, index) => {
+    const foundIdentity = localIdentities.find(
+      localIdentity => identity.publicKeyHash === localIdentity.publicKeyHash
     );
-
+    let newAccounts = identity.accounts || [];
     if (foundIdentity) {
-      savedIdentity = { ...foundIdentity, ...savedIdentity };
+      newAccounts = unionBy(newAccounts, foundIdentity.accounts, 'account_id');
     }
-
-    // if (savedIdentity.accounts) {
-    //   savedIdentity.accounts = savedIdentity.accounts.map(account => {
-    //     return {
-    //       ...account,
-    //       ...pick(savedIdentity, ['publicKey', 'privateKey'])
-    //     };
-    //   });
-    // }
-
-    return { ...savedIdentity };
+    return createIdentity({ ...identity, accounts: newAccounts, order: index + 1 });
   });
-  return { ...newWalletState };
 }
 
-export async function loadPersistedState(walletPath, password) {
-  const savedWallet = await loadWallet(walletPath, password).catch(err => {
+export async function loadPersistedState(
+  walletPath: string,
+  password: string
+): Promise<Identity[]> {
+  const { identities } = await loadWallet(walletPath, password).catch(err => {
     const errorObj = {
       name: 'components.messageBar.messages.invalid_wallet_password',
       ...err
@@ -66,11 +78,11 @@ export async function loadPersistedState(walletPath, password) {
     throw errorObj;
   });
 
-  const localWallet = getLocalData('wallet');
-  return prepareToLoad(savedWallet, localWallet);
+  const localIdentities = getLocalData('identities');
+  return prepareToLoad(identities, localIdentities);
 }
 
-export async function loadWalletFromLedger(derivationPath: string) {
+export async function loadWalletFromLedger(derivationPath: string): Promise<Identity[]> {
   const identity = await unlockAddress(0, derivationPath).catch(err => {
     const errorObj = {
       name: 'components.messageBar.messages.ledger_not_connect'
@@ -80,9 +92,9 @@ export async function loadWalletFromLedger(derivationPath: string) {
   });
 
   identity.storeType = StoreType.Hardware;
-  const ledgerWallet: any = { identities: [identity] };
-  const localWallet = getLocalData('wallet');
-  return prepareToLoad(ledgerWallet, localWallet);
+  const identities = [identity];
+  const localIdentities = getLocalData('identities');
+  return prepareToLoad(identities, localIdentities);
 }
 
 export function initLedgerTransport() {

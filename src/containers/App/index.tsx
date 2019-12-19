@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
@@ -9,12 +9,15 @@ import WalletNodesRequired from '../WalletNodesRequired';
 import Loader from '../../components/Loader';
 import TopBar from '../../components/TopBar';
 import VersionStatus from '../../components/VersionStatus';
+import MessageBar from '../../components/MessageBar';
 
+import { getNewVersionThunk } from '../../reduxContent/app/thunks';
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
+import { clearMessageAction } from '../../reduxContent/message/actions';
 import { getIsNodesSelector } from '../../reduxContent/settings/selectors';
 import { getWalletName } from '../../reduxContent/wallet/selectors';
 import { getLoggedIn } from '../../utils/login';
-import { RootState, WalletState } from '../../types/store';
+import { RootState, WalletState, MessageState } from '../../types/store';
 
 const Container = styled.div`
   display: flex;
@@ -30,12 +33,31 @@ interface Props {
   walletName: string;
   isLedger: boolean;
   isNodes: boolean;
+  message: MessageState;
+  getNewVersion: () => void;
+  clearMessage: () => void;
   logout: () => void;
 }
 
 function App(props: Props) {
-  const { wallet, newVersion, isLoading, walletName, isLedger, isNodes, logout } = props;
+  const {
+    wallet,
+    newVersion,
+    isLoading,
+    walletName,
+    isLedger,
+    isNodes,
+    message,
+    clearMessage,
+    getNewVersion,
+    logout
+  } = props;
   const isLoggedIn = getLoggedIn(wallet);
+
+  useEffect(() => {
+    getNewVersion();
+  }, []);
+
   return (
     <Container>
       <TopBar
@@ -78,6 +100,7 @@ function App(props: Props) {
         />
         <Redirect from="/" to="/home" />
       </Switch>
+      <MessageBar message={message} clear={clearMessage} />
       {isLoading && <Loader />}
     </Container>
   );
@@ -89,11 +112,14 @@ const mapStateToProps = (state: RootState) => ({
   isLoading: state.app.isLoading,
   walletName: getWalletName(state),
   isLedger: state.app.isLedger,
-  isNodes: getIsNodesSelector(state)
+  isNodes: getIsNodesSelector(state),
+  message: state.message
 });
 
 const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(goHomeAndClearState())
+  logout: () => dispatch(goHomeAndClearState()),
+  clearMessage: () => dispatch(clearMessageAction()),
+  getNewVersion: () => dispatch(getNewVersionThunk())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App) as React.ComponentType<any>;

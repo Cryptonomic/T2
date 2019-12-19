@@ -22,23 +22,9 @@ const schema = {
       default: []
     }
   },
-  wallet: {
-    identities: {
-      type: 'array',
-      default: []
-    },
-    walletFileName: {
-      type: 'string',
-      default: ''
-    },
-    walletLocation: {
-      type: 'string',
-      default: ''
-    },
-    password: {
-      type: 'string',
-      default: ''
-    }
+  identities: {
+    type: 'array',
+    default: []
   },
   isShowedLanguageScene: {
     type: 'boolean',
@@ -66,12 +52,7 @@ const defaultStore = {
     selectedPath: '',
     pathsList: []
   },
-  wallet: {
-    identities: [],
-    walletFileName: '',
-    walletLocation: '',
-    password: ''
-  },
+  identities: [],
   isShowedLanguageScene: false,
   isPPAccepted: false,
   isNotShowMessage: false,

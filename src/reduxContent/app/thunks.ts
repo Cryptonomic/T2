@@ -7,11 +7,13 @@ import {
   TezosNodeReader,
   OperationKindType
 } from 'conseiljs';
-import { changeAccountAction } from './actions';
+import { changeAccountAction, addNewVersionAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
+import { getVersionFromApi } from '../../utils/general';
 import { AverageFees } from '../../types/general';
 import { AVERAGEFEES } from '../../constants/FeeValue';
+import { LocalVersionIndex } from '../../config.json';
 
 const { executeEntityQuery } = ConseilDataClient;
 
@@ -96,5 +98,15 @@ export function changeAccountThunk(
       )
     );
     dispatch(syncAccountOrIdentityThunk(accountHash, parentHash));
+  };
+}
+
+export function getNewVersionThunk() {
+  return async dispatch => {
+    const result = await getVersionFromApi();
+    const RemoteVersionIndex = parseInt(result.currentVersionIndex, 10);
+    if (RemoteVersionIndex > parseInt(LocalVersionIndex, 10)) {
+      dispatch(addNewVersionAction(result.currentVersionIndex));
+    }
   };
 }

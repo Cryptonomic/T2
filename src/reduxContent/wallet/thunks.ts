@@ -28,7 +28,7 @@ import { clearOperationId, getNodesStatus, getNodesError } from '../../utils/gen
 import {
   saveUpdatedWallet,
   loadPersistedState,
-  persistWalletState,
+  saveIdentitiesToLocal,
   loadWalletFromLedger
 } from '../../utils/wallet';
 
@@ -53,6 +53,7 @@ import {
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { ACTIVATION } from '../../constants/TransactionTypes';
 import { WalletState } from '../../types/store';
+import { Identity } from '../../types/general';
 
 const { unlockFundraiserIdentity, unlockIdentityWithMnemonic } = TezosWalletUtil;
 const { createWallet } = TezosFileWallet;
@@ -163,7 +164,7 @@ export function syncAccountThunk(selectedAccountHash, selectedParentHash) {
 
     identity.accounts[accountIndex] = syncAccountWithState(syncAccount, localAccount);
     dispatch(updateIdentityAction(identity));
-    await persistWalletState(state().wallet);
+    await saveIdentitiesToLocal(state().wallet.identities);
   };
 }
 
@@ -185,7 +186,7 @@ export function syncIdentityThunk(publicKeyHash) {
     );
 
     dispatch(updateIdentityAction(syncIdentityWithState(syncIdentity, stateIdentity)));
-    await persistWalletState(state().wallet);
+    await saveIdentitiesToLocal(state().wallet.identities);
   };
 }
 
@@ -222,25 +223,9 @@ export function syncWalletThunk() {
       })
     );
 
-    const newIdentities = identities.filter(stateIdentity => {
-      const syncIdentityIndex = syncIdentities.findIndex(
-        syncIdentity => stateIdentity.publicKeyHash === syncIdentity.publicKeyHash
-      );
-
-      if (syncIdentityIndex > -1) {
-        syncIdentities[syncIdentityIndex] = syncIdentityWithState(
-          syncIdentities[syncIdentityIndex],
-          stateIdentity
-        );
-        return false;
-      }
-
-      return true;
-    });
-
-    dispatch(setIdentitiesAction([...syncIdentities, ...newIdentities]));
+    dispatch(setIdentitiesAction(syncIdentities));
     dispatch(updateFetchedTimeAction(new Date()));
-    await persistWalletState(state().wallet);
+    await saveIdentitiesToLocal(state().wallet.identities);
     dispatch(setWalletIsSyncingAction(false));
   };
 }
@@ -367,7 +352,7 @@ export function importAddressThunk(activeTab, seed, pkh, activationCode, usernam
             walletFileName,
             password
           );
-          await persistWalletState(state().wallet);
+          await saveIdentitiesToLocal(state().wallet.identities);
           dispatch(setIsLoadingAction(false));
           dispatch(push('/home'));
           await dispatch(syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash));
@@ -388,7 +373,7 @@ export function importAddressThunk(activeTab, seed, pkh, activationCode, usernam
   };
 }
 
-// // todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
+// todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
 export function loginThunk(loginType, walletLocation, walletFileName, password) {
   return async dispatch => {
     const completeWalletPath = path.join(walletLocation, walletFileName);
@@ -396,25 +381,19 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
     dispatch(createMessageAction('', false));
     dispatch(setLedgerAction(false));
     try {
-      let wallet: WalletState = {
-        identities: [],
-        walletFileName: '',
-        walletLocation: '',
-        password: ''
-      };
+      let identities: Identity[] = [];
 
       if (loginType === CREATE) {
-        wallet = await createWallet(completeWalletPath, password);
-      } else if (loginType === IMPORT) {
-        wallet = await loadPersistedState(completeWalletPath, password);
-      }
-
-      const identities = wallet.identities.map((identity, identityIndex) => {
-        return createIdentity({
-          ...identity,
-          order: identity.order || identityIndex + 1
+        const wallet = await createWallet(completeWalletPath, password);
+        identities = wallet.identities.map((identity, index) => {
+          return createIdentity({
+            ...identity,
+            order: index + 1
+          });
         });
-      });
+      } else if (loginType === IMPORT) {
+        identities = await loadPersistedState(completeWalletPath, password);
+      }
 
       dispatch(setWalletAction(identities, walletLocation, walletFileName, password));
       if (identities.length > 0) {
@@ -444,14 +423,7 @@ export function connectLedgerThunk() {
     dispatch(setIsLoadingAction(true));
     dispatch(createMessageAction('', false));
     try {
-      const wallet = await loadWalletFromLedger(derivation);
-      const identities = wallet.identities.map((identity, identityIndex) => {
-        return createIdentity({
-          ...identity,
-          order: identity.order || identityIndex + 1
-        });
-      });
-
+      const identities = await loadWalletFromLedger(derivation);
       dispatch(setWalletAction(identities, '', `Ledger Nano S - ${derivation}`, ''));
       const { publicKeyHash } = identities[0];
       dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, true));

@@ -7,7 +7,7 @@ import { createAccount } from '../../utils/account';
 import { findIdentity } from '../../utils/identity';
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { CREATED } from '../../constants/StatusTypes';
-import { persistWalletState } from '../../utils/wallet';
+import { saveIdentitiesToLocal } from '../../utils/wallet';
 import { createTransaction } from '../../utils/transaction';
 import { ORIGINATION } from '../../constants/TransactionTypes';
 
@@ -204,7 +204,7 @@ export function originateContractThunk(
         );
       }
 
-      await persistWalletState(state().wallet);
+      await saveIdentitiesToLocal(state().wallet.identities);
       return true;
     }
 
