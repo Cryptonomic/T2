@@ -3,7 +3,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { tezToUtez } from '../../utils/currancy';
 
-import { persistWalletState } from '../../utils/wallet';
+import { saveIdentitiesToLocal } from '../../utils/wallet';
 import { createTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
@@ -132,7 +132,7 @@ export function invokeAddressThunk(
 
       dispatch(updateIdentityAction(identity));
 
-      await persistWalletState(state());
+      await saveIdentitiesToLocal(state().wallet.identities);
       return true;
     }
     return false;
@@ -226,7 +226,7 @@ export function withdrawThunk(fee: number, amount: string, password: string) {
 
       dispatch(updateIdentityAction(identity));
 
-      await persistWalletState(state().wallet);
+      await saveIdentitiesToLocal(state().wallet.identities);
       return true;
     }
     return false;
@@ -320,7 +320,7 @@ export function depositThunk(fee: number, amount: string, password: string, toAd
 
       dispatch(updateIdentityAction(identity));
 
-      await persistWalletState(state().wallet);
+      await saveIdentitiesToLocal(state().wallet.identities);
       return true;
     }
     return false;

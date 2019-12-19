@@ -22,7 +22,7 @@ export interface WalletState {
 }
 
 export interface MessageState {
-  message: string;
+  text: string;
   isError: boolean;
   hash: string;
   localeParam: number;

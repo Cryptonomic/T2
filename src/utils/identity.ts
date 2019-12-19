@@ -1,4 +1,5 @@
 import { StoreType } from 'conseiljs';
+import { unionBy } from 'lodash';
 import { TRANSACTIONS } from '../constants/TabConstants';
 import { CREATED, READY } from '../constants/StatusTypes';
 import { Node, Identity } from '../types/general';
@@ -42,12 +43,6 @@ export async function getSyncIdentity(identity: Identity, node: Node, selectedAc
   const { publicKeyHash, accounts } = identity;
 
   identity = await activateAndUpdateAccount(identity, node);
-  /*
-   *  we are taking state identity accounts overriding their state
-   *  with the new account we got from setAccounts.. check if any of any new accounts
-   *  were create and are state identity but dont come back from getAccount and contact
-   *  those accounts with the updated accounts we got from getAccounts.
-   * */
 
   let serverAccounts: any[] = await getAccountsForIdentity(node, publicKeyHash).catch(error => {
     console.log(`-debug: Error in: status.getAccountsForIdentity for: ${publicKeyHash}`);
@@ -55,52 +50,44 @@ export async function getSyncIdentity(identity: Identity, node: Node, selectedAc
     return [];
   });
 
-  // const stateAccountIndices = identity.accounts.map(account => account.account_id);
-  const accountIndices: any[] = [];
-
-  serverAccounts = serverAccounts.map(srAcc => {
-    accountIndices.push(srAcc.account_id);
-    let newAccount = { ...srAcc };
-    const existAccount = accounts.find(acc => acc.account_id === srAcc.account_id);
-    if (existAccount) {
-      newAccount = {
-        ...newAccount,
-        status: existAccount.status,
-        operations: existAccount.operations,
-        activeTab: existAccount.activeTab,
-        order: existAccount.order,
-        transactions: existAccount.transactions
-      };
-    }
-    return createAccount(newAccount);
-  });
-
-  // the accounts which only exist in local
-  const accountsToConcat = accounts.filter(account => {
-    return accountIndices.indexOf(account.account_id) === -1;
-  });
-
-  serverAccounts = [...serverAccounts, ...accountsToConcat];
+  serverAccounts = unionBy(serverAccounts, accounts, 'account_id');
 
   identity.accounts = await Promise.all(
     (serverAccounts || []).map(async (account, index) => {
-      account.order = account.order || index + 1;
+      let newAccount = createAccount({ ...account, order: account.order || index + 1 });
       if (account.status !== READY) {
-        return await getSyncAccount(account, node, account.account_id, selectedAccountHash).catch(
-          e => {
-            console.log(`-debug: Error in: getSyncIdentity for: ${publicKeyHash}`);
-            console.error(e);
-            return account;
-          }
-        );
-      } else if (selectedAccountHash === account.account_id) {
-        account.transactions = await getSyncTransactions(
-          selectedAccountHash,
+        newAccount = await getSyncAccount(
+          newAccount,
           node,
-          account.transactions
-        );
+          account.account_id,
+          selectedAccountHash
+        ).catch(e => {
+          console.log(`-debug: Error in: getSyncIdentity for: ${publicKeyHash}`);
+          console.error(e);
+          return newAccount;
+        });
+      } else {
+        const existAccount = accounts.find(acc => acc.account_id === account.account_id);
+        if (existAccount) {
+          newAccount = {
+            ...newAccount,
+            transactions: existAccount.transactions,
+            status: existAccount.status,
+            operations: existAccount.operations,
+            activeTab: existAccount.activeTab
+          };
+        }
+
+        if (selectedAccountHash === account.account_id) {
+          const transactions = await getSyncTransactions(
+            selectedAccountHash,
+            node,
+            account.transactions
+          );
+          newAccount = { ...newAccount, transactions };
+        }
       }
-      return account;
+      return newAccount;
     })
   );
 

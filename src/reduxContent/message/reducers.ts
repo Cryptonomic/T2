@@ -3,7 +3,7 @@ import { CLEAR_MESSAGE_STATE, ADD_MESSAGE, MessageActionTypes } from './types';
 import { MessageState } from '../../types/store';
 
 const initState = {
-  message: '',
+  text: '',
   isError: false,
   hash: '',
   localeParam: 0

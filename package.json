@@ -184,6 +184,7 @@
     "@material-ui/icons": "^4.5.1",
     "@material-ui/lab": "^4.0.0-alpha.35",
     "bignumber.js": "^9.0.0",
+    "blakejs": "^1.1.0",
     "connected-react-router": "^6.6.1",
     "electron-debug": "^3.0.1",
     "electron-store": "^5.1.0",
@@ -211,7 +212,8 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "styled-components": "^4.4.1",
-    "throttle-debounce": "^2.1.0"
+    "throttle-debounce": "^2.1.0",
+    "zxcvbn": "^4.4.2"
   },
   "engines": {
     "node": ">=12.0.0",
