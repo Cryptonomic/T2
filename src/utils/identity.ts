@@ -50,7 +50,7 @@ export async function getSyncIdentity(identity: Identity, node: Node, selectedAc
     return [];
   });
 
-  serverAccounts = unionBy(serverAccounts, accounts, 'account_id');
+  serverAccounts = unionBy(accounts, serverAccounts, 'account_id');
 
   identity.accounts = await Promise.all(
     (serverAccounts || []).map(async (account, index) => {
@@ -74,7 +74,7 @@ export async function getSyncIdentity(identity: Identity, node: Node, selectedAc
             transactions: existAccount.transactions,
             status: existAccount.status,
             operations: existAccount.operations,
-            activeTab: existAccount.activeTab
+            activeTab: existAccount.activeTab || TRANSACTIONS
           };
         }
 
