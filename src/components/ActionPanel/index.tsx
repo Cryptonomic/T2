@@ -104,7 +104,7 @@ const Description = (props: DescriptionProps) => {
 };
 
 interface OwnProps {
-  updateActiveTab: (activeTab) => void;
+  updateActiveTab: (activeTab: string) => void;
   selectedAccount: any;
   isLoading: boolean;
   isWalletSyncing: boolean;
@@ -331,7 +331,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateActiveTab: activeTab => dispatch(updateActiveTabThunk(activeTab)),
+  updateActiveTab: (activeTab: string) => dispatch(updateActiveTabThunk(activeTab)),
   syncWallet: () => dispatch(syncWalletThunk())
 });
 

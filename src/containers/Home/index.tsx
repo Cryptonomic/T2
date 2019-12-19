@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { compose } from 'redux';
-// import Transport from '@ledgerhq/hw-transport-node-hid';
+import Transport from '@ledgerhq/hw-transport-node-hid';
 
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 import { getIsIdentitesSelector } from '../../reduxContent/wallet/selectors';
@@ -33,16 +33,16 @@ function HomePage(props: Props) {
   const nodesErrorMessage = getNodesError(nodesStatus);
 
   async function onDetectLedger() {
-    // Transport.listen({
-    //   next: e => {
-    //     if (e.type === 'remove' && isLedger) {
-    //       onLogout();
-    //     }
-    //   },
-    //   error: e => {
-    //     console.error(e);
-    //   }
-    // });
+    Transport.listen({
+      next: e => {
+        if (e.type === 'remove' && isLedger) {
+          onLogout();
+        }
+      },
+      error: e => {
+        console.error(e);
+      }
+    });
   }
 
   function onLogout() {
@@ -52,7 +52,6 @@ function HomePage(props: Props) {
   }
 
   useEffect(() => {
-    console.log('first------');
     onDetectLedger();
   }, []);
 

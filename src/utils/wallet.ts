@@ -6,6 +6,7 @@ import { getLocalData, setLocalData } from './localData';
 import { WalletState } from '../types/store';
 
 const { saveWallet, loadWallet } = TezosFileWallet;
+const { unlockAddress } = TezosLedgerWallet;
 
 export async function saveUpdatedWallet(identities, walletLocation, walletFileName, password) {
   const completeWalletPath = path.join(walletLocation, walletFileName);
@@ -16,7 +17,7 @@ function prepareToPersist(walletState: WalletState) {
   walletState.identities = walletState.identities.map(identity => {
     identity = omit(identity, ['publicKey', 'privateKey', 'activeTab']);
     identity.accounts = identity.accounts.map(account => {
-      account = omit(account, ['publicKey', 'privateKey', 'activeTab']);
+      account = omit(account, ['activeTab']);
       return account;
     });
 
@@ -26,7 +27,7 @@ function prepareToPersist(walletState: WalletState) {
 }
 
 export function persistWalletState(walletState: WalletState) {
-  setLocalData('wallet', prepareToPersist(walletState));
+  setLocalData('wallet', prepareToPersist({ ...walletState }));
 }
 
 // todo type
@@ -38,21 +39,21 @@ function prepareToLoad(savedWallet, localWallet): WalletState {
     );
 
     if (foundIdentity) {
-      savedIdentity = { ...savedIdentity, ...foundIdentity };
+      savedIdentity = { ...foundIdentity, ...savedIdentity };
     }
 
-    if (savedIdentity.accounts) {
-      savedIdentity.accounts = savedIdentity.accounts.map(account => {
-        return {
-          ...account,
-          ...pick(savedIdentity, ['publicKey', 'privateKey'])
-        };
-      });
-    }
+    // if (savedIdentity.accounts) {
+    //   savedIdentity.accounts = savedIdentity.accounts.map(account => {
+    //     return {
+    //       ...account,
+    //       ...pick(savedIdentity, ['publicKey', 'privateKey'])
+    //     };
+    //   });
+    // }
 
-    return savedIdentity;
+    return { ...savedIdentity };
   });
-  return newWalletState;
+  return { ...newWalletState };
 }
 
 export async function loadPersistedState(walletPath, password) {
@@ -70,17 +71,16 @@ export async function loadPersistedState(walletPath, password) {
 }
 
 export async function loadWalletFromLedger(derivationPath: string) {
-  const identity = await TezosLedgerWallet.unlockAddress(0, derivationPath).catch(err => {
+  const identity = await unlockAddress(0, derivationPath).catch(err => {
     const errorObj = {
       name: 'components.messageBar.messages.ledger_not_connect'
     };
     console.error('TezosLedgerWallet.unlockAddress', err);
     throw errorObj;
   });
-  identity.storeType = StoreType.Hardware;
-  const ledgerWallet: any = { identities: [] };
-  ledgerWallet.identities.push(identity);
 
+  identity.storeType = StoreType.Hardware;
+  const ledgerWallet: any = { identities: [identity] };
   const localWallet = getLocalData('wallet');
   return prepareToLoad(ledgerWallet, localWallet);
 }

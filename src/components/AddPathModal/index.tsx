@@ -43,7 +43,8 @@ function AddPathModal(props: Props) {
   const { t, isOpen, onAdd, onClose } = props;
   const [label, setLabel] = useState('');
   const [derivation, setDerivation] = useState('');
-  const [error, setError] = useState('');
+  // const [error, setError] = useState('');
+  const error = '';
 
   function handleClose() {
     setLabel('');
