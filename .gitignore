@@ -2,4 +2,8 @@ node_modules/
 dist/
 release/
 assets/
-config/
+dll/
+src/dist/
+src/main.prod.js
+src/main.prod.js.map
+src/node_modules

@@ -8,6 +8,10 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js'
     },
+    externals: {
+        "usb": 'commonjs usb',
+        "node-hid": "commonjs node-hid"
+    },
     node: {
         __dirname: false,
         __filename: false

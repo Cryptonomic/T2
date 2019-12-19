@@ -125,7 +125,7 @@ export function updateIdentityActiveTab(selectedAccountHash, activeTab) {
   };
 }
 
-export function updateActiveTabThunk(activeTab) {
+export function updateActiveTabThunk(activeTab: string) {
   return async (dispatch, state) => {
     const { selectedAccountHash, selectedParentHash } = state().app;
     if (selectedAccountHash === selectedParentHash) {
@@ -435,9 +435,9 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
 }
 
 // todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
-export function connectLedger() {
+export function connectLedgerThunk() {
   return async (dispatch, state) => {
-    const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+    const { selectedPath, pathsList } = state().settings;
     const derivation = getMainPath(pathsList, selectedPath);
     dispatch(setLedgerAction(true));
     dispatch(setIsLedgerConnectingAction(true));
@@ -453,7 +453,8 @@ export function connectLedger() {
       });
 
       dispatch(setWalletAction(identities, '', `Ledger Nano S - ${derivation}`, ''));
-
+      const { publicKeyHash } = identities[0];
+      dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, true));
       dispatch(automaticAccountRefresh());
       dispatch(push('/home'));
       await dispatch(syncWalletThunk());
