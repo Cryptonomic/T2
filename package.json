@@ -66,13 +66,14 @@
     }
   },
   "build": {
-    "productName": "Cryptonomic",
+    "productName": "Galleon",
     "appId": "org.your.productname",
     "files": [
       "dist/",
-      "src/app.html",
-      "src/main.prod.js",
-      "src/main.prod.js.map",
+      "locales/",
+      "app.html",
+      "main.prod.js",
+      "main.prod.js.map",
       "package.json"
     ],
     "dmg": {
@@ -105,7 +106,8 @@
     },
     "directories": {
       "buildResources": "resources",
-      "output": "release"
+      "output": "release",
+      "app": "src"
     }
   },
   "repository": {

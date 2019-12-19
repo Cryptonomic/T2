@@ -23,7 +23,7 @@ module.exports = merge.smart(baseConfig, {
 
   entry: path.join(__dirname, '..', 'src/index.tsx'),
   output: {
-    path: path.join(__dirname, '..', 'dist'),
+    path: path.join(__dirname, '..', 'src/dist'),
     filename: 'renderer.prod.js',
     publicPath: './dist/',
   },
