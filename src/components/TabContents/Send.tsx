@@ -316,17 +316,6 @@ function Send(props: Props) {
     }
   }
 
-  // openConfirmation = () => this.setState({ isConfirmationModalOpen: true });
-  function closeConfirmation() {
-    // const { averageFees } = this.state;
-    // this.setState({
-    //   ...initialState,
-    //   toAddress: '',
-    //   averageFees,
-    //   fee: averageFees.low,
-    //   total: averageFees.low
-    // });
-  }
   async function handleToAddressChange(newAddress: string) {
     const isDisplayedBurn = await getIsImplicitAndEmpty(newAddress);
     const burnFee = isDisplayedBurn ? 257000 : 0;
@@ -364,7 +353,7 @@ function Send(props: Props) {
     const burnFee = isBurn ? 257000 : 0;
     const newAmount = amount || '0';
     const numAmount = parseFloat(newAmount) * utez;
-    const newTotal = numAmount + fee + burnFee;
+    const newTotal = numAmount + newFee + burnFee;
     const newBalance = addressBalance - total;
     setState(prevState => {
       return {

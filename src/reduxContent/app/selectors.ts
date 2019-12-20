@@ -51,6 +51,7 @@ export const getAccountSelector = createSelector(
         return {
           ...defaultAccount,
           privateKey,
+          regularAddresses,
           ...selectedAccount
         };
       }
