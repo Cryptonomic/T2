@@ -1,12 +1,12 @@
 {
-  "name": "Tezori",
-  "version": "0.8.0b",
-  "network": "alphanet",
-  "blockExplorerHost": "http://alphanet.tzscan.io/",
+  "name": "Galleon",
+  "version": "0.9.3b",
+  "network": "mainnet",
+  "blockExplorerHost": "https://mininax.io/mainnet/operations/",
   "logo": "tezosLogo.svg",
   "icon": "tezos",
-  "termsService": "https://github.com/Cryptonomic/Tezori",
-  "privacyPolicy": "https://github.com/Cryptonomic/Tezori",
+  "termsService": "https://github.com/Cryptonomic/Deployments/raw/master/Terms_of_Service.pdf",
+  "privacyPolicy": "https://github.com/Cryptonomic/Deployments/raw/master/Privacy_Policy.pdf",
   "tagline": "containers.loginHome.tagline",
-  "versionCheck": "8"
+  "LocalVersionIndex": "15"
 }

@@ -3,7 +3,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { findIdentity } from '../../utils/identity';
 import { findAccountIndex } from '../../utils/account';
-import { persistWalletState } from '../../utils/wallet';
+import { saveIdentitiesToLocal } from '../../utils/wallet';
 import { createTransaction } from '../../utils/transaction';
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { DELEGATION } from '../../constants/TransactionTypes';
@@ -94,7 +94,7 @@ export function delegateThunk(delegateAddress: string, fee: number, password: st
       }
 
       dispatch(updateIdentityAction(identity));
-      await persistWalletState(state().wallet);
+      await saveIdentitiesToLocal(state().wallet.identities);
       return true;
     }
     return false;
