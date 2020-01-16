@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Close from '@material-ui/icons/Close';
 
 import SettingsView from './Settings-view';
@@ -22,8 +23,8 @@ import { Props } from './Settings-types';
 
 const SettingsContainer = (props: Props) => {
   const history = useHistory();
+  const { t } = useTranslation();
   const {
-    t,
     locale,
     changePath,
     removeNode,

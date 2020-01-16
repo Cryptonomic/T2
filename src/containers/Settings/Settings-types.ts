@@ -1,5 +1,3 @@
-import { WithTranslation } from 'react-i18next';
-
 import { Node, Path } from '../../types/general';
 
 export interface OwnProps {
@@ -17,4 +15,4 @@ export interface OwnProps {
   addPath: (path: Path) => void;
 }
 
-export type Props = OwnProps & WithTranslation;
+export type Props = OwnProps;
