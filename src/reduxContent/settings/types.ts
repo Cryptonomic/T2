@@ -1,9 +1,9 @@
 import { Node, Path } from '../../types/general';
-export const CHANGE_LOCALE = 'SET_LOCALE';
-export const CHANGE_NODE = 'SET_NODE';
+export const CHANGE_LOCALE = 'CHANGE_LOCALE';
+export const CHANGE_NODE = 'CHANGE_NODE';
 export const ADD_NODE = 'ADD_NODE';
 export const REMOVE_NODE = 'REMOVE_NODE';
-export const CHANGE_PATH = 'SET_PATH';
+export const CHANGE_PATH = 'CHANGE_PATH';
 export const ADD_PATH = 'ADD_PATH';
 export const REMOVE_PATH = 'REMOVE_PATH';
 export const CLEAR_STATE = 'CLEAR_STATE';
