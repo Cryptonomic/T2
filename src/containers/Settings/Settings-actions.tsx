@@ -1,9 +1,18 @@
 import { setLocalData } from '../../utils/localData';
 import { Node, Path } from '../../types/general';
 
+export const CHANGE_LOCALE = 'CHANGE_LOCALE';
+export const CHANGE_NODE = 'CHANGE_NODE';
+export const ADD_NODE = 'ADD_NODE';
+export const REMOVE_NODE = 'REMOVE_NODE';
+export const CHANGE_PATH = 'CHANGE_PATH';
+export const ADD_PATH = 'ADD_PATH';
+export const REMOVE_PATH = 'REMOVE_PATH';
+export const CLEAR_STATE = 'CLEAR_STATE';
+
 export const changeLocaleThunk = (locale: string) => {
   return (dispatch, state) => {
-    dispatch({ type: 'CHANGE_LOCALE', locale });
+    dispatch({ type: CHANGE_LOCALE, locale });
     setLocalData('settings.locale', locale);
   };
 };
