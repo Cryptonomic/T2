@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Close from '@material-ui/icons/Close';
 
+import { SettingsContext } from './Settings-context';
 import SettingsView from './Settings-view';
 
 import { getMainPath } from '../../utils/settings';
@@ -21,7 +22,8 @@ import {
 import { Node, Path } from '../../types/general';
 import { Props } from './Settings-types';
 
-const SettingsContainer = (props: Props) => {
+const SettingsContainer = () => {
+  const props: any = useContext(SettingsContext);
   const history = useHistory();
   const { t } = useTranslation();
   const {
@@ -44,39 +46,41 @@ const SettingsContainer = (props: Props) => {
 
   const onRemovePath = (event, label) => {
     event.stopPropagation();
+    const list = pathsList.filter(item => item.label !== label);
+    let selected = selectedPath;
     if (label === selectedPath) {
+      selected = pathsList[pathsList.length - 1].label;
       setIsPathChanged(true);
     }
-    removePath(label);
+    removePath(list, selected);
   };
 
   const onRemoveNode = (event, name) => {
     event.stopPropagation();
+    const list = nodesList.filter(item => item.displayName !== name);
+    let selected = selectedNode;
     if (name === selectedNode) {
+      selected = nodesList[nodesList.length - 1].displayName;
       setIsPathChanged(true);
     }
-    removeNode(name);
+    removeNode(list, selected);
   };
 
   const onAddNode = (node: Node) => {
+    const selected = node.displayName;
+    const list = [...nodesList, node];
     setIsPathChanged(true);
-    addNode(node);
+    addNode(list, selected);
   };
 
   const onAddPath = (path: Path) => {
+    const selected = path.label;
+    const list = [...pathsList, path];
     setIsPathChanged(true);
-    addPath(path);
+    addPath(list, selected);
   };
 
-  const onClickBackButton = () => {
-    history.goBack();
-    // if (isPathChanged) {
-    //   // goHomeAndClearState();
-    // } else {
-    //   // goBack();
-    //   // syncWallet();
-    // }
-  };
+  const onClickBackButton = () => history.goBack();
 
   const onChangeCustomSelectNodes = event => {
     const newValue = event.target.value;

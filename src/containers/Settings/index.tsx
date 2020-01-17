@@ -1,3 +1,3 @@
-import SettingsRedux from './Settings-redux';
+import SettingsContainer from './Settings-container';
 
-export default SettingsRedux;
+export default SettingsContainer;

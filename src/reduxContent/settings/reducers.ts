@@ -7,9 +7,9 @@ import {
   CHANGE_PATH,
   ADD_PATH,
   REMOVE_PATH
-} from './Settings-actions';
+} from './actions';
 
-import { SettingsActionTypes } from './Settings-types';
+import { SettingsActionTypes } from './types';
 import { SettingsState } from '../../types/store';
 
 const baseDefaults: SettingsState = {

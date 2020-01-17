@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import { walletReducer } from './wallet/reducers';
 import { messageReducer } from './message/reducers';
-import { settingsReducer } from '../containers/Settings/Settings-reducer';
+import { settingsReducer } from './settings/reducers';
 import { appReducer } from './app/reducers';
 import { RootState } from '../types/store';
 

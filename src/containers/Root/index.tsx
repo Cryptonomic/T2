@@ -10,6 +10,8 @@ import App from '../App';
 import Loader from '../../components/Loader';
 // import { getLocale } from '../../reduxContent/settings/selectors';
 
+import SettingProvider from '../Settings/Settings-context';
+
 interface Props {
   store: any;
   history: any;
@@ -21,7 +23,9 @@ const Root = ({ store, history }: Props) => (
       <ThemeProvider theme={theme}>
         <ConnectedRouter history={history}>
           <Suspense fallback={<Loader />}>
-            <App />
+            <SettingProvider>
+              <App />
+            </SettingProvider>
           </Suspense>
         </ConnectedRouter>
       </ThemeProvider>
