@@ -12,7 +12,7 @@ import WalletNodesRequired from '../containers/WalletNodesRequired';
 
 export default (): React.ReactElement => (
   <>
-    <Route exact={true} path="/home" component={Home} />
+    <Route path="/home" component={Home} />
     <Switch>
       <Route exact={true} path="/home/main" component={HomeMain} />
       <Route exact={true} path="/home/add" component={HomeAdd} />
