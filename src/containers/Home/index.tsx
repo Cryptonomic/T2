@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route, Redirect } from 'react-router';
+import { Redirect } from 'react-router';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { compose } from 'redux';
 import Transport from '@ledgerhq/hw-transport-node-hid';
@@ -11,8 +11,6 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { initLedgerTransport } from '../../utils/wallet';
 
 import NodesStatus from '../../components/NodesStatus';
-import HomeMain from './../HomeMain';
-import HomeAdd from './../HomeAdd';
 
 import { getNodesError } from '../../utils/general';
 import { RootState } from '../../types/store';
@@ -60,11 +58,7 @@ function HomePage(props: Props) {
   return (
     <Fragment>
       {nodesErrorMessage && <NodesStatus message={t(nodesErrorMessage)} />}
-      <Switch>
-        <Route path="/home/main" component={HomeMain} />
-        <Route path="/home/add" component={HomeAdd} />
-        <Redirect to={redirectTo} />
-      </Switch>
+      <Redirect to={redirectTo} />
     </Fragment>
   );
 }
