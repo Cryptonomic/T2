@@ -1,22 +1,10 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Close from '@material-ui/icons/Close';
 
 import SettingsView from './Settings-view';
 
 import { getMainPath } from '../../utils/settings';
-
-import {
-  OptionLabel,
-  NodeName,
-  NodeUrl,
-  ItemWrapper,
-  RemoveIconBtn,
-  CheckIcon,
-  SelectRenderWrapper,
-  NodeUrlSpan
-} from './Settings-styles';
 
 import { Node, Path } from '../../types/general';
 import { Props } from './Settings-types';
@@ -42,7 +30,7 @@ const SettingsContainer = (props: Props) => {
   const [isPathModalOpen, setIsPathModalOpen] = useState(false);
   const [isPathChanged, setIsPathChanged] = useState(false);
 
-  const onRemovePath = (event, label) => {
+  const onRemovePath = (event: React.MouseEvent, label: string) => {
     event.stopPropagation();
     if (label === selectedPath) {
       setIsPathChanged(true);
@@ -50,7 +38,7 @@ const SettingsContainer = (props: Props) => {
     removePath(label);
   };
 
-  const onRemoveNode = (event, name) => {
+  const onRemoveNode = (event: React.MouseEvent, name: string) => {
     event.stopPropagation();
     if (name === selectedNode) {
       setIsPathChanged(true);
@@ -68,17 +56,9 @@ const SettingsContainer = (props: Props) => {
     addPath(path);
   };
 
-  const onClickBackButton = () => {
-    history.goBack();
-    // if (isPathChanged) {
-    //   // goHomeAndClearState();
-    // } else {
-    //   // goBack();
-    //   // syncWallet();
-    // }
-  };
+  const onClickBackButton = () => history.goBack();
 
-  const onChangeCustomSelectNodes = event => {
+  const onChangeCustomSelectNodes = (event: React.ChangeEvent<{ value: string }>): boolean => {
     const newValue = event.target.value;
     if (newValue === 'add-more') {
       setIsNodeModalOpen(true);
@@ -93,7 +73,9 @@ const SettingsContainer = (props: Props) => {
     return true;
   };
 
-  const onChangeCustomSelectDerivationPath = event => {
+  const onChangeCustomSelectDerivationPath = (
+    event: React.ChangeEvent<{ value: string }>
+  ): boolean => {
     const newValue = event.target.value;
     if (newValue === 'add-more') {
       setIsPathModalOpen(true);
@@ -107,71 +89,17 @@ const SettingsContainer = (props: Props) => {
     return true;
   };
 
-  const renderCustomSelectDerivationPath = value => {
-    const path = getMainPath(pathsList, selectedPath);
-    return (
-      <SelectRenderWrapper>
-        <span>{value} </span>
-        <NodeUrlSpan>({path})</NodeUrlSpan>
-      </SelectRenderWrapper>
-    );
-  };
-
-  const renderCustomSelectNodesValue = value => {
-    return (
-      <SelectRenderWrapper>
-        <span>{value}</span>
-      </SelectRenderWrapper>
-    );
-  };
-
-  const renderNodes = () => {
-    return nodesList.map((node, index) => {
-      const isSelected = selectedNode === node.displayName;
-      return (
-        <ItemWrapper key={index} value={node.displayName}>
-          {isSelected && <CheckIcon />}
-          <OptionLabel isActive={isSelected}>
-            <NodeName>{node.displayName}</NodeName>
-          </OptionLabel>
-          {index > 0 && (
-            <RemoveIconBtn onClick={event => onRemoveNode(event, name)}>
-              <Close />
-            </RemoveIconBtn>
-          )}
-        </ItemWrapper>
-      );
-    });
-  };
-
-  const renderPaths = () => {
-    return pathsList.map((path, index) => {
-      const isSelected = selectedPath === path.label;
-      return (
-        <ItemWrapper key={index} value={path.label}>
-          {isSelected && <CheckIcon />}
-          <OptionLabel isActive={isSelected}>
-            <NodeName>{path.label}</NodeName>
-            <NodeUrl>{path.derivation}</NodeUrl>{' '}
-          </OptionLabel>
-          {path.label !== 'Default' && (
-            <RemoveIconBtn aria-label="delete" onClick={event => onRemovePath(event, path.label)}>
-              <Close />
-            </RemoveIconBtn>
-          )}
-        </ItemWrapper>
-      );
-    });
-  };
-
   const backTitle = isPathChanged
     ? t('containers.homeSettings.back_to_login')
     : t('containers.homeSettings.back_to_wallet');
+
+  const pathName = getMainPath(pathsList, selectedPath);
 
   const toProps = {
     t,
     backTitle,
     locale,
+    pathName,
     changeLocale,
     selectedNode,
     selectedPath,
@@ -179,15 +107,15 @@ const SettingsContainer = (props: Props) => {
     isPathModalOpen,
     setIsNodeModalOpen,
     setIsPathModalOpen,
+    pathsList,
+    nodesList,
+    onRemovePath,
+    onRemoveNode,
     onAddPath,
     onAddNode,
     onClickBackButton,
     onChangeCustomSelectNodes,
-    onChangeCustomSelectDerivationPath,
-    renderCustomSelectDerivationPath,
-    renderCustomSelectNodesValue,
-    renderNodes,
-    renderPaths
+    onChangeCustomSelectDerivationPath
   };
 
   return <SettingsView {...toProps} />;
