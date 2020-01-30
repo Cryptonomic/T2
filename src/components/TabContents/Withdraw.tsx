@@ -17,9 +17,8 @@ import { withdrawThunk, depositThunk } from '../../reduxContent/invoke/thunks';
 import { setIsLoadingAction } from '../../reduxContent/app/actions';
 
 import { OPERATIONFEE } from '../../constants/FeeValue';
-import { WITHDRAW } from '../../constants/TabConstants';
 import { RootState } from '../../types/store';
-import { RegularAddress, AverageFees } from '../../types/general';
+import { AverageFees } from '../../types/general';
 
 import {
   Container,
@@ -36,9 +35,7 @@ const utez = 1000000;
 
 interface OwnProps {
   isReady: boolean;
-  addresses: RegularAddress[];
   balance: number;
-  format: string;
   onSuccess: () => void;
 }
 
@@ -49,14 +46,13 @@ interface StoreProps {
   selectedParentHash: string;
   fetchFees: (op: string) => Promise<AverageFees>;
   getIsReveal: () => Promise<boolean>;
-  withdraw: (fee: number, amount: string, password: string) => void;
-  deposit: (fee: number, amount: string, password: string, selectedAccountHash: string) => void;
+  withdraw: (fee: number, amount: string, password: string) => boolean;
   setIsLoading: (flag: boolean) => void;
 }
 
 type Props = OwnProps & StoreProps & WithTranslation;
 
-function WithdrawDeposit(props: Props) {
+function Withdraw(props: Props) {
   const [averageFees, setAverageFees] = useState({
     low: 1420,
     medium: 2840,
@@ -73,11 +69,8 @@ function WithdrawDeposit(props: Props) {
     selectedAccountHash,
     selectedParentHash,
     balance,
-    format,
-    addresses,
     fetchFees,
     withdraw,
-    deposit,
     setIsLoading,
     onSuccess,
     t
@@ -96,12 +89,8 @@ function WithdrawDeposit(props: Props) {
     getFees();
   }, [selectedAccountHash]);
 
-  useEffect(() => {
-    setAmount('');
-  }, [format]);
-
   function onGetMax() {
-    const max = format === WITHDRAW ? balance : addresses[0].balance - fee;
+    const max = balance;
     let newAmount = '0';
     if (max > 0) {
       newAmount = (max / utez).toFixed(6);
@@ -111,7 +100,7 @@ function WithdrawDeposit(props: Props) {
 
   function getBalanceState() {
     const realAmount = !amount ? Number(amount) : 0;
-    const max = format === WITHDRAW ? balance : addresses[0].balance - fee;
+    const max = balance;
 
     if (max <= 0 || max < realAmount) {
       return {
@@ -131,12 +120,7 @@ function WithdrawDeposit(props: Props) {
     if (isLedger) {
       setOpen(true);
     }
-    let operationResult;
-    if (format === WITHDRAW) {
-      operationResult = await withdraw(fee, amount, passPhrase);
-    } else {
-      operationResult = await deposit(fee, amount, passPhrase, selectedAccountHash);
-    }
+    const operationResult = await withdraw(fee, amount, passPhrase);
 
     setOpen(false);
     setIsLoading(false);
@@ -156,14 +140,11 @@ function WithdrawDeposit(props: Props) {
   const isDisabled =
     !isReady || isLoading || isIssue || amount === '0' || !amount || (!passPhrase && !isLedger);
 
-  const buttonTitle =
-    format === WITHDRAW ? t('general.verbs.withdraw') : t('general.verbs.deposit');
   const error = isIssue ? <InputError error={warningMessage} /> : '';
 
-  const warningTxt =
-    format === WITHDRAW
-      ? t('components.withdrawDeposit.withdraw_warning', { managerAddress: selectedParentHash })
-      : t('components.withdrawDeposit.deposit_warning', { managerAddress: selectedParentHash });
+  const warningTxt = t('components.withdrawDeposit.withdraw_warning', {
+    managerAddress: selectedParentHash
+  });
 
   return (
     <Container onKeyDown={event => onEnterPress(event.key, isDisabled)}>
@@ -206,7 +187,7 @@ function WithdrawDeposit(props: Props) {
           disabled={isDisabled}
           onClick={() => onInvokeOperation()}
         >
-          {buttonTitle}
+          {t('general.verbs.withdraw')}
         </InvokeButton>
       </PasswordButtonContainer>
       {isLedger && open && (
@@ -234,8 +215,6 @@ const mapDispatchToProps = dispatch => ({
   setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
   fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
   getIsReveal: () => dispatch(getIsRevealThunk()),
-  deposit: (fee: number, amount: string, password: string, selectedAccountHash: string) =>
-    dispatch(depositThunk(fee, amount, password, selectedAccountHash)),
   withdraw: (fee: number, amount: string, password: string) =>
     dispatch(withdrawThunk(fee, amount, password))
 });
@@ -243,4 +222,4 @@ const mapDispatchToProps = dispatch => ({
 export default compose(
   withTranslation(),
   connect(mapStateToProps, mapDispatchToProps)
-)(WithdrawDeposit) as React.ComponentType<OwnProps>;
+)(Withdraw) as React.ComponentType<OwnProps>;
