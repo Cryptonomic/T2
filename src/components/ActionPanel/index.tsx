@@ -14,7 +14,7 @@ import Transactions from '../Transactions';
 import Loader from '../Loader';
 import AccountStatus from '../AccountStatus';
 
-import { Send, Receive, Invoke, CodeStorage, WithdrawDeposit, Delegate } from '../TabContents';
+import { Send, Receive, Invoke, CodeStorage, Withdraw, Deposit, Delegate } from '../TabContents';
 
 import {
   TRANSACTIONS,
@@ -211,13 +211,14 @@ function ActionPanel(props: Props) {
       //     />
       //   );
       case WITHDRAW:
+        return (
+          <Withdraw balance={balance} isReady={ready} onSuccess={() => onChangeTab(TRANSACTIONS)} />
+        );
       case DEPOSIT:
         return (
-          <WithdrawDeposit
-            balance={balance}
+          <Deposit
             isReady={ready}
             addresses={regularAddresses}
-            format={activeTab}
             onSuccess={() => onChangeTab(TRANSACTIONS)}
           />
         );
