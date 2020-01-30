@@ -8,6 +8,7 @@ import Button from './../Button';
 import TezosNumericInput from '../TezosNumericInput';
 import Modal from '../CustomModal';
 import CustomSelect from '../CustomSelect';
+import usePrevious from '../../customHooks/usePrevious';
 
 import { formatAmount, tezToUtez } from '../../utils/currancy';
 
@@ -83,12 +84,16 @@ function Fee(props: Props) {
   const [custom, setCustom] = useState('');
 
   const customAmount = tezToUtez(custom);
+  const prevMedium = usePrevious(medium);
 
-  const isNewCustom = fee !== low && fee !== medium && fee !== high && fee !== customAmount;
+  const isNewCustom =
+    fee !== low && fee !== medium && fee !== prevMedium && fee !== high && fee !== customAmount;
   const customFeeLabel = t('components.fees.custom_fee');
 
   useEffect(() => {
-    setCustom(formatAmount(fee));
+    if (isNewCustom) {
+      setCustom(formatAmount(fee));
+    }
   }, [isNewCustom]);
 
   function getCustomMenuItem() {
