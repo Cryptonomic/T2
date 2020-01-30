@@ -257,8 +257,8 @@ function BalanceBanner(props: Props) {
             {addressLabel}
 
             {isManager && !isLedger && (
-              <KeyIconButton size="small" color="primary">
-                <KeyIcon src={keyIconSvg} onClick={() => setIsOpen(true)} />
+              <KeyIconButton size="small" color="primary" onClick={() => setIsOpen(true)}>
+                <KeyIcon src={keyIconSvg} />
               </KeyIconButton>
             )}
             {isManager && (
@@ -268,8 +268,8 @@ function BalanceBanner(props: Props) {
                   <TooltipContent>{t('components.balanceBanner.tooltip_content')}</TooltipContent>
                 }
               >
-                <IconButton size="small" color="primary">
-                  <BellIcon onClick={() => openUrl()} />
+                <IconButton size="small" color="primary" onClick={() => openUrl()}>
+                  <BellIcon />
                 </IconButton>
               </Tooltip>
             )}
