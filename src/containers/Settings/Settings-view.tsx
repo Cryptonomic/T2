@@ -6,6 +6,8 @@ import AddNodeModal from '../../components/AddNodeModal';
 import AddPathModal from '../../components/AddPathModal';
 import CustomSelect from '../../components/CustomSelect';
 import LanguageSelector from '../../components/LanguageSelector';
+import SettingsMenuItem from './SettingsMenuItem-view';
+import SettingsCustomSelectItem from './SettingsCustomSelectItem-view';
 
 import {
   Container,
@@ -19,11 +21,14 @@ import {
   AddIcon
 } from './Settings-styles';
 
-const SettingsView = props => {
+import { SettingsViewProps } from './Settings-types';
+
+const SettingsView = (props: SettingsViewProps) => {
   const {
     t,
     backTitle,
     locale,
+    pathName,
     changeLocale,
     selectedNode,
     selectedPath,
@@ -31,15 +36,15 @@ const SettingsView = props => {
     isPathModalOpen,
     setIsNodeModalOpen,
     setIsPathModalOpen,
+    pathsList,
+    nodesList,
+    onRemovePath,
+    onRemoveNode,
     onAddPath,
     onAddNode,
     onClickBackButton,
     onChangeCustomSelectNodes,
-    onChangeCustomSelectDerivationPath,
-    renderCustomSelectDerivationPath,
-    renderCustomSelectNodesValue,
-    renderNodes,
-    renderPaths
+    onChangeCustomSelectDerivationPath
   } = props;
 
   return (
@@ -66,9 +71,18 @@ const SettingsView = props => {
               label="Nodes"
               value={selectedNode}
               onChange={onChangeCustomSelectNodes}
-              renderValue={renderCustomSelectNodesValue}
+              renderValue={value => <SettingsCustomSelectItem value={value} />}
             >
-              {renderNodes()}
+              {nodesList.map(({ displayName }, index: number) => (
+                <ItemWrapper key={displayName} value={displayName}>
+                  <SettingsMenuItem
+                    index={index}
+                    name={displayName}
+                    selected={selectedNode}
+                    onClick={onRemoveNode}
+                  />
+                </ItemWrapper>
+              ))}
               <ItemWrapper value="add-more">
                 <AddIcon />
                 {t('containers.homeSettings.add_custom_node')}
@@ -94,9 +108,19 @@ const SettingsView = props => {
               label="Derivation Path"
               value={selectedPath}
               onChange={onChangeCustomSelectDerivationPath}
-              renderValue={renderCustomSelectDerivationPath}
+              renderValue={value => <SettingsCustomSelectItem value={value} url={pathName} />}
             >
-              {renderPaths()}
+              {pathsList.map(({ label, derivation }, index: number) => (
+                <ItemWrapper key={label} value={label}>
+                  <SettingsMenuItem
+                    index={index}
+                    name={label}
+                    url={derivation}
+                    selected={selectedPath}
+                    onClick={onRemovePath}
+                  />
+                </ItemWrapper>
+              ))}
               <ItemWrapper value="add-more">
                 <AddIcon />
                 {t('containers.homeSettings.add_derivation_path')}

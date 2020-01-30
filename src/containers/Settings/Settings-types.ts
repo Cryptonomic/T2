@@ -1,3 +1,6 @@
+import React from 'react';
+import { TFunction } from 'i18next';
+
 import { Node, Path } from '../../types/general';
 
 import {
@@ -26,6 +29,42 @@ export interface OwnProps {
 }
 
 export type Props = OwnProps;
+
+export interface SettingsViewProps {
+  t: TFunction;
+  backTitle: string;
+  locale: string;
+  pathName: string;
+  changeLocale: (locale: string) => void;
+  selectedNode: string;
+  selectedPath: string;
+  isNodeModalOpen: boolean;
+  isPathModalOpen: boolean;
+  setIsNodeModalOpen: (open: boolean) => void;
+  setIsPathModalOpen: (open: boolean) => void;
+  pathsList: Path[];
+  nodesList: Node[];
+  onRemovePath: (event: React.MouseEvent, label: string) => void;
+  onRemoveNode: (event: React.MouseEvent, name: string) => void;
+  onAddPath: (path: Path) => void;
+  onAddNode: (node: Node) => void;
+  onClickBackButton: () => void;
+  onChangeCustomSelectNodes: (event: React.ChangeEvent<{ value: string }>) => boolean;
+  onChangeCustomSelectDerivationPath: (event: React.ChangeEvent<{ value: string }>) => boolean;
+}
+
+export interface SettingsCustomSelectItemProps {
+  value: string;
+  url?: string;
+}
+
+export interface SettingsMenuItemProps {
+  index: number;
+  name: string;
+  selected: string;
+  url?: string;
+  onClick: (event: React.MouseEvent, name: string) => void;
+}
 
 export interface ChangeLocaleAction {
   type: typeof CHANGE_LOCALE;
