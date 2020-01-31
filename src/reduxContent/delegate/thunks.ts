@@ -1,4 +1,4 @@
-import { TezosProtocolHelper } from 'conseiljs';
+import { BabylonDelegationHelper } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { findIdentity } from '../../utils/identity';
@@ -10,7 +10,7 @@ import { DELEGATION } from '../../constants/TransactionTypes';
 
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
 
-const { setDelegate } = TezosProtocolHelper;
+const { setDelegate } = BabylonDelegationHelper;
 
 export function delegateThunk(delegateAddress: string, fee: number, password: string) {
   return async (dispatch, state) => {

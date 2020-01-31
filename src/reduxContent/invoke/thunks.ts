@@ -1,4 +1,4 @@
-import { TezosNodeWriter, TezosProtocolHelper, TezosParameterFormat } from 'conseiljs';
+import { TezosNodeWriter, BabylonDelegationHelper, TezosParameterFormat } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { tezToUtez } from '../../utils/currancy';
@@ -14,7 +14,7 @@ import { findAccountIndex } from '../../utils/account';
 import { findIdentity } from '../../utils/identity';
 
 const { sendContractInvocationOperation } = TezosNodeWriter;
-const { withdrawDelegatedFunds, depositDelegatedFunds } = TezosProtocolHelper;
+const { withdrawDelegatedFunds, depositDelegatedFunds } = BabylonDelegationHelper;
 
 export function invokeAddressThunk(
   contractAddress: string,

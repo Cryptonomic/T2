@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { RootState } from '../../types/store';
 
 import AddressBlock from '../../components/AddressBlock';
-import ActionPanel from '../../components/ActionPanel';
+import { BabylonDelegation } from '../../contracts/BabylonDelegation';
 
 import { sortArr } from '../../utils/array';
 import { Container, SideBarContainer, AccountItem } from './style';
@@ -25,7 +25,7 @@ function HomeMain(props: Props) {
             </AccountItem>
           ))}
       </SideBarContainer>
-      <ActionPanel />
+      <BabylonDelegation />
     </Container>
   );
 }

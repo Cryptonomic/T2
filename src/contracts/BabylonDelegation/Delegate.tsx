@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
 import { OperationKindType } from 'conseiljs';
 
-import InputAddress from '../InputAddress';
-import Fees from '../Fees';
-import PasswordInput from '../PasswordInput';
-import Tooltip from '../Tooltip';
-import TezosIcon from '../TezosIcon';
-import DelegateLedgerConfirmationModal from '../ConfirmModals/DelegateLedgerConfirmationModal';
+import InputAddress from '../../components/InputAddress';
+import Fees from '../../components/Fees';
+import PasswordInput from '../../components/PasswordInput';
+import Tooltip from '../../components/Tooltip';
+import TezosIcon from '../../components/TezosIcon';
+import DelegateLedgerConfirmationModal from '../../components/ConfirmModals/DelegateLedgerConfirmationModal';
 import { ms } from '../../styles/helpers';
 
 import { getIsRevealThunk, fetchFeesThunk } from '../../reduxContent/app/thunks';
