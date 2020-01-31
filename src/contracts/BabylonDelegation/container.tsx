@@ -5,16 +5,22 @@ import styled from 'styled-components';
 import { lighten } from 'polished';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
 
-import Button from '../Button';
-import BalanceBanner from '../BalanceBanner';
-import EmptyState from '../EmptyState';
-import PageNumbers from '../PageNumbers';
-import Transactions from '../Transactions';
+import Button from '../../components/Button';
+import BalanceBanner from '../../components/BalanceBanner';
+import EmptyState from '../../components/EmptyState';
+import PageNumbers from '../../components/PageNumbers';
+import Transactions from '../../components/Transactions';
 
-import Loader from '../Loader';
-import AccountStatus from '../AccountStatus';
+import Loader from '../../components/Loader';
+import AccountStatus from '../../components/AccountStatus';
 
-import { Send, Receive, Invoke, CodeStorage, Withdraw, Deposit, Delegate } from '../TabContents';
+import Delegate from './Delegate';
+import Invoke from './Invoke';
+import Send from './Send';
+import Deposit from './Deposit';
+import Withdraw from './Withdraw';
+import CodeStorage from './CodeStorage';
+import Receive from './Receive';
 
 import {
   TRANSACTIONS,

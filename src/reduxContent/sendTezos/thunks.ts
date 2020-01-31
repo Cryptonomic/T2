@@ -1,4 +1,4 @@
-import { TezosNodeWriter, TezosProtocolHelper } from 'conseiljs';
+import { TezosNodeWriter, BabylonDelegationHelper } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 
@@ -15,7 +15,7 @@ import { findIdentity } from '../../utils/identity';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
 const { sendTransactionOperation } = TezosNodeWriter;
-const { sendDelegatedFunds } = TezosProtocolHelper;
+const { sendDelegatedFunds } = BabylonDelegationHelper;
 
 export function validateAmountThunk(amount: string, toAddress: string) {
   return async dispatch => {

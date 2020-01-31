@@ -6,13 +6,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { TezosParameterFormat, OperationKindType } from 'conseiljs';
 
-import Button from '../Button/';
-import TezosNumericInput from '../TezosNumericInput';
-import TextField from '../TextField';
-import Fees from '../Fees';
-import PasswordInput from '../PasswordInput';
-import InvokeLedgerConfirmationModal from '../ConfirmModals/InvokeLedgerConfirmationModal';
-import FormatSelector from '../FormatSelector';
+import Button from '../../components/Button';
+import TezosNumericInput from '../../components/TezosNumericInput';
+import TextField from '../../components/TextField';
+import Fees from '../../components/Fees';
+import PasswordInput from '../../components/PasswordInput';
+import InvokeLedgerConfirmationModal from '../../components/ConfirmModals/InvokeLedgerConfirmationModal';
+import FormatSelector from '../../components/FormatSelector';
 
 import { fetchFeesThunk } from '../../reduxContent/app/thunks';
 import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';

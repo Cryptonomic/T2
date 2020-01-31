@@ -5,17 +5,18 @@ import styled from 'styled-components';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
 import { OperationKindType } from 'conseiljs';
 
-import Button from '../Button/';
+import Button from '../../components/Button';
+import SendConfirmationModal from '../../components/ConfirmModals/SendConfirmationModal';
+import SendLedgerConfirmationModal from '../../components/ConfirmModals/SendLedgerConfirmationModal';
+import InputAddress from '../../components/InputAddress';
+import TezosNumericInput from '../../components/TezosNumericInput';
+import TezosAmount from '../../components/TezosAmount';
+import TezosIcon from '../../components/TezosIcon';
+import TextField from '../../components/TextField';
+import Tooltip from '../../components/Tooltip';
+import Fees from '../../components/Fees';
+
 import { ms } from '../../styles/helpers';
-import SendConfirmationModal from '../ConfirmModals/SendConfirmationModal';
-import SendLedgerConfirmationModal from '../ConfirmModals/SendLedgerConfirmationModal';
-import InputAddress from '../InputAddress';
-import TezosNumericInput from '../TezosNumericInput';
-import TezosAmount from '../TezosAmount';
-import TezosIcon from '../TezosIcon';
-import TextField from '../TextField';
-import Tooltip from '../Tooltip';
-import Fees from '../Fees';
 
 import {
   validateAmountThunk,

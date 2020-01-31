@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import TezosIcon from '../TezosIcon';
-import Button from '../Button';
+import TezosIcon from '../../components/TezosIcon';
+import Button from '../../components/Button';
 
 import { ms } from '../../styles/helpers';
 
