@@ -15,7 +15,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@ledgerhq/hw-transport-node-hid": "5.0.0",
-    "conseiljs": "^0.4.0-alpha.3"
+    "@ledgerhq/hw-transport-node-hid": "5.7.0",
+    "conseiljs": "0.4.0-alpha.3"
   }
 }
