@@ -324,7 +324,7 @@ function Send(props: Props) {
     const newAmount = amount || '0';
     const numAmount = parseFloat(newAmount) * utez;
     const newTotal = numAmount + fee + burnFee;
-    const newBalance = addressBalance - total;
+    const newBalance = addressBalance - newTotal;
     setState(prevState => {
       return {
         ...prevState,
