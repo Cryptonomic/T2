@@ -334,7 +334,8 @@ function Send(props: Props) {
     });
   }
 
-  function handleAmountChange(newAmount: string = '0') {
+  function handleAmountChange(value: string = '0') {
+    const newAmount = value !== '' ? value : '0';
     const burnFee = isBurn ? 257000 : 0;
     const commaReplacedAmount = newAmount.replace(',', '.');
     const numAmount = parseFloat(commaReplacedAmount) * utez;
@@ -345,7 +346,7 @@ function Send(props: Props) {
         ...prevState,
         total: newTotal,
         balance: newBalance,
-        amount: newAmount
+        amount: value
       };
     });
   }
