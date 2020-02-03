@@ -272,6 +272,7 @@ function Send(props: Props) {
     if (newFees.low < miniLowFee) {
       newFees.low = miniLowFee;
     }
+    const newBalance = addressBalance - newFees.medium;
 
     setState(prevState => {
       return {
@@ -280,7 +281,8 @@ function Send(props: Props) {
         fee: newFees.medium,
         total: newFees.medium,
         isDisplayedFeeTooltip: !isRevealed,
-        miniFee: miniLowFee
+        miniFee: miniLowFee,
+        balance: newBalance
       };
     });
   }
