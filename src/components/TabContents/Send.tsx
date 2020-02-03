@@ -342,7 +342,7 @@ function Send(props: Props) {
     const commaReplacedAmount = newAmount.replace(',', '.');
     const numAmount = parseFloat(commaReplacedAmount) * utez;
     const newTotal = numAmount + fee + burnFee;
-    const newBalance = addressBalance - total;
+    const newBalance = addressBalance - newTotal;
     setState(prevState => {
       return {
         ...prevState,
@@ -357,7 +357,7 @@ function Send(props: Props) {
     const newAmount = amount || '0';
     const numAmount = parseFloat(newAmount) * utez;
     const newTotal = numAmount + newFee + burnFee;
-    const newBalance = addressBalance - total;
+    const newBalance = addressBalance - newTotal;
     setState(prevState => {
       return {
         ...prevState,
