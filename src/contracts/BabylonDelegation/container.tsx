@@ -14,13 +14,13 @@ import Transactions from '../../components/Transactions';
 import Loader from '../../components/Loader';
 import AccountStatus from '../../components/AccountStatus';
 
-import Delegate from './Delegate';
-import Invoke from './Invoke';
-import Send from './Send';
-import Deposit from './Deposit';
-import Withdraw from './Withdraw';
-import CodeStorage from './CodeStorage';
-import Receive from './Receive';
+import Delegate from './components/Delegate';
+import Invoke from './components/Invoke';
+import Send from './components/Send';
+import Deposit from './components/Deposit';
+import Withdraw from './components/Withdraw';
+import CodeStorage from './components/CodeStorage';
+import Receive from './components/Receive';
 
 import {
   TRANSACTIONS,
@@ -30,13 +30,13 @@ import {
   INVOKE,
   CODE,
   STORAGE,
-  INVOKE_MANAGER,
   DEPOSIT,
   WITHDRAW
 } from '../../constants/TabConstants';
+import { READY } from '../../constants/StatusTypes';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
-import { READY } from '../../constants/StatusTypes';
+
 import { sortArr } from '../../utils/array';
 import { isReady } from '../../utils/general';
 import { getAddressType } from '../../utils/account';
@@ -251,7 +251,7 @@ function ActionPanel(props: Props) {
         return transactions.length === 0 ? (
           <EmptyState
             imageSrc={transactionsEmptyState}
-            title={t('components.actionPanel.empty-title')}
+            title={t('../../components.actionPanel.empty-title')}
             description={
               <Description
                 onReceiveClick={() => onChangeTab(RECEIVE)}

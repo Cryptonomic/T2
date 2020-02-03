@@ -4,21 +4,21 @@ import { connect } from 'react-redux';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
 import { OperationKindType } from 'conseiljs';
 
-import InputAddress from '../../components/InputAddress';
-import Fees from '../../components/Fees';
-import PasswordInput from '../../components/PasswordInput';
-import Tooltip from '../../components/Tooltip';
-import TezosIcon from '../../components/TezosIcon';
-import DelegateLedgerConfirmationModal from '../../components/ConfirmModals/DelegateLedgerConfirmationModal';
-import { ms } from '../../styles/helpers';
+import InputAddress from '../../../components/InputAddress';
+import Fees from '../../../components/Fees';
+import PasswordInput from '../../../components/PasswordInput';
+import Tooltip from '../../../components/Tooltip';
+import TezosIcon from '../../../components/TezosIcon';
+import DelegateLedgerConfirmationModal from '../../../components/ConfirmModals/DelegateLedgerConfirmationModal';
+import { ms } from '../../../styles/helpers';
 
-import { getIsRevealThunk, fetchFeesThunk } from '../../reduxContent/app/thunks';
-import { setIsLoadingAction } from '../../reduxContent/app/actions';
-import { delegateThunk } from '../../reduxContent/delegate/thunks';
+import { getIsRevealThunk, fetchFeesThunk } from '../../../reduxContent/app/thunks';
+import { setIsLoadingAction } from '../../../reduxContent/app/actions';
+import { delegateThunk } from '../duck/thunks';
 
-import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
-import { RootState } from '../../types/store';
-import { AverageFees } from '../../types/general';
+import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../../constants/FeeValue';
+import { RootState } from '../../../types/store';
+import { AverageFees } from '../../../types/general';
 
 import {
   Container,
@@ -124,7 +124,7 @@ function Delegate(props: Props) {
   const renderFeeToolTip = () => {
     return (
       <TooltipContainer>
-        <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>
+        <TooltipTitle>{t('../../../components.send.fee_tooltip_title')}</TooltipTitle>
         <TooltipContent>
           <Trans i18nKey="components.send.fee_tooltip_content">
             This address is not revealed on the blockchain. We have added
@@ -140,7 +140,7 @@ function Delegate(props: Props) {
     <Container onKeyDown={event => onEnterPress(event.key)}>
       <AmountContainer>
         <InputAddress
-          label={t('components.delegateConfirmationModal.new_address_label')}
+          label={t('../../../components.delegateConfirmationModal.new_address_label')}
           operationType="delegate"
           tooltip={false}
           onChange={val => setAddress(val)}
@@ -169,7 +169,7 @@ function Delegate(props: Props) {
 
       <WarningContainer>
         <TezosIcon iconName="info" size={ms(5)} color="info" />
-        <InfoText>{t('components.delegateConfirmationModal.delegate_warning')}</InfoText>
+        <InfoText>{t('../../../components.delegateConfirmationModal.delegate_warning')}</InfoText>
       </WarningContainer>
 
       <PasswordButtonContainer>
@@ -182,7 +182,7 @@ function Delegate(props: Props) {
           />
         )}
         <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
-          {t('components.delegate.change_delegate')}
+          {t('../../../components.delegate.change_delegate')}
         </InvokeButton>
       </PasswordButtonContainer>
       {isLedger && open && (

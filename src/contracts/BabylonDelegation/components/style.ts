@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import TezosIcon from '../../components/TezosIcon';
-import Button from '../../components/Button';
+import TezosIcon from '../../../components/TezosIcon';
+import Button from '../../../components/Button';
 
-import { ms } from '../../styles/helpers';
+import { ms } from '../../../styles/helpers';
 
 export const Container = styled.div`
   display: flex;

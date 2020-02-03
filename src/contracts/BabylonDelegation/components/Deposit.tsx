@@ -4,21 +4,22 @@ import { connect } from 'react-redux';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { OperationKindType } from 'conseiljs';
 
-import TezosNumericInput from '../../components/TezosNumericInput';
-import Fees from '../../components/Fees';
-import PasswordInput from '../../components/PasswordInput';
-import WithdrawLedgerConfirmationModal from '../../components/ConfirmModals/WithdrawLedgerConfirmationModal';
+import TezosNumericInput from '../../../components/TezosNumericInput';
+import Fees from '../../../components/Fees';
+import PasswordInput from '../../../components/PasswordInput';
+import WithdrawLedgerConfirmationModal from '../../../components/ConfirmModals/WithdrawLedgerConfirmationModal';
+import TezosIcon from '../../../components/TezosIcon';
 import InputError from './InputError';
-import TezosIcon from '../../components/TezosIcon';
 
-import { ms } from '../../styles/helpers';
-import { getIsRevealThunk, fetchFeesThunk } from '../../reduxContent/app/thunks';
-import { withdrawThunk, depositThunk } from '../../reduxContent/invoke/thunks';
-import { setIsLoadingAction } from '../../reduxContent/app/actions';
+import { ms } from '../../../styles/helpers';
+import { getIsRevealThunk, fetchFeesThunk } from '../../../reduxContent/app/thunks';
+import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 
-import { OPERATIONFEE } from '../../constants/FeeValue';
-import { RootState } from '../../types/store';
-import { RegularAddress, AverageFees } from '../../types/general';
+import { OPERATIONFEE } from '../../../constants/FeeValue';
+import { RootState } from '../../../types/store';
+import { RegularAddress, AverageFees } from '../../../types/general';
+
+import { withdrawThunk, depositThunk } from '../duck/thunks';
 
 import {
   Container,
@@ -105,7 +106,7 @@ function Deposit(props: Props) {
     if (max <= 0 || max < realAmount) {
       return {
         isIssue: true,
-        warningMessage: t('components.send.warnings.total_exceeds')
+        warningMessage: t('../../../components.send.warnings.total_exceeds')
       };
     }
 
@@ -143,7 +144,7 @@ function Deposit(props: Props) {
 
   const error = isIssue ? <InputError error={warningMessage} /> : '';
 
-  const warningTxt = t('components.withdrawDeposit.deposit_warning', {
+  const warningTxt = t('../../../components.withdrawDeposit.deposit_warning', {
     managerAddress: selectedParentHash
   });
 
