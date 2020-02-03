@@ -6,21 +6,21 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { TezosParameterFormat, OperationKindType } from 'conseiljs';
 
-import Button from '../../components/Button';
-import TezosNumericInput from '../../components/TezosNumericInput';
-import TextField from '../../components/TextField';
-import Fees from '../../components/Fees';
-import PasswordInput from '../../components/PasswordInput';
-import InvokeLedgerConfirmationModal from '../../components/ConfirmModals/InvokeLedgerConfirmationModal';
-import FormatSelector from '../../components/FormatSelector';
+import Button from '../../../components/Button';
+import TezosNumericInput from '../../../components/TezosNumericInput';
+import TextField from '../../../components/TextField';
+import Fees from '../../../components/Fees';
+import PasswordInput from '../../../components/PasswordInput';
+import InvokeLedgerConfirmationModal from '../../../components/ConfirmModals/InvokeLedgerConfirmationModal';
+import FormatSelector from '../../../components/FormatSelector';
 
-import { fetchFeesThunk } from '../../reduxContent/app/thunks';
-import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';
-import { setIsLoadingAction } from '../../reduxContent/app/actions';
+import { fetchFeesThunk } from '../../../reduxContent/app/thunks';
+import { invokeAddressThunk } from '../../../reduxContent/invoke/thunks';
+import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 
-import { OPERATIONFEE } from '../../constants/FeeValue';
-import { RootState } from '../../types/store';
-import { RegularAddress, AverageFees } from '../../types/general';
+import { OPERATIONFEE } from '../../../constants/FeeValue';
+import { RootState } from '../../../types/store';
+import { RegularAddress, AverageFees } from '../../../types/general';
 
 const Container = styled.div`
   display: flex;
@@ -257,7 +257,7 @@ function Invoke(props: Props) {
       <ParametersContainer>
         <ColStorage>
           <TextField
-            label={t('components.interactModal.parameters')}
+            label={t('../../../components.interactModal.parameters')}
             onChange={val => setParameters(val)}
           />
         </ColStorage>
@@ -267,7 +267,7 @@ function Invoke(props: Props) {
       </ParametersContainer>
       <ParametersContainer>
         <TextField
-          label={t('components.interactModal.entry_point')}
+          label={t('../../../components.interactModal.entry_point')}
           onChange={val => setEntryPoint(val)}
         />
       </ParametersContainer>
@@ -275,14 +275,14 @@ function Invoke(props: Props) {
         <ColContainer>
           <TextField
             type="number"
-            label={t('components.interactModal.storage_limit')}
+            label={t('../../../components.interactModal.storage_limit')}
             onChange={val => setStorage(Number(val))}
           />
         </ColContainer>
         <ColContainer>
           <TextField
             type="number"
-            label={t('components.interactModal.gas_limit')}
+            label={t('../../../components.interactModal.gas_limit')}
             onChange={val => setGas(Number(val))}
           />
         </ColContainer>

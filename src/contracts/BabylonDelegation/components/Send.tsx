@@ -5,35 +5,35 @@ import styled from 'styled-components';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
 import { OperationKindType } from 'conseiljs';
 
-import Button from '../../components/Button';
-import SendConfirmationModal from '../../components/ConfirmModals/SendConfirmationModal';
-import SendLedgerConfirmationModal from '../../components/ConfirmModals/SendLedgerConfirmationModal';
-import InputAddress from '../../components/InputAddress';
-import TezosNumericInput from '../../components/TezosNumericInput';
-import TezosAmount from '../../components/TezosAmount';
-import TezosIcon from '../../components/TezosIcon';
-import TextField from '../../components/TextField';
-import Tooltip from '../../components/Tooltip';
-import Fees from '../../components/Fees';
+import Button from '../../../components/Button';
+import SendConfirmationModal from '../../../components/ConfirmModals/SendConfirmationModal';
+import SendLedgerConfirmationModal from '../../../components/ConfirmModals/SendLedgerConfirmationModal';
+import InputAddress from '../../../components/InputAddress';
+import TezosNumericInput from '../../../components/TezosNumericInput';
+import TezosAmount from '../../../components/TezosAmount';
+import TezosIcon from '../../../components/TezosIcon';
+import TextField from '../../../components/TextField';
+import Tooltip from '../../../components/Tooltip';
+import Fees from '../../../components/Fees';
 
-import { ms } from '../../styles/helpers';
+import { ms } from '../../../styles/helpers';
 
 import {
+  depositThunk,
   validateAmountThunk,
   sendTezThunk,
   sendDelegatedFundsThunk
-} from '../../reduxContent/sendTezos/thunks';
-import { depositThunk } from '../../reduxContent/invoke/thunks';
+} from '../duck/thunks';
 
-import { setIsLoadingAction } from '../../reduxContent/app/actions';
+import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import {
   getIsRevealThunk,
   fetchFeesThunk,
   getIsImplicitAndEmptyThunk
-} from '../../reduxContent/app/thunks';
-import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
-import { RootState } from '../../types/store';
-import { AddressType, AverageFees } from '../../types/general';
+} from '../../../reduxContent/app/thunks';
+import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../../constants/FeeValue';
+import { RootState } from '../../../types/store';
+import { AddressType, AverageFees } from '../../../types/general';
 
 const SendContainer = styled.div`
   display: flex;
@@ -396,7 +396,7 @@ function Send(props: Props) {
     if (balance <= 0 || balance < realAmount) {
       return {
         isIssue: true,
-        warningMessage: t('components.send.warnings.total_exceeds'),
+        warningMessage: t('../../../components.send.warnings.total_exceeds'),
         balanceColor: 'error1'
       };
     }
@@ -410,7 +410,7 @@ function Send(props: Props) {
   function renderBurnToolTip() {
     return (
       <TooltipContainer>
-        <TooltipTitle>{t('components.send.burn_tooltip_title')}</TooltipTitle>
+        <TooltipTitle>{t('../../../components.send.burn_tooltip_title')}</TooltipTitle>
         <TooltipContent>
           <Trans i18nKey="components.send.burn_tooltip_content">
             The recepient address you entered has a zero balance. Sending funds to an empty Manager
@@ -434,7 +434,7 @@ function Send(props: Props) {
   function renderFeeToolTip() {
     return (
       <TooltipContainer>
-        <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>
+        <TooltipTitle>{t('../../../components.send.fee_tooltip_title')}</TooltipTitle>
         <TooltipContent>
           <Trans i18nKey="components.send.fee_tooltip_content">
             This address is not revealed on the blockchain. We have added
@@ -456,9 +456,9 @@ function Send(props: Props) {
 
   return (
     <SendContainer>
-      <SendTitle>{t('components.send.send_xtz')}</SendTitle>
+      <SendTitle>{t('../../../components.send.send_xtz')}</SendTitle>
       <InputAddress
-        label={t('components.send.recipient_address')}
+        label={t('../../../components.send.recipient_address')}
         address={selectedAccountHash}
         operationType="send"
         onChange={handleToAddressChange}
@@ -506,7 +506,7 @@ function Send(props: Props) {
           <BurnsContainer>
             <TextField
               disabled={true}
-              label={t('components.transaction.burn')}
+              label={t('../../../components.transaction.burn')}
               defaultValue="0.257000"
             />
             <TezosIconInput color="gray5" iconName="tezos" />
