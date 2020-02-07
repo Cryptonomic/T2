@@ -6,11 +6,10 @@ import {
   REMOVE_NODE,
   CHANGE_PATH,
   ADD_PATH,
-  REMOVE_PATH,
-  CLEAR_STATE,
-  SettingsActionTypes
-} from './types';
+  REMOVE_PATH
+} from './Settings-actions';
 
+import { SettingsActionTypes } from './Settings-types';
 import { SettingsState } from '../../types/store';
 
 const baseDefaults: SettingsState = {
