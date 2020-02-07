@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
-import { RootState } from '../../types/store';
-import { getAddressType } from '../../utils/account';
-import { AddressType } from '../../types/general';
-import { TRANSACTIONS } from '../../constants/TabConstants';
+import { RootState } from '../../../types/store';
+import { getAddressType } from '../../../utils/account';
+import { AddressType } from '../../../types/general';
+import { TRANSACTIONS } from '../../../constants/TabConstants';
 
 const selectedAccountHashSelector = (state: RootState) => state.app.selectedAccountHash;
 const selectedParentHashSelector = (state: RootState) => state.app.selectedParentHash;
@@ -13,7 +13,7 @@ const defaultAccount = {
   activeTab: TRANSACTIONS,
   storeType: 0,
   status: '',
-  script: undefined,
+  script: '',
   privateKey: '',
   delegate_value: '',
   storage: '',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ms } from '../../styles/helpers';
+import { ms } from '../../../styles/helpers';
 import { ErrorContainer, WarningIcon } from './style';
 
 interface Props {

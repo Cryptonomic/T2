@@ -1,85 +1,87 @@
-import {
-  ConseilQueryBuilder,
-  ConseilOperator,
-  ConseilDataClient,
-  ConseilSortDirection,
-  TezosConseilClient,
-  TezosNodeReader,
-  OperationKindType
-} from 'conseiljs';
+import { useState, useEffect } from 'react';
+import { useStore } from 'react-redux';
+import { TezosConseilClient, TezosNodeReader, OperationKindType } from 'conseiljs';
 import { changeAccountAction, addNewVersionAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
 import { getVersionFromApi } from '../../utils/general';
-import { AverageFees } from '../../types/general';
-import { AVERAGEFEES } from '../../constants/FeeValue';
+import { AVERAGEFEES, OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
 import { LocalVersionIndex } from '../../config.json';
 
-const { executeEntityQuery } = ConseilDataClient;
+import { AverageFees } from '../../types/general';
+import { RootState } from '../../types/store';
 
-export function fetchFeesThunk(operationKind: OperationKindType) {
-  return async (dispatch, state): Promise<AverageFees> => {
-    const { selectedNode, nodesList } = state().settings;
-    const mainNode = getMainNode(nodesList, selectedNode);
-    const { conseilUrl, apiKey, network } = mainNode;
-    const fees = await TezosConseilClient.getFeeStatistics(
-      { url: conseilUrl, apiKey, network },
-      network,
-      operationKind
-    ).catch(() => [AVERAGEFEES]);
-    return {
-      low: fees[0].low,
-      medium: fees[0].medium,
-      high: fees[0].high
+interface FetchFees {
+  newFees: AverageFees;
+  isFeeLoaded: boolean;
+  miniFee: number;
+  isRevealed: boolean;
+}
+
+const initialFeesState: FetchFees = {
+  newFees: AVERAGEFEES,
+  isFeeLoaded: false,
+  miniFee: OPERATIONFEE,
+  isRevealed: false
+};
+
+export const useFetchFees = (
+  operationKind: OperationKindType,
+  isReveal: boolean = false,
+  isManager: boolean = false
+): FetchFees => {
+  const [state, setState] = useState<FetchFees>(initialFeesState);
+  const store = useStore<RootState>();
+  const { newFees, isFeeLoaded, miniFee, isRevealed } = state;
+  useEffect(() => {
+    const fetchFeesData = async () => {
+      try {
+        const { selectedNode, nodesList } = store.getState().settings;
+        const { conseilUrl, apiKey, network, tezosUrl } = getMainNode(nodesList, selectedNode);
+        const serverFees = await TezosConseilClient.getFeeStatistics(
+          { url: conseilUrl, apiKey, network },
+          network,
+          operationKind
+        ).catch(() => [AVERAGEFEES]);
+        const fees = {
+          low: serverFees[0].low,
+          medium: serverFees[0].medium,
+          high: serverFees[0].high
+        };
+        let isNewRevealed = false;
+        let miniLowFee = OPERATIONFEE;
+        if (isReveal) {
+          const { selectedAccountHash, selectedParentHash } = store.getState().app;
+          const pkh = isManager ? selectedParentHash : selectedAccountHash;
+          isNewRevealed = await TezosNodeReader.isManagerKeyRevealedForAccount(tezosUrl, pkh).catch(
+            () => false
+          );
+        }
+
+        if (!isNewRevealed) {
+          fees.low += REVEALOPERATIONFEE;
+          fees.medium += REVEALOPERATIONFEE;
+          fees.high += REVEALOPERATIONFEE;
+          miniLowFee += REVEALOPERATIONFEE;
+        }
+        if (newFees.low < miniLowFee) {
+          fees.low = miniLowFee;
+        }
+
+        setState({
+          newFees: fees,
+          isRevealed: isNewRevealed,
+          miniFee: miniLowFee,
+          isFeeLoaded: true
+        });
+      } catch (e) {
+        console.log('canceled');
+      }
     };
-  };
-}
-
-export function getAccountThunk(pkh: string) {
-  return async (dispatch, state) => {
-    const { selectedNode, nodesList } = state().settings;
-    const mainNode = getMainNode(nodesList, selectedNode);
-    const { conseilUrl, apiKey, network, platform } = mainNode;
-    const serverInfo = { url: conseilUrl, apiKey, network };
-
-    let query = ConseilQueryBuilder.blankQuery();
-    query = ConseilQueryBuilder.addFields(query, 'script');
-    query = ConseilQueryBuilder.addPredicate(query, 'account_id', ConseilOperator.EQ, [pkh], false);
-    query = ConseilQueryBuilder.addOrdering(query, 'script', ConseilSortDirection.DESC);
-    query = ConseilQueryBuilder.setLimit(query, 1);
-
-    const account = await executeEntityQuery(
-      serverInfo,
-      platform,
-      network,
-      'accounts',
-      query
-    ).catch(() => []);
-    return account;
-  };
-}
-
-export function getIsRevealThunk(isManager: boolean = false) {
-  return async (dispatch, state) => {
-    const { selectedNode, nodesList } = state().settings;
-    const mainNode = getMainNode(nodesList, selectedNode);
-    const { tezosUrl } = mainNode;
-    const { selectedAccountHash, selectedParentHash } = state().app;
-    const pkh = isManager ? selectedParentHash : selectedAccountHash;
-    const isReveal = await TezosNodeReader.isManagerKeyRevealedForAccount(tezosUrl, pkh);
-    return isReveal;
-  };
-}
-
-export function getIsImplicitAndEmptyThunk(recipientHash: string) {
-  return async (dispatch, state) => {
-    const { selectedNode, nodesList } = state().settings;
-    const mainNode = getMainNode(nodesList, selectedNode);
-    const { tezosUrl } = mainNode;
-    const isImplicitAndEmpty = await TezosNodeReader.isImplicitAndEmpty(tezosUrl, recipientHash);
-    return isImplicitAndEmpty;
-  };
-}
+    fetchFeesData();
+  }, []);
+  return { newFees, isFeeLoaded, miniFee, isRevealed };
+};
 
 export function changeAccountThunk(
   accountHash: string,

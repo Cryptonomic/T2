@@ -1,20 +1,25 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
-import Button from '../Button';
-import BalanceBanner from '../BalanceBanner';
-import EmptyState from '../EmptyState';
-import PageNumbers from '../PageNumbers';
-import Transactions from '../Transactions';
+import Button from '../../components/Button';
+import BalanceBanner from '../../components/BalanceBanner';
+import EmptyState from '../../components/EmptyState';
+import PageNumbers from '../../components/PageNumbers';
+import Transactions from '../../components/Transactions';
 
-import Loader from '../Loader';
-import AccountStatus from '../AccountStatus';
+import Loader from '../../components/Loader';
+import AccountStatus from '../../components/AccountStatus';
 
-import { Send, Receive, Invoke, CodeStorage, WithdrawDeposit, Delegate } from '../TabContents';
+import Delegate from './components/Delegate';
+import Invoke from './components/Invoke';
+import Send from './components/Send';
+import Deposit from './components/Deposit';
+import Withdraw from './components/Withdraw';
+import CodeStorage from './components/CodeStorage';
+import Receive from './components/Receive';
 
 import {
   TRANSACTIONS,
@@ -24,13 +29,13 @@ import {
   INVOKE,
   CODE,
   STORAGE,
-  INVOKE_MANAGER,
   DEPOSIT,
   WITHDRAW
 } from '../../constants/TabConstants';
+import { READY } from '../../constants/StatusTypes';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
-import { READY } from '../../constants/StatusTypes';
+
 import { sortArr } from '../../utils/array';
 import { isReady } from '../../utils/general';
 import { getAddressType } from '../../utils/account';
@@ -39,7 +44,7 @@ import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
 
 import { syncWalletThunk, updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from '../../reduxContent/app/selectors';
+import { getAccountSelector } from './duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;
@@ -103,42 +108,25 @@ const Description = (props: DescriptionProps) => {
   );
 };
 
-interface OwnProps {
-  updateActiveTab: (activeTab: string) => void;
-  selectedAccount: any;
-  isLoading: boolean;
-  isWalletSyncing: boolean;
-  isLedger: boolean;
-  syncWallet: () => void;
-  selectedAccountHash: string;
-  selectedParentHash: string;
-  selectedParentIndex: number;
-  selectedAccountIndex: number;
-  isManager: boolean;
-  time: Date;
-}
-
-type Props = OwnProps & WithTranslation;
-
-function ActionPanel(props: Props) {
-  const {
-    t,
-    selectedAccount,
-    selectedAccountHash,
-    selectedParentHash,
-    selectedParentIndex,
-    selectedAccountIndex,
-    isManager,
-    time,
-    isLedger,
-    isWalletSyncing,
-    syncWallet,
-    isLoading,
-    updateActiveTab
-  } = props;
+function ActionPanel() {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [addressType, setAddressType] = useState(AddressType.Manager);
   const [tabs, setTabs] = useState<string[]>([]);
+  const selectedAccount = useSelector(getAccountSelector);
+
+  const {
+    isLoading,
+    time,
+    isWalletSyncing,
+    isLedger,
+    isManager,
+    selectedParentHash,
+    selectedAccountHash,
+    selectedParentIndex,
+    selectedAccountIndex
+  } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
   const {
     balance,
@@ -175,7 +163,11 @@ function ActionPanel(props: Props) {
   }, [selectedAccountHash, script]);
 
   function onChangeTab(newTab: string) {
-    updateActiveTab(newTab);
+    dispatch(updateActiveTabThunk(newTab));
+  }
+
+  function onSyncWallet() {
+    dispatch(syncWalletThunk());
   }
 
   function renderSection() {
@@ -211,13 +203,14 @@ function ActionPanel(props: Props) {
       //     />
       //   );
       case WITHDRAW:
+        return (
+          <Withdraw balance={balance} isReady={ready} onSuccess={() => onChangeTab(TRANSACTIONS)} />
+        );
       case DEPOSIT:
         return (
-          <WithdrawDeposit
-            balance={balance}
+          <Deposit
             isReady={ready}
             addresses={regularAddresses}
-            format={activeTab}
             onSuccess={() => onChangeTab(TRANSACTIONS)}
           />
         );
@@ -244,7 +237,7 @@ function ActionPanel(props: Props) {
         return transactions.length === 0 ? (
           <EmptyState
             imageSrc={transactionsEmptyState}
-            title={t('components.actionPanel.empty-title')}
+            title={t('../../components.actionPanel.empty-title')}
             description={
               <Description
                 onReceiveClick={() => onChangeTab(RECEIVE)}
@@ -284,7 +277,7 @@ function ActionPanel(props: Props) {
         publicKeyHash={selectedAccountHash || 'Inactive'}
         parentIndex={selectedParentIndex + 1}
         isManager={isManager}
-        onRefreshClick={syncWallet}
+        onRefreshClick={onSyncWallet}
         time={time}
         delegatedAddress={delegate_value}
         isWalletSyncing={isWalletSyncing}
@@ -318,24 +311,4 @@ function ActionPanel(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  selectedAccount: getAccountSelector(state),
-  isLoading: state.app.isLoading,
-  time: state.app.time,
-  isWalletSyncing: state.app.isWalletSyncing,
-  isLedger: state.app.isLedger,
-  isManager: state.app.isManager,
-  selectedAccountHash: state.app.selectedAccountHash,
-  selectedParentIndex: state.app.selectedParentIndex,
-  selectedAccountIndex: state.app.selectedAccountIndex
-});
-
-const mapDispatchToProps = dispatch => ({
-  updateActiveTab: (activeTab: string) => dispatch(updateActiveTabThunk(activeTab)),
-  syncWallet: () => dispatch(syncWalletThunk())
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(ActionPanel) as React.ComponentType<any>;
+export default ActionPanel;

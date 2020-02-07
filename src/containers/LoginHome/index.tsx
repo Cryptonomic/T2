@@ -128,22 +128,22 @@ function LoginHome(props: Props) {
           <CardContainer>
             <CardImg src={keystoreImg} />
             <CardTitle>{t('containers.loginHome.keystore_wallet')}</CardTitle>
-            <CreateWalletButton
+            <UnlockWalletButton
               color="secondary"
               variant="extended"
-              onClick={() => goTo('create')}
-              disabled={!isAgreement}
-            >
-              {t('containers.loginHome.create_new_wallet_btn')}
-            </CreateWalletButton>
-            <UnlockWalletButton
-              color="primary"
-              variant="outlined"
               onClick={() => goTo('import')}
               disabled={!isAgreement}
             >
               {t('containers.loginHome.open_exisiting_wallet_btn')}
             </UnlockWalletButton>
+            <CreateWalletButton
+              color="primary"
+              variant="outlined"
+              onClick={() => goTo('create')}
+              disabled={!isAgreement}
+            >
+              {t('containers.loginHome.create_new_wallet_btn')}
+            </CreateWalletButton>
             <Linebar />
             <Tip>
               <div>{t('containers.loginHome.want_to_import_fundraiser_paper_wallet')}</div>
@@ -162,7 +162,7 @@ function LoginHome(props: Props) {
             <CardImg src={ledgerImg} />
 
             <CardTitle>{t('containers.loginHome.ledger_wallet')}</CardTitle>
-            <CreateWalletButton
+            <UnlockWalletButton
               color="secondary"
               variant="extended"
               onClick={() => onLedgerConnect()}
@@ -170,7 +170,7 @@ function LoginHome(props: Props) {
             >
               {isLedgerConnecting && t('containers.loginHome.connecting')}
               {!isLedgerConnecting && t('containers.loginHome.connect_ledger')}
-            </CreateWalletButton>
+            </UnlockWalletButton>
             {activePath && (
               <SelectedPath>
                 {t('containers.loginHome.selectedPath')} {activePath}

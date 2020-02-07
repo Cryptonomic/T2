@@ -14,7 +14,7 @@ import { LOGOUT, LogoutAction } from '../app/types';
 
 const defaultState: WalletState = {
   identities: [],
-  password: '',
+  walletPassword: '',
   walletFileName: '',
   walletLocation: ''
 };
@@ -31,7 +31,7 @@ export function walletReducer(
     case SET_WALLET_LOCATION:
       return { ...state, walletLocation: action.walletLocation };
     case SET_PASSWORD:
-      return { ...state, password: action.password };
+      return { ...state, walletPassword: action.password };
     case SET_IDENTITIES:
       return { ...state, identities: action.identities };
     case ADD_NEW_IDENTITY: {

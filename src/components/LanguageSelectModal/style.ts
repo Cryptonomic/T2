@@ -3,19 +3,25 @@ import { RadioGroup, Radio, FormControlLabel } from '@material-ui/core';
 import { CheckCircle, PanoramaFishEye as Circle } from '@material-ui/icons';
 import Button from '../Button';
 
-export const Container = styled.div`
+export const ModalContent = styled.div`
+  position: absolute;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 0;
   background-color: ${({ theme: { colors } }) => colors.white};
+  outline: none;
+`;
+
+export const Container = styled.div`
   width: 508px;
-  padding: 36px 0;
+  padding: 40px 0;
 `;
 
 export const Title = styled.div`
   color: ${({ theme: { colors } }) => colors.primary};
-  font-weight: ${({
-    theme: {
-      typo: { weights }
-    }
-  }) => weights.normal};
+  font-weight: 400;
   font-size: 36px;
   line-height: 40px;
   letter-spacing: 0.1px;

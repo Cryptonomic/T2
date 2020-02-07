@@ -1,4 +1,4 @@
-import { TezosNodeWriter, TezosProtocolHelper, TezosParameterFormat } from 'conseiljs';
+import { TezosNodeWriter, BabylonDelegationHelper, TezosParameterFormat } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { displayError } from '../../utils/formValidation';
@@ -14,7 +14,7 @@ import { ORIGINATION } from '../../constants/TransactionTypes';
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
 
 const { sendContractOriginationOperation } = TezosNodeWriter;
-const { deployManagerContract } = TezosProtocolHelper;
+const { deployManagerContract } = BabylonDelegationHelper;
 
 export function originateContractThunk(
   delegate: string,
@@ -24,9 +24,9 @@ export function originateContractThunk(
   publicKeyHash: string,
   storageLimit: number = 0,
   gasLimit: number = 0,
-  code: string,
-  storage: string,
-  codeFormat: TezosParameterFormat,
+  code: string = '',
+  storage: string = '',
+  codeFormat?: TezosParameterFormat,
   isSmartContract: boolean = false
 ) {
   return async (dispatch, state) => {
