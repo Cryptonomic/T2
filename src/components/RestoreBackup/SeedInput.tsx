@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import Chip from '@material-ui/core/Chip';
 import CloseIcon from '@material-ui/icons/Close';
@@ -44,17 +44,16 @@ const ChipContent = ({ value, index }) => {
   );
 };
 
-interface OwnProps {
+interface Props {
   seeds: string[];
   placeholder: string;
   onChange: (seeds: string[]) => void;
   onError: (isError: boolean) => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function SeedInput(props: Props) {
-  const { t, seeds, placeholder, onChange, onError } = props;
+  const { seeds, placeholder, onChange, onError } = props;
+  const { t } = useTranslation();
   const [error, setError] = useState('');
   const [badWords, setBadWords] = useState<string[]>([]);
   const [inputVal, setInputVal] = useState('');
@@ -171,4 +170,4 @@ function SeedInput(props: Props) {
   );
 }
 
-export default withTranslation()(SeedInput);
+export default SeedInput;

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { H3 } from '../../components/Heading';
 
@@ -48,8 +48,8 @@ const preContent = `
   }
 `;
 
-function WalletNodesRequired(props: WithTranslation) {
-  const { t } = props;
+function WalletNodesRequired() {
+  const { t } = useTranslation();
   return (
     <SectionContainer>
       <DefaultContainer>
@@ -67,4 +67,4 @@ function WalletNodesRequired(props: WithTranslation) {
   );
 }
 
-export default withTranslation()(WalletNodesRequired);
+export default WalletNodesRequired;

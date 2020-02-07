@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
@@ -115,7 +115,7 @@ const getFirstLine = (isManager, isContract, isActive, index, accountId, t) => {
   );
 };
 
-interface OwnProps {
+interface Props {
   isContract?: boolean;
   isManager?: boolean;
   isActive?: boolean;
@@ -125,10 +125,9 @@ interface OwnProps {
   onClick?: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const Address: React.SFC<Props> = props => {
-  const { isManager, isContract, isActive, balance, index, accountId, onClick, t } = props;
+  const { t } = useTranslation();
+  const { isManager, isContract, isActive, balance, index, accountId, onClick } = props;
   const firstLine = getFirstLine(isManager, isContract, isActive, index, accountId, t);
 
   const amountProps = {
@@ -147,4 +146,4 @@ const Address: React.SFC<Props> = props => {
   );
 };
 
-export default withTranslation()(Address);
+export default Address;

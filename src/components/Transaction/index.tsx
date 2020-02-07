@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { ms } from '../../styles/helpers';
 import TezosAddress from '../TezosAddress';
 import TezosAmount from '../TezosAmount';
@@ -240,16 +240,15 @@ const getAddress = (transaction, selectedAccountHash, selectedParentHash, t) => 
   return <TezosAddress address={address} size="14px" weight={200} color="black2" />;
 };
 
-interface OwnProps {
+interface Props {
   transaction: any;
   selectedAccountHash: string;
   selectedParentHash: string;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function Transaction(props: Props) {
-  const { transaction, selectedAccountHash, selectedParentHash, t } = props;
+  const { transaction, selectedAccountHash, selectedParentHash } = props;
+  const { t } = useTranslation();
   const fee = transaction.fee ? Number.parseInt(transaction.fee, 10) : 0;
   const { icon, preposition, state, isFee, color, sign, isBurn } = getStatus(
     transaction,
@@ -313,4 +312,4 @@ function Transaction(props: Props) {
   );
 }
 
-export default withTranslation()(Transaction);
+export default Transaction;

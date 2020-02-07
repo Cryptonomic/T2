@@ -1,5 +1,5 @@
 import React from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import TezosIcon from '../TezosIcon';
 
@@ -33,14 +33,13 @@ const Link = styled.span`
 
 const url = 'https://galleon-wallet.tech';
 
-interface OwnProps {
+interface Props {
   version: string;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const VersionStatus = (props: Props) => {
-  const { version, t } = props;
+  const { version } = props;
+  const { t } = useTranslation();
 
   return (
     <Container>
@@ -51,4 +50,4 @@ const VersionStatus = (props: Props) => {
   );
 };
 
-export default withTranslation()(VersionStatus);
+export default VersionStatus;

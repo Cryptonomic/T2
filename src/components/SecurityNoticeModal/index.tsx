@@ -4,7 +4,7 @@ import Modal from '@material-ui/core/Modal';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Button from '../Button';
 import TezosIcon from '../TezosIcon';
 import noticeImg from '../../../resources/imgs/security-notice.svg';
@@ -108,16 +108,15 @@ const CheckBoxWrapper = styled(Checkbox)`
   }
 `;
 
-interface OwnProps {
+interface Props {
   open: boolean;
   onClose: () => void;
   onProceed: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function SecurityNoticeModal(props: Props) {
-  const { open, onClose, onProceed, t } = props;
+  const { open, onClose, onProceed } = props;
+  const { t } = useTranslation();
   const [isUnderstand, setIsUnderstand] = useState(false);
   const [isNotShowMessage, setIsNotShowMessage] = useState(false);
 
@@ -187,4 +186,4 @@ function SecurityNoticeModal(props: Props) {
   );
 }
 
-export default withTranslation()(SecurityNoticeModal);
+export default SecurityNoticeModal;

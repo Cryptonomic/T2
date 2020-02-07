@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { lighten } from 'polished';
 import { StoreType } from 'conseiljs';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
 import Notifications from '@material-ui/icons/Notifications';
 import { ms } from '../../styles/helpers';
@@ -176,7 +176,7 @@ const TooltipContent = styled.div`
   max-width: ${ms(13)};
 `;
 
-interface OwnProps {
+interface Props {
   storeType?: string | number;
   isReady: boolean;
   balance: number;
@@ -193,8 +193,6 @@ interface OwnProps {
   isLedger: boolean;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function BalanceBanner(props: Props) {
   const {
     storeType,
@@ -207,12 +205,13 @@ function BalanceBanner(props: Props) {
     isManager,
     time,
     delegatedAddress,
-    t,
     isWalletSyncing,
     addressType,
     addressIndex,
     isLedger
   } = props;
+
+  const { t } = useTranslation();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isShowKey, setIsShowKey] = useState(false);
@@ -337,4 +336,4 @@ BalanceBanner.defaultProps = {
   isWalletSyncing: false
 };
 
-export default withTranslation()(BalanceBanner);
+export default BalanceBanner;

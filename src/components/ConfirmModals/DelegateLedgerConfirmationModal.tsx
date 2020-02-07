@@ -1,5 +1,5 @@
 import React from 'react';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import Modal from '../CustomModal';
 import Loader from '../Loader';
@@ -88,7 +88,7 @@ const ItemContent = styled.div`
   align-items: center;
 `;
 
-interface OwnProps {
+interface Props {
   address: string;
   source: string;
   open: boolean;
@@ -97,10 +97,9 @@ interface OwnProps {
   fee: number;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const DelegateLedgerConfirmationModal = (props: Props) => {
-  const { address, source, open, isLoading, onClose, fee, t } = props;
+  const { t } = useTranslation();
+  const { address, source, open, isLoading, onClose, fee } = props;
 
   const calcFee = formatAmount(fee);
 
@@ -153,4 +152,4 @@ const DelegateLedgerConfirmationModal = (props: Props) => {
   );
 };
 
-export default withTranslation()(DelegateLedgerConfirmationModal);
+export default DelegateLedgerConfirmationModal;

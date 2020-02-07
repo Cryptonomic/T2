@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { ms } from '../../styles/helpers';
 import LoaderSpinner from '../LoaderSpinner';
 
@@ -33,7 +33,7 @@ const Title = styled.span<{ isActive: boolean | undefined }>`
   white-space: nowrap;
 `;
 
-interface OwnProps {
+interface Props {
   isManager?: boolean;
   isActive?: boolean;
   status?: string;
@@ -41,10 +41,9 @@ interface OwnProps {
   onClick?: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function AddressStatus(props: Props) {
-  const { isManager, isActive, status, isContract, onClick, t } = props;
+  const { isManager, isActive, status, isContract, onClick } = props;
+  const { t } = useTranslation();
   let text = '';
   if (isContract) {
     text = t('components.addressStatus.deploying_title');
@@ -80,4 +79,4 @@ function AddressStatus(props: Props) {
   );
 }
 
-export default withTranslation()(AddressStatus);
+export default AddressStatus;
