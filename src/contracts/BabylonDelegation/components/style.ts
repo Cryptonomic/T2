@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import TezosIcon from '../TezosIcon';
-import Button from '../Button';
+import IconButton from '@material-ui/core/IconButton';
+import TezosIcon from '../../../components/TezosIcon';
+import Button from '../../../components/Button';
 
-import { ms } from '../../styles/helpers';
+import { ms } from '../../../styles/helpers';
 
 export const Container = styled.div`
   display: flex;
@@ -46,7 +47,6 @@ export const PasswordButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 0 40px 15px 0px;
   height: 100px;
   margin-top: auto;
   width: 100%;
@@ -97,10 +97,6 @@ export const TooltipContainer = styled.div`
   color: #000;
   font-size: 14px;
   max-width: 312px;
-
-  .customArrow .rc-tooltip-arrow {
-    left: 66%;
-  }
 `;
 
 export const TooltipTitle = styled.div`
@@ -122,11 +118,17 @@ export const BoldSpan = styled.span`
   font-weight: 500;
 `;
 
-export const FeeTooltip = styled(Button)`
-  position: relative;
-  top: 3px;
+export const FeeTooltipBtn = styled(IconButton)`
+  &&& {
+    position: relative;
+    top: 1px;
+  }
 `;
 
-export const HelpIcon = styled(TezosIcon)`
-  padding: 0 0 0 ${ms(-4)};
+export const BurnTooltipBtn = styled(IconButton)`
+  &&& {
+    position: absolute;
+    left: 82px;
+    top: 21px;
+  }
 `;

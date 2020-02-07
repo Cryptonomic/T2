@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import styled from 'styled-components';
-import { ms } from '../../styles/helpers';
-import TezosAddress from '../TezosAddress';
+import { ms } from '../../../styles/helpers';
+import TezosAddress from '../../../components/TezosAddress';
 
 const HashContainer = styled.div`
   display: flex;

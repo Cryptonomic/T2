@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { lighten } from 'polished';
 import { StoreType } from 'conseiljs';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import IconButton from '@material-ui/core/IconButton';
+import Notifications from '@material-ui/icons/Notifications';
 import { ms } from '../../styles/helpers';
 import { H4 } from '../Heading/';
 import TezosAmount from '../TezosAmount';
@@ -11,7 +13,9 @@ import TezosIcon from '../TezosIcon/';
 import Update from '../Update';
 import Modal from '../CustomModal';
 import Button from '../Button';
+import Tooltip from '../Tooltip';
 
+import { openLink } from '../../utils/general';
 import { AddressType } from '../../types/general';
 import keyIconSvg from '../../../resources/imgs/Key_Icon.svg';
 import circleKeyIconSvg from '../../../resources/imgs/Circle_Key_Icon.svg';
@@ -83,11 +87,17 @@ const CircleKeyIcon = styled.img`
   width: 27px;
 `;
 
+const KeyIconButton = styled(IconButton)`
+  position: relative;
+  top: 1px;
+  left: 4px;
+`;
+
 const KeyIcon = styled.img`
-  width: 12px;
-  height: 13px;
-  margin-left: 10px;
+  width: 17px;
+  height: 18px;
   cursor: pointer;
+  padding: 2px;
 `;
 
 const ModalContent = styled.div`
@@ -149,6 +159,23 @@ const StoreTxt = styled.div`
   margin-left: 23px;
 `;
 
+const BellIcon = styled(Notifications)`
+  &&& {
+    font-size: 18px;
+    position: relative;
+    top: 1px;
+    cursor: pointer;
+    color: white;
+  }
+`;
+
+const TooltipContent = styled.div`
+  color: ${({ theme: { colors } }) => colors.primary};
+  font-weight: 300;
+  font-size: ${ms(-1)};
+  max-width: ${ms(13)};
+`;
+
 interface OwnProps {
   storeType?: string | number;
   isReady: boolean;
@@ -203,6 +230,11 @@ function BalanceBanner(props: Props) {
 
   const breadcrumbs = t('components.balanceBanner.breadcrumbs', { parentIndex, addressLabel });
 
+  function openUrl() {
+    const newUrl = `https://t.me/TezosNotifierBot?start=${publicKeyHash}`;
+    openLink(newUrl);
+  }
+
   return (
     <Container>
       <TopRow isReady={isReady}>
@@ -224,7 +256,23 @@ function BalanceBanner(props: Props) {
             />
             {addressLabel}
 
-            {isManager && !isLedger && <KeyIcon src={keyIconSvg} onClick={() => setIsOpen(true)} />}
+            {isManager && !isLedger && (
+              <KeyIconButton size="small" color="primary" onClick={() => setIsOpen(true)}>
+                <KeyIcon src={keyIconSvg} />
+              </KeyIconButton>
+            )}
+            {isManager && (
+              <Tooltip
+                position="bottom"
+                content={
+                  <TooltipContent>{t('components.balanceBanner.tooltip_content')}</TooltipContent>
+                }
+              >
+                <IconButton size="small" color="primary" onClick={() => openUrl()}>
+                  <BellIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </AddressTitle>
         )}
         <AddressInfo>

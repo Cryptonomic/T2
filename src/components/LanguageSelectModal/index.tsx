@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Modal from 'react-modal';
+import Modal from '@material-ui/core/Modal';
 import RootRef from '@material-ui/core/RootRef';
 import { WithTranslation, withTranslation } from 'react-i18next';
 
@@ -7,6 +7,7 @@ import languageLogoIcon from '../../../resources/imgs/Language_Selection_img.svg
 import localesMap from '../../constants/LocalesMap';
 
 import {
+  ModalContent,
   Container,
   Title,
   Description,
@@ -23,23 +24,6 @@ import {
   NonCheckedCircle,
   ContinueButton
 } from './style';
-
-const customStyles = {
-  content: {
-    alignItems: 'center',
-    border: '0',
-    borderRadius: '0',
-    top: 'auto',
-    bottom: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    left: 0,
-    width: '100%'
-  },
-  overlay: {
-    backgroundColor: 'rgba(155, 155, 155, 0.68)'
-  }
-};
 
 const numberOfLocales = Object.keys(localesMap).length;
 
@@ -84,46 +68,51 @@ function LanguageSelectModal(props: Props) {
   }
 
   return (
-    <Modal isOpen={isOpen} style={customStyles} ariaHideApp={false}>
-      <Container>
-        <Title>{t('components.languageSelectModal.choose_language')}</Title>
-        <Description>
-          {t('components.languageSelectModal.language_selection_description')}
-        </Description>
-        <MainContainer>
-          <LanguageLogo src={languageLogoIcon} />
-          <GroupContainerWrapper>
-            {isTopFade && <FadeTop />}
-            <RootRef rootRef={setLanguageScrollRef}>
-              <RadioGroupContainer
-                value={selectedLanguage}
-                onChange={event => onLanguageChange(event.target.value)}
-                onScroll={onScrollChange}
-              >
-                {Object.keys(localesMap).map(key => {
-                  return (
-                    <FormControlLabelWrapper
-                      value={key}
-                      key={key}
-                      control={
-                        <CustomRadio icon={<NonCheckedCircle />} checkedIcon={<CheckedCircle />} />
-                      }
-                      label={localesMap[key]}
-                    />
-                  );
-                })}
-              </RadioGroupContainer>
-            </RootRef>
+    <Modal open={isOpen} disableBackdropClick={false}>
+      <ModalContent>
+        <Container>
+          <Title>{t('components.languageSelectModal.choose_language')}</Title>
+          <Description>
+            {t('components.languageSelectModal.language_selection_description')}
+          </Description>
+          <MainContainer>
+            <LanguageLogo src={languageLogoIcon} />
+            <GroupContainerWrapper>
+              {isTopFade && <FadeTop />}
+              <RootRef rootRef={setLanguageScrollRef}>
+                <RadioGroupContainer
+                  value={selectedLanguage}
+                  onChange={event => onLanguageChange(event.target.value)}
+                  onScroll={onScrollChange}
+                >
+                  {Object.keys(localesMap).map(key => {
+                    return (
+                      <FormControlLabelWrapper
+                        value={key}
+                        key={key}
+                        control={
+                          <CustomRadio
+                            icon={<NonCheckedCircle />}
+                            checkedIcon={<CheckedCircle />}
+                          />
+                        }
+                        label={localesMap[key]}
+                      />
+                    );
+                  })}
+                </RadioGroupContainer>
+              </RootRef>
 
-            {isBottomFade && <FadeBottom />}
-          </GroupContainerWrapper>
-        </MainContainer>
-        <ButtonContainer>
-          <ContinueButton buttonTheme="primary" onClick={onContinue}>
-            {t('general.verbs.continue')}
-          </ContinueButton>
-        </ButtonContainer>
-      </Container>
+              {isBottomFade && <FadeBottom />}
+            </GroupContainerWrapper>
+          </MainContainer>
+          <ButtonContainer>
+            <ContinueButton buttonTheme="primary" onClick={onContinue}>
+              {t('general.verbs.continue')}
+            </ContinueButton>
+          </ButtonContainer>
+        </Container>
+      </ModalContent>
     </Modal>
   );
 }

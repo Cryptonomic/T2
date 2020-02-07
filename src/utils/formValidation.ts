@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import fs from 'fs';
 
 function minLength(length, name) {
   return `${name} must be at least ${length} characters.`;

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
-import { compose } from 'redux';
+import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { TezosParameterFormat, OperationKindType } from 'conseiljs';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '../TextField';
@@ -21,11 +20,11 @@ import TezosAmount from '../TezosAmount';
 import AddDelegateLedgerModal from './AddDelegateLedgerModal';
 
 import { originateContractThunk } from '../../reduxContent/originate/thunks';
-import { getIsRevealThunk, fetchFeesThunk } from '../../reduxContent/app/thunks';
+import { useFetchFees } from '../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../reduxContent/app/actions';
 
-import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
-import { RootState } from '../../types/store';
+import { OPERATIONFEE, REVEALOPERATIONFEE, AVERAGEFEES } from '../../constants/FeeValue';
+import { RootState, AppState } from '../../types/store';
 import { AverageFees } from '../../types/general';
 
 const InputAddressContainer = styled.div`
@@ -180,72 +179,41 @@ const BoldSpan = styled.span`
 `;
 
 const utez = 1000000;
+const GAS = 257000;
 
-interface OwnProps {
+interface Props {
   open: boolean;
-  onClose: () => void;
   managerBalance: number;
+  onClose: () => void;
 }
-
-interface StoreProps {
-  isLedger: boolean;
-  isLoading: boolean;
-  selectedParentHash: string;
-  fetchFees: (op: OperationKindType) => Promise<AverageFees>;
-  getIsReveal: (isManger: boolean) => Promise<boolean>;
-  originateContract: (
-    delegate: string,
-    amount: string,
-    fee: number,
-    passPhrase: string,
-    publicKeyHash: string,
-    storageLimit?: number,
-    gasLimit?: number,
-    code?: string,
-    storage?: string,
-    codeFormat?: TezosParameterFormat,
-    isSmartContract?: boolean
-  ) => Promise<boolean>;
-  setIsLoading: (flag: boolean) => void;
-}
-
-type Props = OwnProps & StoreProps & WithTranslation;
 
 const defaultState = {
   amount: '',
   fee: 2840,
-  miniFee: 0,
-  averageFees: {
-    low: 1420,
-    medium: 2840,
-    high: 5680
-  },
-  gas: 257000,
   total: 0,
-  isDisplayedFeeTooltip: false,
   balance: 0
 };
 
 function AddDelegateModal(props: Props) {
-  const {
-    open,
-    isLoading,
-    isLedger,
-    managerBalance,
-    selectedParentHash,
-    fetchFees,
-    originateContract,
-    setIsLoading,
-    getIsReveal,
-    onClose,
-    t
-  } = props;
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [state, setState] = useState(defaultState);
   const [delegate, setDelegate] = useState('');
   const [passPhrase, setPassPhrase] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [isDelegateIssue, setIsDelegateIssue] = useState(false);
-  const { amount, fee, miniFee, averageFees, gas, isDisplayedFeeTooltip, total, balance } = state;
+  const { amount, fee, total, balance } = state;
+
+  const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(
+    OperationKindType.Origination,
+    true,
+    true
+  );
+  const { isLoading, isLedger, selectedAccountHash, selectedParentHash } = useSelector(
+    (rootState: RootState) => rootState.app,
+    shallowEqual
+  );
+  const { open, managerBalance, onClose } = props;
 
   const isDisabled =
     isLoading ||
@@ -255,45 +223,26 @@ function AddDelegateModal(props: Props) {
     balance < 0 ||
     isDelegateIssue;
 
+  useEffect(() => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        fee: newFees.medium,
+        total: newFees.medium + GAS
+      };
+    });
+  }, [isFeeLoaded]);
+
   function updateState(updatedValues) {
     setState(prevState => {
       return { ...prevState, ...updatedValues };
     });
   }
 
-  async function getFeesAndReveals() {
-    const newFees = await fetchFees(OperationKindType.Origination);
-    const isRevealed = await getIsReveal(true);
-    let miniLowFee = OPERATIONFEE;
-    if (!isRevealed) {
-      newFees.low += REVEALOPERATIONFEE;
-      newFees.medium += REVEALOPERATIONFEE;
-      newFees.high += REVEALOPERATIONFEE;
-      miniLowFee += REVEALOPERATIONFEE;
-    }
-    if (newFees.low < miniLowFee) {
-      newFees.low = miniLowFee;
-    }
-    const newFee = newFees.medium;
-    const newTotal = newFee + gas;
-    updateState({
-      averageFees: newFees,
-      fee: newFee,
-      total: newTotal,
-      balance: managerBalance - newTotal,
-      isDisplayedFeeTooltip: !isRevealed,
-      miniFee: miniLowFee
-    });
-  }
-
-  useEffect(() => {
-    getFeesAndReveals();
-  }, [selectedParentHash]);
-
   function onUseMax() {
-    const max = managerBalance - fee - gas;
+    const max = managerBalance - fee - GAS;
     let newAmount = '0';
-    let newTotal = fee + gas;
+    let newTotal = fee + GAS;
     let newBalance = managerBalance - total;
     if (max > 0) {
       newAmount = (max / utez).toFixed(6);
@@ -306,7 +255,7 @@ function AddDelegateModal(props: Props) {
   function changeAmount(newAmount = '0') {
     const commaReplacedAmount = newAmount.replace(',', '.');
     const numAmount = parseFloat(commaReplacedAmount) * utez;
-    const newTotal = numAmount + fee + gas;
+    const newTotal = numAmount + fee + GAS;
     const newBalance = managerBalance - total;
     updateState({ amount: newAmount, total: newTotal, balance: newBalance });
   }
@@ -314,30 +263,22 @@ function AddDelegateModal(props: Props) {
   function changeFee(newFee) {
     const newAmount = amount || '0';
     const numAmount = parseFloat(newAmount) * utez;
-    const newTotal = numAmount + newFee + gas;
+    const newTotal = numAmount + newFee + GAS;
     const newBalance = managerBalance - total;
     updateState({ fee: newFee, total: newTotal, balance: newBalance });
   }
 
   async function createAccount() {
-    setIsLoading(true);
+    dispatch(setIsLoadingAction(true));
     if (isLedger) {
       setConfirmOpen(true);
     }
-
-    const isCreated = await originateContract(
-      delegate,
-      amount,
-      Math.floor(fee),
-      passPhrase,
-      selectedParentHash
-    ).catch(err => {
-      console.error(err);
-      return false;
-    });
+    const isCreated = await dispatch(
+      originateContractThunk(delegate, amount, Math.floor(fee), passPhrase, selectedParentHash)
+    );
     setConfirmOpen(false);
-    setIsLoading(false);
-    if (isCreated) {
+    dispatch(setIsLoadingAction(false));
+    if (!!isCreated) {
       onClose();
     }
   }
@@ -345,15 +286,15 @@ function AddDelegateModal(props: Props) {
   function renderGasToolTip() {
     return (
       <TooltipContainer>
-        {t('components.addDelegateModal.gas_tool_tip', { gas: gas / utez })}
+        {t('components.addDelegateModal.gas_tool_tip', { gas: GAS / utez })}
       </TooltipContainer>
     );
   }
 
   function onCloseClick() {
-    const newFee = averageFees.medium;
-    const newTotal = newFee + gas;
-    updateState({ fee: newFee, total: newTotal, balance: managerBalance - total });
+    const newFee = newFees.medium;
+    const newTotal = newFee + GAS;
+    updateState({ fee: newFee, total: newTotal, balance: managerBalance - newTotal });
     onClose();
   }
 
@@ -430,14 +371,14 @@ function AddDelegateModal(props: Props) {
           </AmountSendContainer>
           <FeeContainer>
             <Fees
-              low={averageFees.low}
-              medium={averageFees.medium}
-              high={averageFees.high}
+              low={newFees.low}
+              medium={newFees.medium}
+              high={newFees.high}
               fee={fee}
               miniFee={miniFee}
               onChange={changeFee}
               tooltip={
-                isDisplayedFeeTooltip ? (
+                !isRevealed ? (
                   <Tooltip position="bottom" content={renderFeeToolTip()}>
                     <IconButton size="small">
                       <TezosIcon iconName="help" size={ms(1)} color="gray5" />
@@ -509,47 +450,4 @@ function AddDelegateModal(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isLoading: state.app.isLoading,
-  isLedger: state.app.isLedger,
-  selectedParentHash: state.app.selectedParentHash
-});
-
-const mapDispatchToProps = dispatch => ({
-  setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
-  getIsReveal: (isManger: boolean = false) => dispatch(getIsRevealThunk(isManger)),
-  originateContract: (
-    delegate: string,
-    amount: string,
-    fee: number,
-    passPhrase: string,
-    publicKeyHash: string,
-    storageLimit: number = 0,
-    gasLimit: number = 0,
-    code: string,
-    storage: string,
-    codeFormat: TezosParameterFormat,
-    isSmartContract: boolean = false
-  ) =>
-    dispatch(
-      originateContractThunk(
-        delegate,
-        amount,
-        fee,
-        passPhrase,
-        publicKeyHash,
-        storageLimit,
-        gasLimit,
-        code,
-        storage,
-        codeFormat,
-        isSmartContract
-      )
-    )
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(AddDelegateModal) as React.ComponentType<OwnProps>;
+export default AddDelegateModal;

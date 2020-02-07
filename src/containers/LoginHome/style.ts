@@ -66,14 +66,14 @@ const BaseButtonCss = css`
   height: 9.5%;
 `;
 
-export const CreateWalletButton = styled(Fab)`
+export const UnlockWalletButton = styled(Fab)`
   &&& {
     ${BaseButtonCss};
     margin-top: 8%;
   }
 `;
 
-export const UnlockWalletButton = styled(Button)`
+export const CreateWalletButton = styled(Button)`
   &&& {
     ${BaseButtonCss};
     border-radius: 20px;
