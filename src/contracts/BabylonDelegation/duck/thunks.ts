@@ -20,7 +20,6 @@ import { findIdentity } from '../../../utils/identity';
 import { displayError } from '../../../utils/formValidation';
 
 import { Node } from '../../../types/general';
-import { RootState } from '../../../types/store';
 
 const { sendContractInvocationOperation, sendTransactionOperation } = TezosNodeWriter;
 const {

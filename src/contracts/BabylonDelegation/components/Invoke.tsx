@@ -164,9 +164,9 @@ function Invoke(props: Props) {
     setOpen(false);
     dispatch(setIsLoadingAction(false));
 
-    // if (operationResult) {
-    //   onSuccess();
-    // }
+    if (!!operationResult) {
+      onSuccess();
+    }
   }
 
   return (

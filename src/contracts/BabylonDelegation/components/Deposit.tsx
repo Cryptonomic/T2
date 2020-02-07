@@ -97,9 +97,9 @@ function Deposit(props: Props) {
     setOpen(false);
     dispatch(setIsLoadingAction(false));
 
-    // if (operationResult) {
-    //   onSuccess();
-    // }
+    if (!!operationResult) {
+      onSuccess();
+    }
   }
 
   function onEnterPress(keyVal, disabled) {
