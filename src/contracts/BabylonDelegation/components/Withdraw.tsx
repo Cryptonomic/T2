@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { OperationKindType } from 'conseiljs';
 
 import TezosNumericInput from '../../../components/TezosNumericInput';
@@ -12,14 +11,13 @@ import TezosIcon from '../../../components/TezosIcon';
 import InputError from './InputError';
 
 import { ms } from '../../../styles/helpers';
-import { getIsRevealThunk, fetchFeesThunk } from '../../../reduxContent/app/thunks';
+import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 
 import { withdrawThunk } from '../duck/thunks';
 
-import { OPERATIONFEE } from '../../../constants/FeeValue';
-import { RootState } from '../../../types/store';
-import { AverageFees } from '../../../types/general';
+import { OPERATIONFEE, AVERAGEFEES } from '../../../constants/FeeValue';
+import { RootState, AppState } from '../../../types/store';
 
 import {
   Container,
@@ -34,61 +32,30 @@ import {
 
 const utez = 1000000;
 
-interface OwnProps {
+interface Props {
   isReady: boolean;
   balance: number;
   onSuccess: () => void;
 }
 
-interface StoreProps {
-  isLedger: boolean;
-  isLoading: boolean;
-  selectedAccountHash: string;
-  selectedParentHash: string;
-  fetchFees: (op: string) => Promise<AverageFees>;
-  getIsReveal: () => Promise<boolean>;
-  withdraw: (fee: number, amount: string, password: string) => boolean;
-  setIsLoading: (flag: boolean) => void;
-}
-
-type Props = OwnProps & StoreProps & WithTranslation;
-
 function Withdraw(props: Props) {
-  const [averageFees, setAverageFees] = useState({
-    low: 1420,
-    medium: 2840,
-    high: 5680
-  });
-  const [fee, setFee] = useState(averageFees.medium);
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const [fee, setFee] = useState(AVERAGEFEES.medium);
   const [amount, setAmount] = useState('');
   const [passPhrase, setPassPhrase] = useState('');
   const [open, setOpen] = useState(false);
-  const {
-    isReady,
-    isLoading,
-    isLedger,
-    selectedAccountHash,
-    selectedParentHash,
-    balance,
-    fetchFees,
-    withdraw,
-    setIsLoading,
-    onSuccess,
-    t
-  } = props;
+  const { isReady, balance, onSuccess } = props;
 
-  async function getFees() {
-    const newFees = await fetchFees(OperationKindType.Transaction);
-    if (newFees.low < OPERATIONFEE) {
-      newFees.low = OPERATIONFEE;
-      setAverageFees(newFees);
-      setFee(newFees.medium);
-    }
-  }
+  const { newFees, isFeeLoaded } = useFetchFees(OperationKindType.Transaction, false);
+  const { isLoading, isLedger, selectedAccountHash, selectedParentHash } = useSelector<
+    RootState,
+    AppState
+  >((state: RootState) => state.app, shallowEqual);
 
   useEffect(() => {
-    getFees();
-  }, [selectedAccountHash]);
+    setFee(newFees.medium);
+  }, [isFeeLoaded]);
 
   function onGetMax() {
     const max = balance;
@@ -106,7 +73,7 @@ function Withdraw(props: Props) {
     if (max <= 0 || max < realAmount) {
       return {
         isIssue: true,
-        warningMessage: t('../../../components.send.warnings.total_exceeds')
+        warningMessage: t('components.send.warnings.total_exceeds')
       };
     }
 
@@ -117,18 +84,18 @@ function Withdraw(props: Props) {
   }
 
   async function onInvokeOperation() {
-    setIsLoading(true);
+    dispatch(setIsLoadingAction(true));
     if (isLedger) {
       setOpen(true);
     }
-    const operationResult = await withdraw(fee, amount, passPhrase);
+    const operationResult = await dispatch(withdrawThunk(fee, amount, passPhrase));
 
     setOpen(false);
-    setIsLoading(false);
+    dispatch(setIsLoadingAction(false));
 
-    if (operationResult) {
-      onSuccess();
-    }
+    // if (operationResult) {
+    //   onSuccess();
+    // }
   }
 
   function onEnterPress(keyVal, disabled) {
@@ -143,7 +110,7 @@ function Withdraw(props: Props) {
 
   const error = isIssue ? <InputError error={warningMessage} /> : '';
 
-  const warningTxt = t('../../../components.withdrawDeposit.withdraw_warning', {
+  const warningTxt = t('components.withdrawDeposit.withdraw_warning', {
     managerAddress: selectedParentHash
   });
 
@@ -161,9 +128,9 @@ function Withdraw(props: Props) {
       </AmountContainer>
       <FeeContainer>
         <Fees
-          low={averageFees.low}
-          medium={averageFees.medium}
-          high={averageFees.high}
+          low={newFees.low}
+          medium={newFees.medium}
+          high={newFees.high}
           fee={fee}
           miniFee={OPERATIONFEE}
           onChange={val => setFee(val)}
@@ -205,22 +172,4 @@ function Withdraw(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isLoading: state.app.isLoading,
-  isLedger: state.app.isLedger,
-  selectedAccountHash: state.app.selectedAccountHash,
-  selectedParentHash: state.app.selectedParentHash
-});
-
-const mapDispatchToProps = dispatch => ({
-  setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
-  getIsReveal: () => dispatch(getIsRevealThunk()),
-  withdraw: (fee: number, amount: string, password: string) =>
-    dispatch(withdrawThunk(fee, amount, password))
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(Withdraw) as React.ComponentType<OwnProps>;
+export default Withdraw;

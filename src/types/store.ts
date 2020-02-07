@@ -18,7 +18,7 @@ export interface WalletState {
   identities: Identity[];
   walletFileName: string;
   walletLocation: string;
-  password: string;
+  walletPassword: string;
 }
 
 export interface MessageState {

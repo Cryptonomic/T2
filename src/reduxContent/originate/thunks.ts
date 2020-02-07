@@ -24,9 +24,9 @@ export function originateContractThunk(
   publicKeyHash: string,
   storageLimit: number = 0,
   gasLimit: number = 0,
-  code: string,
-  storage: string,
-  codeFormat: TezosParameterFormat,
+  code?: string,
+  storage?: string,
+  codeFormat?: TezosParameterFormat,
   isSmartContract: boolean = false
 ) {
   return async (dispatch, state) => {

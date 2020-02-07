@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useTranslation, Trans } from 'react-i18next';
 import { OperationKindType } from 'conseiljs';
 
 import InputAddress from '../../../components/InputAddress';
@@ -12,14 +11,12 @@ import TezosIcon from '../../../components/TezosIcon';
 import DelegateLedgerConfirmationModal from '../../../components/ConfirmModals/DelegateLedgerConfirmationModal';
 import { ms } from '../../../styles/helpers';
 
-import { getIsRevealThunk, fetchFeesThunk } from '../../../reduxContent/app/thunks';
+import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { delegateThunk } from '../duck/thunks';
 
-import { OPERATIONFEE, REVEALOPERATIONFEE } from '../../../constants/FeeValue';
-import { RootState } from '../../../types/store';
-import { AverageFees } from '../../../types/general';
-
+import { AVERAGEFEES } from '../../../constants/FeeValue';
+import { RootState, AppState } from '../../../types/store';
 import {
   Container,
   AmountContainer,
@@ -32,87 +29,50 @@ import {
   TooltipTitle,
   TooltipContent,
   BoldSpan,
-  FeeTooltip,
-  HelpIcon
+  FeeTooltipBtn
 } from './style';
 
-interface OwnProps {
+interface Props {
   isReady: boolean;
 }
 
-interface StoreProps {
-  isLedger: boolean;
-  isLoading: boolean;
-  selectedAccountHash: string;
-  fetchFees: (op: OperationKindType) => Promise<AverageFees>;
-  getIsReveal: () => Promise<boolean>;
-  delegate: (delegateAddress: string, fee: number, password: string) => Promise<boolean>;
-  setIsLoading: (flag: boolean) => void;
-}
-
-type Props = OwnProps & StoreProps & WithTranslation;
-
 function Delegate(props: Props) {
-  const [miniFee, setMiniFee] = useState(0);
-  const [averageFees, setAverageFees] = useState({
-    low: 1420,
-    medium: 2840,
-    high: 5680
-  });
-  const [fee, setFee] = useState(averageFees.medium);
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const [fee, setFee] = useState(AVERAGEFEES.medium);
   const [newAddress, setAddress] = useState('');
   const [passPhrase, setPassPhrase] = useState('');
   const [isAddressIssue, setIsAddressIssue] = useState(false);
-  const [isDisplayedFeeTooltip, setIsDisplayedFeeTooltip] = useState(false);
   const [open, setOpen] = useState(false);
-  const {
-    isReady,
-    isLoading,
-    isLedger,
-    selectedAccountHash,
-    fetchFees,
-    delegate,
-    setIsLoading,
-    getIsReveal,
-    t
-  } = props;
+  const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(
+    OperationKindType.Delegation,
+    true
+  );
+
+  const { isLoading, isLedger, selectedAccountHash } = useSelector<RootState, AppState>(
+    (state: RootState) => state.app,
+    shallowEqual
+  );
+
+  const { isReady } = props;
+
+  useEffect(() => {
+    setFee(newFees.medium);
+  }, [isFeeLoaded]);
 
   const isDisabled =
     !isReady || isLoading || isAddressIssue || !newAddress || (!passPhrase && !isLedger);
 
-  async function getFeesAndReveals() {
-    const newFees = await fetchFees(OperationKindType.Delegation);
-    const isRevealed = await getIsReveal().catch(() => false);
-    let miniLowFee = OPERATIONFEE;
-    if (!isRevealed) {
-      newFees.low += REVEALOPERATIONFEE;
-      newFees.medium += REVEALOPERATIONFEE;
-      newFees.high += REVEALOPERATIONFEE;
-      miniLowFee += REVEALOPERATIONFEE;
-    }
-    if (newFees.low < miniLowFee) {
-      newFees.low = miniLowFee;
-    }
-    setAverageFees({ ...newFees });
-    setFee(newFees.medium);
-    setMiniFee(miniLowFee);
-    setIsDisplayedFeeTooltip(!isRevealed);
-  }
-
-  useEffect(() => {
-    getFeesAndReveals();
-  }, [selectedAccountHash]);
-
   async function onDelegate() {
-    setIsLoading(true);
+    dispatch(setIsLoadingAction(true));
 
     if (isLedger) {
       setOpen(true);
     }
 
-    await delegate(newAddress, fee, passPhrase);
+    await dispatch(delegateThunk(newAddress, fee, passPhrase));
     setOpen(false);
-    setIsLoading(false);
+    dispatch(setIsLoadingAction(false));
   }
 
   function onEnterPress(keyVal) {
@@ -124,7 +84,7 @@ function Delegate(props: Props) {
   const renderFeeToolTip = () => {
     return (
       <TooltipContainer>
-        <TooltipTitle>{t('../../../components.send.fee_tooltip_title')}</TooltipTitle>
+        <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>
         <TooltipContent>
           <Trans i18nKey="components.send.fee_tooltip_content">
             This address is not revealed on the blockchain. We have added
@@ -140,7 +100,7 @@ function Delegate(props: Props) {
     <Container onKeyDown={event => onEnterPress(event.key)}>
       <AmountContainer>
         <InputAddress
-          label={t('../../../components.delegateConfirmationModal.new_address_label')}
+          label={t('components.delegateConfirmationModal.new_address_label')}
           operationType="delegate"
           tooltip={false}
           onChange={val => setAddress(val)}
@@ -149,27 +109,27 @@ function Delegate(props: Props) {
       </AmountContainer>
       <FeeContainer>
         <Fees
-          low={averageFees.low}
-          medium={averageFees.medium}
-          high={averageFees.high}
+          low={newFees.low}
+          medium={newFees.medium}
+          high={newFees.high}
           fee={fee}
           miniFee={miniFee}
           onChange={val => setFee(val)}
           tooltip={
-            isDisplayedFeeTooltip ? (
+            !isRevealed && (
               <Tooltip position="bottom" content={renderFeeToolTip}>
-                <FeeTooltip buttonTheme="plain">
-                  <HelpIcon iconName="help" size={ms(1)} color="gray5" />
-                </FeeTooltip>
+                <FeeTooltipBtn size="small">
+                  <TezosIcon iconName="help" size={ms(1)} color="gray5" />
+                </FeeTooltipBtn>
               </Tooltip>
-            ) : null
+            )
           }
         />
       </FeeContainer>
 
       <WarningContainer>
         <TezosIcon iconName="info" size={ms(5)} color="info" />
-        <InfoText>{t('../../../components.delegateConfirmationModal.delegate_warning')}</InfoText>
+        <InfoText>{t('components.delegateConfirmationModal.delegate_warning')}</InfoText>
       </WarningContainer>
 
       <PasswordButtonContainer>
@@ -182,7 +142,7 @@ function Delegate(props: Props) {
           />
         )}
         <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
-          {t('../../../components.delegate.change_delegate')}
+          {t('components.delegate.change_delegate')}
         </InvokeButton>
       </PasswordButtonContainer>
       {isLedger && open && (
@@ -199,21 +159,4 @@ function Delegate(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isLoading: state.app.isLoading,
-  isLedger: state.app.isLedger,
-  selectedAccountHash: state.app.selectedAccountHash
-});
-
-const mapDispatchToProps = dispatch => ({
-  setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
-  getIsReveal: () => dispatch(getIsRevealThunk()),
-  delegate: (delegateAddress: string, fee: number, password: string) =>
-    dispatch(delegateThunk(delegateAddress, fee, password))
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(Delegate) as React.ComponentType<OwnProps>;
+export default Delegate;

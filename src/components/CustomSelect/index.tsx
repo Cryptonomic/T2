@@ -10,7 +10,7 @@ const SelectContainer = styled(FormControl)`
 
 const LabelWrapper = styled(InputLabel)`
   &&& {
-    &[class*='focused'] {    
+    .Mui-focused {
       color: ${({ theme: { colors } }) => colors.gray3};
     }
     color: rgba(0, 0, 0, 0.38);
@@ -20,12 +20,14 @@ const LabelWrapper = styled(InputLabel)`
 
 const SelectWrapper = styled(SelectField)`
   &&& {
-    div[class*='select']:focus {
-      background: ${({ theme: { colors } }) => colors.transparent};
-    }
-    div[class*='select'] {
+    .MuiSelect-select {
       display: flex;
       align-items: center;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      &:focus {
+        background: ${({ theme: { colors } }) => colors.transparent};
+      }
     }
 
     &:before {
