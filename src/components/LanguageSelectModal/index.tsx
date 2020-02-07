@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from '@material-ui/core/Modal';
 import RootRef from '@material-ui/core/RootRef';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import languageLogoIcon from '../../../resources/imgs/Language_Selection_img.svg';
 import localesMap from '../../constants/LocalesMap';
@@ -27,18 +27,17 @@ import {
 
 const numberOfLocales = Object.keys(localesMap).length;
 
-interface OwnProps {
+interface Props {
   isOpen: boolean;
   onLanguageChange: (scale: string) => void;
   onContinue: () => void;
   selectedLanguage: string;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function LanguageSelectModal(props: Props) {
   let langScrollEl: any = null;
-  const { isOpen, onLanguageChange, selectedLanguage, onContinue, t } = props;
+  const { isOpen, onLanguageChange, selectedLanguage, onContinue } = props;
+  const { t } = useTranslation();
   const [isTopFade, setIsTopFade] = useState(false);
   const [isBottomFade, setIsBottomFade] = useState(() => numberOfLocales >= 6);
 
@@ -117,4 +116,4 @@ function LanguageSelectModal(props: Props) {
   );
 }
 
-export default withTranslation()(LanguageSelectModal);
+export default LanguageSelectModal;

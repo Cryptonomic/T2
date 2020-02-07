@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { remote } from 'electron';
 import path from 'path';
 import zxcvbn from 'zxcvbn';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { ms } from '../../styles/helpers';
 import { CREATE } from '../../constants/CreationTypes';
@@ -31,17 +30,12 @@ import {
 } from './style';
 import { RootState } from '../../types/store';
 
-interface OwnProps {
-  login: (loginType: string, location: string, fileName: string, password: string) => void;
-  isLoading: boolean;
-}
-
-type Props = WithTranslation & OwnProps;
-
 const dialogFilters = [{ name: 'Tezos Wallet', extensions: ['tezwallet'] }];
 
-function LoginCreate(props: Props) {
-  const { t, isLoading, login } = props;
+function LoginCreate() {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state: RootState) => state.app.isLoading);
   const [walletLocation, setWalletLocation] = useState('');
   const [walletFileName, setWalletFileName] = useState('');
   const [password, setPassword] = useState('');
@@ -128,7 +122,7 @@ function LoginCreate(props: Props) {
   }
 
   function onLogin(loginType: string) {
-    login(loginType, walletLocation, walletFileName, password);
+    dispatch(loginThunk(loginType, walletLocation, walletFileName, password));
   }
 
   function onPasswordShow(index: number) {
@@ -216,16 +210,4 @@ function LoginCreate(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isLoading: state.app.isLoading
-});
-
-const mapDispatchToProps = dispatch => ({
-  login: (loginType: string, location: string, fileName: string, password: string) =>
-    dispatch(loginThunk(loginType, location, fileName, password))
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(LoginCreate) as React.ComponentType<any>;
+export default LoginCreate;

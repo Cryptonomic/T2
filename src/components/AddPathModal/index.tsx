@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Fab from '@material-ui/core/Fab';
 import Modal from '../CustomModal';
 import TextField from '../TextField';
@@ -31,16 +31,15 @@ const MainContainer = styled.div`
   padding: 30px 76px 56px 76px;
 `;
 
-interface OwnProps {
+interface Props {
   onAdd: (path: Path) => void;
   onClose: () => void;
   isOpen: boolean;
 }
 
-type Props = WithTranslation & OwnProps;
-
 function AddPathModal(props: Props) {
-  const { t, isOpen, onAdd, onClose } = props;
+  const { isOpen, onAdd, onClose } = props;
+  const { t } = useTranslation();
   const [label, setLabel] = useState('');
   const [derivation, setDerivation] = useState('');
   // const [error, setError] = useState('');
@@ -96,4 +95,4 @@ function AddPathModal(props: Props) {
   );
 }
 
-export default withTranslation()(AddPathModal);
+export default AddPathModal;

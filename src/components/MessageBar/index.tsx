@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import styled from 'styled-components';
-
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import MessageContent from './MessageContent';
 
+import { clearMessageAction } from '../../reduxContent/message/actions';
 import { openLinkToBlockExplorer } from '../../utils/general';
-import { MessageState } from '../../types/store';
+import { RootState, MessageState } from '../../types/store';
 
 const SnackbarWrapper = styled(Snackbar)`
   &&& {
@@ -25,17 +26,16 @@ const SnackbarWrapper = styled(Snackbar)`
   }
 `;
 
-interface Props {
-  clear: () => void;
-  message: MessageState;
-}
-
-function MessageBar(props: Props) {
-  const { message, clear } = props;
-  const { text, hash, isError, localeParam } = message;
+function MessageBar() {
+  const { text, hash, isError, localeParam } = useSelector<RootState, MessageState>(
+    state => state.message,
+    shallowEqual
+  );
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+
   function openLink() {
-    clear();
+    dispatch(clearMessageAction());
     openLinkToBlockExplorer(hash);
   }
 
@@ -51,7 +51,7 @@ function MessageBar(props: Props) {
   function onClose() {
     setOpen(false);
     setTimeout(() => {
-      clear();
+      dispatch(clearMessageAction());
     }, 200);
   }
 

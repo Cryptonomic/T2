@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 
 import BackButton from '../../components/BackButton';
 import BackUpSeedPhrase from './BackUpSeedPhrase';
@@ -7,6 +8,7 @@ import ShowSeedPhrase from './ShowSeedPhrase';
 import { GENERATE_MNEMONIC } from '../../constants/AddAddressTypes';
 import { generateNewMnemonic } from '../../utils/general';
 import useEventListener from '../../customHooks/useEventListener';
+import { importAddressThunk } from '../../reduxContent/wallet/thunks';
 
 import {
   CreateAccountSlideContainer,
@@ -16,14 +18,9 @@ import {
   TitleContainer
 } from './style';
 
-interface OwnProps {
-  importAddress: (activeTab: string, seed: string) => void;
-}
-
-type Props = OwnProps & WithTranslation;
-
-function CreateAccountSlide(props: Props) {
-  const { t, importAddress } = props;
+function CreateAccountSlide() {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [isDisabled, setIsDisabled] = useState(false);
   const [seed, setSeed] = useState(generateNewMnemonic());
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -33,7 +30,7 @@ function CreateAccountSlide(props: Props) {
   }
 
   function onImport() {
-    importAddress(GENERATE_MNEMONIC, seed);
+    dispatch(importAddressThunk(GENERATE_MNEMONIC, seed));
   }
 
   function onAction() {
@@ -102,4 +99,4 @@ function CreateAccountSlide(props: Props) {
   );
 }
 
-export default withTranslation()(CreateAccountSlide);
+export default CreateAccountSlide;

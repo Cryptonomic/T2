@@ -5,7 +5,7 @@ import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
 import TezosIcon from '../TezosIcon';
 import { ms } from '../../styles/helpers';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const focusBorderColors = ['#2c7df7', '#ea776c', '#e69940', '#d3b53b', '#259c90'];
 
@@ -84,7 +84,7 @@ const CheckContainer = styled.div`
   display: flex;
 `;
 
-interface OwnProps {
+interface Props {
   label: string;
   error: string;
   suggestion?: string;
@@ -95,10 +95,9 @@ interface OwnProps {
   onShow: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function InputValid(props: Props) {
-  const { label, error, suggestion, score, status, isShowed, changFunc, onShow, t } = props;
+  const { t } = useTranslation();
+  const { label, error, suggestion, score, status, isShowed, changFunc, onShow } = props;
   const borderColor = focusBorderColors[score];
   let width = '';
   if (score && !status) {
@@ -143,4 +142,4 @@ InputValid.defaultProps = {
   status: false
 };
 
-export default withTranslation()(InputValid);
+export default InputValid;

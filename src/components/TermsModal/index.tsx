@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Modal from '@material-ui/core/Modal';
-import { Trans, withTranslation, WithTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import Button from '../Button';
 import BackButton from '../BackButton';
 import { name } from '../../config.json';
@@ -74,17 +74,16 @@ const AgreeButton = styled(Button)`
   padding: 0;
 `;
 
-interface OwnProps {
+interface Props {
   isOpen: boolean;
   goTo: (url: string) => void;
   agreeTermsAndPolicy: () => void;
   onBack: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function TermsModal(props: Props) {
-  const { goTo, isOpen, agreeTermsAndPolicy, onBack, t } = props;
+  const { goTo, isOpen, agreeTermsAndPolicy, onBack } = props;
+  const { t } = useTranslation();
 
   function openTermsService() {
     goTo('conditions/termsOfService');
@@ -121,4 +120,4 @@ function TermsModal(props: Props) {
   );
 }
 
-export default withTranslation()(TermsModal);
+export default TermsModal;

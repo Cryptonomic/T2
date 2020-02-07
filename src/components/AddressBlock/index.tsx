@@ -1,13 +1,12 @@
 import React, { Fragment, useState } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircle from '@material-ui/icons/AddCircle';
 import CloseIcon from '@material-ui/icons/Close';
 import { StoreType } from 'conseiljs';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
@@ -29,7 +28,7 @@ import { getAddressType } from '../../utils/account';
 import { getLocalData, setLocalData } from '../../utils/localData';
 
 import { RootState } from '../../types/store';
-import { AddressType, Node, Identity } from '../../types/general';
+import { AddressType, Identity } from '../../types/general';
 
 const { Mnemonic } = StoreType;
 
@@ -152,33 +151,19 @@ const AddCircleWrapper = styled(AddCircle)<{ active: number }>`
   }
 `;
 
-interface OwnProps {
+interface Props {
   accountBlock: Identity;
   identityIndex: number;
 }
 
-interface StoreProps {
-  selectedNode: Node;
-  selectedAccountHash: string;
-  changeAccount: (
-    accountHash: string,
-    parentHash: string,
-    accountIndex: number,
-    parentIndex: number
-  ) => void;
-}
-
-type Props = OwnProps & StoreProps & WithTranslation;
-
 function AddressBlock(props: Props) {
-  const {
-    accountBlock,
-    selectedAccountHash,
-    selectedNode,
-    changeAccount,
-    identityIndex,
-    t
-  } = props;
+  const { accountBlock, identityIndex } = props;
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const selectedAccountHash = useSelector<RootState, string>(
+    state => state.app.selectedAccountHash
+  );
+  const selectedNode = useSelector(getSelectedNode);
 
   const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
   const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
@@ -213,7 +198,7 @@ function AddressBlock(props: Props) {
   };
 
   function goToAccount(addressId, index) {
-    changeAccount(addressId, publicKeyHash, index, identityIndex);
+    dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex));
   }
 
   const getAddresses = addresses => {
@@ -428,21 +413,4 @@ function AddressBlock(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  selectedNode: getSelectedNode(state),
-  selectedAccountHash: state.app.selectedAccountHash
-});
-
-const mapDispatchToProps = dispatch => ({
-  changeAccount: (
-    accountHash: string,
-    parentHash: string,
-    accountIndex: number,
-    parentIndex: number
-  ) => dispatch(changeAccountThunk(accountHash, parentHash, accountIndex, parentIndex))
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(AddressBlock) as React.ComponentType<OwnProps>;
+export default AddressBlock;

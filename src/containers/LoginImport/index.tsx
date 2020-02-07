@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { remote } from 'electron';
 import path from 'path';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 
@@ -68,17 +67,12 @@ const ActionButton = styled(Fab)`
   }
 `;
 
-interface OwnProps {
-  login: (loginType: string, location: string, fileName: string, password: string) => void;
-  isLoading: boolean;
-}
-
-type Props = WithTranslation & OwnProps;
-
 const dialogFilters = [{ name: 'Tezos Wallet', extensions: ['tezwallet'] }];
 
-function LoginImport(props: Props) {
-  const { t, login, isLoading } = props;
+function LoginImport() {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state: RootState) => state.app.isLoading);
   const [walletLocation, setWalletLocation] = useState('');
   const [walletFileName, setWalletFileName] = useState('');
   const [password, setPassword] = useState('');
@@ -104,7 +98,7 @@ function LoginImport(props: Props) {
   }
 
   async function onLogin(loginType: string) {
-    await login(loginType, walletLocation, walletFileName, password);
+    await dispatch(loginThunk(loginType, walletLocation, walletFileName, password));
   }
 
   function onEnterPress(keyVal: string, disabled: boolean) {
@@ -146,16 +140,4 @@ function LoginImport(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isLoading: state.app.isLoading
-});
-
-const mapDispatchToProps = dispatch => ({
-  login: (loginType: string, location: string, fileName: string, password: string) =>
-    dispatch(loginThunk(loginType, location, fileName, password))
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(LoginImport) as React.ComponentType<any>;
+export default LoginImport;

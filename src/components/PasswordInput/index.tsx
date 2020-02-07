@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import TextField from '../TextField';
 
 const Container = styled.div`
@@ -16,17 +16,16 @@ const ShowHidePwd = styled.div`
   font-weight: 500;
 `;
 
-interface OwnProps {
+interface Props {
   label: string;
   containerStyle?: object;
   password: string;
   onChange: (val: string) => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function PasswordInput(props: Props) {
-  const { label, password, onChange, containerStyle, t } = props;
+  const { label, password, onChange, containerStyle } = props;
+  const { t } = useTranslation();
   const [isShowed, setIsShowed] = useState(false);
   return (
     <Container style={containerStyle}>
@@ -48,4 +47,4 @@ PasswordInput.defaultProps = {
   containerStyle: {}
 };
 
-export default withTranslation()(PasswordInput);
+export default PasswordInput;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Typography from '@material-ui/core/Typography';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { TezosParameterFormat } from 'conseiljs';
 import CustomSelect from '../CustomSelect';
 import TezosIcon from '../TezosIcon';
@@ -42,15 +42,14 @@ const ChainItemWrapper = styled(MenuItem)`
   }
 `;
 
-interface OwnProps {
+interface Props {
   value: string;
   onChange: (val: TezosParameterFormat) => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const FormatSelector = (props: Props) => {
-  const { t, value, onChange } = props;
+  const { value, onChange } = props;
+  const { t } = useTranslation();
   return (
     <CustomSelect
       label={t('general.nouns.format')}
@@ -70,4 +69,4 @@ const FormatSelector = (props: Props) => {
   );
 };
 
-export default withTranslation()(FormatSelector);
+export default FormatSelector;

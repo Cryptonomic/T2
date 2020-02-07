@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Warning from '@material-ui/icons/Warning';
 import styled from 'styled-components';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import TextField from '../TextField';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
@@ -30,16 +30,15 @@ const WarningIcon = styled(Warning)`
   }
 `;
 
-interface OwnProps {
+interface Props {
   value: string;
   index: number;
   onValidate: (isValid: boolean) => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function SeedInput(props: Props) {
-  const { t, index, value, onValidate } = props;
+  const { index, value, onValidate } = props;
+  const { t } = useTranslation();
   const [isFirst, setIsFirst] = useState(false);
   const [status, setStatus] = useState(0);
 
@@ -127,4 +126,4 @@ function SeedInput(props: Props) {
   );
 }
 
-export default withTranslation()(SeedInput);
+export default SeedInput;

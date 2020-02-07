@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { StoreType } from 'conseiljs';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 import LoaderSpinner from '../LoaderSpinner';
@@ -48,16 +48,15 @@ const Description = styled.div`
   font-size: ${ms(-0.5)};
 `;
 
-interface OwnProps {
+interface Props {
   isManager: boolean;
   isContract: boolean;
   address: any;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function AccountStatus(props: Props) {
-  const { isManager, isContract, address, t } = props;
+  const { t } = useTranslation();
+  const { isManager, isContract, address } = props;
   let storeType;
   let status;
   let operations;
@@ -160,4 +159,4 @@ function AccountStatus(props: Props) {
   );
 }
 
-export default withTranslation()(AccountStatus);
+export default AccountStatus;

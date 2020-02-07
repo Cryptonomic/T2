@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Modal from '../CustomModal';
 import Loader from '../Loader';
 import Button from '../Button';
@@ -78,7 +78,7 @@ const ConfirmButton = styled(Button)`
   padding: 0;
 `;
 
-interface OwnProps {
+interface Props {
   onEnterPress: (event) => void;
   amount: string;
   password: string;
@@ -93,8 +93,6 @@ interface OwnProps {
   isBurn: boolean;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const SendConfirmationModal = (props: Props) => {
   const {
     onEnterPress,
@@ -108,9 +106,9 @@ const SendConfirmationModal = (props: Props) => {
     onSend,
     source,
     fee,
-    isBurn,
-    t
+    isBurn
   } = props;
+  const { t } = useTranslation();
 
   const isDisabled = isLoading || !password;
 
@@ -182,4 +180,4 @@ const SendConfirmationModal = (props: Props) => {
   );
 };
 
-export default withTranslation()(SendConfirmationModal);
+export default SendConfirmationModal;

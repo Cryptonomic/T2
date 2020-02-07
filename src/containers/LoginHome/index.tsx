@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Trans, withTranslation, WithTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 
 import Checkbox from '../../components/Checkbox/';
@@ -57,18 +56,16 @@ import ledgerConnectedImg from '../../../resources/ledger-connect.svg';
 const LANGUAGE_STORAGE = 'isShowedLanguageScene';
 const AGREEMENT_STORAGE = 'isPPAccepted';
 
-interface OwnProps {
-  locale: string;
-  isLedgerConnecting: boolean;
-  activePath: string;
-  connectLedger: () => void;
-  changeLocale: (locale: string) => void;
-}
-type Props = OwnProps & WithTranslation & RouteComponentProps<{ path: string }>;
+type Props = RouteComponentProps<{ path: string }>;
 
 function LoginHome(props: Props) {
+  const { match } = props;
   const history = useHistory();
-  const { locale, match, isLedgerConnecting, activePath, connectLedger, changeLocale, t } = props;
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const locale = useSelector((state: RootState) => state.settings.locale);
+  const activePath = useSelector((state: RootState) => state.settings.selectedPath);
+  const isLedgerConnecting = useSelector((state: RootState) => state.app.isLedgerConnecting);
   const [isAgreement, setIsAgreement] = useState(() => getLocalData(AGREEMENT_STORAGE));
   const [isLanguageSelected, setIsLanguageSelected] = useState(() =>
     getLocalData(LANGUAGE_STORAGE)
@@ -83,7 +80,7 @@ function LoginHome(props: Props) {
   }
 
   function onChangeLanguage(lang: string) {
-    changeLocale(lang);
+    dispatch(changeLocaleThunk(lang));
     i18n.changeLanguage(lang);
   }
 
@@ -102,7 +99,7 @@ function LoginHome(props: Props) {
   }
 
   async function onLedgerConnect() {
-    await connectLedger();
+    await dispatch(connectLedgerThunk());
   }
 
   function onDownload() {
@@ -232,18 +229,4 @@ function LoginHome(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  locale: state.settings.locale,
-  isLedgerConnecting: state.app.isLedgerConnecting,
-  activePath: state.settings.selectedPath
-});
-
-const mapDispatchToProps = dispatch => ({
-  changeLocale: (locale: string) => dispatch(changeLocaleThunk(locale)),
-  connectLedger: () => dispatch(connectLedgerThunk())
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(LoginHome) as React.ComponentType<any>;
+export default LoginHome;
