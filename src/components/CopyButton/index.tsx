@@ -3,7 +3,7 @@ import { clipboard } from 'electron';
 import styled from 'styled-components';
 import ContentCopy from '@material-ui/icons/FileCopyOutlined';
 import { Tooltip, Button, IconButton } from '@material-ui/core';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const Container = styled(Button)<{ realcolor: string }>`
   &&& {
@@ -33,16 +33,15 @@ const CopyIconWrapper = styled(ContentCopy)`
   }
 `;
 
-interface OwnProps {
+interface Props {
   text: string;
   title?: string;
   color: string;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function CopyButton(props: Props) {
-  const { text, title, color, t } = props;
+  const { text, title, color } = props;
+  const { t } = useTranslation();
 
   const [isShowed, setIsShowed] = useState(false);
 
@@ -91,4 +90,4 @@ function CopyButton(props: Props) {
   );
 }
 
-export default withTranslation()(CopyButton);
+export default CopyButton;

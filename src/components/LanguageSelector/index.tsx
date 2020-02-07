@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import i18n from 'i18next';
 import RootRef from '@material-ui/core/RootRef';
 import Popover from '@material-ui/core/Popover';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import localesMap from '../../constants/LocalesMap';
 
@@ -21,17 +21,16 @@ import {
 
 const numberOfLocales = Object.keys(localesMap).length;
 
-interface OwnProps {
+interface Props {
   locale: string;
   changeLocale: (locale: string) => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function LanguageSelector(props: Props) {
   let langScrollEl: any = null;
   const domRef: any = React.useRef();
-  const { t, locale, changeLocale } = props;
+  const { locale, changeLocale } = props;
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [isTopFade, setIsTopFade] = useState(false);
   const [isBottomFade, setIsBottomFade] = useState(() => numberOfLocales >= 6);
@@ -123,4 +122,4 @@ function LanguageSelector(props: Props) {
   );
 }
 
-export default withTranslation()(LanguageSelector);
+export default LanguageSelector;

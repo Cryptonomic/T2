@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import LeftIcon from '@material-ui/icons/ChevronLeft';
 import RightIcon from '@material-ui/icons/ChevronRight';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const Container = styled.div`
   margin-top: 20px;
@@ -53,19 +53,17 @@ const PageOf = styled.div`
   margin: 0 7px;
 `;
 
-interface OwnProps {
+interface Props {
   currentPage: number;
   totalNumber: number;
   firstNumber: number;
   lastNumber: number;
   onClick: (num) => void;
-  t: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const PageNumbers = (props: Props) => {
-  const { currentPage, totalNumber, firstNumber, lastNumber, onClick, t } = props;
+  const { currentPage, totalNumber, firstNumber, lastNumber, onClick } = props;
+  const { t } = useTranslation();
 
   return (
     <Container>
@@ -83,4 +81,4 @@ const PageNumbers = (props: Props) => {
     </Container>
   );
 };
-export default withTranslation()(PageNumbers);
+export default PageNumbers;

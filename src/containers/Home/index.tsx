@@ -1,8 +1,7 @@
 import React, { Fragment, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router';
-import { withTranslation, WithTranslation } from 'react-i18next';
-import { compose } from 'redux';
+import { useTranslation } from 'react-i18next';
 import Transport from '@ledgerhq/hw-transport-node-hid';
 
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
@@ -15,22 +14,17 @@ import HomeMain from './../HomeMain';
 import HomeAdd from './../HomeAdd';
 
 import { getNodesError } from '../../utils/general';
-import { RootState } from '../../types/store';
-import { NodeStatus } from '../../types/general';
+import { RootState, AppState } from '../../types/store';
 
-interface OwnProps {
-  isIdentities: boolean;
-  nodesStatus: NodeStatus;
-  isLedger: boolean;
-  logout: () => void;
-  addMessage: (message: string, isError: boolean) => void;
-}
-
-type Props = OwnProps & WithTranslation;
-
-function HomePage(props: Props) {
-  const { isIdentities, nodesStatus, isLedger, logout, addMessage, t } = props;
+function HomePage() {
+  const { t } = useTranslation();
+  const { isLedger, nodesStatus } = useSelector<RootState, AppState>(
+    state => state.app,
+    shallowEqual
+  );
+  const isIdentities = useSelector(getIsIdentitesSelector);
   const nodesErrorMessage = getNodesError(nodesStatus);
+  const dispatch = useDispatch();
 
   async function onDetectLedger() {
     Transport.listen({
@@ -47,8 +41,8 @@ function HomePage(props: Props) {
 
   function onLogout() {
     initLedgerTransport();
-    logout();
-    addMessage('general.errors.no_ledger_detected', true);
+    dispatch(goHomeAndClearState());
+    dispatch(createMessageAction('general.errors.no_ledger_detected', true));
   }
 
   useEffect(() => {
@@ -69,19 +63,4 @@ function HomePage(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isIdentities: getIsIdentitesSelector(state),
-  isLedger: state.app.isLedger,
-  newVersion: state.app.newVersion,
-  nodesStatus: state.app.nodesStatus
-});
-
-const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(goHomeAndClearState()),
-  addMessage: (message: string, isError: boolean) => dispatch(createMessageAction(message, isError))
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(HomePage) as React.ComponentType<any>;
+export default HomePage;

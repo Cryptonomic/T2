@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
 
@@ -38,17 +38,16 @@ const Details = styled.div`
   cursor: pointer;
 `;
 
-interface OwnProps {
+interface Props {
   firstIconName: string;
   operationName: string;
   operationId: string;
   lastIconName: string;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function Info(props: Props) {
-  const { firstIconName, operationName, operationId, lastIconName, t } = props;
+  const { t } = useTranslation();
+  const { firstIconName, operationName, operationId, lastIconName } = props;
 
   return (
     <Container>
@@ -72,4 +71,4 @@ function Info(props: Props) {
   );
 }
 
-export default withTranslation()(Info);
+export default Info;

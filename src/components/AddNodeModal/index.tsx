@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Fab from '@material-ui/core/Fab';
 import Modal from '../CustomModal';
 import TextField from '../TextField';
@@ -39,16 +39,15 @@ const ActionButton = styled(Fab)`
   }
 `;
 
-interface OwnProps {
+interface Props {
   onAdd: (node: Node) => void;
   onClose: () => void;
   isOpen: boolean;
 }
 
-type Props = WithTranslation & OwnProps;
-
 function AddNodeModal(props: Props) {
-  const { t, isOpen, onAdd, onClose } = props;
+  const { isOpen, onAdd, onClose } = props;
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [platform, setPlatform] = useState('');
   const [network, setNetwork] = useState('');
@@ -173,4 +172,4 @@ function AddNodeModal(props: Props) {
   );
 }
 
-export default withTranslation()(AddNodeModal);
+export default AddNodeModal;

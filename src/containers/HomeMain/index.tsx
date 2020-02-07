@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../types/store';
 
 import AddressBlock from '../../components/AddressBlock';
@@ -8,12 +8,8 @@ import { BabylonDelegation } from '../../contracts/BabylonDelegation';
 import { sortArr } from '../../utils/array';
 import { Container, SideBarContainer, AccountItem } from './style';
 
-interface Props {
-  identities: any[];
-}
-
-function HomeMain(props: Props) {
-  const { identities } = props;
+function HomeMain() {
+  const identities = useSelector((state: RootState) => state.wallet.identities);
   return (
     <Container>
       <SideBarContainer>
@@ -30,8 +26,4 @@ function HomeMain(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  identities: state.wallet.identities
-});
-
-export default connect(mapStateToProps, null)(HomeMain);
+export default HomeMain;

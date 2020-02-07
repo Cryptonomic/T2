@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../../components/TezosIcon';
@@ -65,7 +65,7 @@ const FeeContentWrapper = styled.div`
   align-items: center;
 `;
 
-interface OwnProps {
+interface Props {
   low: number;
   medium: number;
   high: number;
@@ -75,10 +75,9 @@ interface OwnProps {
   onChange: (val: number) => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function Fee(props: Props) {
-  const { onChange, low, medium, high, fee, miniFee, tooltip, t } = props;
+  const { onChange, low, medium, high, fee, miniFee, tooltip } = props;
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<React.ReactNode>('');
   const [custom, setCustom] = useState('');
@@ -220,4 +219,4 @@ function Fee(props: Props) {
   );
 }
 
-export default withTranslation()(Fee);
+export default Fee;

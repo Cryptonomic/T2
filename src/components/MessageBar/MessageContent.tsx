@@ -1,5 +1,5 @@
 import React from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { ms } from '../../styles/helpers';
@@ -62,7 +62,7 @@ const HashTitle = styled.div`
   font-weight: 500;
 `;
 
-interface OwnProps {
+interface Props {
   content: string;
   hash: string;
   isError: boolean;
@@ -71,10 +71,10 @@ interface OwnProps {
   onClose: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const MessageContent = (props: Props) => {
-  const { content, hash, openLink, onClose, isError, localeParam, t } = props;
+  const { content, hash, openLink, onClose, isError, localeParam } = props;
+  const { t } = useTranslation();
+
   return (
     <MessageContainer isError={isError}>
       <StyledCloseIcon onClick={() => onClose()} />
@@ -97,4 +97,4 @@ const MessageContent = (props: Props) => {
   );
 };
 
-export default withTranslation()(MessageContent);
+export default MessageContent;

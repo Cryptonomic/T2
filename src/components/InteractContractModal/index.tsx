@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { OperationKindType } from 'conseiljs';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,6 @@ import DeployContract from './DeployContract';
 import InvokeContract from './InvokeContract';
 
 import { useFetchFees } from '../../reduxContent/app/thunks';
-import { OPERATIONFEE, AVERAGEFEES } from '../../constants/FeeValue';
 import {
   ModalWrapper,
   ModalContainer,
@@ -17,24 +16,16 @@ import {
   TabsWrapper,
   TabWrapper
 } from './style';
-import { RootState, AppState } from '../../types/store';
-import { RegularAddress, AverageFees } from '../../types/general';
+import { RootState } from '../../types/store';
+import { RegularAddress } from '../../types/general';
 
-interface OwnProps {
+interface Props {
   addresses: RegularAddress[];
   open: boolean;
   onClose: () => void;
 }
 
-// interface StoreProps {
-//   isLoading: boolean;
-//   selectedParentHash: string;
-//   fetchFees: (op: OperationKindType) => Promise<AverageFees>;
-// }
-
-// type Props = OwnProps & StoreProps & WithTranslation;
-
-function InteractContractModal(props: OwnProps) {
+function InteractContractModal(props: Props) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
   const [enterCounts, setEnterCounts] = useState<number[]>([0, 0]);
@@ -88,17 +79,4 @@ function InteractContractModal(props: OwnProps) {
   );
 }
 
-// const mapStateToProps = (state: RootState) => ({
-//   isLoading: state.app.isLoading,
-//   selectedParentHash: state.app.selectedParentHash
-// });
-
-// const mapDispatchToProps = dispatch => ({
-//   fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op))
-// });
-
-// export default compose(
-//   withTranslation(),
-//   connect(mapStateToProps, mapDispatchToProps)
-// )(InteractContractModal) as React.ComponentType<OwnProps>;
 export default InteractContractModal;

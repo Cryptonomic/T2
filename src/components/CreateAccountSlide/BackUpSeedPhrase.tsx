@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import SeedInput from './SeedInput';
 
 import { DescriptionContainer, ValidFormContainer } from './style';
@@ -9,15 +9,14 @@ interface Seed {
   value: string;
 }
 
-interface OwnProps {
+interface Props {
   seed: string;
   onValid: (isVal: boolean) => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function BackUpSeedPhrase(props: Props) {
-  const { seed, onValid, t } = props;
+  const { seed, onValid } = props;
+  const { t } = useTranslation();
   const [randomSeeds, setRandomSeeds] = useState<Seed[]>([]);
 
   const validationStatus = [false, false, false, false];
@@ -67,4 +66,4 @@ function BackUpSeedPhrase(props: Props) {
   );
 }
 
-export default withTranslation()(BackUpSeedPhrase);
+export default BackUpSeedPhrase;

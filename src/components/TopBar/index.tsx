@@ -1,11 +1,14 @@
 import React from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { ms } from '../../styles/helpers';
 import Logo from '../Logo';
 import TezosIcon from '../TezosIcon';
 import Button from '../Button';
+
+import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 
 const Container = styled.div<{ isExtended?: boolean }>`
   display: flex;
@@ -56,18 +59,21 @@ const Separator = styled.div`
   height: 40px;
 `;
 
-interface OwnProps {
+interface Props {
   isLoggedIn: boolean;
   walletName: string;
   isExtended: boolean;
-  logout: () => void;
 }
-
-type Props = WithTranslation & OwnProps;
 
 const TopBar = (props: Props) => {
   const history = useHistory();
-  const { isLoggedIn, walletName, isExtended, logout, t } = props;
+  const { isLoggedIn, walletName, isExtended } = props;
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  function logout() {
+    dispatch(goHomeAndClearState());
+  }
 
   function goToSettings() {
     history.push('/settings');
@@ -94,4 +100,4 @@ const TopBar = (props: Props) => {
   );
 };
 
-export default withTranslation()(TopBar);
+export default TopBar;
