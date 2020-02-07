@@ -1,9 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
@@ -45,7 +44,7 @@ import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
 
 import { syncWalletThunk, updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from '../../reduxContent/app/selectors';
+import { getAccountSelector } from './duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;
@@ -109,42 +108,25 @@ const Description = (props: DescriptionProps) => {
   );
 };
 
-interface OwnProps {
-  updateActiveTab: (activeTab: string) => void;
-  selectedAccount: any;
-  isLoading: boolean;
-  isWalletSyncing: boolean;
-  isLedger: boolean;
-  syncWallet: () => void;
-  selectedAccountHash: string;
-  selectedParentHash: string;
-  selectedParentIndex: number;
-  selectedAccountIndex: number;
-  isManager: boolean;
-  time: Date;
-}
-
-type Props = OwnProps & WithTranslation;
-
-function ActionPanel(props: Props) {
-  const {
-    t,
-    selectedAccount,
-    selectedAccountHash,
-    selectedParentHash,
-    selectedParentIndex,
-    selectedAccountIndex,
-    isManager,
-    time,
-    isLedger,
-    isWalletSyncing,
-    syncWallet,
-    isLoading,
-    updateActiveTab
-  } = props;
+function ActionPanel() {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [addressType, setAddressType] = useState(AddressType.Manager);
   const [tabs, setTabs] = useState<string[]>([]);
+  const selectedAccount = useSelector(getAccountSelector);
+
+  const {
+    isLoading,
+    time,
+    isWalletSyncing,
+    isLedger,
+    isManager,
+    selectedParentHash,
+    selectedAccountHash,
+    selectedParentIndex,
+    selectedAccountIndex
+  } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
   const {
     balance,
@@ -181,7 +163,11 @@ function ActionPanel(props: Props) {
   }, [selectedAccountHash, script]);
 
   function onChangeTab(newTab: string) {
-    updateActiveTab(newTab);
+    dispatch(updateActiveTabThunk(newTab));
+  }
+
+  function onSyncWallet() {
+    dispatch(syncWalletThunk());
   }
 
   function renderSection() {
@@ -291,7 +277,7 @@ function ActionPanel(props: Props) {
         publicKeyHash={selectedAccountHash || 'Inactive'}
         parentIndex={selectedParentIndex + 1}
         isManager={isManager}
-        onRefreshClick={syncWallet}
+        onRefreshClick={onSyncWallet}
         time={time}
         delegatedAddress={delegate_value}
         isWalletSyncing={isWalletSyncing}
@@ -325,24 +311,4 @@ function ActionPanel(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  selectedAccount: getAccountSelector(state),
-  isLoading: state.app.isLoading,
-  time: state.app.time,
-  isWalletSyncing: state.app.isWalletSyncing,
-  isLedger: state.app.isLedger,
-  isManager: state.app.isManager,
-  selectedAccountHash: state.app.selectedAccountHash,
-  selectedParentIndex: state.app.selectedParentIndex,
-  selectedAccountIndex: state.app.selectedAccountIndex
-});
-
-const mapDispatchToProps = dispatch => ({
-  updateActiveTab: (activeTab: string) => dispatch(updateActiveTabThunk(activeTab)),
-  syncWallet: () => dispatch(syncWalletThunk())
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(ActionPanel) as React.ComponentType<any>;
+export default ActionPanel;

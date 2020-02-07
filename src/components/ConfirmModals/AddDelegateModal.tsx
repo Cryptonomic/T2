@@ -278,9 +278,9 @@ function AddDelegateModal(props: Props) {
     );
     setConfirmOpen(false);
     dispatch(setIsLoadingAction(false));
-    // if (isCreated) {
-    //   onClose();
-    // }
+    if (!!isCreated) {
+      onClose();
+    }
   }
 
   function renderGasToolTip() {
