@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import { useTranslation, Trans } from 'react-i18next';
 import Tooltip from '../../components/Tooltip';
 import { ms } from '../../styles/helpers';
 import TextField from '../../components/TextField';
@@ -77,16 +76,9 @@ const PkhTooltip = t => {
   );
 };
 
-interface OwnProps {
-  importAddress: (activeTab, seed, pkh?, activationCode?, username?, passPhrase?) => void;
-  isLoading: boolean;
-}
-
-type Props = OwnProps & WithTranslation;
-
-function AddAddress(props: Props) {
-  const { t, isLoading, importAddress } = props;
-
+function AddAddress() {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(ADD_ADDRESS_TYPES.FUNDRAISER);
   const [pkh, setPkh] = useState('');
   const [activationCode, setActivationCode] = useState('');
@@ -100,7 +92,7 @@ function AddAddress(props: Props) {
     const input = seeds.toString();
     const words = input.replace(/["\s]/g, '');
     const inputVal = words.replace(/,/g, ' ');
-    importAddress(activeTab, inputVal, pkh, activationCode, username, passPhrase);
+    dispatch(importAddressThunk(activeTab, inputVal, pkh, activationCode, username, passPhrase));
   };
 
   function renderAddBody() {
@@ -108,7 +100,7 @@ function AddAddress(props: Props) {
       isError || passPhrase === '' || activationCode === '' || pkh === '' || seeds.length < 15;
     switch (activeTab) {
       case ADD_ADDRESS_TYPES.GENERATE_MNEMONIC:
-        return <CreateAccountSlide importAddress={importAddress} />;
+        return <CreateAccountSlide />;
       case ADD_ADDRESS_TYPES.RESTORE:
         return <RestoreBackup />;
       case ADD_ADDRESS_TYPES.FUNDRAISER:
@@ -219,20 +211,4 @@ function AddAddress(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isLoading: state.app.isLoading
-  // message: message.get('message')
-});
-
-const mapDispatchToProps = dispatch => ({
-  importAddress: (activeTab, seed, pkh, activationCode, username, passPhrase) =>
-    dispatch(importAddressThunk(activeTab, seed, pkh, activationCode, username, passPhrase))
-});
-
-export default compose(
-  withTranslation(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-)(AddAddress) as React.ComponentType<any>;
+export default AddAddress;

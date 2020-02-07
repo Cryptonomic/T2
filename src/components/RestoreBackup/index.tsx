@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import Switch from '@material-ui/core/Switch';
 import styled from 'styled-components';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import TextField from '../TextField';
 import Button from '../Button';
 import SeedInput from './SeedInput';
@@ -88,14 +88,12 @@ const RestoreTabs = (props: Props1) => {
   );
 };
 
-interface OwnProps {
+interface Props {
   importAddress?: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function RestoreBackup(props: Props) {
-  const { t } = props;
+  const { t } = useTranslation();
   const [type, setType] = useState('phrase');
   const [seeds, setSeeds] = useState<string[]>([]);
   const [password, setPassword] = useState('');
@@ -187,4 +185,4 @@ function RestoreBackup(props: Props) {
   );
 }
 
-export default withTranslation()(RestoreBackup);
+export default RestoreBackup;

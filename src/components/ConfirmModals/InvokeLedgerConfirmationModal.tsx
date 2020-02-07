@@ -1,5 +1,5 @@
 import React from 'react';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import Modal from '../CustomModal';
 import Loader from '../Loader';
@@ -93,7 +93,7 @@ const ItemContent = styled.div`
   align-items: center;
 `;
 
-interface OwnProps {
+interface Props {
   address: string;
   source: string;
   open: boolean;
@@ -105,11 +105,9 @@ interface OwnProps {
   storage: number;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const InvokeLedgerConfirmationModal = (props: Props) => {
-  const { address, source, open, isLoading, onClose, fee, amount, parameters, storage, t } = props;
-
+  const { address, source, open, isLoading, onClose, fee, amount, parameters, storage } = props;
+  const { t } = useTranslation();
   const calcFee = formatAmount(fee);
 
   return (
@@ -192,4 +190,4 @@ const InvokeLedgerConfirmationModal = (props: Props) => {
   );
 };
 
-export default withTranslation()(InvokeLedgerConfirmationModal);
+export default InvokeLedgerConfirmationModal;

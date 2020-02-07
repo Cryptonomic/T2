@@ -251,7 +251,7 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
   };
 }
 
-export function importAddressThunk(activeTab, seed, pkh, activationCode, username, passPhrase) {
+export function importAddressThunk(activeTab, seed, pkh?, activationCode?, username?, passPhrase?) {
   return async (dispatch, state) => {
     const { walletLocation, walletFileName, password, identities } = state().wallet;
     const { selectedNode, nodesList } = state().settings;

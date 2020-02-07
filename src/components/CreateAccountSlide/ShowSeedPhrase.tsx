@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import CopyButton from '../CopyButton';
 
 import {
@@ -13,15 +13,15 @@ import {
   SeedIndex
 } from './style';
 
-interface OwnProps {
+interface Props {
   seed: string;
   onUpdate: () => void;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function ShowSeedPhrase(props: Props) {
-  const { t, seed, onUpdate } = props;
+  const { seed, onUpdate } = props;
+  const { t } = useTranslation();
+
   function setupSeedColumns() {
     const seedWords = seed.split(' ');
     const seedsTable: any[] = [];
@@ -86,4 +86,4 @@ function ShowSeedPhrase(props: Props) {
   );
 }
 
-export default withTranslation()(ShowSeedPhrase);
+export default ShowSeedPhrase;

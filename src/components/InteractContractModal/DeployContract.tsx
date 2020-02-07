@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { TezosParameterFormat } from 'conseiljs';
 import TextField from '../TextField';
 import CustomTextArea from './CustomTextArea';
@@ -46,35 +45,12 @@ import {
 
 const utez = 1000000;
 
-interface OwnProps {
+interface Props {
   averageFees: AverageFees;
   addresses: RegularAddress[];
   enterNum: number;
   onClose: () => void;
 }
-
-interface StoreProps {
-  isLedger: boolean;
-  isLoading: boolean;
-  selectedParentHash: string;
-  originateContract: (
-    delegate: string,
-    amount: string,
-    fee: number,
-    passPhrase: string,
-    publicKeyHash: string,
-    storageLimit?: number,
-    gasLimit?: number,
-    code?: string,
-    storage?: string,
-    codeFormat?: TezosParameterFormat,
-    isSmartContract?: boolean
-  ) => Promise<boolean>;
-
-  setIsLoading: (flag: boolean) => void;
-}
-
-type Props = OwnProps & StoreProps & WithTranslation;
 
 const defaultState = {
   gas: 0,
@@ -90,17 +66,15 @@ const defaultState = {
 };
 
 function DeployContract(props: Props) {
-  const {
-    isLoading,
-    isLedger,
-    addresses,
-    averageFees,
-    enterNum,
-    setIsLoading,
-    originateContract,
-    onClose,
-    t
-  } = props;
+  const { addresses, averageFees, enterNum, onClose } = props;
+
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const { isLoading, isLedger, selectedParentHash } = useSelector(
+    (rootState: RootState) => rootState.app,
+    shallowEqual
+  );
 
   const [state, setState] = useState(() => {
     return {
@@ -156,33 +130,32 @@ function DeployContract(props: Props) {
     if (isDisabled) {
       return;
     }
-    setIsLoading(true);
+    dispatch(setIsLoadingAction(true));
 
     if (isLedger) {
       onLedgerConfirmation(true);
     }
 
     const { pkh } = addresses[0];
-    const isOperationCompleted = await originateContract(
-      delegate,
-      amount,
-      fee,
-      passPhrase,
-      pkh,
-      storage,
-      gas,
-      michelsonCode,
-      parameters,
-      codeFormat,
-      true
-    ).catch(err => {
-      console.error(err);
-      return false;
-    });
+    const isOperationCompleted = await dispatch(
+      originateContractThunk(
+        delegate,
+        amount,
+        fee,
+        passPhrase,
+        pkh,
+        storage,
+        gas,
+        michelsonCode,
+        parameters,
+        codeFormat,
+        true
+      )
+    );
 
     onLedgerConfirmation(false);
-    setIsLoading(false);
-    if (isOperationCompleted) {
+    dispatch(setIsLoadingAction(false));
+    if (!!isOperationCompleted) {
       onClose();
     }
   }
@@ -305,45 +278,4 @@ function DeployContract(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isLoading: state.app.isLoading,
-  isLedger: state.app.isLedger,
-  selectedParentHash: state.app.selectedParentHash
-});
-
-const mapDispatchToProps = dispatch => ({
-  setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  originateContract: (
-    delegate: string,
-    amount: string,
-    fee: number,
-    passPhrase: string,
-    publicKeyHash: string,
-    storageLimit: number = 0,
-    gasLimit: number = 0,
-    code: string,
-    storage: string,
-    codeFormat: TezosParameterFormat,
-    isSmartContract: boolean = false
-  ) =>
-    dispatch(
-      originateContractThunk(
-        delegate,
-        amount,
-        fee,
-        passPhrase,
-        publicKeyHash,
-        storageLimit,
-        gasLimit,
-        code,
-        storage,
-        codeFormat,
-        isSmartContract
-      )
-    )
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(DeployContract) as React.ComponentType<OwnProps>;
+export default DeployContract;

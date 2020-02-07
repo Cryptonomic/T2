@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { TezosParameterFormat } from 'conseiljs';
 import TextField from '../TextField';
 import TezosNumericInput from '../TezosNumericInput';
@@ -42,32 +41,12 @@ import {
 
 const utez = 1000000;
 
-interface OwnProps {
+interface Props {
   averageFees: AverageFees;
   addresses: RegularAddress[];
   enterNum: number;
   onClose: () => void;
 }
-
-interface StoreProps {
-  isLedger: boolean;
-  isLoading: boolean;
-  invokeAddress: (
-    address: string,
-    fee: number,
-    amount: string,
-    storage: number,
-    gas: number,
-    parameters: string,
-    password: string,
-    selectedInvokeAddress: string,
-    entryPoint: string,
-    format: TezosParameterFormat
-  ) => Promise<boolean>;
-  setIsLoading: (flag: boolean) => void;
-}
-
-type Props = OwnProps & StoreProps & WithTranslation;
 
 const defaultState = {
   isAddressIssue: false,
@@ -85,17 +64,14 @@ const defaultState = {
 };
 
 function InvokeContract(props: Props) {
-  const {
-    t,
-    isLoading,
-    isLedger,
-    averageFees,
-    addresses,
-    enterNum,
-    invokeAddress,
-    onClose,
-    setIsLoading
-  } = props;
+  const { averageFees, addresses, enterNum, onClose } = props;
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const { isLoading, isLedger } = useSelector(
+    (rootState: RootState) => rootState.app,
+    shallowEqual
+  );
   const [state, setState] = useState(() => {
     return {
       ...defaultState,
@@ -160,30 +136,29 @@ function InvokeContract(props: Props) {
     if (isDisabled) {
       return;
     }
-    setIsLoading(true);
+    dispatch(setIsLoadingAction(true));
     if (isLedger) {
       onLedgerConfirmation(true);
     }
 
-    const isOperationCompleted = await invokeAddress(
-      contractAddress,
-      fee,
-      amount,
-      storage,
-      gas,
-      parameters,
-      passPhrase,
-      selectedInvokeAddress,
-      entryPoint,
-      codeFormat
-    ).catch(err => {
-      console.error(err);
-      return false;
-    });
+    const isOperationCompleted = await dispatch(
+      invokeAddressThunk(
+        contractAddress,
+        fee,
+        amount,
+        storage,
+        gas,
+        parameters,
+        passPhrase,
+        selectedInvokeAddress,
+        entryPoint,
+        codeFormat
+      )
+    );
 
     onLedgerConfirmation(false);
-    setIsLoading(false);
-    if (isOperationCompleted) {
+    dispatch(setIsLoadingAction(false));
+    if (!!isOperationCompleted) {
       onClose();
     }
   }
@@ -308,43 +283,4 @@ function InvokeContract(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isLoading: state.app.isLoading,
-  isLedger: state.app.isLedger,
-  selectedParentHash: state.app.selectedParentHash
-});
-
-const mapDispatchToProps = dispatch => ({
-  setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  invokeAddress: (
-    address: string,
-    fee: number,
-    amount: string,
-    storage: number,
-    gas: number,
-    parameters: string,
-    password: string,
-    selectedInvokeAddress: string,
-    entryPoint: string,
-    format: TezosParameterFormat
-  ) =>
-    dispatch(
-      invokeAddressThunk(
-        address,
-        fee,
-        amount,
-        storage,
-        gas,
-        parameters,
-        password,
-        selectedInvokeAddress,
-        entryPoint,
-        format
-      )
-    )
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(InvokeContract) as React.ComponentType<OwnProps>;
+export default InvokeContract;

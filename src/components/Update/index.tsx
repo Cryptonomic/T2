@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { ms } from '../../styles/helpers';
 
 const Container = styled.div`
@@ -40,17 +40,16 @@ const SpinningRefreshIcon = styled(RefreshIcon)`
   }
 `;
 
-interface OwnProps {
+interface Props {
   isReady?: boolean;
   isWalletSyncing?: boolean;
   onClick?: () => void;
   time: Date;
 }
 
-type Props = OwnProps & WithTranslation;
-
 function Update(props: Props) {
-  const { isReady, isWalletSyncing, onClick, time, t } = props;
+  const { isReady, isWalletSyncing, onClick, time } = props;
+  const { t } = useTranslation();
   const Refresh = isReady && isWalletSyncing ? SpinningRefreshIcon : RefreshIcon;
   return (
     <Container>
@@ -72,4 +71,4 @@ function Update(props: Props) {
   );
 }
 
-export default withTranslation()(Update);
+export default Update;

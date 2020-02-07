@@ -1,6 +1,5 @@
-// @flow
 import React, { Fragment } from 'react';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import Modal from '../CustomModal';
 import Button from './../Button';
@@ -114,7 +113,7 @@ const BoldSpan = styled.span`
   font-weight: 500;
 `;
 
-interface OwnProps {
+interface Props {
   onEnterPress: () => {};
   open: boolean;
   address: string | null;
@@ -135,8 +134,6 @@ interface OwnProps {
   isDisplayedFeeTooltip: boolean;
 }
 
-type Props = OwnProps & WithTranslation;
-
 const DelegateConfirmationModal = (props: Props) => {
   const {
     onEnterPress,
@@ -156,9 +153,9 @@ const DelegateConfirmationModal = (props: Props) => {
     isDelegateIssue,
     onDelegateIssue,
     isLedger,
-    isDisplayedFeeTooltip,
-    t
+    isDisplayedFeeTooltip
   } = props;
+  const { t } = useTranslation();
   const isDisabled = isLoading || !newAddress || (!password && !isLedger) || isDelegateIssue;
 
   const renderFeeToolTip = () => {
@@ -261,4 +258,4 @@ const DelegateConfirmationModal = (props: Props) => {
   );
 };
 
-export default withTranslation()(DelegateConfirmationModal);
+export default DelegateConfirmationModal;
