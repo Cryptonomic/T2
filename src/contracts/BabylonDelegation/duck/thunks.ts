@@ -1,4 +1,9 @@
-import { TezosNodeWriter, BabylonDelegationHelper, TezosParameterFormat } from 'conseiljs';
+import {
+  TezosNodeWriter,
+  TezosNodeReader,
+  BabylonDelegationHelper,
+  TezosParameterFormat
+} from 'conseiljs';
 import { createMessageAction } from '../../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../../reduxContent/wallet/actions';
 import { tezToUtez } from '../../../utils/currancy';
@@ -13,6 +18,9 @@ import { getMainNode, getMainPath } from '../../../utils/settings';
 import { findAccountIndex } from '../../../utils/account';
 import { findIdentity } from '../../../utils/identity';
 import { displayError } from '../../../utils/formValidation';
+
+import { Node } from '../../../types/general';
+import { RootState } from '../../../types/store';
 
 const { sendContractInvocationOperation, sendTransactionOperation } = TezosNodeWriter;
 const {
@@ -235,7 +243,7 @@ export function invokeAddressThunk(
 }
 
 export function withdrawThunk(fee: number, amount: string, password: string) {
-  return async (dispatch, state) => {
+  return async (dispatch, state): Promise<boolean> => {
     const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
     const { identities, walletPassword } = state().wallet;
     const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
@@ -419,28 +427,6 @@ export function depositThunk(fee: number, amount: string, password: string, toAd
       return true;
     }
     return false;
-  };
-}
-
-export function validateAmountThunk(amount: string, toAddress: string) {
-  return async dispatch => {
-    const parsedAmount = Number(amount.replace(/,/g, '.'));
-    const amountInUtez = tezToUtez(parsedAmount);
-
-    const validations = [
-      { value: amount, type: 'notEmpty', name: 'amount' },
-      { value: parsedAmount, type: 'validAmount' },
-      { value: amountInUtez, type: 'posNum', name: 'Amount' },
-      { value: toAddress, type: 'validAddress' }
-    ];
-
-    const error = displayError(validations);
-    if (error) {
-      dispatch(createMessageAction(error, true));
-      return false;
-    }
-
-    return true;
   };
 }
 
@@ -665,6 +651,38 @@ export function sendDelegatedFundsThunk(
       return true;
     }
     return false;
+  };
+}
+
+export async function getIsImplicitAndEmptyThunk(
+  recipientHash: string,
+  nodesList: Node[],
+  selectedNode: string
+) {
+  const mainNode = getMainNode(nodesList, selectedNode);
+  const { tezosUrl } = mainNode;
+  return await TezosNodeReader.isImplicitAndEmpty(tezosUrl, recipientHash);
+}
+
+export function validateAmountThunk(amount: string, toAddress: string) {
+  return async dispatch => {
+    const parsedAmount = Number(amount.replace(/,/g, '.'));
+    const amountInUtez = tezToUtez(parsedAmount);
+
+    const validations = [
+      { value: amount, type: 'notEmpty', name: 'amount' },
+      { value: parsedAmount, type: 'validAmount' },
+      { value: amountInUtez, type: 'posNum', name: 'Amount' },
+      { value: toAddress, type: 'validAddress' }
+    ];
+
+    const error = displayError(validations);
+    if (error) {
+      dispatch(createMessageAction(error, true));
+      return false;
+    }
+
+    return true;
   };
 }
 

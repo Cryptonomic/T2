@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import MenuItem from '@material-ui/core/MenuItem';
-import { withTranslation, WithTranslation } from 'react-i18next';
 import { TezosParameterFormat, OperationKindType } from 'conseiljs';
 
 import Button from '../../../components/Button';
@@ -14,22 +13,15 @@ import PasswordInput from '../../../components/PasswordInput';
 import InvokeLedgerConfirmationModal from '../../../components/ConfirmModals/InvokeLedgerConfirmationModal';
 import FormatSelector from '../../../components/FormatSelector';
 
-import { fetchFeesThunk } from '../../../reduxContent/app/thunks';
+import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { invokeAddressThunk } from '../../../reduxContent/invoke/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 
-import { OPERATIONFEE } from '../../../constants/FeeValue';
-import { RootState } from '../../../types/store';
-import { RegularAddress, AverageFees } from '../../../types/general';
+import { OPERATIONFEE, AVERAGEFEES } from '../../../constants/FeeValue';
+import { RootState, AppState } from '../../../types/store';
+import { RegularAddress } from '../../../types/general';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  padding: 0 20px 20px 20px;
-  position: relative;
-`;
+import { Container, UseMax, PasswordButtonContainer, InvokeButton, RowContainer } from './style';
 
 export const InvokeAddressContainer = styled.div`
   width: 100%;
@@ -73,12 +65,6 @@ export const SpaceBar = styled.div`
   background-color: ${({ theme: { colors } }) => colors.primary};
 `;
 
-export const RowContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-`;
 export const ColContainer = styled.div`
   width: 45%;
 `;
@@ -94,84 +80,18 @@ export const FeeContainer = styled.div`
   height: 64px;
 `;
 
-export const UseMax = styled.div`
-  position: absolute;
-  right: 23px;
-  top: 24px;
-  font-size: 12px;
-  font-weight: 500;
-  display: block;
-  color: ${({ theme: { colors } }) => colors.accent};
-  cursor: pointer;
-`;
-
-export const PasswordButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 0 40px 15px 0px;
-  height: 100px;
-  margin-top: auto;
-  width: 100%;
-`;
-
-export const InvokeButton = styled(Button)`
-  width: 194px;
-  height: 50px;
-  margin-bottom: 10px;
-  margin-left: auto;
-  padding: 0;
-`;
-
 const utez = 1000000;
 
-interface OwnProps {
+interface Props {
   isReady: boolean;
   addresses: RegularAddress[];
   onSuccess: () => void;
 }
 
-interface StoreProps {
-  isLedger: boolean;
-  isLoading: boolean;
-  selectedAccountHash: string;
-  fetchFees: (op: OperationKindType) => Promise<AverageFees>;
-  setIsLoading: (flag: boolean) => Promise<boolean>;
-  invokeAddress: (
-    address: string,
-    fee: number,
-    amount: string,
-    storage: number,
-    gas: number,
-    parameters: string,
-    password: string,
-    selectedInvokeAddress: string,
-    entryPoint: string,
-    format: TezosParameterFormat
-  ) => Promise<boolean>;
-}
-
-type Props = OwnProps & StoreProps & WithTranslation;
-
 function Invoke(props: Props) {
-  const {
-    isReady,
-    isLoading,
-    isLedger,
-    addresses,
-    fetchFees,
-    selectedAccountHash,
-    t,
-    setIsLoading,
-    invokeAddress,
-    onSuccess
-  } = props;
-  const [averageFees, setAverageFees] = useState({
-    low: 1420,
-    medium: 2840,
-    high: 5680
-  });
-  const [fee, setFee] = useState(averageFees.medium);
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const [fee, setFee] = useState(AVERAGEFEES.medium);
   const [gas, setGas] = useState(0);
   const [storage, setStorage] = useState(0);
   const [selected, setSelected] = useState(0);
@@ -184,21 +104,20 @@ function Invoke(props: Props) {
   const [entryPoint, setEntryPoint] = useState('');
   const [open, setOpen] = useState(false);
 
+  const { newFees, isFeeLoaded } = useFetchFees(OperationKindType.Transaction, false);
+  const { isLoading, isLedger, selectedAccountHash } = useSelector<RootState, AppState>(
+    (state: RootState) => state.app,
+    shallowEqual
+  );
+
+  const { isReady, addresses, onSuccess } = props;
+
   const isDisabled = !isReady || isLoading || !amount || (!passPhrase && !isLedger);
   const selectedInvokeAddress = addresses[selected].pkh;
 
-  async function getFees() {
-    const newFees = await fetchFees(OperationKindType.Transaction);
-    if (newFees.low < OPERATIONFEE) {
-      newFees.low = OPERATIONFEE;
-    }
-    setAverageFees({ ...newFees });
-    setFee(newFees.medium);
-  }
-
   useEffect(() => {
-    getFees();
-  }, [selectedAccountHash]);
+    setFee(newFees.medium);
+  }, [isFeeLoaded]);
 
   function onUseMax() {
     const balance = addresses[selected].balance;
@@ -223,33 +142,31 @@ function Invoke(props: Props) {
   }
 
   async function onInvokeOperation() {
-    setIsLoading(true);
-
+    dispatch(setIsLoadingAction(true));
     if (isLedger) {
       setOpen(true);
     }
 
-    const operationResult = await invokeAddress(
-      selectedAccountHash,
-      fee,
-      amount,
-      storage,
-      gas,
-      parameters,
-      passPhrase,
-      selectedInvokeAddress,
-      entryPoint,
-      codeFormat
-    ).catch(err => {
-      console.error(err);
-      return false;
-    });
+    const operationResult = await dispatch(
+      invokeAddressThunk(
+        selectedAccountHash,
+        fee,
+        amount,
+        storage,
+        gas,
+        parameters,
+        passPhrase,
+        selectedInvokeAddress,
+        entryPoint,
+        codeFormat
+      )
+    );
     setOpen(false);
-    setIsLoading(false);
+    dispatch(setIsLoadingAction(false));
 
-    if (operationResult) {
-      onSuccess();
-    }
+    // if (operationResult) {
+    //   onSuccess();
+    // }
   }
 
   return (
@@ -257,7 +174,7 @@ function Invoke(props: Props) {
       <ParametersContainer>
         <ColStorage>
           <TextField
-            label={t('../../../components.interactModal.parameters')}
+            label={t('components.interactModal.parameters')}
             onChange={val => setParameters(val)}
           />
         </ColStorage>
@@ -267,7 +184,7 @@ function Invoke(props: Props) {
       </ParametersContainer>
       <ParametersContainer>
         <TextField
-          label={t('../../../components.interactModal.entry_point')}
+          label={t('components.interactModal.entry_point')}
           onChange={val => setEntryPoint(val)}
         />
       </ParametersContainer>
@@ -275,14 +192,14 @@ function Invoke(props: Props) {
         <ColContainer>
           <TextField
             type="number"
-            label={t('../../../components.interactModal.storage_limit')}
+            label={t('components.interactModal.storage_limit')}
             onChange={val => setStorage(Number(val))}
           />
         </ColContainer>
         <ColContainer>
           <TextField
             type="number"
-            label={t('../../../components.interactModal.gas_limit')}
+            label={t('components.interactModal.gas_limit')}
             onChange={val => setGas(Number(val))}
           />
         </ColContainer>
@@ -299,9 +216,9 @@ function Invoke(props: Props) {
         </AmountContainer>
         <FeeContainer>
           <Fees
-            low={averageFees.low}
-            medium={averageFees.medium}
-            high={averageFees.high}
+            low={newFees.low}
+            medium={newFees.medium}
+            high={newFees.high}
             fee={fee}
             miniFee={OPERATIONFEE}
             onChange={val => setFee(val)}
@@ -344,44 +261,4 @@ function Invoke(props: Props) {
   );
 }
 
-const mapStateToProps = (state: RootState) => ({
-  isLoading: state.app.isLoading,
-  isLedger: state.app.isLedger,
-  selectedAccountHash: state.app.selectedAccountHash
-});
-
-const mapDispatchToProps = dispatch => ({
-  setIsLoading: (flag: boolean) => dispatch(setIsLoadingAction(flag)),
-  fetchFees: (op: OperationKindType) => dispatch(fetchFeesThunk(op)),
-  invokeAddress: (
-    address: string,
-    fee: number,
-    amount: string,
-    storage: number,
-    gas: number,
-    parameters: string,
-    password: string,
-    selectedInvokeAddress: string,
-    entryPoint: string,
-    format: TezosParameterFormat
-  ) =>
-    dispatch(
-      invokeAddressThunk(
-        address,
-        fee,
-        amount,
-        storage,
-        gas,
-        parameters,
-        password,
-        entryPoint,
-        selectedInvokeAddress,
-        format
-      )
-    )
-});
-
-export default compose(
-  withTranslation(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(Invoke) as React.ComponentType<OwnProps>;
+export default Invoke;

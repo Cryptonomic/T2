@@ -1,20 +1,26 @@
 import React, { useState } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { debounce } from 'throttle-debounce';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
+
+import {
+  ConseilQueryBuilder,
+  ConseilOperator,
+  ConseilSortDirection,
+  ConseilDataClient
+} from 'conseiljs';
 
 import TextField from '../TextField';
 import TezosIcon from '../TezosIcon';
-import Button from '../Button';
 import Tooltip from '../Tooltip';
 import { ms } from '../../styles/helpers';
 
-import { getAccountThunk } from '../../reduxContent/app/thunks';
 import { getAddressType } from '../../utils/account';
+import { getMainNode } from '../../utils/settings';
 import { AddressType } from '../../types/general';
+import { RootState } from '../../types/store';
 
 const TooltipContainer = styled.div`
   padding: 10px;
@@ -52,7 +58,7 @@ const TextfieldTooltip = styled(IconButton)`
   }
 `;
 
-interface OwnProps {
+interface Props {
   label: string;
   onChange: (val: string) => void;
   tooltip?: boolean;
@@ -62,26 +68,35 @@ interface OwnProps {
   onAddressType?: (type: AddressType) => void;
 }
 
-interface StoreProps {
-  getAccountFromServer: (pkh: string) => any[];
-}
-
-type Props = OwnProps & StoreProps & WithTranslation;
-
 function InputAddress(props: Props) {
-  const {
-    t,
-    label,
-    onChange,
-    operationType,
-    address,
-    tooltip,
-    onIssue,
-    onAddressType,
-    getAccountFromServer
-  } = props;
-
+  const { label, onChange, operationType, address, tooltip, onIssue, onAddressType } = props;
+  const { t } = useTranslation();
   const [error, setError] = useState('');
+  const { selectedNode, nodesList } = useSelector(
+    (state: RootState) => state.settings,
+    shallowEqual
+  );
+
+  async function getAccountFromServer(pkh: string) {
+    const mainNode = getMainNode(nodesList, selectedNode);
+    const { conseilUrl, apiKey, network, platform } = mainNode;
+    const serverInfo = { url: conseilUrl, apiKey, network };
+
+    let query = ConseilQueryBuilder.blankQuery();
+    query = ConseilQueryBuilder.addFields(query, 'script');
+    query = ConseilQueryBuilder.addPredicate(query, 'account_id', ConseilOperator.EQ, [pkh], false);
+    query = ConseilQueryBuilder.addOrdering(query, 'script', ConseilSortDirection.DESC);
+    query = ConseilQueryBuilder.setLimit(query, 1);
+
+    const account = await ConseilDataClient.executeEntityQuery(
+      serverInfo,
+      platform,
+      network,
+      'accounts',
+      query
+    ).catch(() => []);
+    return account;
+  }
 
   const renderToolTipComponent = () => {
     return (
@@ -170,11 +185,4 @@ function InputAddress(props: Props) {
   );
 }
 
-const mapDispatchToProps = dispatch => ({
-  getAccountFromServer: (pkh: string) => dispatch(getAccountThunk(pkh))
-});
-
-export default compose(
-  withTranslation(),
-  connect(null, mapDispatchToProps)
-)(InputAddress) as React.ComponentType<OwnProps>;
+export default InputAddress;

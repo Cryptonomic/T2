@@ -21,9 +21,9 @@ export function setWalletAction(
   identities: any[],
   walletLocation: string,
   walletFileName: string,
-  password: string
+  walletPassword: string
 ): SetWalletAction {
-  const payload: WalletState = { identities, walletLocation, walletFileName, password };
+  const payload: WalletState = { identities, walletLocation, walletFileName, walletPassword };
   return {
     type: SET_WALLET,
     payload
