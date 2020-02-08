@@ -1,11 +1,17 @@
 import React from 'react';
 import Close from '@material-ui/icons/Close';
 
-import { OptionLabel, NodeName, NodeUrl, RemoveIconBtn, CheckIcon } from './Settings-styles';
+import { OptionLabel, NodeName, NodeUrl, RemoveIconBtn, CheckIcon } from './styles';
 
-import { SettingsMenuItemProps } from './Settings-types';
+interface Props {
+  index: number;
+  name: string;
+  selected: string;
+  url?: string;
+  onClick: (event: React.MouseEvent, name: string) => void;
+}
 
-const SettingsMenuItem = (props: SettingsMenuItemProps) => {
+const SettingsMenuItem = (props: Props) => {
   const { index, name, selected, url, onClick } = props;
   const itemSelected = selected === name;
   return (
