@@ -1,14 +1,15 @@
-import { setLocalData } from '../../utils/localData';
-import { Node, Path } from '../../types/general';
+import { setLocalData } from '../../../utils/localData';
+import { Node, Path } from '../../../types/general';
 
-export const CHANGE_LOCALE = 'CHANGE_LOCALE';
-export const CHANGE_NODE = 'CHANGE_NODE';
-export const ADD_NODE = 'ADD_NODE';
-export const REMOVE_NODE = 'REMOVE_NODE';
-export const CHANGE_PATH = 'CHANGE_PATH';
-export const ADD_PATH = 'ADD_PATH';
-export const REMOVE_PATH = 'REMOVE_PATH';
-export const CLEAR_STATE = 'CLEAR_STATE';
+import {
+  CHANGE_LOCALE,
+  CHANGE_NODE,
+  ADD_NODE,
+  REMOVE_NODE,
+  CHANGE_PATH,
+  ADD_PATH,
+  REMOVE_PATH
+} from './types';
 
 export const changeLocaleThunk = (locale: string) => {
   return dispatch => {
@@ -27,7 +28,7 @@ export const changeNodeThunk = (name: string) => {
 export const addNodeThunk = (node: Node) => {
   return (dispatch, state) => {
     dispatch({ type: ADD_NODE, node });
-    setLocalData('settings.nodesList', state.settings.nodesList);
+    setLocalData('settings.nodesList', state().settings.nodesList);
     setLocalData('settings.selectedNode', state.settings.selectedNode);
   };
 };
@@ -35,7 +36,7 @@ export const addNodeThunk = (node: Node) => {
 export const removeNodeThunk = (name: string) => {
   return (dispatch, state) => {
     dispatch({ type: REMOVE_NODE, name });
-    setLocalData('settings.nodesList', state.settings.nodesList);
+    setLocalData('settings.nodesList', state().settings.nodesList);
     setLocalData('settings.selectedNode', state.settings.selectedNode);
   };
 };
@@ -50,15 +51,15 @@ export const changePathThunk = (label: string) => {
 export const addPathThunk = (path: Path) => {
   return (dispatch, state) => {
     dispatch({ type: ADD_PATH, path });
-    setLocalData('settings.pathsList', state.settings.pathsList);
-    setLocalData('settings.selectedPath', state.settings.selectedPath);
+    setLocalData('settings.pathsList', state().settings.pathsList);
+    setLocalData('settings.selectedPath', state().settings.selectedPath);
   };
 };
 
 export const removePathThunk = (label: string) => {
   return (dispatch, state) => {
     dispatch({ type: REMOVE_PATH, label });
-    setLocalData('settings.pathsList', state.settings.pathsList);
-    setLocalData('settings.selectedPath', state.settings.selectedPath);
+    setLocalData('settings.pathsList', state().settings.pathsList);
+    setLocalData('settings.selectedPath', state().settings.selectedPath);
   };
 };

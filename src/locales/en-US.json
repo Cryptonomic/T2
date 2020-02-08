@@ -111,7 +111,7 @@
     },
     "addNodeModal": {
       "error": "Node's protocol must be https",
-      "title": "Set Up Your Custom {{title}} Node",
+      "title": "Set Up Your Custom Node",
       "labels": {
         "node_name": "Node Name",
         "api_key": "API Key"

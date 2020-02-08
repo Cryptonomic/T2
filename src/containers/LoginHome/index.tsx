@@ -9,7 +9,7 @@ import TermsModal from '../../components/TermsModal';
 import LanguageSelectModal from '../../components/LanguageSelectModal';
 import { name } from '../../config.json';
 import { setLocalData, getLocalData, resetLocalData } from '../../utils/localData';
-import { changeLocaleThunk } from '../Settings/Settings-actions';
+import { changeLocaleThunk } from '../Settings/duck/thunk';
 import { connectLedgerThunk } from '../../reduxContent/wallet/thunks';
 
 import {
