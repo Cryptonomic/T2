@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 
 import BackButton from '../../components/BackButton';
 import { H2 } from '../../components/Heading';
@@ -6,8 +9,23 @@ import AddNodeModal from '../../components/AddNodeModal';
 import AddPathModal from '../../components/AddPathModal';
 import CustomSelect from '../../components/CustomSelect';
 import LanguageSelector from '../../components/LanguageSelector';
-import SettingsMenuItem from './SettingsMenuItem-view';
-import SettingsCustomSelectItem from './SettingsCustomSelectItem-view';
+
+import CustomSelectItem from './CustomSelectItem';
+import SettingsMenuItem from './MenuItem';
+
+import { getMainPath } from '../../utils/settings';
+import { Node, Path } from '../../types/general';
+
+import {
+  changeLocaleThunk,
+  changeNodeThunk,
+  addNodeThunk,
+  removeNodeThunk,
+  changePathThunk,
+  addPathThunk,
+  removePathThunk
+} from './duck/thunk';
+import { RootState, SettingsState } from '../../types/store';
 
 import {
   Container,
@@ -19,33 +37,88 @@ import {
   Part,
   ItemWrapper,
   AddIcon
-} from './Settings-styles';
+} from './styles';
 
-import { SettingsViewProps } from './Settings-types';
+const SettingsContainer = () => {
+  const history = useHistory();
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const { locale, pathsList, selectedPath, selectedNode, nodesList } = useSelector<
+    RootState,
+    SettingsState
+  >(state => state.settings, shallowEqual);
+  const [isNodeModalOpen, setIsNodeModalOpen] = useState(false);
+  const [isPathModalOpen, setIsPathModalOpen] = useState(false);
+  const [isPathChanged, setIsPathChanged] = useState(false);
 
-const SettingsView = (props: SettingsViewProps) => {
-  const {
-    t,
-    backTitle,
-    locale,
-    pathName,
-    changeLocale,
-    selectedNode,
-    selectedPath,
-    isNodeModalOpen,
-    isPathModalOpen,
-    setIsNodeModalOpen,
-    setIsPathModalOpen,
-    pathsList,
-    nodesList,
-    onRemovePath,
-    onRemoveNode,
-    onAddPath,
-    onAddNode,
-    onClickBackButton,
-    onChangeCustomSelectNodes,
-    onChangeCustomSelectDerivationPath
-  } = props;
+  const onRemovePath = (event: React.MouseEvent, label: string) => {
+    event.stopPropagation();
+    if (label === selectedPath) {
+      setIsPathChanged(true);
+    }
+    dispatch(removePathThunk(label));
+  };
+
+  const onRemoveNode = (event: React.MouseEvent, name: string) => {
+    event.stopPropagation();
+    if (name === selectedNode) {
+      setIsPathChanged(true);
+    }
+    dispatch(removeNodeThunk(name));
+  };
+
+  const onAddNode = (node: Node) => {
+    setIsPathChanged(true);
+    dispatch(addNodeThunk(node));
+  };
+
+  const onAddPath = (path: Path) => {
+    setIsPathChanged(true);
+    dispatch(addPathThunk(path));
+  };
+
+  const onClickBackButton = () => history.goBack();
+
+  const onChangeLocale = (newLocale: string) => {
+    dispatch(changeLocaleThunk(newLocale));
+  };
+
+  const onChangeCustomSelectNodes = (event: React.ChangeEvent<{ value: string }>): boolean => {
+    const newValue = event.target.value;
+    if (newValue === 'add-more') {
+      setIsNodeModalOpen(true);
+      return true;
+    }
+    if (newValue !== selectedPath) {
+      // todo syncwallet
+      setIsPathChanged(true);
+      dispatch(changeNodeThunk(newValue));
+      return true;
+    }
+    return true;
+  };
+
+  const onChangeCustomSelectDerivationPath = (
+    event: React.ChangeEvent<{ value: string }>
+  ): boolean => {
+    const newValue = event.target.value;
+    if (newValue === 'add-more') {
+      setIsPathModalOpen(true);
+      return true;
+    }
+    if (newValue !== selectedPath) {
+      setIsPathChanged(true);
+      dispatch(changePathThunk(newValue));
+      return true;
+    }
+    return true;
+  };
+
+  const backTitle = isPathChanged
+    ? t('containers.homeSettings.back_to_login')
+    : t('containers.homeSettings.back_to_wallet');
+
+  const pathName = getMainPath(pathsList, selectedPath);
 
   return (
     <Container>
@@ -58,7 +131,7 @@ const SettingsView = (props: SettingsViewProps) => {
         <ContentTitle>{t('containers.homeSettings.select_display_language')}</ContentTitle>
         <RowForParts>
           <Part>
-            <LanguageSelector locale={locale} changeLocale={changeLocale} />
+            <LanguageSelector locale={locale} changeLocale={onChangeLocale} />
           </Part>
         </RowForParts>
       </Content6>
@@ -71,7 +144,7 @@ const SettingsView = (props: SettingsViewProps) => {
               label="Nodes"
               value={selectedNode}
               onChange={onChangeCustomSelectNodes}
-              renderValue={value => <SettingsCustomSelectItem value={value} />}
+              renderValue={value => <CustomSelectItem value={value} />}
             >
               {nodesList.map(({ displayName }, index: number) => (
                 <ItemWrapper key={displayName} value={displayName}>
@@ -108,7 +181,7 @@ const SettingsView = (props: SettingsViewProps) => {
               label="Derivation Path"
               value={selectedPath}
               onChange={onChangeCustomSelectDerivationPath}
-              renderValue={value => <SettingsCustomSelectItem value={value} url={pathName} />}
+              renderValue={value => <CustomSelectItem value={value} url={pathName} />}
             >
               {pathsList.map(({ label, derivation }, index: number) => (
                 <ItemWrapper key={label} value={label}>
@@ -139,4 +212,4 @@ const SettingsView = (props: SettingsViewProps) => {
   );
 };
 
-export default SettingsView;
+export default SettingsContainer;

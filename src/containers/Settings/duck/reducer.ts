@@ -1,4 +1,4 @@
-import { getWalletSettings } from '../../utils/settings';
+import { getWalletSettings } from '../../../utils/settings';
 import {
   CHANGE_LOCALE,
   CHANGE_NODE,
@@ -7,10 +7,10 @@ import {
   CHANGE_PATH,
   ADD_PATH,
   REMOVE_PATH
-} from './Settings-actions';
+} from './types';
 
-import { SettingsActionTypes } from './Settings-types';
-import { SettingsState } from '../../types/store';
+import { SettingsActionTypes } from './types';
+import { SettingsState } from '../../../types/store';
 
 const baseDefaults: SettingsState = {
   locale: 'en-US',
