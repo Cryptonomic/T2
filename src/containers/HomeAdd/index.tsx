@@ -97,7 +97,7 @@ function AddAddress() {
 
   function renderAddBody() {
     const isDisabled =
-      isError || passPhrase === '' || activationCode === '' || pkh === '' || seeds.length < 15;
+      isError || passPhrase === '' || username === '' || pkh === '' || seeds.length < 15;
     switch (activeTab) {
       case ADD_ADDRESS_TYPES.GENERATE_MNEMONIC:
         return <CreateAccountSlide />;
@@ -171,7 +171,7 @@ function AddAddress() {
 
               <InputWithTooltip>
                 <TextField
-                  label={t('containers.homeAddAddress.activation_code')}
+                  label={t('containers.homeAddAddress.activation_code_optional')}
                   value={activationCode}
                   onChange={val => setActivationCode(val)}
                   right={30}
