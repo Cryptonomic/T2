@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { lighten } from 'polished';
@@ -13,13 +13,13 @@ import Transactions from '../../components/Transactions';
 import Loader from '../../components/Loader';
 import AccountStatus from '../../components/AccountStatus';
 
-import Delegate from './components/Delegate';
-import Invoke from './components/Invoke';
-import Send from './components/Send';
-import Deposit from './components/Deposit';
-import Withdraw from './components/Withdraw';
-import CodeStorage from './components/CodeStorage';
-import Receive from './components/Receive';
+import Delegate from '../BabylonDelegation/components/Delegate';
+import Invoke from '../BabylonDelegation/components/Invoke';
+import Send from '../BabylonDelegation/components/Send';
+import Deposit from '../BabylonDelegation/components/Deposit';
+import Withdraw from '../BabylonDelegation/components/Withdraw';
+import CodeStorage from '../BabylonDelegation/components/CodeStorage';
+import Receive from '../BabylonDelegation/components/Receive';
 
 import {
   TRANSACTIONS,
@@ -38,12 +38,13 @@ import transactionsEmptyState from '../../../resources/transactionsEmptyState.sv
 
 import { sortArr } from '../../utils/array';
 import { isReady } from '../../utils/general';
+import { getAddressType } from '../../utils/account';
 
 import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from './duck/selectors';
+import { getAccountSelector } from '../BabylonDelegation/duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;
@@ -107,15 +108,13 @@ const Description = (props: DescriptionProps) => {
   );
 };
 
-const tabs = [TRANSACTIONS, SEND, DELEGATE, WITHDRAW, DEPOSIT];
-
 function ActionPanel() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const selectedAccount = useSelector(getAccountSelector);
 
-  const { isLoading, selectedParentHash, selectedAccountHash } = useSelector(
+  const { isLoading, selectedAccountType, selectedParentHash, selectedAccountHash } = useSelector(
     (rootState: RootState) => rootState.app,
     shallowEqual
   );
@@ -132,6 +131,11 @@ function ActionPanel() {
     transactions,
     storage
   } = selectedAccount;
+
+  const tabs =
+    selectedAccountType === AddressType.Manager
+      ? [TRANSACTIONS, SEND, RECEIVE, DELEGATE]
+      : [TRANSACTIONS, INVOKE, CODE, STORAGE];
 
   function onChangeTab(newTab: string) {
     dispatch(updateActiveTabThunk(newTab));
@@ -158,17 +162,6 @@ function ActionPanel() {
             onSuccess={() => onChangeTab(TRANSACTIONS)}
           />
         );
-      // case INVOKE_MANAGER:
-      //   return (
-      //     <InvokeManager
-      //       balance={balance}
-      //       isReady={ready}
-      //       addresses={regularAddresses}
-      //       selectedParentHash={selectedParentHash}
-      //       selectedAccountHash={selectedAccountHash}
-      //       onSuccess={() => onChangeTab(TRANSACTIONS)}
-      //     />
-      //   );
       case WITHDRAW:
         return (
           <Withdraw balance={balance} isReady={ready} onSuccess={() => onChangeTab(TRANSACTIONS)} />

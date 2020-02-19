@@ -10,8 +10,8 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { initLedgerTransport } from '../../utils/wallet';
 
 import NodesStatus from '../../components/NodesStatus';
-import HomeMain from './../HomeMain';
-import HomeAdd from './../HomeAdd';
+import HomeMain from '../HomeMain';
+import HomeAdd from '../HomeAdd';
 
 import { getNodesError } from '../../utils/general';
 import { RootState, AppState } from '../../types/store';

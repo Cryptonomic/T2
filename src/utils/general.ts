@@ -1,5 +1,4 @@
 import { shell } from 'electron';
-import { pick } from 'lodash';
 import {
   ConseilQueryBuilder,
   ConseilOperator,
@@ -101,7 +100,8 @@ export function getSelectedKeyStore(
   identities: any[],
   selectedAccountHash: string,
   selectedParentHash: string,
-  isLedger: boolean = false
+  isLedger: boolean = false,
+  mainPath?: string
 ): KeyStore {
   const identity = findIdentity(identities, selectedParentHash);
   const { publicKey, privateKey } = identity;
@@ -110,7 +110,8 @@ export function getSelectedKeyStore(
     privateKey,
     publicKeyHash: selectedAccountHash,
     seed: '',
-    storeType: isLedger ? StoreType.Hardware : StoreType.Mnemonic
+    storeType: isLedger ? StoreType.Hardware : StoreType.Mnemonic,
+    derivationPath: isLedger ? mainPath : undefined
   };
 }
 

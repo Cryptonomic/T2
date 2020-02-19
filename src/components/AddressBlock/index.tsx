@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import IconButton from '@material-ui/core/IconButton';
@@ -21,6 +21,7 @@ import AddDelegateModal from '../ConfirmModals/AddDelegateModal';
 import InteractContractModal from '../InteractContractModal';
 import SecurityNoticeModal from '../SecurityNoticeModal';
 import Tooltip from '../Tooltip';
+import TokenNav from '../TokenNav';
 
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
@@ -37,9 +38,9 @@ const Container = styled.div`
 `;
 
 const AddressLabel = styled.div`
-  padding: ${ms(-1)} ${ms(2)};
+  padding: 9px 20px;
   display: flex;
-  font-weight: ${({ theme: { typo } }) => typo.weights.bold};
+  font-weight: 500;
   color: ${({ theme: { colors } }) => colors.primary};
   background: ${({ theme: { colors } }) => colors.gray1};
   align-items: center;
@@ -49,10 +50,10 @@ const AddressLabel = styled.div`
 const AddDelegateLabel = styled(AddressLabel)`
   display: flex;
   flex-direction: row;
-  font-size: ${ms(0)};
+  font-size: 14px;
+  margin-top: 20px;
+  margin-bottom: 1px;
 `;
-
-const InteractContractLabel = styled(AddDelegateLabel)``;
 
 const AddressesTitle = styled.div`
   display: flex;
@@ -62,24 +63,16 @@ const AddressesTitle = styled.div`
 
 const DelegateTitle = styled(AddressesTitle)`
   font-size: ${ms(-0.7)};
-  font-weight: ${({
-    theme: {
-      typo: { weights }
-    }
-  }) => weights.bold};
+  font-weight: 500;
 `;
 
 const AccountTitle = styled(H3)`
-  font-size: ${ms(0.7)};
-  font-weight: ${({ theme: { typo } }) => typo.weights.bold};
+  font-size: 18px;
+  font-weight: 500;
   letter-spacing: 0.8px;
   padding: 0 ${ms(-1)} 0 0;
   display: inline-block;
   line-height: 1.5;
-  border-right: 2px solid ${({ theme: { colors } }) => darken(0.05, colors.gray1)};
-  @media (max-width: 1200px) {
-    border-right: none;
-  }
 `;
 
 const NoSmartAddressesContainer = styled.div`
@@ -93,7 +86,7 @@ const NoSmartAddressesContainer = styled.div`
 `;
 const NoSmartAddressesTitle = styled.span`
   color: ${({ theme: { colors } }) => colors.gray3};
-  font-weight: ${({ theme: { typo } }) => typo.weights.bold};
+  font-weight: 500;
   font-size: ${ms(1)};
 `;
 
@@ -164,6 +157,7 @@ function AddressBlock(props: Props) {
     state => state.app.selectedAccountHash
   );
   const selectedNode = useSelector(getSelectedNode);
+  const tokens = useSelector((state: RootState) => state.wallet.tokens);
 
   const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
   const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
@@ -197,8 +191,8 @@ function AddressBlock(props: Props) {
     setIsSecurityModalOpen(false);
   };
 
-  function goToAccount(addressId, index) {
-    dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex));
+  function goToAccount(addressId, index, addressType) {
+    dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType));
   }
 
   const getAddresses = addresses => {
@@ -267,63 +261,80 @@ function AddressBlock(props: Props) {
           isManager={true}
           isActive={isManagerActive}
           balance={balance}
-          onClick={() => goToAccount(publicKeyHash, 0)}
+          onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
         />
       ) : (
         <AddressStatus
           isManager={true}
           isActive={isManagerActive}
           status={status}
-          onClick={() => goToAccount(publicKeyHash, 0)}
+          onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
         />
       )}
-      <Fragment>
-        <AddDelegateLabel>
-          <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
-          {isManagerReady ? (
-            <AddCircleWrapper active={1} onClick={() => setIsDelegateModalOpen(true)} />
-          ) : (
-            <Tooltip
-              position="bottom"
-              content={
-                <NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>
-              }
-            >
-              <IconButton size="small" color="primary">
-                <AddCircleWrapper active={0} />
-              </IconButton>
-            </Tooltip>
-          )}
-        </AddDelegateLabel>
-      </Fragment>
-      <Fragment>
-        {delegatedAddresses.map((address, index) => {
-          const addressId = address.account_id;
-          const isDelegatedActive = addressId === selectedAccountHash;
-          const delegatedAddressReady = isReady(address.status);
+      <AddDelegateLabel>
+        <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
+        {isManagerReady ? (
+          <AddCircleWrapper active={1} onClick={() => setIsDelegateModalOpen(true)} />
+        ) : (
+          <Tooltip
+            position="bottom"
+            content={
+              <NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>
+            }
+          >
+            <IconButton size="small" color="primary">
+              <AddCircleWrapper active={0} />
+            </IconButton>
+          </Tooltip>
+        )}
+      </AddDelegateLabel>
 
-          return delegatedAddressReady ? (
-            <Address
-              key={addressId}
-              isContract={true}
-              accountId={addressId}
-              isActive={isDelegatedActive}
-              balance={address.balance}
-              onClick={() => goToAccount(addressId, index)}
-            />
-          ) : (
-            <AddressStatus
-              key={addressId}
-              isContract={true}
-              isActive={isDelegatedActive}
-              status={address.status}
-              onClick={() => goToAccount(addressId, index)}
-            />
-          );
-        })}
-      </Fragment>
+      {delegatedAddresses.map((address, index) => {
+        const addressId = address.account_id;
+        const isDelegatedActive = addressId === selectedAccountHash;
+        const delegatedAddressReady = isReady(address.status);
 
-      <InteractContractLabel>
+        return delegatedAddressReady ? (
+          <Address
+            key={addressId}
+            isContract={true}
+            accountId={addressId}
+            isActive={isDelegatedActive}
+            balance={address.balance}
+            onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
+          />
+        ) : (
+          <AddressStatus
+            key={addressId}
+            isContract={true}
+            isActive={isDelegatedActive}
+            status={address.status}
+            onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
+          />
+        );
+      })}
+
+      <AddressLabel>
+        <AccountTitle>{t('general.nouns.total_balance')}</AccountTitle>
+        {ready || storeType === Mnemonic ? (
+          <TezosAmount color="primary" size={ms(0)} amount={balance + smartBalance} format={2} />
+        ) : null}
+      </AddressLabel>
+
+      <AddDelegateLabel>
+        <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
+      </AddDelegateLabel>
+      {tokens.map((token, index) => {
+        return (
+          <TokenNav
+            key={token.address}
+            isActive={token.address === selectedAccountHash}
+            onClick={() => goToAccount(token.address, index, AddressType.Token)}
+          />
+        );
+      })}
+
+      <AddDelegateLabel>
         <DelegateTitle>{t('components.interactModal.interact_contract')}</DelegateTitle>
         {isManagerReady ? (
           <AddCircleWrapper active={1} onClick={() => onCheckInteractModal()} />
@@ -341,7 +352,7 @@ function AddressBlock(props: Props) {
             </IconButton>
           </Tooltip>
         )}
-      </InteractContractLabel>
+      </AddDelegateLabel>
       {smartAddresses.map((address, index) => {
         const addressId = address.account_id;
         const isActive = addressId === selectedAccountHash;
@@ -354,7 +365,7 @@ function AddressBlock(props: Props) {
             accountId={addressId}
             isActive={isActive}
             balance={address.balance}
-            onClick={() => goToAccount(addressId, index)}
+            onClick={() => goToAccount(addressId, index, AddressType.Smart)}
           />
         ) : (
           <AddressStatus
@@ -362,16 +373,11 @@ function AddressBlock(props: Props) {
             isActive={isActive}
             status={address.status}
             isContract={true}
-            onClick={() => goToAccount(addressId, index)}
+            onClick={() => goToAccount(addressId, index, AddressType.Smart)}
           />
         );
       })}
-      <AddressLabel>
-        <AccountTitle>{t('general.nouns.total_balance')}</AccountTitle>
-        {ready || storeType === Mnemonic ? (
-          <TezosAmount color="primary" size={ms(0)} amount={balance + smartBalance} format={2} />
-        ) : null}
-      </AddressLabel>
+
       {isInteractModalOpen && (
         <InteractContractModal
           open={isInteractModalOpen}

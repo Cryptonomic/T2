@@ -1,4 +1,5 @@
 import { StoreType } from 'conseiljs';
+
 export interface Node {
   displayName: string;
   platform: string;
@@ -50,6 +51,7 @@ export enum AddressType {
   Manager,
   Smart,
   Delegated,
+  Token,
   None
 }
 
@@ -63,3 +65,16 @@ export interface AverageFees {
   medium: number;
   high: number;
 }
+
+export interface Token {
+  address: string;
+  displayName: string;
+  symbol: string;
+  balance: number;
+  mapid?: number;
+  administrator?: string;
+  transactions: any[];
+  activeTab?: string;
+}
+
+export type BookMark = Account | Token;

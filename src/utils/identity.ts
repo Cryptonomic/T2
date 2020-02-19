@@ -10,7 +10,8 @@ import {
   createAccount,
   getAccountsForIdentity,
   getSyncAccount,
-  syncAccountWithState
+  syncAccountWithState,
+  combineAccounts
 } from './account';
 
 export function createIdentity(identity: Identity): Identity {
@@ -50,7 +51,7 @@ export async function getSyncIdentity(identity: Identity, node: Node, selectedAc
     return [];
   });
 
-  serverAccounts = unionBy(accounts, serverAccounts, 'account_id');
+  serverAccounts = combineAccounts(accounts, serverAccounts);
 
   identity.accounts = await Promise.all(
     (serverAccounts || []).map(async (account, index) => {

@@ -1,5 +1,6 @@
 // import { setData, getData } from '../../localData';
 import { AppState } from '../../types/store';
+import { AddressType } from '../../types/general';
 import {
   SET_IS_LOADING,
   LOGOUT,
@@ -28,7 +29,7 @@ const initState: AppState = {
   selectedParentHash: '',
   selectedParentIndex: 0,
   selectedAccountIndex: 0,
-  isManager: true
+  selectedAccountType: AddressType.Manager
 };
 
 export function appReducer(state: AppState = initState, action: AppActionTypes) {

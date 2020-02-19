@@ -5,7 +5,8 @@ import {
   TezosWalletUtil,
   TezosConseilClient,
   TezosNodeWriter,
-  StoreType
+  StoreType,
+  Tzip7ReferenceTokenHelper
 } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
@@ -32,11 +33,16 @@ import {
   loadWalletFromLedger
 } from '../../utils/wallet';
 
+import { findTokenIndex } from '../../utils/token';
+
+import { setLocalData } from '../../utils/localData';
+
 import {
   setWalletAction,
   setIdentitiesAction,
   addNewIdentityAction,
-  updateIdentityAction
+  updateIdentityAction,
+  updateTokensAction
 } from './actions';
 
 import {
@@ -53,7 +59,7 @@ import {
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { ACTIVATION } from '../../constants/TransactionTypes';
 import { WalletState } from '../../types/store';
-import { Identity } from '../../types/general';
+import { Identity, Token, AddressType } from '../../types/general';
 
 const { unlockFundraiserIdentity, unlockIdentityWithMnemonic } = TezosWalletUtil;
 const { createWallet } = TezosFileWallet;
@@ -126,10 +132,15 @@ export function updateIdentityActiveTab(selectedAccountHash, activeTab) {
   };
 }
 
-export function updateActiveTabThunk(activeTab: string) {
+export function updateActiveTabThunk(activeTab: string, isToken?: boolean) {
   return async (dispatch, state) => {
     const { selectedAccountHash, selectedParentHash } = state().app;
-    if (selectedAccountHash === selectedParentHash) {
+    if (isToken) {
+      const { tokens } = state().wallet;
+      const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+      tokens[tokenIndex] = { ...tokens[tokenIndex], activeTab };
+      updateTokensAction([...tokens]);
+    } else if (selectedAccountHash === selectedParentHash) {
       dispatch(updateIdentityActiveTab(selectedAccountHash, activeTab));
     } else {
       dispatch(updateAccountActiveTab(selectedAccountHash, selectedParentHash, activeTab));
@@ -190,11 +201,38 @@ export function syncIdentityThunk(publicKeyHash) {
   };
 }
 
+export function syncTokenThunk(publicKeyHash) {
+  return async (dispatch, state) => {
+    const { selectedNode, nodesList } = state().settings;
+    const { selectedParentHash } = state().app;
+    const tokens: Token[] = state().wallet.tokens;
+
+    const mainNode = getMainNode(nodesList, selectedNode);
+
+    const newTokens = await Promise.all(
+      tokens.map(async token => {
+        const mapid = token.mapid || 0;
+
+        const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
+          mainNode.tezosUrl,
+          mapid,
+          selectedParentHash
+        );
+        return { ...token, balance };
+      })
+    );
+
+    setLocalData('tokens', newTokens);
+    dispatch(updateTokensAction(newTokens));
+  };
+}
+
 export function syncWalletThunk() {
   return async (dispatch, state) => {
     dispatch(setWalletIsSyncingAction(true));
     const { selectedNode, nodesList } = state().settings;
-    const { selectedAccountHash } = state().app;
+    const { selectedAccountHash, selectedParentHash } = state().app;
+    const tokens: Token[] = state().wallet.tokens;
 
     const mainNode = getMainNode(nodesList, selectedNode);
 
@@ -223,6 +261,30 @@ export function syncWalletThunk() {
       })
     );
 
+    const newTokens = await Promise.all(
+      tokens.map(async token => {
+        let mapid = token.mapid;
+        let administrator = token.administrator;
+        if (!mapid) {
+          const newStorage = await Tzip7ReferenceTokenHelper.getSimpleStorage(
+            mainNode.tezosUrl,
+            token.address
+          );
+          mapid = newStorage.mapid;
+          administrator = newStorage.administrator;
+        }
+
+        const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
+          mainNode.tezosUrl,
+          mapid,
+          selectedParentHash
+        );
+        return { ...token, mapid, administrator, balance };
+      })
+    );
+
+    setLocalData('tokens', newTokens);
+    dispatch(updateTokensAction(newTokens));
     dispatch(setIdentitiesAction(syncIdentities));
     dispatch(updateFetchedTimeAction(new Date()));
     await saveIdentitiesToLocal(state().wallet.identities);
@@ -230,11 +292,13 @@ export function syncWalletThunk() {
   };
 }
 
-export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHash) {
+export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHash, addressType) {
   return async dispatch => {
     try {
       dispatch(setWalletIsSyncingAction(true));
-      if (selectedAccountHash === selectedParentHash) {
+      if (addressType === AddressType.Token) {
+        await dispatch(syncTokenThunk(selectedParentHash));
+      } else if (selectedAccountHash === selectedParentHash) {
         await dispatch(syncIdentityThunk(selectedAccountHash));
       } else {
         await dispatch(syncAccountThunk(selectedAccountHash, selectedParentHash));
@@ -345,7 +409,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
             );
           }
           dispatch(addNewIdentityAction(identity));
-          dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, true));
+          dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
           await saveUpdatedWallet(
             state().wallet.identities,
             walletLocation,
@@ -355,7 +419,9 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
           await saveIdentitiesToLocal(state().wallet.identities);
           dispatch(setIsLoadingAction(false));
           dispatch(push('/home'));
-          await dispatch(syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash));
+          await dispatch(
+            syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash, AddressType.Manager)
+          );
         } else {
           dispatch(createMessageAction('components.messageBar.messages.identity_exist', true));
         }
@@ -398,7 +464,7 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
       dispatch(setWalletAction(identities, walletLocation, walletFileName, password));
       if (identities.length > 0) {
         const { publicKeyHash } = identities[0];
-        dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, true));
+        dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
       }
 
       dispatch(automaticAccountRefresh());
@@ -426,7 +492,7 @@ export function connectLedgerThunk() {
       const identities = await loadWalletFromLedger(derivation);
       dispatch(setWalletAction(identities, '', `Ledger Nano S - ${derivation}`, ''));
       const { publicKeyHash } = identities[0];
-      dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, true));
+      dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
       dispatch(automaticAccountRefresh());
       dispatch(push('/home'));
       await dispatch(syncWalletThunk());
