@@ -7,16 +7,19 @@ import {
   SET_IDENTITIES,
   ADD_NEW_IDENTITY,
   UPDATE_IDENTITY,
+  UPDATE_TOKENS,
   WalletActionTypes
 } from './types';
 
 import { LOGOUT, LogoutAction } from '../app/types';
+import { loadTokens } from '../../utils/wallet';
 
 const defaultState: WalletState = {
   identities: [],
   walletPassword: '',
   walletFileName: '',
-  walletLocation: ''
+  walletLocation: '',
+  tokens: loadTokens()
 };
 
 export function walletReducer(
@@ -49,6 +52,9 @@ export function walletReducer(
         return { ...state, identities: [...stateIdentities] };
       }
       return state;
+    }
+    case UPDATE_TOKENS: {
+      return { ...state, tokens: action.tokens };
     }
     case LOGOUT: {
       return defaultState;

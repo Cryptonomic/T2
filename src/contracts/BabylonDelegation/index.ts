@@ -1,1 +1,2 @@
-export { default as BabylonDelegation } from './container';
+import BabylonDelegation from './container';
+export default BabylonDelegation;

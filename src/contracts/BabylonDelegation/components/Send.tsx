@@ -15,6 +15,8 @@ import TextField from '../../../components/TextField';
 import Tooltip from '../../../components/Tooltip';
 import Fees from '../../../components/Fees';
 
+import InputError from './InputError';
+
 import { ms } from '../../../styles/helpers';
 
 import {
@@ -286,15 +288,6 @@ function Send(props: Props) {
     );
   }
 
-  function renderError(msg: string) {
-    return (
-      <ErrorContainer>
-        <WarningIcon iconName="warning" size={ms(-1)} color="error1" />
-        {msg}
-      </ErrorContainer>
-    );
-  }
-
   function renderFeeToolTip() {
     return (
       <TooltipContainer>
@@ -311,7 +304,7 @@ function Send(props: Props) {
   }
 
   const { isIssue, warningMessage, balanceColor } = getBalanceState();
-  const error = isIssue ? renderError(warningMessage) : '';
+  const error = isIssue ? <InputError error={warningMessage} /> : '';
   const isDisabled =
     amount === '0' || !amount || !toAddress || !isReady || isIssue || isLoading || isAddressIssue;
 

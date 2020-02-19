@@ -19,7 +19,7 @@ import {
   ChangeAccountAction,
   ChangeAccountType
 } from './types';
-import { NodeStatus } from '../../types/general';
+import { NodeStatus, AddressType } from '../../types/general';
 
 export function setIsLoadingAction(isLoading: boolean): SetIsLoadingAction {
   return {
@@ -83,14 +83,14 @@ export function changeAccountAction(
   parentHash: string,
   accountIndex: number,
   parentIndex: number,
-  isManager: boolean
+  accountType: AddressType
 ): ChangeAccountAction {
   const payload: ChangeAccountType = {
     selectedAccountHash: accountHash,
     selectedParentHash: parentHash,
     selectedParentIndex: parentIndex,
     selectedAccountIndex: accountIndex,
-    isManager
+    selectedAccountType: accountType
   };
   return { type: CHANGE_ACCOUNT_HASH, payload };
 }

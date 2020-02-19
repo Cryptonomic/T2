@@ -6,44 +6,22 @@ import { useTranslation, Trans } from 'react-i18next';
 
 import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
-import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
 import Transactions from '../../components/Transactions';
 
 import Loader from '../../components/Loader';
-import AccountStatus from '../../components/AccountStatus';
 
-import Delegate from './components/Delegate';
-import Invoke from './components/Invoke';
 import Send from './components/Send';
-import Deposit from './components/Deposit';
-import Withdraw from './components/Withdraw';
-import CodeStorage from './components/CodeStorage';
-import Receive from './components/Receive';
 
-import {
-  TRANSACTIONS,
-  SEND,
-  RECEIVE,
-  DELEGATE,
-  INVOKE,
-  CODE,
-  STORAGE,
-  DEPOSIT,
-  WITHDRAW
-} from '../../constants/TabConstants';
-import { READY } from '../../constants/StatusTypes';
+import { TRANSACTIONS, SEND, BURN, MINT } from '../../constants/TabConstants';
 import { ms } from '../../styles/helpers';
-import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
 import { sortArr } from '../../utils/array';
-import { isReady } from '../../utils/general';
 
 import { RootState } from '../../types/store';
-import { AddressType } from '../../types/general';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from './duck/selectors';
+import { getTokenSelector } from './duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;
@@ -107,87 +85,41 @@ const Description = (props: DescriptionProps) => {
   );
 };
 
-const tabs = [TRANSACTIONS, SEND, DELEGATE, WITHDRAW, DEPOSIT];
-
 function ActionPanel() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const selectedAccount = useSelector(getAccountSelector);
+  const selectedToken = useSelector(getTokenSelector);
 
   const { isLoading, selectedParentHash, selectedAccountHash } = useSelector(
     (rootState: RootState) => rootState.app,
     shallowEqual
   );
 
-  const {
-    balance,
-    activeTab,
-    storeType,
-    status,
-    script,
-    privateKey,
-    delegate_value,
-    regularAddresses,
-    transactions,
-    storage
-  } = selectedAccount;
+  const { balance, activeTab, symbol, administrator, transactions } = selectedToken;
+
+  const isAdmin = selectedParentHash === administrator;
+  const tabs = isAdmin ? [TRANSACTIONS, SEND, MINT, BURN] : [TRANSACTIONS, SEND];
 
   function onChangeTab(newTab: string) {
-    dispatch(updateActiveTabThunk(newTab));
+    dispatch(updateActiveTabThunk(newTab, true));
   }
 
   function renderSection() {
-    const ready = status === READY;
     switch (activeTab) {
-      case DELEGATE:
-        return <Delegate isReady={ready} />;
-      case RECEIVE:
-        return <Receive address={selectedAccountHash} />;
+      case MINT:
+        return <Send isReady={true} balance={balance} />;
+      case BURN:
+        return <Send isReady={true} balance={balance} />;
       case SEND:
-        return <Send isReady={ready} addressBalance={balance} />;
-      case CODE:
-        return <CodeStorage code={script.replace(/\\n/g, '\n')} />;
-      case STORAGE:
-        return <CodeStorage code={storage} />;
-      case INVOKE:
-        return (
-          <Invoke
-            isReady={ready}
-            addresses={regularAddresses}
-            onSuccess={() => onChangeTab(TRANSACTIONS)}
-          />
-        );
-      // case INVOKE_MANAGER:
-      //   return (
-      //     <InvokeManager
-      //       balance={balance}
-      //       isReady={ready}
-      //       addresses={regularAddresses}
-      //       selectedParentHash={selectedParentHash}
-      //       selectedAccountHash={selectedAccountHash}
-      //       onSuccess={() => onChangeTab(TRANSACTIONS)}
-      //     />
-      //   );
-      case WITHDRAW:
-        return (
-          <Withdraw balance={balance} isReady={ready} onSuccess={() => onChangeTab(TRANSACTIONS)} />
-        );
-      case DEPOSIT:
-        return (
-          <Deposit
-            isReady={ready}
-            addresses={regularAddresses}
-            onSuccess={() => onChangeTab(TRANSACTIONS)}
-          />
-        );
+        return <Send isReady={true} balance={balance} />;
       case TRANSACTIONS:
       default: {
-        if (!ready) {
-          return <AccountStatus address={selectedAccount} />;
+        if (!transactions || transactions.length === 0) {
+          return null;
         }
 
-        const JSTransactions = transactions.sort(
+        const JSTransactions = (transactions || []).sort(
           sortArr({ sortOrder: 'desc', sortBy: 'timestamp' })
         );
         const itemsCount = 5;
@@ -199,18 +131,7 @@ function ActionPanel() {
           lastNumber = JSTransactions.length;
         }
         const showedTransactions = JSTransactions.slice(firstNumber, lastNumber);
-        return transactions.length === 0 ? (
-          <EmptyState
-            imageSrc={transactionsEmptyState}
-            title={t('../../components.actionPanel.empty-title')}
-            description={
-              <Description
-                onReceiveClick={() => onChangeTab(RECEIVE)}
-                onSendClick={() => onChangeTab(SEND)}
-              />
-            }
-          />
-        ) : (
+        return (
           <Fragment>
             <Transactions
               transactions={showedTransactions}
@@ -235,17 +156,16 @@ function ActionPanel() {
   return (
     <Container>
       <BalanceBanner
-        storeType={storeType}
-        isReady={isReady(status, storeType)}
+        isReady={true}
         balance={balance || 0}
-        privateKey={privateKey}
+        privateKey={''}
         publicKeyHash={selectedAccountHash || 'Inactive'}
-        delegatedAddress={delegate_value}
+        delegatedAddress={''}
       />
 
       <TabList count={tabs.length}>
         {tabs.map(tab => {
-          const ready = isReady(status, storeType, tab);
+          const ready = true;
           return (
             <Tab
               isActive={activeTab === tab}

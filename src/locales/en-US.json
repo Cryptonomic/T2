@@ -20,7 +20,9 @@
       "proceed": "Proceed",
       "close": "Close",
       "withdraw": "Withdraw",
-      "deposit": "Deposit"
+      "deposit": "Deposit",
+      "mint": "Mint",
+      "burn": "Burn"
     },
     "nouns": {
       "amount": "Amount",
@@ -51,7 +53,9 @@
       "burn": "Burn",
       "smart_contract": "Smart Contract",
       "code": "Code",
-      "format": "Format"
+      "format": "Format",
+      "tokens": "Tokens",
+      "token_contract": "Token Contract"
     },
     "errors": {
       "no_hex_data": "The provided string doesn't look like hex data",
@@ -275,7 +279,13 @@
         "ledger_not_connect": "Connection refused by Ledger.",
         "invoke_operation_failed": "Smart Contract operation failed",
         "success_invoke_operation": "Successfully started contract invocation.",
-        "success_contract_origination": "Successfully started contract deployment."
+        "success_contract_origination": "Successfully started contract deployment.",
+        "started_token_failed": "Started token transaction failed.",
+        "started_token_success": "Successfully started token transaction.",
+        "mint_operation_failed": "Mint operation failed.",
+        "mint_operation_success": "Successfully started mint token.",
+        "burn_operation_failed": "Burn operation failed.",
+        "burn_operation_success": "Successfully started burn token."
       }
     },
     "pdfReader": {

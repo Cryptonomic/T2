@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { StoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 import LoaderSpinner from '../LoaderSpinner';
@@ -10,6 +11,8 @@ import { H4 } from '../Heading/';
 import * as statuses from '../../constants/StatusTypes';
 import { formatAmount } from '../../utils/currancy';
 import Info from './Info';
+import { RootState } from '../../types/store';
+import { AddressType } from '../../types/general';
 const { Mnemonic, Hardware } = StoreType;
 
 const Container = styled.section`
@@ -49,14 +52,15 @@ const Description = styled.div`
 `;
 
 interface Props {
-  isManager: boolean;
-  isContract: boolean;
   address: any;
 }
 
 function AccountStatus(props: Props) {
   const { t } = useTranslation();
-  const { isManager, isContract, address } = props;
+  const selectedAccountType = useSelector<RootState, AddressType>(
+    state => state.app.selectedAccountType
+  );
+  const { address } = props;
   let storeType;
   let status;
   let operations;
@@ -72,7 +76,7 @@ function AccountStatus(props: Props) {
   let title = '';
   let description = '';
   let info;
-  if (isContract) {
+  if (selectedAccountType === AddressType.Delegated || selectedAccountType === AddressType.Smart) {
     title = t('components.addressStatus.deploying_title');
     const opName = operations[statuses.CREATED]
       ? operations[statuses.CREATED]
@@ -86,7 +90,11 @@ function AccountStatus(props: Props) {
       />
     );
   } else {
-    const typeText = t(isManager ? 'general.nouns.account' : 'general.nouns.address');
+    const typeText = t(
+      selectedAccountType === AddressType.Manager
+        ? 'general.nouns.account'
+        : 'general.nouns.address'
+    );
     switch (status) {
       case statuses.CREATED:
         if (storeType === Mnemonic || storeType === Hardware) {
@@ -102,7 +110,7 @@ function AccountStatus(props: Props) {
           title = t('components.accountStatus.titles.retrieving', { typeText });
           if (operations[statuses.CREATED]) {
             const operationName = t(
-              isManager
+              selectedAccountType === AddressType.Manager
                 ? 'components.accountStatus.activation_operation_id'
                 : 'components.accountStatus.origination_operation_id'
             );

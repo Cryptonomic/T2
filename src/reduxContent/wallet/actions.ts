@@ -6,16 +6,18 @@ import {
   SET_IDENTITIES,
   ADD_NEW_IDENTITY,
   UPDATE_IDENTITY,
+  UPDATE_TOKENS,
   SetWalletAction,
   SetWalletFileNameAction,
   UpdateWalletLocationAction,
   SetPasswordAction,
   SetIdentitiesAction,
   AddNewIdentityAction,
-  UpdateIdentityAction
+  UpdateIdentityAction,
+  UpdateTokensAction
 } from './types';
 
-import { WalletState } from '../../types/store';
+import { Token } from '../../types/general';
 
 export function setWalletAction(
   identities: any[],
@@ -23,7 +25,7 @@ export function setWalletAction(
   walletFileName: string,
   walletPassword: string
 ): SetWalletAction {
-  const payload: WalletState = { identities, walletLocation, walletFileName, walletPassword };
+  const payload = { identities, walletLocation, walletFileName, walletPassword };
   return {
     type: SET_WALLET,
     payload
@@ -69,5 +71,12 @@ export function updateIdentityAction(identity: any): UpdateIdentityAction {
   return {
     type: UPDATE_IDENTITY,
     identity
+  };
+}
+
+export function updateTokensAction(tokens: Token[]): UpdateTokensAction {
+  return {
+    type: UPDATE_TOKENS,
+    tokens
   };
 }

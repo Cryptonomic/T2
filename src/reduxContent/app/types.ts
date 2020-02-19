@@ -1,4 +1,4 @@
-import { NodeStatus } from '../../types/general';
+import { NodeStatus, AddressType } from '../../types/general';
 
 export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_LEDGER = 'SET_LEDGER';
@@ -54,7 +54,7 @@ export interface ChangeAccountType {
   selectedParentHash: string;
   selectedParentIndex: number;
   selectedAccountIndex: number;
-  isManager: boolean;
+  selectedAccountType: AddressType;
 }
 
 export interface ChangeAccountAction {
