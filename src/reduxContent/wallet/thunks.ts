@@ -278,7 +278,7 @@ export function syncWalletThunk() {
           mainNode.tezosUrl,
           mapid,
           selectedParentHash
-        );
+        ).catch(() => 0);
         return { ...token, mapid, administrator, balance };
       })
     );
