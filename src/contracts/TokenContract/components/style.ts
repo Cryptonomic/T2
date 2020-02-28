@@ -15,12 +15,12 @@ export const Container = styled.div`
 `;
 
 export const AmountContainer = styled.div`
-  width: 45%;
+  width: 47%;
   position: relative;
 `;
 
 export const FeeContainer = styled.div`
-  width: 45%;
+  width: 47%;
   display: flex;
   height: 64px;
 `;
@@ -29,7 +29,7 @@ export const PasswordButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  height: 100px;
+  height: 71px;
   margin-top: auto;
   width: 100%;
 `;
@@ -37,7 +37,7 @@ export const PasswordButtonContainer = styled.div`
 export const InvokeButton = styled(Button)`
   width: 194px;
   height: 50px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   margin-left: auto;
   padding: 0;
 `;

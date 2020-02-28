@@ -11,6 +11,15 @@ const TezosIconInput = styled(TezosIcon)`
   display: block;
 `;
 
+const SymbolTxt = styled.span`
+  position: absolute;
+  right: 0px;
+  top: 24px;
+  font-size: 14px;
+  color: ${({ theme: { colors } }) => colors.primary};
+  font-weight: 500;
+`;
+
 const NumericInput = styled.div`
   position: relative;
 `;
@@ -21,10 +30,11 @@ interface Props {
   label: string;
   decimalSeparator: string;
   errorText?: string | React.ReactNode;
+  symbol?: string;
 }
 
 const TezosNumericInput = (props: Props) => {
-  const { amount, label, decimalSeparator, errorText, onChange } = props;
+  const { symbol, amount, label, decimalSeparator, errorText, onChange } = props;
 
   function validateInput(val) {
     const preventSeparatorAtStart = new RegExp(`^[${decimalSeparator}]`, 'g');
@@ -60,7 +70,11 @@ const TezosNumericInput = (props: Props) => {
         type="text"
         errorText={errorText}
       />
-      <TezosIconInput color="secondary" iconName="tezos" />
+      {!symbol ? (
+        <TezosIconInput color="secondary" iconName="tezos" />
+      ) : (
+        <SymbolTxt>{symbol}</SymbolTxt>
+      )}
     </NumericInput>
   );
 };

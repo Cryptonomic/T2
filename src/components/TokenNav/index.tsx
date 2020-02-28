@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { Token } from '../../types/general';
 import tokenSvg from '../../../resources/imgs/token-side.svg';
 
 const Container = styled.div<{ isActive: boolean }>`
@@ -36,18 +37,21 @@ const TokenBalance = styled.p<{ isActive: boolean }>`
 
 interface Props {
   isActive: boolean;
+  token: Token;
   onClick?: () => void;
 }
 
 function TokenNav(props: Props) {
-  const { isActive, onClick } = props;
+  const { isActive, token, onClick } = props;
 
   return (
     <Container isActive={isActive} onClick={onClick}>
       <SideImg src={tokenSvg} />
       <MainContainer>
-        <TokenTitle isActive={isActive}>Token Name</TokenTitle>
-        <TokenBalance isActive={isActive}>234567 ETL</TokenBalance>
+        <TokenTitle isActive={isActive}>{token.displayName}</TokenTitle>
+        <TokenBalance isActive={isActive}>
+          {token.balance} {token.symbol}
+        </TokenBalance>
       </MainContainer>
     </Container>
   );

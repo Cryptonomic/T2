@@ -182,8 +182,7 @@ export function mintThunk(destination: string, amount: string, fee: number, pass
         kind: TRANSACTION,
         source: keyStore.publicKeyHash,
         operation_group_hash: clearedOperationId,
-        fee,
-        consumed_gas: GAS
+        fee
       });
 
       const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
@@ -251,7 +250,7 @@ export function burnThunk(destination: string, amount: string, fee: number, pass
         res.results.contents[0].metadata.operation_result;
 
       if (operationResult && operationResult.errors && operationResult.errors.length) {
-        const error = 'components.messageBar.messages.mint_operation_failed';
+        const error = 'components.messageBar.messages.burn_operation_failed';
         console.error(error);
         dispatch(createMessageAction(error, true));
         return false;
@@ -261,7 +260,7 @@ export function burnThunk(destination: string, amount: string, fee: number, pass
 
       dispatch(
         createMessageAction(
-          'components.messageBar.messages.mint_operation_success',
+          'components.messageBar.messages.burn_operation_success',
           false,
           clearedOperationId
         )
@@ -273,8 +272,7 @@ export function burnThunk(destination: string, amount: string, fee: number, pass
         kind: TRANSACTION,
         source: keyStore.publicKeyHash,
         operation_group_hash: clearedOperationId,
-        fee,
-        consumed_gas: GAS
+        fee
       });
 
       const tokenIndex = findTokenIndex(tokens, selectedAccountHash);

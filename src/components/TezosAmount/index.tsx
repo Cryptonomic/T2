@@ -73,22 +73,49 @@ interface Props {
   weight: string;
   format: number;
   showTooltip?: boolean;
+  symbol?: string;
 }
 
 const TezosAmount = (props: Props) => {
-  const { size, color, amount, iconName, weight, showTooltip, format } = props;
-  const formatedBalance = `${formatAmount(amount)}`;
+  const { size, color, amount, iconName, weight, showTooltip, format, symbol } = props;
+  function getRealValue() {
+    if (!!symbol) {
+      return {
+        strBalance: amount.toString(),
+        view: amount.toString()
+      };
+    }
+
+    const formatStrBal = `${formatAmount(amount)}`;
+    const viewBal = format === 6 ? formatStrBal : `~${formatAmount(amount, format)}`;
+    return {
+      strBalance: formatStrBal,
+      view: viewBal
+    };
+  }
+
+  function getIcon() {
+    if (!!symbol) {
+      return symbol;
+    }
+
+    if (!!iconName) {
+      return <Icon size={size} color={color} iconName={iconName} />;
+    }
+    return null;
+  }
+  const { strBalance, view } = getRealValue();
   return showTooltip ? (
-    <Tooltip position="bottom" content={<Content formatedBalance={formatedBalance} />}>
+    <Tooltip position="bottom" content={<Content formatedBalance={strBalance} />}>
       <Amount color={color} size={size} weight={weight} style={SelectableText}>
-        {format === 6 ? formatAmount(amount) : `~${formatAmount(amount, format)}`}
-        {iconName && <Icon size={size} color={color} iconName={iconName} />}
+        {view}
+        {getIcon()}
       </Amount>
     </Tooltip>
   ) : (
     <Amount color={color} size={size} weight={weight} format={format} style={SelectableText}>
-      {format === 6 ? formatAmount(amount) : `~${formatAmount(amount, format)}`}
-      {iconName && <Icon size={size} color={color} iconName={iconName} />}
+      {view}
+      {getIcon()}
     </Amount>
   );
 };

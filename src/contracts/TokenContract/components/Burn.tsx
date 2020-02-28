@@ -13,9 +13,9 @@ import InputError from '../../BabylonDelegation/components/InputError';
 
 import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
-import { transferThunk } from '../duck/thunks';
+import { burnThunk } from '../duck/thunks';
 
-import { SEND } from '../../../constants/TabConstants';
+import { BURN } from '../../../constants/TabConstants';
 import { AVERAGEFEES } from '../../../constants/FeeValue';
 import { RootState, AppState } from '../../../types/store';
 import {
@@ -33,7 +33,7 @@ interface Props {
   symbol: string;
 }
 
-function Send(props: Props) {
+function Burn(props: Props) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [fee, setFee] = useState(AVERAGEFEES.high);
@@ -73,21 +73,21 @@ function Send(props: Props) {
     };
   }
 
-  async function onSend() {
+  async function onAction() {
     dispatch(setIsLoadingAction(true));
 
     if (isLedger) {
       setOpen(true);
     }
 
-    await dispatch(transferThunk(newAddress, amount, fee, passPhrase));
+    await dispatch(burnThunk(newAddress, amount, fee, passPhrase));
     setOpen(false);
     dispatch(setIsLoadingAction(false));
   }
 
   function onEnterPress(keyVal) {
     if (keyVal === 'Enter' && !isDisabled) {
-      onSend();
+      onAction();
     }
   }
 
@@ -98,7 +98,7 @@ function Send(props: Props) {
     <Container onKeyDown={event => onEnterPress(event.key)}>
       <RowContainer>
         <InputAddress
-          label={t('components.send.recipient_address')}
+          label={t('components.send.holder_address')}
           operationType="send"
           tooltip={false}
           onChange={val => setAddress(val)}
@@ -137,8 +137,8 @@ function Send(props: Props) {
             containerStyle={{ width: '47%', marginTop: '10px' }}
           />
         )}
-        <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
-          {t('general.verbs.send')}
+        <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onAction()}>
+          {t('general.verbs.burn')}
         </InvokeButton>
       </PasswordButtonContainer>
       {isLedger && open && (
@@ -150,7 +150,7 @@ function Send(props: Props) {
           open={open}
           onClose={() => setOpen(false)}
           isLoading={isLoading}
-          op={SEND}
+          op={BURN}
           symbol={symbol}
         />
       )}
@@ -158,4 +158,4 @@ function Send(props: Props) {
   );
 }
 
-export default Send;
+export default Burn;
