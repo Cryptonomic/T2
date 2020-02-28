@@ -12,6 +12,8 @@ import Transactions from '../../components/Transactions';
 import Loader from '../../components/Loader';
 
 import Send from './components/Send';
+import Burn from './components/Burn';
+import Mint from './components/Mint';
 
 import { TRANSACTIONS, SEND, BURN, MINT } from '../../constants/TabConstants';
 import { ms } from '../../styles/helpers';
@@ -96,7 +98,7 @@ function ActionPanel() {
     shallowEqual
   );
 
-  const { balance, activeTab, symbol, administrator, transactions } = selectedToken;
+  const { balance, activeTab, symbol, displayName, administrator, transactions } = selectedToken;
 
   const isAdmin = selectedParentHash === administrator;
   const tabs = isAdmin ? [TRANSACTIONS, SEND, MINT, BURN] : [TRANSACTIONS, SEND];
@@ -108,11 +110,11 @@ function ActionPanel() {
   function renderSection() {
     switch (activeTab) {
       case MINT:
-        return <Send isReady={true} balance={balance} />;
+        return <Mint isReady={true} balance={balance} symbol={symbol} />;
       case BURN:
-        return <Send isReady={true} balance={balance} />;
+        return <Burn isReady={true} balance={balance} symbol={symbol} />;
       case SEND:
-        return <Send isReady={true} balance={balance} />;
+        return <Send isReady={true} balance={balance} symbol={symbol} />;
       case TRANSACTIONS:
       default: {
         if (!transactions || transactions.length === 0) {
@@ -161,27 +163,22 @@ function ActionPanel() {
         privateKey={''}
         publicKeyHash={selectedAccountHash || 'Inactive'}
         delegatedAddress={''}
+        displayName={displayName}
+        symbol={symbol}
       />
 
       <TabList count={tabs.length}>
-        {tabs.map(tab => {
-          const ready = true;
-          return (
-            <Tab
-              isActive={activeTab === tab}
-              key={tab}
-              ready={ready}
-              buttonTheme="plain"
-              onClick={() => {
-                if (ready) {
-                  onChangeTab(tab);
-                }
-              }}
-            >
-              <TabText ready={ready}>{t(tab)}</TabText>
-            </Tab>
-          );
-        })}
+        {tabs.map(tab => (
+          <Tab
+            isActive={activeTab === tab}
+            key={tab}
+            ready={true}
+            buttonTheme="plain"
+            onClick={() => onChangeTab(tab)}
+          >
+            <TabText ready={true}>{t(tab)}</TabText>
+          </Tab>
+        ))}
       </TabList>
       <SectionContainer>{renderSection()}</SectionContainer>
     </Container>

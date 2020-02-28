@@ -139,7 +139,7 @@ export function updateActiveTabThunk(activeTab: string, isToken?: boolean) {
       const { tokens } = state().wallet;
       const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
       tokens[tokenIndex] = { ...tokens[tokenIndex], activeTab };
-      updateTokensAction([...tokens]);
+      dispatch(updateTokensAction([...tokens]));
     } else if (selectedAccountHash === selectedParentHash) {
       dispatch(updateIdentityActiveTab(selectedAccountHash, activeTab));
     } else {

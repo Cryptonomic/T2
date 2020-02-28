@@ -52,10 +52,21 @@ interface Props {
   publicKeyHash: string;
   privateKey: string;
   delegatedAddress?: string | null;
+  displayName?: string;
+  symbol?: string;
 }
 
 function BalanceBanner(props: Props) {
-  const { storeType, isReady, balance, privateKey, publicKeyHash, delegatedAddress } = props;
+  const {
+    storeType,
+    isReady,
+    balance,
+    privateKey,
+    publicKeyHash,
+    delegatedAddress,
+    displayName,
+    symbol
+  } = props;
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -129,7 +140,7 @@ function BalanceBanner(props: Props) {
                 color="white"
               />
             )}
-            {addressLabel}
+            {!displayName ? addressLabel : displayName}
 
             {isManager && !isLedger && (
               <KeyIconButton size="small" color="primary" onClick={() => setIsOpen(true)}>
@@ -166,6 +177,7 @@ function BalanceBanner(props: Props) {
               amount={balance}
               weight="light"
               format={2}
+              symbol={symbol}
               showTooltip={true}
             />
           ) : null}

@@ -329,6 +329,7 @@ function AddressBlock(props: Props) {
           <TokenNav
             key={token.address}
             isActive={token.address === selectedAccountHash}
+            token={token}
             onClick={() => goToAccount(token.address, index, AddressType.Token)}
           />
         );

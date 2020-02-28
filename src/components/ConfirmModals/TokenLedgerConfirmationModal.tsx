@@ -8,59 +8,76 @@ import sendImg from '../../../resources/imgs/Send.svg';
 import confirmImg from '../../../resources/imgs/Confirm-Ledger.svg';
 import { formatAmount } from '../../utils/currancy';
 
+import { SEND } from '../../constants/TabConstants';
+
 import {
   MainContainer,
   DescriptionContainer,
   SendSvg,
   SendDes,
   ItemContainer,
-  BottomContainer,
+  BottomContainer2,
   ConfirmImg,
   ConfirmDes,
   ConfirmSpan,
   ItemTitle,
   ItemContent,
-  SendDesTitle
+  SymbolTxt
 } from './style';
 
 interface Props {
+  amount: string;
+  to: string;
   source: string;
   open: boolean;
   onClose: () => void;
   isLoading: boolean;
   fee: number;
-  amount: string;
-  parameters: string;
+  op: string;
+  symbol: string;
 }
 
-const DeployLedgerConfirmationModal = (props: Props) => {
+const TokenLedgerConfirmationModal = (props: Props) => {
+  const { amount, to, source, open, isLoading, onClose, fee, op, symbol } = props;
   const { t } = useTranslation();
-  const { source, open, isLoading, onClose, fee, amount, parameters } = props;
 
   const calcFee = formatAmount(fee);
 
+  const sourceTxt =
+    op === SEND
+      ? t('components.interactModal.deploy_from')
+      : t('components.interactModal.invoke_from');
+  const opTxt = t(op).toLocaleLowerCase();
+
   return (
     <Modal
-      title={t('components.deployLedgerConfirmationModal.confirm_deploy_title')}
+      title={t('components.tokenLedgerConfirmModal.confirm_token')}
       open={open}
       onClose={onClose}
     >
       <MainContainer>
         <DescriptionContainer>
           <SendSvg src={sendImg} />
-          <SendDes>
-            <SendDesTitle>
-              {t('components.deployLedgerConfirmationModal.deploy_description_1')}
-            </SendDesTitle>
-            {t('components.deployLedgerConfirmationModal.deploy_description_2')}
-          </SendDes>
+          <SendDes>{t('components.tokenLedgerConfirmModal.op_description', { op: opTxt })}</SendDes>
         </DescriptionContainer>
+
+        <ItemContainer>
+          <ItemTitle>{sourceTxt}</ItemTitle>
+          <TezosAddress address={source} size="16px" weight={300} color="primary" />
+        </ItemContainer>
+
+        {op !== SEND && (
+          <ItemContainer>
+            <ItemTitle>{t('general.nouns.destination')}</ItemTitle>
+            <TezosAddress address={to} size="16px" weight={300} color="primary" />
+          </ItemContainer>
+        )}
 
         <ItemContainer>
           <ItemTitle>{t('general.nouns.amount')}</ItemTitle>
           <ItemContent>
             {amount}
-            <TezosIcon color="secondary" iconName="tezos" />
+            <SymbolTxt>{symbol}</SymbolTxt>
           </ItemContent>
         </ItemContainer>
 
@@ -71,29 +88,19 @@ const DeployLedgerConfirmationModal = (props: Props) => {
             <TezosIcon color="secondary" iconName="tezos" />
           </ItemContent>
         </ItemContainer>
-
-        <ItemContainer>
-          <ItemTitle>{t('components.interactModal.deploy_from')}</ItemTitle>
-          <TezosAddress address={source} size="16px" weight={300} color="primary" />
-        </ItemContainer>
-
-        <ItemContainer>
-          <ItemTitle>{t('components.interactModal.initial_storage')}</ItemTitle>
-          <ItemContent>{parameters}</ItemContent>
-        </ItemContainer>
       </MainContainer>
-      <BottomContainer>
+      <BottomContainer2>
         <ConfirmDes>
-          <Trans i18nKey="components.deployLedgerConfirmationModal.deploy_confirm">
-            Please
-            <ConfirmSpan>confirm</ConfirmSpan> the deployment on your device at your own risk.
+          <Trans i18nKey="components.sendLedgerConfirmationModal.confirm_description">
+            If the all the details are correct, please
+            <ConfirmSpan>confirm</ConfirmSpan> the transaction on your device.
           </Trans>
         </ConfirmDes>
         <ConfirmImg src={confirmImg} />
-      </BottomContainer>
+      </BottomContainer2>
       {isLoading && <Loader />}
     </Modal>
   );
 };
 
-export default DeployLedgerConfirmationModal;
+export default TokenLedgerConfirmationModal;
