@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
@@ -14,24 +14,10 @@ import Loader from '../../components/Loader';
 import AccountStatus from '../../components/AccountStatus';
 
 import Delegate from './components/Delegate';
-import Invoke from './components/Invoke';
 import Send from './components/Send';
 import Deposit from './components/Deposit';
 import Withdraw from './components/Withdraw';
-import CodeStorage from './components/CodeStorage';
-import Receive from './components/Receive';
-
-import {
-  TRANSACTIONS,
-  SEND,
-  RECEIVE,
-  DELEGATE,
-  INVOKE,
-  CODE,
-  STORAGE,
-  DEPOSIT,
-  WITHDRAW
-} from '../../constants/TabConstants';
+import { TRANSACTIONS, SEND, DELEGATE, DEPOSIT, WITHDRAW } from '../../constants/TabConstants';
 import { READY } from '../../constants/StatusTypes';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
@@ -79,34 +65,6 @@ const SectionContainer = styled.div`
   min-height: 600px;
 `;
 
-const Link = styled.span`
-  color: ${({ theme: { colors } }) => colors.blue1};
-  cursor: pointer;
-`;
-
-const DescriptionContainer = styled.p`
-  color: ${({ theme: { colors } }) => colors.gray5};
-  text-align: center;
-`;
-
-interface DescriptionProps {
-  onSendClick: () => void;
-  onReceiveClick: () => void;
-}
-
-const Description = (props: DescriptionProps) => {
-  const { onSendClick, onReceiveClick } = props;
-  return (
-    <DescriptionContainer>
-      <Trans i18nKey="components.actionPanel.description">
-        It is pretty empty here. Get started
-        <Link onClick={onSendClick}> sending</Link> and
-        <Link onClick={onReceiveClick}> receiving</Link> tez from this address.
-      </Trans>
-    </DescriptionContainer>
-  );
-};
-
 const tabs = [TRANSACTIONS, SEND, DELEGATE, WITHDRAW, DEPOSIT];
 
 function ActionPanel() {
@@ -125,12 +83,10 @@ function ActionPanel() {
     activeTab,
     storeType,
     status,
-    script,
     privateKey,
     delegate_value,
     regularAddresses,
-    transactions,
-    storage
+    transactions
   } = selectedAccount;
 
   function onChangeTab(newTab: string) {
@@ -142,33 +98,8 @@ function ActionPanel() {
     switch (activeTab) {
       case DELEGATE:
         return <Delegate isReady={ready} />;
-      case RECEIVE:
-        return <Receive address={selectedAccountHash} />;
       case SEND:
         return <Send isReady={ready} addressBalance={balance} />;
-      case CODE:
-        return <CodeStorage code={script.replace(/\\n/g, '\n')} />;
-      case STORAGE:
-        return <CodeStorage code={storage} />;
-      case INVOKE:
-        return (
-          <Invoke
-            isReady={ready}
-            addresses={regularAddresses}
-            onSuccess={() => onChangeTab(TRANSACTIONS)}
-          />
-        );
-      // case INVOKE_MANAGER:
-      //   return (
-      //     <InvokeManager
-      //       balance={balance}
-      //       isReady={ready}
-      //       addresses={regularAddresses}
-      //       selectedParentHash={selectedParentHash}
-      //       selectedAccountHash={selectedAccountHash}
-      //       onSuccess={() => onChangeTab(TRANSACTIONS)}
-      //     />
-      //   );
       case WITHDRAW:
         return (
           <Withdraw balance={balance} isReady={ready} onSuccess={() => onChangeTab(TRANSACTIONS)} />
@@ -202,13 +133,8 @@ function ActionPanel() {
         return transactions.length === 0 ? (
           <EmptyState
             imageSrc={transactionsEmptyState}
-            title={t('../../components.actionPanel.empty-title')}
-            description={
-              <Description
-                onReceiveClick={() => onChangeTab(RECEIVE)}
-                onSendClick={() => onChangeTab(SEND)}
-              />
-            }
+            title={t('components.actionPanel.empty-title')}
+            description={null}
           />
         ) : (
           <Fragment>
