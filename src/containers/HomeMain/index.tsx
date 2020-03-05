@@ -7,6 +7,7 @@ import AddressBlock from '../../components/AddressBlock';
 import BabylonDelegation from '../../contracts/BabylonDelegation';
 import GenericContract from '../../contracts/GenericContract';
 import TokenContract from '../../contracts/TokenContract';
+import ImplicitAccount from '../../contracts/ImplicitAccount';
 
 import { sortArr } from '../../utils/array';
 import { Container, SideBarContainer, AccountItem } from './style';
@@ -16,6 +17,8 @@ function HomeMain() {
   const addressType = useSelector((state: RootState) => state.app.selectedAccountType);
   function renderView() {
     switch (addressType) {
+      case AddressType.Manager:
+        return <ImplicitAccount />;
       case AddressType.Delegated:
         return <BabylonDelegation />;
       case AddressType.Token:

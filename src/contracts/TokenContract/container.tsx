@@ -6,6 +6,7 @@ import { useTranslation, Trans } from 'react-i18next';
 
 import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
+import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
 import Transactions from '../../components/Transactions';
 
@@ -17,6 +18,7 @@ import Mint from './components/Mint';
 
 import { TRANSACTIONS, SEND, BURN, MINT } from '../../constants/TabConstants';
 import { ms } from '../../styles/helpers';
+import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
 import { sortArr } from '../../utils/array';
 
@@ -59,34 +61,6 @@ const SectionContainer = styled.div`
   min-height: 600px;
 `;
 
-const Link = styled.span`
-  color: ${({ theme: { colors } }) => colors.blue1};
-  cursor: pointer;
-`;
-
-const DescriptionContainer = styled.p`
-  color: ${({ theme: { colors } }) => colors.gray5};
-  text-align: center;
-`;
-
-interface DescriptionProps {
-  onSendClick: () => void;
-  onReceiveClick: () => void;
-}
-
-const Description = (props: DescriptionProps) => {
-  const { onSendClick, onReceiveClick } = props;
-  return (
-    <DescriptionContainer>
-      <Trans i18nKey="components.actionPanel.description">
-        It is pretty empty here. Get started
-        <Link onClick={onSendClick}> sending</Link> and
-        <Link onClick={onReceiveClick}> receiving</Link> tez from this address.
-      </Trans>
-    </DescriptionContainer>
-  );
-};
-
 function ActionPanel() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -118,7 +92,13 @@ function ActionPanel() {
       case TRANSACTIONS:
       default: {
         if (!transactions || transactions.length === 0) {
-          return null;
+          return (
+            <EmptyState
+              imageSrc={transactionsEmptyState}
+              title={t('components.actionPanel.empty-title')}
+              description={null}
+            />
+          );
         }
 
         const JSTransactions = (transactions || []).sort(

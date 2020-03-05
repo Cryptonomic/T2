@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
@@ -13,10 +13,11 @@ import Transactions from '../../components/Transactions';
 import Loader from '../../components/Loader';
 import AccountStatus from '../../components/AccountStatus';
 
-import Invoke from '../BabylonDelegation/components/Invoke';
-import CodeStorage from '../BabylonDelegation/components/CodeStorage';
+import Delegate from '../BabylonDelegation/components/Delegate';
+import Send from '../BabylonDelegation/components/Send';
+import Receive from '../BabylonDelegation/components/Receive';
 
-import { TRANSACTIONS, INVOKE, CODE, STORAGE } from '../../constants/TabConstants';
+import { TRANSACTIONS, SEND, RECEIVE, DELEGATE } from '../../constants/TabConstants';
 import { READY } from '../../constants/StatusTypes';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
@@ -63,7 +64,35 @@ const SectionContainer = styled.div`
   min-height: 600px;
 `;
 
-const tabs = [TRANSACTIONS, INVOKE, CODE, STORAGE];
+const Link = styled.span`
+  color: ${({ theme: { colors } }) => colors.blue1};
+  cursor: pointer;
+`;
+
+const DescriptionContainer = styled.p`
+  color: ${({ theme: { colors } }) => colors.gray5};
+  text-align: center;
+`;
+
+interface DescriptionProps {
+  onSendClick: () => void;
+  onReceiveClick: () => void;
+}
+
+const Description = (props: DescriptionProps) => {
+  const { onSendClick, onReceiveClick } = props;
+  return (
+    <DescriptionContainer>
+      <Trans i18nKey="components.actionPanel.description">
+        It is pretty empty here. Get started
+        <Link onClick={onSendClick}> sending</Link> and
+        <Link onClick={onReceiveClick}> receiving</Link> tez from this address.
+      </Trans>
+    </DescriptionContainer>
+  );
+};
+
+const tabs = [TRANSACTIONS, SEND, RECEIVE, DELEGATE];
 
 function ActionPanel() {
   const { t } = useTranslation();
@@ -81,12 +110,9 @@ function ActionPanel() {
     activeTab,
     storeType,
     status,
-    script,
     privateKey,
     delegate_value,
-    regularAddresses,
-    transactions,
-    storage
+    transactions
   } = selectedAccount;
 
   function onChangeTab(newTab: string) {
@@ -96,18 +122,12 @@ function ActionPanel() {
   function renderSection() {
     const ready = status === READY;
     switch (activeTab) {
-      case CODE:
-        return <CodeStorage code={script.replace(/\\n/g, '\n')} />;
-      case STORAGE:
-        return <CodeStorage code={storage} />;
-      case INVOKE:
-        return (
-          <Invoke
-            isReady={ready}
-            addresses={regularAddresses}
-            onSuccess={() => onChangeTab(TRANSACTIONS)}
-          />
-        );
+      case DELEGATE:
+        return <Delegate isReady={ready} />;
+      case RECEIVE:
+        return <Receive address={selectedAccountHash} />;
+      case SEND:
+        return <Send isReady={ready} addressBalance={balance} />;
       case TRANSACTIONS:
       default: {
         if (!ready) {
@@ -130,7 +150,12 @@ function ActionPanel() {
           <EmptyState
             imageSrc={transactionsEmptyState}
             title={t('components.actionPanel.empty-title')}
-            description={null}
+            description={
+              <Description
+                onReceiveClick={() => onChangeTab(RECEIVE)}
+                onSendClick={() => onChangeTab(SEND)}
+              />
+            }
           />
         ) : (
           <Fragment>
