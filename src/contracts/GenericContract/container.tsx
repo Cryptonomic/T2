@@ -13,8 +13,8 @@ import Transactions from '../../components/Transactions';
 import Loader from '../../components/Loader';
 import AccountStatus from '../../components/AccountStatus';
 
-import Invoke from '../BabylonDelegation/components/Invoke';
-import CodeStorage from '../BabylonDelegation/components/CodeStorage';
+import Invoke from './components/Invoke';
+import CodeStorage from './components/CodeStorage';
 
 import { TRANSACTIONS, INVOKE, CODE, STORAGE } from '../../constants/TabConstants';
 import { READY } from '../../constants/StatusTypes';
@@ -27,7 +27,7 @@ import { isReady } from '../../utils/general';
 import { RootState } from '../../types/store';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from '../BabylonDelegation/duck/selectors';
+import { getAccountSelector } from '../duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;
