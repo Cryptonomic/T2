@@ -8,13 +8,13 @@ import Fees from '../../../components/Fees';
 import PasswordInput from '../../../components/PasswordInput';
 import WithdrawLedgerConfirmationModal from '../../../components/ConfirmModals/WithdrawLedgerConfirmationModal';
 import TezosIcon from '../../../components/TezosIcon';
-import InputError from './InputError';
+import InputError from '../../../components/InputError';
 
 import { ms } from '../../../styles/helpers';
 import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 
-import { withdrawThunk } from '../duck/thunks';
+import { withdrawThunk } from '../../duck/thunks';
 
 import { OPERATIONFEE, AVERAGEFEES } from '../../../constants/FeeValue';
 import { RootState, AppState } from '../../../types/store';
