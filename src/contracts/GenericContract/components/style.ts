@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '../../../components/Button';
 
 export const Container = styled.div`
@@ -10,22 +11,29 @@ export const Container = styled.div`
   position: relative;
 `;
 
-export const AmountContainer = styled.div`
-  width: 47%;
-  position: relative;
+export const RowContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 `;
 
-export const FeeContainer = styled.div`
-  width: 47%;
-  display: flex;
-  height: 64px;
+export const UseMax = styled.div`
+  position: absolute;
+  right: 23px;
+  top: 24px;
+  font-size: 12px;
+  font-weight: 500;
+  display: block;
+  color: ${({ theme: { colors } }) => colors.accent};
+  cursor: pointer;
 `;
 
 export const PasswordButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  height: 71px;
+  height: 100px;
   margin-top: auto;
   width: 100%;
 `;
@@ -33,14 +41,7 @@ export const PasswordButtonContainer = styled.div`
 export const InvokeButton = styled(Button)`
   width: 194px;
   height: 50px;
-  margin-bottom: 0px;
+  margin-bottom: 10px;
   margin-left: auto;
   padding: 0;
-`;
-
-export const RowContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
 `;

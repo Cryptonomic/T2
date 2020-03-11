@@ -29,7 +29,7 @@ import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from './duck/selectors';
+import { getAccountSelector } from '../duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;

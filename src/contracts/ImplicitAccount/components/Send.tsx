@@ -14,11 +14,13 @@ import TezosIcon from '../../../components/TezosIcon';
 import TextField from '../../../components/TextField';
 import Tooltip from '../../../components/Tooltip';
 import Fees from '../../../components/Fees';
+
 import InputError from '../../../components/InputError';
 
 import { ms } from '../../../styles/helpers';
 
 import {
+  depositThunk,
   sendTezThunk,
   sendDelegatedFundsThunk,
   getIsImplicitAndEmptyThunk
@@ -29,6 +31,7 @@ import { AVERAGEFEES } from '../../../constants/FeeValue';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { RootState } from '../../../types/store';
+import { AddressType } from '../../../types/general';
 
 import {
   Container,
@@ -126,6 +129,7 @@ function Send(props: Props) {
   });
   const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false);
+  const [addressType, setAddressType] = useState<AddressType>(AddressType.None);
   const [isAddressIssue, setIsAddressIssue] = useState(false);
   const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(
     OperationKindType.Transaction,
@@ -237,10 +241,10 @@ function Send(props: Props) {
 
   async function onSend() {
     dispatch(setIsLoadingAction(true));
-    if (selectedParentHash !== toAddress) {
-      await dispatch(sendDelegatedFundsThunk(password, toAddress, amount, Math.floor(fee)));
-    } else {
+    if (addressType === AddressType.Manager) {
       await dispatch(sendTezThunk(password, toAddress, amount, Math.floor(fee)));
+    } else {
+      await dispatch(depositThunk(fee, amount, password, toAddress));
     }
 
     setOpen(false);
@@ -298,15 +302,19 @@ function Send(props: Props) {
   const isDisabled =
     amount === '0' || !amount || !toAddress || !isReady || isIssue || isLoading || isAddressIssue;
 
+  const buttonTitle =
+    addressType === AddressType.Manager ? t('general.verbs.send') : t('general.verbs.deposit');
+
   return (
     <Container>
       <SendTitle>{t('components.send.send_xtz')}</SendTitle>
       <InputAddress
         label={t('components.send.recipient_address')}
         address={selectedAccountHash}
-        operationType="send_babylon"
+        operationType="send"
         onChange={handleToAddressChange}
         onIssue={err => setIsAddressIssue(err)}
+        onAddressType={type => setAddressType(type)}
       />
       <AmountContainer>
         <TezosNumericInput
@@ -370,7 +378,7 @@ function Send(props: Props) {
           <TezosAmount weight="500" color={balanceColor} size={ms(0.65)} amount={balance} />
         </BalanceContent>
         <SendButton disabled={isDisabled} onClick={() => onValidateAmount()} buttonTheme="primary">
-          {t('general.verbs.send')}
+          {buttonTitle}
         </SendButton>
       </BottomContainer>
 

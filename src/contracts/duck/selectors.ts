@@ -1,12 +1,14 @@
 import { createSelector } from 'reselect';
-import { RootState } from '../../../types/store';
-import { getAddressType } from '../../../utils/account';
-import { AddressType } from '../../../types/general';
-import { TRANSACTIONS } from '../../../constants/TabConstants';
+import { RootState } from '../../types/store';
+import { getAddressType } from '../../utils/account';
+import { AddressType } from '../../types/general';
+import { TRANSACTIONS } from '../../constants/TabConstants';
 
 const selectedAccountHashSelector = (state: RootState) => state.app.selectedAccountHash;
 const selectedParentHashSelector = (state: RootState) => state.app.selectedParentHash;
 const identitiesSelector = (state: RootState) => state.wallet.identities;
+
+const tokensSelector = (state: RootState) => state.wallet.tokens;
 
 const defaultAccount = {
   balance: 0,
@@ -58,4 +60,10 @@ export const getAccountSelector = createSelector(
     }
     return defaultAccount;
   }
+);
+
+export const getTokenSelector = createSelector(
+  selectedAccountHashSelector,
+  tokensSelector,
+  (accountHash, tokens) => tokens.find(token => token.address === accountHash) || tokens[0]
 );

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import MenuItem from '@material-ui/core/MenuItem';
 import { TezosParameterFormat, OperationKindType } from 'conseiljs';
 
-import Button from '../../../components/Button';
 import TezosNumericInput from '../../../components/TezosNumericInput';
 import TextField from '../../../components/TextField';
 import Fees from '../../../components/Fees';

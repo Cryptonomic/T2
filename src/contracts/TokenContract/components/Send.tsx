@@ -9,11 +9,11 @@ import PasswordInput from '../../../components/PasswordInput';
 import TezosNumericInput from '../../../components/TezosNumericInput';
 import TokenLedgerConfirmationModal from '../../../components/ConfirmModals/TokenLedgerConfirmationModal';
 
-import InputError from '../../BabylonDelegation/components/InputError';
+import InputError from '../../../components/InputError';
 
 import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
-import { transferThunk } from '../duck/thunks';
+import { transferThunk } from '../../duck/thunks';
 
 import { SEND } from '../../../constants/TabConstants';
 import { AVERAGEFEES } from '../../../constants/FeeValue';
