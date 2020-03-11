@@ -13,9 +13,9 @@ import Transactions from '../../components/Transactions';
 import Loader from '../../components/Loader';
 import AccountStatus from '../../components/AccountStatus';
 
-import Delegate from '../BabylonDelegation/components/Delegate';
-import Send from '../BabylonDelegation/components/Send';
-import Receive from '../BabylonDelegation/components/Receive';
+import Delegate from './components/Delegate';
+import Send from './components/Send';
+import Receive from './components/Receive';
 
 import { TRANSACTIONS, SEND, RECEIVE, DELEGATE } from '../../constants/TabConstants';
 import { READY } from '../../constants/StatusTypes';
@@ -28,7 +28,7 @@ import { isReady } from '../../utils/general';
 import { RootState } from '../../types/store';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from '../BabylonDelegation/duck/selectors';
+import { getAccountSelector } from '../duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;

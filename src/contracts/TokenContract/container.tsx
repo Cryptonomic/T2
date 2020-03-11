@@ -25,7 +25,7 @@ import { sortArr } from '../../utils/array';
 import { RootState } from '../../types/store';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getTokenSelector } from './duck/selectors';
+import { getTokenSelector } from '../duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;
