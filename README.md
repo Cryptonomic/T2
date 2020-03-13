@@ -1,60 +1,60 @@
-# T2
-T, the next generation
+# Galleon
 
-## Both processes have to be started simultaneously in different console tabs:
+A wallet for the Tezos blockchain based on [Conseil](https://github.com/Cryptonomic/Conseil) and [ConseilJS](https://github.com/Cryptonomic/ConseilJS).
 
-npm run start-renderer-dev
-npm run start-main-dev
-This will start the application with hot-reload so you can instantly start developing your application.
+This code was written for the community. Use it, hack it, fork it as you please!
 
-## You can also run do the following to start both in a single process:
+[![Build Status](https://travis-ci.org/Cryptonomic/Tezori.svg?branch=master)](https://travis-ci.org/Cryptonomic/Tezori)
+[![Coverage Status](https://coveralls.io/repos/github/Cryptonomic/Tezori/badge.svg?branch=master)](https://coveralls.io/github/Cryptonomic/Tezori?branch=master)
 
-npm run start-dev
+## Development
 
-## Packaging
-We use Electron builder to build and package the application. By default you can run the following to package for your current platform:
+The wallet is built on [React](https://reactjs.org/) and [Electron](https://electronjs.org/) and uses [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate)
 
-npm run dist
-This will create a installer for your platform in the releases folder.
+Active development happens on the develop branch with periodic merges to master.
 
-You can make builds for specific platforms (or multiple platforms) by using the options found here. E.g. building for all platforms (Windows, Mac, Linux):
+Add the file `src/extraResources/walletSettings.json`:
 
-npm run dist -- -mwl
+```json
+{
+  "selectedNode": "MyTezosNode",
+  "nodesList": [
+    {
+      "displayName": "MyTezosNode",
+      "platform": "TEZOS",
+      "network": "MyNetwork",
+      "tezosUrl": "https://mytezosnode.com",
+      "conseilUrl": "https://myconseilnode.com",
+      "apiKey": "anapikey"
+    }
+  ],
+  "selectedPath": "Default",
+  "pathsList": [
+    {
+      "label": "Default",
+      "derivation": "44'/1729'/0'/0'/0'"
+    }
+  ]
+}
 
-## Docker image, container run
-sudo make imageName="Your image name" run-container
+```
 
-## Docker container start/stop
-sudo make containerId="container ID" start-container(stop-container)
+To install all dependencies:
 
-## Dive Docker container
-sudo make containerId="container ID" dive-container
+`npm i`
+`cd src`
+`npm i`
+`cd ..`
 
-## Start Jenkins server
-sudo make containerId="container ID" jenkins-start
+To run during development:
 
-## Copy assets/config folder into container source
-1. sudo make containerId="container ID" copy-assets
-2. sudo make containerId="container ID" copy-config
+`npm run dev`
 
-## Install Wine32/64 to Ubuntu docker container to build Window version
-1. apt-get install wine64
-2. dpkg --add-architecture i386 && apt-get update && apt-get install wine32
+To package for deployment:
 
-## Build source in container from host machine or git
-1. sudo make containerId="container ID" build-local
-2. sudo make containerId="container ID" branch="branch name" build-git
+`npm run package-all`
 
-## Jenkins Install to Linux
-https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/
+## Customize Logo
 
-## Execute Shell in Jenkins Build
-
-1. set +e
-2. chmod -R 777 /YOUR REPO
-3. cd /YOUR REPO
-4. git checkout -- .
-5. git checkout master
-6. git pull origin master
-7. npm install
-8. GH_TOKEN=(your github personal token) npm run dist -- -wl
+Change the `tezosLogo.svg` file in `resources/` folder.
+Chnage the `logo` field in `src/config.json`.
