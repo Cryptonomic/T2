@@ -711,13 +711,13 @@ export function transferThunk(destination: string, amount: string, fee: number, 
 
     const keyStore = getSelectedKeyStore(
       identities,
-      selectedAccountHash,
+      selectedParentHash,
       selectedParentHash,
       isLedger,
       mainPath
     );
 
-    const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
+    const parsedAmount = Number(amount.replace(/,/g, '.'));
 
     const res: any = await transferBalance(
       tezosUrl,
@@ -803,13 +803,13 @@ export function mintThunk(destination: string, amount: string, fee: number, pass
 
     const keyStore = getSelectedKeyStore(
       identities,
-      selectedAccountHash,
+      selectedParentHash,
       selectedParentHash,
       isLedger,
       mainPath
     );
 
-    const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
+    const parsedAmount = Number(amount.replace(/,/g, '.'));
 
     const res: any = await mint(
       tezosUrl,
@@ -893,13 +893,13 @@ export function burnThunk(destination: string, amount: string, fee: number, pass
 
     const keyStore = getSelectedKeyStore(
       identities,
-      selectedAccountHash,
+      selectedParentHash,
       selectedParentHash,
       isLedger,
       mainPath
     );
 
-    const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
+    const parsedAmount = Number(amount.replace(/,/g, '.'));
 
     const res: any = await burn(
       tezosUrl,
