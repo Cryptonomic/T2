@@ -42,8 +42,11 @@ Add the file `src/extraResources/walletSettings.json`:
 To install all dependencies:
 
 `npm i`
+
 `cd src`
+
 `npm i`
+
 `cd ..`
 
 To run during development:
@@ -57,4 +60,5 @@ To package for deployment:
 ## Customize Logo
 
 Change the `tezosLogo.svg` file in `resources/` folder.
+
 Chnage the `logo` field in `src/config.json`.
