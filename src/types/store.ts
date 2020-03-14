@@ -1,4 +1,4 @@
-import { Path, Node, NodeStatus, Identity } from './general';
+import { Path, Node, NodeStatus, Identity, Token, AddressType } from './general';
 
 export interface AppState {
   isLoading: boolean;
@@ -12,13 +12,14 @@ export interface AppState {
   selectedParentHash: string;
   selectedParentIndex: number;
   selectedAccountIndex: number;
-  isManager: boolean;
+  selectedAccountType: AddressType;
 }
 export interface WalletState {
   identities: Identity[];
   walletFileName: string;
   walletLocation: string;
   walletPassword: string;
+  tokens: Token[];
 }
 
 export interface MessageState {

@@ -20,7 +20,9 @@
       "proceed": "Proceed",
       "close": "Close",
       "withdraw": "Withdraw",
-      "deposit": "Deposit"
+      "deposit": "Deposit",
+      "mint": "Mint",
+      "burn": "Burn"
     },
     "nouns": {
       "amount": "Amount",
@@ -51,7 +53,9 @@
       "burn": "Burn",
       "smart_contract": "Smart Contract",
       "code": "Code",
-      "format": "Format"
+      "format": "Format",
+      "tokens": "Tokens",
+      "token_contract": "Token Contract"
     },
     "errors": {
       "no_hex_data": "The provided string doesn't look like hex data",
@@ -232,6 +236,7 @@
       },
       "errors": {
         "send_address": "Addresses can only start TZ1, TZ2, TZ3 or KT1",
+        "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
         "delegate_address": "You can only delegate to TZ1, TZ2 or TZ3 addresses.",
         "length": "Addresses must be 36 characters long.",
         "special_chars": "Addresses cannot contain any special characters.",
@@ -259,7 +264,7 @@
         "pass_not_empty": "Pass Phrase must not be empty.",
         "address_not_empty": "Address must not be empty.",
         "address_length_36": "Address must be exactly 36 characters.",
-        "pass_length_8": "Pass Phrase must be at least 8 characters.",
+        "pass_length_8": "Pass phrase must be at least 8 characters.",
         "incorrect_password": "Incorrect password",
         "origination_operation_failed": "Origination operation failed",
         "delegation_operation_failed": "Delegation operation failed",
@@ -268,14 +273,20 @@
         "success_delegation_update": "Successfully started delegation update.",
         "cant_sent_yourself": "You cannot send funds to yourself.",
         "success_account_activation": "Successfully started account activation.",
-        "identity_exist": "Identity already exist",
+        "identity_exist": "Identity already exists",
         "success_sent": "Success! You sent {{localeParam}} tz.",
         "invalid_wallet_password": "Invalid wallet/password combination.",
         "account_not_exist": "The account does not exist.",
         "ledger_not_connect": "Connection refused by Ledger.",
         "invoke_operation_failed": "Smart Contract operation failed",
         "success_invoke_operation": "Successfully started contract invocation.",
-        "success_contract_origination": "Successfully started contract deployment."
+        "success_contract_origination": "Successfully started contract deployment.",
+        "started_token_failed": "Started token transaction failed.",
+        "started_token_success": "Successfully started token transaction.",
+        "mint_operation_failed": "Mint operation failed.",
+        "mint_operation_success": "Successfully started mint token.",
+        "burn_operation_failed": "Burn operation failed.",
+        "burn_operation_success": "Successfully started burn token."
       }
     },
     "pdfReader": {
@@ -304,6 +315,7 @@
     "send": {
       "send_xtz": "Send XTZ",
       "recipient_address": "Recipient Address",
+      "holder_address": "Holder Address",
       "burn_tooltip_title": "Why is there a burn fee?",
       "burn_tooltip_content": "The recipient address you entered has a zero balance. Sending funds to an empty Manager address (tz1,2,3) requires a one-time<1> 0.257 </1>XTZ burn fee.",
       "fee_tooltip_title": "Why are fees a bit higher for this transaction?",
@@ -323,9 +335,14 @@
       "send_description": "You are about to send out a transaction. Please carefully review the details on your device.",
       "confirm_description": "If the all the details are correct, please<1> confirm </1>the transaction on your device."
     },
+    "tokenLedgerConfirmModal": {
+      "confirm_token": "Confirm Token Contract",
+      "op_description": "You are about to {{op}} your Tokens. Please carefully review the details on your device."
+    },
     "settingController": {
       "settings": "SETTINGS",
-      "logout": "LOG OUT"
+      "logout": "LOG OUT",
+      "help": "HELP"
     },
     "termsModal": {
       "hi_there": "Hi there!",

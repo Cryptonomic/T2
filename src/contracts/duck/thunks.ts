@@ -2,24 +2,32 @@ import {
   TezosNodeWriter,
   TezosNodeReader,
   BabylonDelegationHelper,
-  TezosParameterFormat
+  TezosParameterFormat,
+  Tzip7ReferenceTokenHelper
 } from 'conseiljs';
-import { createMessageAction } from '../../../reduxContent/message/actions';
-import { updateIdentityAction } from '../../../reduxContent/wallet/actions';
-import { tezToUtez } from '../../../utils/currancy';
+import { createMessageAction } from '../../reduxContent/message/actions';
+import { updateIdentityAction, updateTokensAction } from '../../reduxContent/wallet/actions';
+import { tezToUtez } from '../../utils/currancy';
 
-import { saveIdentitiesToLocal } from '../../../utils/wallet';
-import { createTransaction } from '../../../utils/transaction';
-import { TRANSACTION, DELEGATION } from '../../../constants/TransactionTypes';
+import { saveIdentitiesToLocal } from '../../utils/wallet';
+import { createTransaction } from '../../utils/transaction';
+import { TRANSACTION, DELEGATION } from '../../constants/TransactionTypes';
 
-import { getSelectedKeyStore, clearOperationId } from '../../../utils/general';
-import { getMainNode, getMainPath } from '../../../utils/settings';
+import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
+import { getMainNode, getMainPath } from '../../utils/settings';
 
-import { findAccountIndex } from '../../../utils/account';
-import { findIdentity } from '../../../utils/identity';
-import { displayError } from '../../../utils/formValidation';
+import { findAccountIndex } from '../../utils/account';
+import { findIdentity } from '../../utils/identity';
+import { displayError } from '../../utils/formValidation';
 
-import { Node } from '../../../types/general';
+import { Node } from '../../types/general';
+
+import { findTokenIndex } from '../../utils/token';
+
+const { transferBalance, mint, burn } = Tzip7ReferenceTokenHelper;
+
+const GAS = 125000;
+const FREIGHT = 1000;
 
 const { sendContractInvocationOperation, sendTransactionOperation } = TezosNodeWriter;
 const {
@@ -168,7 +176,7 @@ export function invokeAddressThunk(
       parameterFormat
     ).catch(err => {
       const errorObj = { name: err.message, ...err };
-      console.error(err);
+      console.error(`sendContractInvocationOperation failed with ${JSON.stringify(errorObj)}`);
       dispatch(createMessageAction(errorObj.name, true));
       return false;
     });
@@ -474,8 +482,6 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
       return false;
     });
 
-    console.log('send results-----', res);
-
     if (res) {
       const operationResult =
         res &&
@@ -682,6 +688,262 @@ export function validateAmountThunk(amount: string, toAddress: string) {
     }
 
     return true;
+  };
+}
+
+export function transferThunk(destination: string, amount: string, fee: number, password: string) {
+  return async (dispatch, state) => {
+    const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+    const { identities, walletPassword, tokens } = state().wallet;
+    const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+    const mainNode = getMainNode(nodesList, selectedNode);
+    const { tezosUrl } = mainNode;
+
+    if (password !== walletPassword && !isLedger) {
+      const error = 'components.messageBar.messages.incorrect_password';
+      dispatch(createMessageAction(error, true));
+      return false;
+    }
+
+    const mainPath = getMainPath(pathsList, selectedPath);
+
+    const keyStore = getSelectedKeyStore(
+      identities,
+      selectedParentHash,
+      selectedParentHash,
+      isLedger,
+      mainPath
+    );
+
+    const parsedAmount = Number(amount.replace(/,/g, '.'));
+
+    const operationId: string | boolean = await transferBalance(
+      tezosUrl,
+      keyStore,
+      selectedAccountHash,
+      fee,
+      selectedParentHash,
+      destination,
+      parsedAmount,
+      GAS,
+      FREIGHT
+    ).catch(err => {
+      const errorObj = { name: err.message, ...err };
+      console.error(`transferBalance failed with ${JSON.stringify(errorObj)}`);
+      dispatch(createMessageAction(errorObj.name, true));
+      return false;
+    });
+
+    if (!operationId) {
+      return false;
+    }
+
+    dispatch(
+      createMessageAction(
+        'components.messageBar.messages.started_token_success',
+        false,
+        operationId
+      )
+    );
+
+    const transaction = createTransaction({
+      amount: parsedAmount,
+      destination,
+      kind: TRANSACTION,
+      source: keyStore.publicKeyHash,
+      operation_group_hash: operationId,
+      fee,
+      consumed_gas: GAS
+    });
+
+    const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+
+    if (tokenIndex > -1) {
+      tokens[tokenIndex].transactions.push(transaction);
+    }
+
+    dispatch(updateTokensAction([...tokens]));
+    return true;
+  };
+}
+
+export function mintThunk(destination: string, amount: string, fee: number, password: string) {
+  return async (dispatch, state) => {
+    const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+    const { identities, walletPassword, tokens } = state().wallet;
+    const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+    const mainNode = getMainNode(nodesList, selectedNode);
+    const { tezosUrl } = mainNode;
+
+    if (password !== walletPassword && !isLedger) {
+      const error = 'components.messageBar.messages.incorrect_password';
+      dispatch(createMessageAction(error, true));
+      return false;
+    }
+
+    const mainPath = getMainPath(pathsList, selectedPath);
+
+    const keyStore = getSelectedKeyStore(
+      identities,
+      selectedParentHash,
+      selectedParentHash,
+      isLedger,
+      mainPath
+    );
+
+    const parsedAmount = Number(amount.replace(/,/g, '.'));
+
+    const res: any = await mint(
+      tezosUrl,
+      keyStore,
+      selectedAccountHash,
+      fee,
+      destination,
+      parsedAmount,
+      GAS,
+      FREIGHT
+    ).catch(err => {
+      const errorObj = { name: err.message, ...err };
+      console.error(errorObj);
+      dispatch(createMessageAction(errorObj.name, true));
+      return false;
+    });
+
+    if (res) {
+      const operationResult =
+        res &&
+        res.results &&
+        res.results.contents &&
+        res.results.contents[0] &&
+        res.results.contents[0].metadata &&
+        res.results.contents[0].metadata.operation_result;
+
+      if (operationResult && operationResult.errors && operationResult.errors.length) {
+        const error = 'components.messageBar.messages.mint_operation_failed';
+        console.error(error);
+        dispatch(createMessageAction(error, true));
+        return false;
+      }
+
+      const clearedOperationId = clearOperationId(res.operationGroupID);
+
+      dispatch(
+        createMessageAction(
+          'components.messageBar.messages.mint_operation_success',
+          false,
+          clearedOperationId
+        )
+      );
+
+      const transaction = createTransaction({
+        amount: parsedAmount,
+        destination,
+        kind: TRANSACTION,
+        source: keyStore.publicKeyHash,
+        operation_group_hash: clearedOperationId,
+        fee
+      });
+
+      const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+
+      if (tokenIndex > -1) {
+        tokens[tokenIndex].transactions.push(transaction);
+      }
+
+      dispatch(updateTokensAction([...tokens]));
+      return true;
+    }
+    return false;
+  };
+}
+
+export function burnThunk(destination: string, amount: string, fee: number, password: string) {
+  return async (dispatch, state) => {
+    const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+    const { identities, walletPassword, tokens } = state().wallet;
+    const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+    const mainNode = getMainNode(nodesList, selectedNode);
+    const { tezosUrl } = mainNode;
+
+    if (password !== walletPassword && !isLedger) {
+      const error = 'components.messageBar.messages.incorrect_password';
+      dispatch(createMessageAction(error, true));
+      return false;
+    }
+
+    const mainPath = getMainPath(pathsList, selectedPath);
+
+    const keyStore = getSelectedKeyStore(
+      identities,
+      selectedParentHash,
+      selectedParentHash,
+      isLedger,
+      mainPath
+    );
+
+    const parsedAmount = Number(amount.replace(/,/g, '.'));
+
+    const res: any = await burn(
+      tezosUrl,
+      keyStore,
+      selectedAccountHash,
+      fee,
+      destination,
+      parsedAmount,
+      GAS,
+      FREIGHT
+    ).catch(err => {
+      const errorObj = { name: err.message, ...err };
+      console.error(errorObj);
+      dispatch(createMessageAction(errorObj.name, true));
+      return false;
+    });
+
+    if (res) {
+      const operationResult =
+        res &&
+        res.results &&
+        res.results.contents &&
+        res.results.contents[0] &&
+        res.results.contents[0].metadata &&
+        res.results.contents[0].metadata.operation_result;
+
+      if (operationResult && operationResult.errors && operationResult.errors.length) {
+        const error = 'components.messageBar.messages.burn_operation_failed';
+        console.error(error);
+        dispatch(createMessageAction(error, true));
+        return false;
+      }
+
+      const clearedOperationId = clearOperationId(res.operationGroupID);
+
+      dispatch(
+        createMessageAction(
+          'components.messageBar.messages.burn_operation_success',
+          false,
+          clearedOperationId
+        )
+      );
+
+      const transaction = createTransaction({
+        amount: parsedAmount,
+        destination,
+        kind: TRANSACTION,
+        source: keyStore.publicKeyHash,
+        operation_group_hash: clearedOperationId,
+        fee
+      });
+
+      const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+
+      if (tokenIndex > -1) {
+        tokens[tokenIndex].transactions.push(transaction);
+      }
+
+      dispatch(updateTokensAction([...tokens]));
+      return true;
+    }
+    return false;
   };
 }
 

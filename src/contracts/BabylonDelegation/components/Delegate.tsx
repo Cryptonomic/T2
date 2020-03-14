@@ -13,7 +13,7 @@ import { ms } from '../../../styles/helpers';
 
 import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
-import { delegateThunk } from '../duck/thunks';
+import { delegateThunk } from '../../duck/thunks';
 
 import { AVERAGEFEES } from '../../../constants/FeeValue';
 import { RootState, AppState } from '../../../types/store';
@@ -46,6 +46,7 @@ function Delegate(props: Props) {
   const [open, setOpen] = useState(false);
   const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(
     OperationKindType.Delegation,
+    true,
     true
   );
 

@@ -8,7 +8,12 @@ import Logo from '../Logo';
 import TezosIcon from '../TezosIcon';
 import Button from '../Button';
 
+import { openLink } from '../../utils/general';
+
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
+import HelpSvg from '../../../resources/imgs/Help.svg';
+
+import { helpUrl } from '../../config.json';
 
 const Container = styled.div<{ isExtended?: boolean }>`
   display: flex;
@@ -38,7 +43,7 @@ const Text = styled.span`
 const ButtonContainer = styled(Button)`
   text-align: center;
   min-width: 57px;
-  margin: 0 15px;
+  margin: 0 5px;
   color: ${({ theme: { colors } }) => colors.primary};
   opacity: 0.6;
 `;
@@ -53,10 +58,10 @@ const Icon = styled(TezosIcon)`
   cursor: pointer;
 `;
 
-const Separator = styled.div`
-  border-right: 2px solid #a8b6d5;
-  margin-top: -11px;
-  height: 40px;
+const HelpImg = styled.img`
+  height: 23px;
+  display: block;
+  margin: 0 auto;
 `;
 
 interface Props {
@@ -85,11 +90,14 @@ const TopBar = (props: Props) => {
         <Logo />
         <Text>{walletName}</Text>
       </InfoContainer>
+      <ButtonContainer onClick={() => openLink(helpUrl)} buttonTheme="plain">
+        <HelpImg src={HelpSvg} />
+        <ButtonText>{t('components.settingController.help')}</ButtonText>
+      </ButtonContainer>
       <ButtonContainer onClick={() => goToSettings()} buttonTheme="plain">
         <Icon size={ms(2.2)} color="primary" iconName="settings" />
         <ButtonText>{t('components.settingController.settings')}</ButtonText>
       </ButtonContainer>
-      {isLoggedIn && <Separator />}
       {isLoggedIn && (
         <ButtonContainer buttonTheme="plain" onClick={() => logout()}>
           <Icon size={ms(2.2)} color="primary" iconName="logout" />

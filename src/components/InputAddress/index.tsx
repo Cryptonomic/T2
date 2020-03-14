@@ -63,7 +63,7 @@ interface Props {
   onChange: (val: string) => void;
   tooltip?: boolean;
   address?: string;
-  operationType: 'send' | 'delegate' | 'invoke';
+  operationType: 'send' | 'delegate' | 'invoke' | 'send_babylon';
   onIssue?: (error: boolean) => void;
   onAddressType?: (type: AddressType) => void;
 }
@@ -115,6 +115,9 @@ function InputAddress(props: Props) {
     if (operationType === 'invoke') {
       firstCharactersRegEx = /^(KT1)/;
       regErrorTxt = t('components.inputAddress.errors.invoke_address');
+    } else if (operationType === 'send_babylon') {
+      firstCharactersRegEx = /^(tz1|tz2|tz3|TZ1|TZ2|TZ3)/;
+      regErrorTxt = t('components.inputAddress.errors.send_babylon');
     } else if (operationType === 'delegate') {
       firstCharactersRegEx = /^(tz1|tz2|tz3|TZ1|TZ2|TZ3)/;
       regErrorTxt = t('components.inputAddress.errors.delegate_address');

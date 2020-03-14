@@ -153,3 +153,18 @@ export function getAddressType(address: string, script: string | undefined): Add
   }
   return AddressType.None;
 }
+
+export function combineAccounts(accounts1: Account[], accounts2: Account[]): Account[] {
+  const noneAccounts2in1 = accounts2.filter(
+    acc => !accounts1.find(acc2 => acc2.account_id === acc.account_id)
+  );
+  const newAccounts = accounts1.map(acc => {
+    const existAccount = accounts2.find(acc2 => acc2.account_id === acc.account_id);
+    if (!existAccount) {
+      return { ...acc };
+    }
+
+    return { ...acc, ...existAccount };
+  });
+  return [...newAccounts, ...noneAccounts2in1];
+}
