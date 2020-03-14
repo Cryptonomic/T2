@@ -176,7 +176,7 @@ export function invokeAddressThunk(
       parameterFormat
     ).catch(err => {
       const errorObj = { name: err.message, ...err };
-      console.error(err);
+      console.error(`sendContractInvocationOperation failed with ${JSON.stringify(errorObj)}`);
       dispatch(createMessageAction(errorObj.name, true));
       return false;
     });
