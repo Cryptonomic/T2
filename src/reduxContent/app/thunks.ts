@@ -101,7 +101,7 @@ export function getNewVersionThunk() {
     const result = await getVersionFromApi();
     const RemoteVersionIndex = parseInt(result.currentVersionIndex, 10);
     if (RemoteVersionIndex > parseInt(LocalVersionIndex, 10)) {
-      dispatch(addNewVersionAction(result.currentVersionIndex));
+      dispatch(addNewVersionAction(result.currentVersionString));
     }
   };
 }
