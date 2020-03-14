@@ -46,6 +46,7 @@ function Delegate(props: Props) {
   const [open, setOpen] = useState(false);
   const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(
     OperationKindType.Delegation,
+    true,
     true
   );
 
