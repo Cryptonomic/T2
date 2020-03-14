@@ -129,6 +129,7 @@ function Send(props: Props) {
   const [isAddressIssue, setIsAddressIssue] = useState(false);
   const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(
     OperationKindType.Transaction,
+    true,
     true
   );
   const { toAddress, amount, fee, isBurn, total, balance } = state;
@@ -237,11 +238,7 @@ function Send(props: Props) {
 
   async function onSend() {
     dispatch(setIsLoadingAction(true));
-    if (selectedParentHash !== toAddress) {
-      await dispatch(sendDelegatedFundsThunk(password, toAddress, amount, Math.floor(fee)));
-    } else {
-      await dispatch(sendTezThunk(password, toAddress, amount, Math.floor(fee)));
-    }
+    await dispatch(sendDelegatedFundsThunk(password, toAddress, amount, Math.floor(fee)));
 
     setOpen(false);
     dispatch(setIsLoadingAction(false));
@@ -269,7 +266,7 @@ function Send(props: Props) {
         <TooltipTitle>{t('components.send.burn_tooltip_title')}</TooltipTitle>
         <TooltipContent>
           <Trans i18nKey="components.send.burn_tooltip_content">
-            The recepient address you entered has a zero balance. Sending funds to an empty Manager
+            The recipient address you entered has a zero balance. Sending funds to an empty Manager
             address (tz1,2,3) requires a one-time
             <BoldSpan>0.257</BoldSpan> XTZ burn fee.
           </Trans>

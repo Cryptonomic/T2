@@ -482,8 +482,6 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
       return false;
     });
 
-    console.log('send results-----', res);
-
     if (res) {
       const operationResult =
         res &&
