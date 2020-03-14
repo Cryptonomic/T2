@@ -35,17 +35,15 @@ function MessageBar() {
   const [open, setOpen] = useState(false);
 
   function openLink() {
-    dispatch(clearMessageAction());
     openLinkToBlockExplorer(hash);
+    onClose();
   }
 
-  function changeHash() {
-    let newHash = hash;
-    const hashLen = hash.length;
-    if (hashLen > 10) {
-      newHash = `${hash.slice(0, 4)}...${hash.slice(hashLen - 4, hashLen)}`;
+  function formatHash() {
+    if (hash.length > 10) {
+      return `${hash.slice(0, 4)}...${hash.slice(hash.length - 4, hash.length)}`;
     }
-    return newHash;
+    return hash;
   }
 
   function onClose() {
@@ -61,6 +59,8 @@ function MessageBar() {
     }
   }, [text]);
 
+  console.log(`hash in popup '${hash}', '${text}'`);
+
   return (
     <SnackbarWrapper
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -69,7 +69,7 @@ function MessageBar() {
       message={
         <MessageContent
           content={text}
-          hash={changeHash()}
+          hash={formatHash()}
           openLink={() => openLink()}
           onClose={() => onClose()}
           isError={isError}
