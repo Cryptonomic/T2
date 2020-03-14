@@ -8,7 +8,7 @@ import { getVersionFromApi } from '../../utils/general';
 import { AVERAGEFEES, OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
 import { LocalVersionIndex } from '../../config.json';
 
-import { AverageFees } from '../../types/general';
+import { AverageFees, AddressType } from '../../types/general';
 import { RootState } from '../../types/store';
 
 interface FetchFees {
@@ -87,19 +87,12 @@ export function changeAccountThunk(
   accountHash: string,
   parentHash: string,
   accountIndex: number,
-  parentIndex: number
+  parentIndex: number,
+  addressType: AddressType
 ) {
   return async dispatch => {
-    dispatch(
-      changeAccountAction(
-        accountHash,
-        parentHash,
-        accountIndex,
-        parentIndex,
-        accountHash === parentHash
-      )
-    );
-    dispatch(syncAccountOrIdentityThunk(accountHash, parentHash));
+    dispatch(changeAccountAction(accountHash, parentHash, accountIndex, parentIndex, addressType));
+    dispatch(syncAccountOrIdentityThunk(accountHash, parentHash, addressType));
   };
 }
 
@@ -108,7 +101,7 @@ export function getNewVersionThunk() {
     const result = await getVersionFromApi();
     const RemoteVersionIndex = parseInt(result.currentVersionIndex, 10);
     if (RemoteVersionIndex > parseInt(LocalVersionIndex, 10)) {
-      dispatch(addNewVersionAction(result.currentVersionIndex));
+      dispatch(addNewVersionAction(result.currentVersionString));
     }
   };
 }

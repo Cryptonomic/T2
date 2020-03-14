@@ -4,8 +4,10 @@ import { omit, pick, unionBy, cloneDeep } from 'lodash';
 
 import { getLocalData, setLocalData } from './localData';
 import { createIdentity } from './identity';
+import { combineAccounts } from './account';
 import { WalletState } from '../types/store';
 import { Identity } from '../types/general';
+import { knownTokenContracts } from '../constants/Token';
 
 const { saveWallet, loadWallet } = TezosFileWallet;
 const { unlockAddress } = TezosLedgerWallet;
@@ -59,7 +61,7 @@ function prepareToLoad(serverIdentities, localIdentities): Identity[] {
     );
     let newAccounts = identity.accounts || [];
     if (foundIdentity) {
-      newAccounts = unionBy(newAccounts, foundIdentity.accounts, 'account_id');
+      newAccounts = combineAccounts(newAccounts, foundIdentity.accounts);
     }
     return createIdentity({ ...identity, accounts: newAccounts, order: index + 1 });
   });
@@ -99,4 +101,14 @@ export async function loadWalletFromLedger(derivationPath: string): Promise<Iden
 
 export function initLedgerTransport() {
   TezosLedgerWallet.initLedgerTransport();
+}
+
+export function loadTokens() {
+  const savedTokens = getLocalData('tokens');
+  return knownTokenContracts.map((token, index) => {
+    if (savedTokens[index]) {
+      return savedTokens[index];
+    }
+    return token;
+  });
 }

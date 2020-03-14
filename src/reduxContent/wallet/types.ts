@@ -1,4 +1,5 @@
 import { WalletState } from '../../types/store';
+import { Token, Identity } from '../../types/general';
 
 export const SET_WALLET = 'SET_WALLET';
 export const SET_WALLET_FILENAME = 'SET_WALLET_FILENAME';
@@ -7,10 +8,18 @@ export const SET_PASSWORD = 'SET_PASSWORD';
 export const SET_IDENTITIES = 'SET_IDENTITIES';
 export const ADD_NEW_IDENTITY = 'ADD_NEW_IDENTITY';
 export const UPDATE_IDENTITY = 'UPDATE_IDENTITY';
+export const UPDATE_TOKENS = 'UPDATE_TOKENS';
+
+export interface InitWallet {
+  identities: Identity[];
+  walletFileName: string;
+  walletLocation: string;
+  walletPassword: string;
+}
 
 export interface SetWalletAction {
   type: typeof SET_WALLET;
-  payload: WalletState;
+  payload: InitWallet;
 }
 
 export interface SetWalletFileNameAction {
@@ -43,6 +52,11 @@ export interface UpdateIdentityAction {
   identity: any;
 }
 
+export interface UpdateTokensAction {
+  type: typeof UPDATE_TOKENS;
+  tokens: Token[];
+}
+
 export type WalletActionTypes =
   | SetWalletAction
   | SetWalletFileNameAction
@@ -50,4 +64,5 @@ export type WalletActionTypes =
   | SetPasswordAction
   | SetIdentitiesAction
   | AddNewIdentityAction
-  | UpdateIdentityAction;
+  | UpdateIdentityAction
+  | UpdateTokensAction;

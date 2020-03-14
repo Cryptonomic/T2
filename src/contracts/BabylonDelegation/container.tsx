@@ -1,8 +1,8 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
@@ -14,37 +14,22 @@ import Loader from '../../components/Loader';
 import AccountStatus from '../../components/AccountStatus';
 
 import Delegate from './components/Delegate';
-import Invoke from './components/Invoke';
 import Send from './components/Send';
 import Deposit from './components/Deposit';
 import Withdraw from './components/Withdraw';
-import CodeStorage from './components/CodeStorage';
-import Receive from './components/Receive';
-
-import {
-  TRANSACTIONS,
-  SEND,
-  RECEIVE,
-  DELEGATE,
-  INVOKE,
-  CODE,
-  STORAGE,
-  DEPOSIT,
-  WITHDRAW
-} from '../../constants/TabConstants';
+import { TRANSACTIONS, SEND, DELEGATE, DEPOSIT, WITHDRAW } from '../../constants/TabConstants';
 import { READY } from '../../constants/StatusTypes';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
 import { sortArr } from '../../utils/array';
 import { isReady } from '../../utils/general';
-import { getAddressType } from '../../utils/account';
 
 import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
 
-import { syncWalletThunk, updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from './duck/selectors';
+import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
+import { getAccountSelector } from '../duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;
@@ -80,94 +65,32 @@ const SectionContainer = styled.div`
   min-height: 600px;
 `;
 
-const Link = styled.span`
-  color: ${({ theme: { colors } }) => colors.blue1};
-  cursor: pointer;
-`;
-
-const DescriptionContainer = styled.p`
-  color: ${({ theme: { colors } }) => colors.gray5};
-  text-align: center;
-`;
-
-interface DescriptionProps {
-  onSendClick: () => void;
-  onReceiveClick: () => void;
-}
-
-const Description = (props: DescriptionProps) => {
-  const { onSendClick, onReceiveClick } = props;
-  return (
-    <DescriptionContainer>
-      <Trans i18nKey="components.actionPanel.description">
-        It is pretty empty here. Get started
-        <Link onClick={onSendClick}> sending</Link> and
-        <Link onClick={onReceiveClick}> receiving</Link> tez from this address.
-      </Trans>
-    </DescriptionContainer>
-  );
-};
+const tabs = [TRANSACTIONS, SEND, DELEGATE, WITHDRAW, DEPOSIT];
 
 function ActionPanel() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const [addressType, setAddressType] = useState(AddressType.Manager);
-  const [tabs, setTabs] = useState<string[]>([]);
   const selectedAccount = useSelector(getAccountSelector);
 
-  const {
-    isLoading,
-    time,
-    isWalletSyncing,
-    isLedger,
-    isManager,
-    selectedParentHash,
-    selectedAccountHash,
-    selectedParentIndex,
-    selectedAccountIndex
-  } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+  const { isLoading, selectedParentHash, selectedAccountHash } = useSelector(
+    (rootState: RootState) => rootState.app,
+    shallowEqual
+  );
 
   const {
     balance,
     activeTab,
     storeType,
     status,
-    script,
     privateKey,
     delegate_value,
     regularAddresses,
-    transactions,
-    storage
+    transactions
   } = selectedAccount;
-
-  useEffect(() => {
-    const type = getAddressType(selectedAccountHash, script);
-    let mainTabs: string[] = [];
-    switch (type) {
-      case AddressType.Manager: {
-        mainTabs = [TRANSACTIONS, SEND, RECEIVE, DELEGATE];
-        break;
-      }
-      case AddressType.Delegated: {
-        mainTabs = [TRANSACTIONS, SEND, DELEGATE, WITHDRAW, DEPOSIT];
-        break;
-      }
-      case AddressType.Smart: {
-        mainTabs = [TRANSACTIONS, INVOKE, CODE, STORAGE];
-        break;
-      }
-    }
-    setTabs(mainTabs);
-    setAddressType(type);
-  }, [selectedAccountHash, script]);
 
   function onChangeTab(newTab: string) {
     dispatch(updateActiveTabThunk(newTab));
-  }
-
-  function onSyncWallet() {
-    dispatch(syncWalletThunk());
   }
 
   function renderSection() {
@@ -175,33 +98,8 @@ function ActionPanel() {
     switch (activeTab) {
       case DELEGATE:
         return <Delegate isReady={ready} />;
-      case RECEIVE:
-        return <Receive address={selectedAccountHash} />;
       case SEND:
         return <Send isReady={ready} addressBalance={balance} />;
-      case CODE:
-        return <CodeStorage code={script.replace(/\\n/g, '\n')} />;
-      case STORAGE:
-        return <CodeStorage code={storage} />;
-      case INVOKE:
-        return (
-          <Invoke
-            isReady={ready}
-            addresses={regularAddresses}
-            onSuccess={() => onChangeTab(TRANSACTIONS)}
-          />
-        );
-      // case INVOKE_MANAGER:
-      //   return (
-      //     <InvokeManager
-      //       balance={balance}
-      //       isReady={ready}
-      //       addresses={regularAddresses}
-      //       selectedParentHash={selectedParentHash}
-      //       selectedAccountHash={selectedAccountHash}
-      //       onSuccess={() => onChangeTab(TRANSACTIONS)}
-      //     />
-      //   );
       case WITHDRAW:
         return (
           <Withdraw balance={balance} isReady={ready} onSuccess={() => onChangeTab(TRANSACTIONS)} />
@@ -217,9 +115,7 @@ function ActionPanel() {
       case TRANSACTIONS:
       default: {
         if (!ready) {
-          return (
-            <AccountStatus address={selectedAccount} isContract={!!script} isManager={isManager} />
-          );
+          return <AccountStatus address={selectedAccount} />;
         }
 
         const JSTransactions = transactions.sort(
@@ -237,13 +133,8 @@ function ActionPanel() {
         return transactions.length === 0 ? (
           <EmptyState
             imageSrc={transactionsEmptyState}
-            title={t('../../components.actionPanel.empty-title')}
-            description={
-              <Description
-                onReceiveClick={() => onChangeTab(RECEIVE)}
-                onSendClick={() => onChangeTab(SEND)}
-              />
-            }
+            title={t('components.actionPanel.empty-title')}
+            description={null}
           />
         ) : (
           <Fragment>
@@ -275,15 +166,7 @@ function ActionPanel() {
         balance={balance || 0}
         privateKey={privateKey}
         publicKeyHash={selectedAccountHash || 'Inactive'}
-        parentIndex={selectedParentIndex + 1}
-        isManager={isManager}
-        onRefreshClick={onSyncWallet}
-        time={time}
         delegatedAddress={delegate_value}
-        isWalletSyncing={isWalletSyncing}
-        addressType={addressType}
-        addressIndex={selectedAccountIndex + 1}
-        isLedger={isLedger}
       />
 
       <TabList count={tabs.length}>

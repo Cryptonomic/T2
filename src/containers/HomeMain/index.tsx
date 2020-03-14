@@ -1,15 +1,32 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { RootState } from '../../types/store';
+import { AddressType } from '../../types/general';
 
 import AddressBlock from '../../components/AddressBlock';
-import { BabylonDelegation } from '../../contracts/BabylonDelegation';
+import BabylonDelegation from '../../contracts/BabylonDelegation';
+import GenericContract from '../../contracts/GenericContract';
+import TokenContract from '../../contracts/TokenContract';
+import ImplicitAccount from '../../contracts/ImplicitAccount';
 
 import { sortArr } from '../../utils/array';
 import { Container, SideBarContainer, AccountItem } from './style';
 
 function HomeMain() {
-  const identities = useSelector((state: RootState) => state.wallet.identities);
+  const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
+  const addressType = useSelector((state: RootState) => state.app.selectedAccountType);
+  function renderView() {
+    switch (addressType) {
+      case AddressType.Manager:
+        return <ImplicitAccount />;
+      case AddressType.Delegated:
+        return <BabylonDelegation />;
+      case AddressType.Token:
+        return <TokenContract />;
+      default:
+        return <GenericContract />;
+    }
+  }
   return (
     <Container>
       <SideBarContainer>
@@ -21,7 +38,7 @@ function HomeMain() {
             </AccountItem>
           ))}
       </SideBarContainer>
-      <BabylonDelegation />
+      {renderView()}
     </Container>
   );
 }
