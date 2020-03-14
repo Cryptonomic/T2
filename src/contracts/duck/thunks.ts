@@ -717,7 +717,7 @@ export function transferThunk(destination: string, amount: string, fee: number, 
 
     const parsedAmount = Number(amount.replace(/,/g, '.'));
 
-    const res: any = await transferBalance(
+    const operationId: string | boolean = await transferBalance(
       tezosUrl,
       keyStore,
       selectedAccountHash,
@@ -729,57 +729,41 @@ export function transferThunk(destination: string, amount: string, fee: number, 
       FREIGHT
     ).catch(err => {
       const errorObj = { name: err.message, ...err };
-      console.error(errorObj);
+      console.error(`transferBalance failed with ${JSON.stringify(errorObj)}`);
       dispatch(createMessageAction(errorObj.name, true));
       return false;
     });
 
-    if (res) {
-      const operationResult =
-        res &&
-        res.results &&
-        res.results.contents &&
-        res.results.contents[0] &&
-        res.results.contents[0].metadata &&
-        res.results.contents[0].metadata.operation_result;
-
-      if (operationResult && operationResult.errors && operationResult.errors.length) {
-        const error = 'components.messageBar.messages.started_token_failed';
-        console.error(error);
-        dispatch(createMessageAction(error, true));
-        return false;
-      }
-
-      const clearedOperationId = clearOperationId(res.operationGroupID);
-
-      dispatch(
-        createMessageAction(
-          'components.messageBar.messages.started_token_success',
-          false,
-          clearedOperationId
-        )
-      );
-
-      const transaction = createTransaction({
-        amount: parsedAmount,
-        destination,
-        kind: TRANSACTION,
-        source: keyStore.publicKeyHash,
-        operation_group_hash: clearedOperationId,
-        fee,
-        consumed_gas: GAS
-      });
-
-      const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
-
-      if (tokenIndex > -1) {
-        tokens[tokenIndex].transactions.push(transaction);
-      }
-
-      dispatch(updateTokensAction([...tokens]));
-      return true;
+    if (!operationId) {
+      return false;
     }
-    return false;
+
+    dispatch(
+      createMessageAction(
+        'components.messageBar.messages.started_token_success',
+        false,
+        operationId
+      )
+    );
+
+    const transaction = createTransaction({
+      amount: parsedAmount,
+      destination,
+      kind: TRANSACTION,
+      source: keyStore.publicKeyHash,
+      operation_group_hash: operationId,
+      fee,
+      consumed_gas: GAS
+    });
+
+    const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+
+    if (tokenIndex > -1) {
+      tokens[tokenIndex].transactions.push(transaction);
+    }
+
+    dispatch(updateTokensAction([...tokens]));
+    return true;
   };
 }
 
