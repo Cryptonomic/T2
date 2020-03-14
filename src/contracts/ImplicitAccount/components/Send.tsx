@@ -19,12 +19,7 @@ import InputError from '../../../components/InputError';
 
 import { ms } from '../../../styles/helpers';
 
-import {
-  depositThunk,
-  sendTezThunk,
-  sendDelegatedFundsThunk,
-  getIsImplicitAndEmptyThunk
-} from '../../duck/thunks';
+import { depositThunk, sendTezThunk, getIsImplicitAndEmptyThunk } from '../../duck/thunks';
 
 import { AVERAGEFEES } from '../../../constants/FeeValue';
 
