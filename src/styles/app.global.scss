@@ -135,6 +135,7 @@ html {
   box-sizing: border-box;
   line-height: 1.618;
 }
+
 *,
 *:before,
 *:after {
@@ -158,4 +159,12 @@ div#root {
   height: 100vh;
   max-width: 1440px;
   margin: 0 auto;
+}
+
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
 }
