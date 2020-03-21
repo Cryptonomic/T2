@@ -210,16 +210,18 @@ export function syncTokenThunk(publicKeyHash) {
     const mainNode = getMainNode(nodesList, selectedNode);
 
     const newTokens = await Promise.all(
-      tokens.map(async token => {
-        const mapid = token.mapid || 0;
+      tokens
+        .filter(token => token.mapid && token.mapid > 0)
+        .map(async token => {
+          const mapid = token.mapid || 0;
 
-        const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
-          mainNode.tezosUrl,
-          mapid,
-          selectedParentHash
-        );
-        return { ...token, balance };
-      })
+          const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
+            mainNode.tezosUrl,
+            mapid,
+            selectedParentHash
+          );
+          return { ...token, balance };
+        })
     );
 
     setLocalData('tokens', newTokens);
@@ -269,9 +271,15 @@ export function syncWalletThunk() {
           const newStorage = await Tzip7ReferenceTokenHelper.getSimpleStorage(
             mainNode.tezosUrl,
             token.address
-          );
+          ).catch(() => {
+            return { mapid: -1, administrator: '' };
+          });
           mapid = newStorage.mapid;
           administrator = newStorage.administrator;
+        }
+
+        if (mapid === -1) {
+          return { ...token, mapid, administrator, balance: 0 };
         }
 
         const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
