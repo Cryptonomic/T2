@@ -88,7 +88,7 @@ const TopBar = (props: Props) => {
     <Container isExtended={isExtended}>
       <InfoContainer>
         <Logo />
-        <Text>{walletName}</Text>
+        {isLoggedIn && <Text>{walletName}</Text>}
       </InfoContainer>
       <ButtonContainer onClick={() => openLink(helpUrl)} buttonTheme="plain">
         <HelpImg src={HelpSvg} />
