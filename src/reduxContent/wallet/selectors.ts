@@ -7,7 +7,7 @@ const identitiesSelector = (state: RootState) => state.wallet.identities;
 export const getWalletName = createSelector(getWallet, wallet => {
   const fileName = wallet.walletFileName;
   const walletName = fileName.split('.');
-  return walletName[0] || 'Wallet';
+  return walletName[0] || '';
 });
 
 export const getIsIdentitesSelector = createSelector(

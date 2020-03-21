@@ -3,11 +3,13 @@
   "version": "1.0.0b",
   "network": "mainnet",
   "blockExplorerHost": "https://mininax.io/mainnet/operations/",
-  "logo": "tezosLogo.svg",
+  "logo": "cryptonomicLogo.png",
+  "logoLink": "https://cryptonomic.tech",
   "icon": "tezos",
   "termsService": "https://github.com/Cryptonomic/Deployments/raw/master/Terms_of_Service.pdf",
   "privacyPolicy": "https://github.com/Cryptonomic/Deployments/raw/master/Privacy_Policy.pdf",
   "tagline": "containers.loginHome.tagline",
   "LocalVersionIndex": "20",
-  "helpUrl": "https://t.me/cryptonomicGalleonUsers"
+  "helpUrl": "https://t.me/cryptonomicGalleonUsers",
+  "ledgerReferral": "https://shop.ledger.com/pages/ledger-nano-x?r=631fb45e26da"
 }

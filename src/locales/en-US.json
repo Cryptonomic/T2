@@ -431,6 +431,8 @@
       "connect_ledger": "Connect with Ledger",
       "dont_have_ledger_wallet": "Don't have the Ledger Tezos wallet app?",
       "download_it_here": "Download it here.",
+      "need_device": "Need a Ledger device?",
+      "get_it_here": "Get it here",
       "connect_your_device": "Please<1> connect your device</1>,<3> enter your pin</3>, and<5> open Tezos Wallet app</5>.",
       "connecting": "Connecting...",
       "selectedPath": "Selected Path: "
@@ -439,7 +441,7 @@
       "create_wallet_btn": "Create Wallet",
       "create_wallet_password_label": "Create Wallet Password",
       "confirm_wallet_password_label": "Confirm Wallet Password",
-      "create_new_wallet_btn": "Create New Wallet",
+      "create_new_wallet_btn": "Select File Location",
       "create_wallet_title": "Create a new wallet",
       "create_wallet_description": "Your wallet information will be saved to your computer. It will be encrypted with a password that you set.",
       "crack_time_description": "It will take <span>{{time}}</span> to crack!",

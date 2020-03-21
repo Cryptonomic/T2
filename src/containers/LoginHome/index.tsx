@@ -7,7 +7,7 @@ import i18n from 'i18next';
 import Checkbox from '../../components/Checkbox/';
 import TermsModal from '../../components/TermsModal';
 import LanguageSelectModal from '../../components/LanguageSelectModal';
-import { name } from '../../config.json';
+import { name, ledgerReferral } from '../../config.json';
 import { setLocalData, getLocalData, resetLocalData } from '../../utils/localData';
 import { changeLocaleThunk } from '../Settings/duck/thunk';
 import { connectLedgerThunk } from '../../reduxContent/wallet/thunks';
@@ -15,7 +15,6 @@ import { connectLedgerThunk } from '../../reduxContent/wallet/thunks';
 import {
   SectionContainer,
   TermsAndPolicySection,
-  Strong,
   Link,
   Description,
   Tip,
@@ -107,6 +106,10 @@ function LoginHome(props: Props) {
     openLink(url);
   }
 
+  function onOrderDevice() {
+    openLink(ledgerReferral);
+  }
+
   function openTermsService() {
     goTo('conditions/termsOfService');
   }
@@ -122,39 +125,6 @@ function LoginHome(props: Props) {
           <AppName>{name}</AppName>
         </NameSection>
         <Section>
-          <CardContainer>
-            <CardImg src={keystoreImg} />
-            <CardTitle>{t('containers.loginHome.keystore_wallet')}</CardTitle>
-            <UnlockWalletButton
-              color="secondary"
-              variant="extended"
-              onClick={() => goTo('import')}
-              disabled={!isAgreement}
-            >
-              {t('containers.loginHome.open_exisiting_wallet_btn')}
-            </UnlockWalletButton>
-            <CreateWalletButton
-              color="primary"
-              variant="outlined"
-              onClick={() => goTo('create')}
-              disabled={!isAgreement}
-            >
-              {t('containers.loginHome.create_new_wallet_btn')}
-            </CreateWalletButton>
-            <Linebar />
-            <Tip>
-              <div>{t('containers.loginHome.want_to_import_fundraiser_paper_wallet')}</div>
-              <div>
-                <Trans i18nKey="containers.loginHome.create_named_wallet" values={{ name }}>
-                  wallet?
-                  <Link onClick={() => goTo('create')}>
-                    <Strong>Create a {name} wallet</Strong>
-                  </Link>{' '}
-                  first.
-                </Trans>
-              </div>
-            </Tip>
-          </CardContainer>
           <CardContainer>
             <CardImg src={ledgerImg} />
 
@@ -188,8 +158,44 @@ function LoginHome(props: Props) {
               <div>{t('containers.loginHome.dont_have_ledger_wallet')}</div>
               <div>
                 <Link onClick={() => onDownload()}>
-                  <Strong>{t('containers.loginHome.download_it_here')}</Strong>
+                  {t('containers.loginHome.download_it_here')}
                 </Link>
+              </div>
+            </Tip>
+            <Tip>
+              <div>
+                {t('containers.loginHome.need_device')}&nbsp;
+                <Link onClick={() => onOrderDevice()}>{t('containers.loginHome.get_it_here')}</Link>
+              </div>
+            </Tip>
+          </CardContainer>
+          <CardContainer>
+            <CardImg src={keystoreImg} />
+            <CardTitle>{t('containers.loginHome.keystore_wallet')}</CardTitle>
+            <UnlockWalletButton
+              color="secondary"
+              variant="extended"
+              onClick={() => goTo('import')}
+              disabled={!isAgreement}
+            >
+              {t('containers.loginHome.open_exisiting_wallet_btn')}
+            </UnlockWalletButton>
+            <CreateWalletButton
+              color="primary"
+              variant="outlined"
+              onClick={() => goTo('create')}
+              disabled={!isAgreement}
+            >
+              {t('containers.loginHome.create_new_wallet_btn')}
+            </CreateWalletButton>
+            <Linebar />
+            <Tip>
+              <div>{t('containers.loginHome.want_to_import_fundraiser_paper_wallet')}</div>
+              <div>
+                <Trans i18nKey="containers.loginHome.create_named_wallet" values={{ name }}>
+                  wallet?
+                  <Link onClick={() => goTo('create')}>Create a {name} wallet</Link> first.
+                </Trans>
               </div>
             </Tip>
           </CardContainer>
