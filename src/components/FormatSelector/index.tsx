@@ -20,30 +20,22 @@ const SelectChainRenderWrapper = styled.div`
   text-transform: capitalize;
 `;
 
-const SelectChainItemWrapper = styled.div`
-  margin-left: auto;
-  text-transform: capitalize;
-`;
-
-const ChainItemWrapper = styled(MenuItem)`
+const ItemIconWrapper = styled(ListItemIcon)`
   &&& {
-    &[class*='selected'] {
-      color: ${({ theme: { colors } }) => colors.accent};
-    }
-    color: ${({ theme: { colors } }) => colors.primary};
-    width: 100%;
-    font-size: 14px;
-    font-weight: 400;
-    box-sizing: border-box;
-    height: 54px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    min-width: 25px;
   }
 `;
 
+const Empty = styled.div`
+  width: 25px;
+`;
+
+const ItemWrapper = styled(Typography)`
+  text-transform: capitalize;
+`;
+
 interface Props {
-  value: string;
+  value: TezosParameterFormat;
   onChange: (val: TezosParameterFormat) => void;
 }
 
@@ -59,10 +51,14 @@ const FormatSelector = (props: Props) => {
     >
       {TezosChainFormatArrary.map(format => (
         <MenuItem key={format} value={format}>
-          <ListItemIcon>
-            <TezosIcon size="14px" color="accent" iconName="checkmark2" />
-          </ListItemIcon>
-          <Typography variant="inherit">{format}</Typography>
+          {format === value ? (
+            <ItemIconWrapper>
+              <TezosIcon size="14px" color="accent" iconName="checkmark2" />
+            </ItemIconWrapper>
+          ) : (
+            <Empty />
+          )}
+          <ItemWrapper variant="inherit">{format}</ItemWrapper>
         </MenuItem>
       ))}
     </CustomSelect>

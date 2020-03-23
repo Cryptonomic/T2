@@ -120,6 +120,10 @@ const getIconByName = iconName => {
       return toUnicode('e917');
     }
 
+    case 'help-outline': {
+      return toUnicode('e918');
+    }
+
     default: {
       console.error(`${iconName} No such icon in Tezos icons font`);
     }
