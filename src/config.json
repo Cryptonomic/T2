@@ -1,8 +1,8 @@
 {
   "name": "Galleon",
-  "version": "1.0.0b",
+  "version": "1.0.1b",
   "network": "mainnet",
-  "blockExplorerHost": "https://mininax.io/mainnet/operations/",
+  "blockExplorerHost": "https://mininax.io",
   "logo": "cryptonomicLogo.png",
   "logoLink": "https://cryptonomic.tech",
   "icon": "tezos",
@@ -11,5 +11,6 @@
   "tagline": "containers.loginHome.tagline",
   "LocalVersionIndex": "20",
   "helpUrl": "https://cryptonomic.tech/support.html",
-  "ledgerReferral": "https://shop.ledger.com/pages/ledger-nano-x?r=631fb45e26da"
+  "ledgerReferral": "https://shop.ledger.com/pages/ledger-nano-x?r=631fb45e26da",
+  "versionReferenceURL": "https://galleon-wallet.tech/version.json"
 }

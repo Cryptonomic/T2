@@ -1,7 +1,7 @@
 {
   "name": "galleon",
   "productName": "Galleon",
-  "version": "1.0.0b",
+  "version": "1.0.1b",
   "description": "A wallet for the Tezos blockchain.",
   "main": "./main.prod.js",
   "author": {
