@@ -53,15 +53,16 @@ const ButtonText = styled.div`
   font-weight: bold;
   letter-spacing: 0.4px;
   line-height: 28px;
+  cursor: pointer;
 `;
 const Icon = styled(TezosIcon)`
   cursor: pointer;
 `;
 
-const HelpImg = styled.img`
-  height: 23px;
-  display: block;
-  margin: 0 auto;
+const HelpIcon = styled(TezosIcon)`
+  cursor: pointer;
+  position: relative;
+  top: 2px;
 `;
 
 interface Props {
@@ -91,7 +92,7 @@ const TopBar = (props: Props) => {
         {isLoggedIn && <Text>{walletName}</Text>}
       </InfoContainer>
       <ButtonContainer onClick={() => openLink(helpUrl)} buttonTheme="plain">
-        <HelpImg src={HelpSvg} />
+        <HelpIcon size={ms(1.8)} color="primary" iconName="help-outline" />
         <ButtonText>{t('components.settingController.help')}</ButtonText>
       </ButtonContainer>
       <ButtonContainer onClick={() => goToSettings()} buttonTheme="plain">
