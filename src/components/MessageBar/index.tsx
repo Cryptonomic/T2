@@ -7,6 +7,7 @@ import MessageContent from './MessageContent';
 import { clearMessageAction } from '../../reduxContent/message/actions';
 import { openLinkToBlockExplorer } from '../../utils/general';
 import { RootState, MessageState } from '../../types/store';
+import { getMainNode } from '../../utils/settings';
 
 const SnackbarWrapper = styled(Snackbar)`
   &&& {
@@ -27,6 +28,7 @@ const SnackbarWrapper = styled(Snackbar)`
 `;
 
 function MessageBar() {
+  const settings = useSelector<RootState, any>((state: RootState) => state.settings);
   const { text, hash, isError, localeParam } = useSelector<RootState, MessageState>(
     state => state.message,
     shallowEqual
@@ -35,7 +37,10 @@ function MessageBar() {
   const [open, setOpen] = useState(false);
 
   function openLink() {
-    openLinkToBlockExplorer(hash);
+    const { selectedNode, nodesList } = settings;
+    const currentNode = getMainNode(nodesList, selectedNode);
+
+    openLinkToBlockExplorer(hash, currentNode.network);
     onClose();
   }
 

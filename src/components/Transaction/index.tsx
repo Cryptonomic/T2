@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +15,8 @@ import {
   REG_TX_GAS_CONSUMPTION_ATHENS,
   EMPTY_OUT_TX_GAS_CONSUMPTION
 } from '../../constants/ConsumedGasValue';
+import { RootState, SettingsState } from '../../types/store';
+import { getMainNode } from '../../utils/settings';
 
 const AmountContainer = styled.div<{ color: string }>`
   color: ${({ theme: { colors }, color }) => colors[color]};
@@ -84,7 +87,15 @@ const Linebar = styled.div`
   opacity: 0.29;
 `;
 
-const openLink = element => openLinkToBlockExplorer(element);
+let settings: SettingsState;
+
+const openLink = element => {
+  const { selectedNode, nodesList } = settings;
+  const currentNode = getMainNode(nodesList, selectedNode);
+
+  return openLinkToBlockExplorer(element, currentNode.network);
+};
+
 const timeFormatter = timestamp => {
   const time = new Date(timestamp);
   return moment(time).format('LT');
@@ -255,6 +266,7 @@ function Transaction(props: Props) {
     selectedAccountHash,
     t
   );
+  settings = state.settings;
   let amount = 0;
   if (transaction.amount) {
     amount = parseInt(transaction.amount, 10);

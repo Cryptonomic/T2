@@ -1,11 +1,14 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
-
 import { limitLength } from '../../utils/strings';
 import { openLinkToBlockExplorer } from '../../utils/general';
+import { RootState, MessageState } from '../../types/store';
+import { getMainNode } from '../../utils/settings';
 
 const Container = styled.div`
   display: flex;
@@ -48,6 +51,9 @@ interface Props {
 function Info(props: Props) {
   const { t } = useTranslation();
   const { firstIconName, operationName, operationId, lastIconName } = props;
+  const settings = useSelector<RootState, any>((state: RootState) => state.settings);
+  const { selectedNode, nodesList } = settings;
+  const currentNode = getMainNode(nodesList, selectedNode);
 
   return (
     <Container>
@@ -56,7 +62,7 @@ function Info(props: Props) {
       <ActivationOperationId>{limitLength(operationId, 17)}</ActivationOperationId>
       <Details
         onClick={() => {
-          openLinkToBlockExplorer(operationId);
+          openLinkToBlockExplorer(operationId, currentNode.network);
         }}
       >
         {t('general.nouns.details')}
