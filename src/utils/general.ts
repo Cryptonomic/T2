@@ -1,5 +1,4 @@
 import { shell } from 'electron';
-import { useSelector } from 'react-redux';
 import {
   TezosConseilClient,
   TezosNodeReader,
@@ -8,8 +7,6 @@ import {
   KeyStore
 } from 'conseiljs';
 import { Node, NodeStatus } from '../types/general';
-import { RootState } from '../types/store';
-import { getMainNode } from '../utils/settings';
 
 import { findIdentity } from './identity';
 import * as status from '../constants/StatusTypes';
@@ -17,7 +14,6 @@ import { SEND, TRANSACTIONS } from '../constants/TabConstants';
 import { blockExplorerHost, versionReferenceURL } from '../config.json';
 
 const { Mnemonic, Hardware } = StoreType;
-const settings = useSelector<RootState, any>((state: RootState) => state.settings);
 
 export async function getNodesStatus(node: Node): Promise<NodeStatus> {
   const { tezosUrl, conseilUrl, apiKey, network } = node;
@@ -127,11 +123,8 @@ export function openLink(link) {
   shell.openExternal(link);
 }
 
-export function openLinkToBlockExplorer(operation: string) {
-  const { selectedNode, nodesList } = settings;
-  const currentNode = getMainNode(nodesList, selectedNode);
-
-  openLink(`${blockExplorerHost}/${currentNode.network}/operations/${operation}`);
+export function openLinkToBlockExplorer(operation: string, network: string = 'mainnet') {
+  openLink(`${blockExplorerHost}/${network}/operations/${operation}`);
 }
 
 export function clearOperationId(operationId) {
