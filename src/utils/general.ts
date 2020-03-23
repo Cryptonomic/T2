@@ -1,27 +1,23 @@
 import { shell } from 'electron';
+import { useSelector } from 'react-redux';
 import {
-  ConseilQueryBuilder,
-  ConseilOperator,
-  ConseilSortDirection,
   TezosConseilClient,
   TezosNodeReader,
   TezosWalletUtil,
   StoreType,
   KeyStore
 } from 'conseiljs';
-import { Node, NodeStatus, Identity, Account } from '../types/general';
+import { Node, NodeStatus } from '../types/general';
+import { RootState } from '../types/store';
+import { getMainNode } from '../utils/settings';
 
-// import { findAccount, createSelectedAccount } from './account';
 import { findIdentity } from './identity';
-// import { createTransaction } from './transaction';
 import * as status from '../constants/StatusTypes';
-// import { TEZOS, CONSEIL } from '../constants/NodesTypes';
 import { SEND, TRANSACTIONS } from '../constants/TabConstants';
-// import { getSelectedNode } from './nodes';
-import { blockExplorerHost } from '../config.json';
+import { blockExplorerHost, versionReferenceURL } from '../config.json';
 
-// const util = require('util');
 const { Mnemonic, Hardware } = StoreType;
+const settings = useSelector<RootState, any>((state: RootState) => state.settings);
 
 export async function getNodesStatus(node: Node): Promise<NodeStatus> {
   const { tezosUrl, conseilUrl, apiKey, network } = node;
@@ -59,42 +55,6 @@ export function getNodesError({ tezos, conseil }: NodeStatus): string {
 
   return '';
 }
-
-/**
- *
- * @param timeout - number of seconds to wait
- * @returns { Promise }
- */
-// export function awaitFor(timeout: number) {
-//   return new Promise((resolve) => {
-//     setTimeout(resolve, timeout*1000);
-//   });
-// }
-
-// export function getSelectedHash() {
-//   let hash = location.hash.replace(/$\//, '');
-//   let segments = hash.split('/');
-//   const addressIndex = segments.pop();
-//   const selectedParentHash = segments.pop();
-//   const selectedAccountHash = segments.pop();
-//   return {
-//     selectedParentHash,
-//     selectedAccountHash,
-//     addressIndex
-//   };
-// }
-
-// export function getSelectedAccount( identities, selectedAccountHash, selectedParentHash ) {
-//   let selectedAccount = null;
-//   if (selectedAccountHash === selectedParentHash) {
-//     selectedAccount = findIdentity( identities, selectedAccountHash );
-//   } else {
-//     const identity = findIdentity( identities, selectedParentHash );
-//     selectedAccount = findAccount( identity, selectedAccountHash );
-//   }
-
-//   return fromJS(selectedAccount || createSelectedAccount() );
-// }
 
 export function getSelectedKeyStore(
   identities: any[],
@@ -154,15 +114,6 @@ export function generateNewMnemonic() {
   return TezosWalletUtil.generateMnemonic();
 }
 
-// export async function fetchAverageFees(settings, operationKind) {
-//   const { url, apiKey } = getSelectedNode(settings, CONSEIL);
-//   const { network } = settings;
-
-//   const fees = await TezosConseilClient.getFeeStatistics({url, apiKey}, network, operationKind);
-
-//   return {low: fees[0]['low'], medium: fees[0]['medium'], high: fees[0]['high']};
-// }
-
 export function isReady(addressStatus, storeType?, tab?) {
   return (
     addressStatus === status.READY ||
@@ -176,8 +127,11 @@ export function openLink(link) {
   shell.openExternal(link);
 }
 
-export function openLinkToBlockExplorer(url) {
-  openLink(blockExplorerHost + url);
+export function openLinkToBlockExplorer(operation: string) {
+  const { selectedNode, nodesList } = settings;
+  const currentNode = getMainNode(nodesList, selectedNode);
+
+  openLink(`${blockExplorerHost}/${currentNode.network}/operations/${operation}`);
 }
 
 export function clearOperationId(operationId) {
@@ -189,7 +143,7 @@ export function clearOperationId(operationId) {
 
 export const getVersionFromApi = async () => {
   try {
-    const response = await fetch('https://galleon-wallet.tech/version.json');
+    const response = await fetch(versionReferenceURL);
     const responseJson = await response.json();
     return responseJson;
   } catch (error) {
