@@ -115,7 +115,7 @@ function BalanceBanner(props: Props) {
   }
 
   function openUrl() {
-    const newUrl = `https://t.me/TezosNotifierBot?start=${publicKeyHash}`;
+    const newUrl = `https://t.me/TezosNotifierBot?start=mininax_${publicKeyHash}`;
     openLink(newUrl);
   }
 
