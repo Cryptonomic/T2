@@ -24,7 +24,12 @@ import {
   syncIdentityWithState
 } from '../../utils/identity';
 
-import { clearOperationId, getNodesStatus, getNodesError } from '../../utils/general';
+import {
+  clearOperationId,
+  getNodesStatus,
+  getNodesError,
+  getSelectedKeyStore
+} from '../../utils/general';
 
 import {
   saveUpdatedWallet,
@@ -325,7 +330,7 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
 
 export function importAddressThunk(activeTab, seed, pkh?, activationCode?, username?, passPhrase?) {
   return async (dispatch, state) => {
-    const { walletLocation, walletFileName, password, identities } = state().wallet;
+    const { walletLocation, walletFileName, walletPassword, identities } = state().wallet;
     const { selectedNode, nodesList } = state().settings;
     const mainNode = getMainNode(nodesList, selectedNode);
     const { network, conseilUrl, tezosUrl, apiKey } = mainNode;
@@ -354,15 +359,23 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
             identity.publicKeyHash
           ).catch(() => false);
           if (!account) {
+            const keyStore = getSelectedKeyStore(
+              [identity],
+              identity.publicKeyHash,
+              identity.publicKeyHash,
+              false
+            );
+            const newKeyStore = { ...keyStore, storeType: StoreType.Fundraiser };
             activating = await sendIdentityActivationOperation(
               tezosUrl,
-              identity,
+              newKeyStore,
               activationCode
             ).catch(err => {
               const error = err;
               error.name = err.message;
               throw error;
             });
+
             const operationId = clearOperationId(activating.operationGroupID);
             dispatch(
               createMessageAction(
@@ -422,7 +435,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
             state().wallet.identities,
             walletLocation,
             walletFileName,
-            password
+            walletPassword
           );
           await saveIdentitiesToLocal(state().wallet.identities);
           dispatch(setIsLoadingAction(false));

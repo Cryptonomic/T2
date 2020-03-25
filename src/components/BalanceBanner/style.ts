@@ -119,6 +119,8 @@ export const KeyContainer = styled.div`
   margin-top: 10px;
   width: 100%;
   word-wrap: break-word;
+  -webkit-user-select: text;
+  user-select: text;
 `;
 
 export const WarningContainer = styled.div`
