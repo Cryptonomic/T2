@@ -171,7 +171,7 @@ function AddAddress() {
 
               <InputWithTooltip>
                 <TextField
-                  label={t('containers.homeAddAddress.activation_code_optional')}
+                  label={t('containers.homeAddAddress.activation_code')}
                   value={activationCode}
                   onChange={val => setActivationCode(val)}
                   right={30}

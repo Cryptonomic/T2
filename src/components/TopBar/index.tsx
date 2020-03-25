@@ -11,7 +11,6 @@ import Button from '../Button';
 import { openLink } from '../../utils/general';
 
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
-import HelpSvg from '../../../resources/imgs/Help.svg';
 
 import { helpUrl } from '../../config.json';
 
