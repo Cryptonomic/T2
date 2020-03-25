@@ -4,7 +4,7 @@
     {
       "displayName": "Tezos Testnet",
       "platform": "tezos",
-      "network": "babylonnet",
+      "network": "carthagenet",
       "tezosUrl": "https://tezos-dev.cryptonomic-infra.tech:443",
       "conseilUrl": "https://conseil-dev.cryptonomic-infra.tech:443",
       "apiKey": "galleon"
