@@ -8,7 +8,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import seedJson from './seed.json';
 
-const ChipWrapper = styled(Chip)<{ isBad: boolean }>`
+const ChipWrapper = styled(Chip)<{ isbad: number }>`
   &&& {
     font-size: 14px;
     border: solid 1px rgba(181, 197, 227, 0.35);
@@ -17,7 +17,7 @@ const ChipWrapper = styled(Chip)<{ isBad: boolean }>`
     .MuiChip-label {
       line-height: 20px;
     }
-    background-color: ${({ theme: { colors }, isBad }) => (isBad ? '#f6d6d6' : colors.gray2)};
+    background-color: ${({ theme: { colors }, isbad }) => (isbad ? '#f6d6d6' : colors.gray2)};
   }
 `;
 
@@ -140,14 +140,14 @@ function SeedInput(props: Props) {
       }}
       renderTags={(value, getTagProps) =>
         value.map((option, index) => {
-          const isBad = badWords.indexOf(option) > -1;
+          const isBad = badWords.indexOf(option) > -1 ? 1 : 0;
           return (
             <ChipWrapper
               key={index}
               variant="outlined"
               color="primary"
               size="small"
-              isBad={isBad}
+              isbad={isBad}
               label={<ChipContent value={option} index={index} />}
               deleteIcon={<CloseIcon />}
               {...getTagProps({ index })}
