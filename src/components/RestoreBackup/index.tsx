@@ -2,13 +2,13 @@ import React, { Fragment, useState } from 'react';
 import Switch from '@material-ui/core/Switch';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import TextField from '../TextField';
 import Button from '../Button';
 import SeedInput from './SeedInput';
 import PasswordInput from '../PasswordInput';
-// import { importAddress } from '../../reduxContent/wallet/thunks';
+import { importAddressThunk } from '../../reduxContent/wallet/thunks';
 import * as ADD_ADDRESS_TYPES from '../../constants/AddAddressTypes';
-import seedJson from './seed.json';
 
 const MainContainer = styled.div`
   position: relative;
@@ -88,12 +88,9 @@ const RestoreTabs = (props: Props1) => {
   );
 };
 
-interface Props {
-  importAddress?: () => void;
-}
-
-function RestoreBackup(props: Props) {
+function RestoreBackup() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [type, setType] = useState('phrase');
   const [seeds, setSeeds] = useState<string[]>([]);
   const [password, setPassword] = useState('');
@@ -102,34 +99,15 @@ function RestoreBackup(props: Props) {
   const [error, setError] = useState(false);
 
   const importAddress = () => {
-    const str = '';
-
-    // if (seeds.length) {
-    //   str = seeds.join(' ');
-    // }
-
-    // if (inputValue) {
-    //   if (seeds.length) {
-    //     str += ` ${inputValue}`;
-    //   } else {
-    //     str = inputValue;
-    //   }
-    // }
-
-    // this.props.importAddress(
-    //   ADD_ADDRESS_TYPES.RESTORE,
-    //   str,
-    //   '',
-    //   '',
-    //   '',
-    //   password,
-    //   key
-    // );
+    const strSeed = seeds.join(' ');
+    dispatch(importAddressThunk(ADD_ADDRESS_TYPES.RESTORE, strSeed, '', '', '', password));
   };
 
   const onEnterPress = (keyValue, disabled) => {
-    if (keyValue === 'Enter' && !disabled && (seeds.length === 15 || seeds.length === 24)) {
-      importAddress();
+    if (keyValue === 'Enter' && !disabled) {
+      if ((seeds.length === 15 || seeds.length === 24) && type === 'phrase') {
+        importAddress();
+      }
     }
   };
 
