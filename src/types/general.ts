@@ -67,6 +67,7 @@ export interface AverageFees {
 }
 
 export interface Token {
+  network: string;
   address: string;
   displayName: string;
   symbol: string;

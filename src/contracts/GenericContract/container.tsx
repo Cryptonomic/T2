@@ -31,6 +31,7 @@ import { getAccountSelector } from '../duck/selectors';
 
 const Container = styled.section`
   flex-grow: 1;
+  overflow: hidden;
 `;
 
 const Tab = styled(Button)<{ isActive: boolean; ready: boolean }>`
@@ -59,8 +60,8 @@ const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
-  padding: ${ms(4)};
-  min-height: 600px;
+  padding: ${ms(2)};
+  min-height: 400px;
 `;
 
 const tabs = [TRANSACTIONS, INVOKE, CODE, STORAGE];
