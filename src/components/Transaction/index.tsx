@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ import {
 } from '../../constants/ConsumedGasValue';
 import { RootState, SettingsState } from '../../types/store';
 import { getMainNode } from '../../utils/settings';
+import { Node } from '../../types/general';
 
 const AmountContainer = styled.div<{ color: string }>`
   color: ${({ theme: { colors }, color }) => colors[color]};
@@ -87,10 +88,7 @@ const Linebar = styled.div`
   opacity: 0.29;
 `;
 
-let settings: SettingsState;
-
-const openLink = element => {
-  const { selectedNode, nodesList } = settings;
+const openLink = (element, nodesList: Node[], selectedNode: string) => {
   const currentNode = getMainNode(nodesList, selectedNode);
 
   return openLinkToBlockExplorer(element, currentNode.network);
@@ -266,7 +264,10 @@ function Transaction(props: Props) {
     selectedAccountHash,
     t
   );
-  settings = state.settings;
+  const { selectedNode, nodesList } = useSelector<RootState, SettingsState>(
+    rootstate => rootstate.settings,
+    shallowEqual
+  );
   let amount = 0;
   if (transaction.amount) {
     amount = parseInt(transaction.amount, 10);
@@ -303,7 +304,7 @@ function Transaction(props: Props) {
             iconName="new-window"
             size={ms(0)}
             color="primary"
-            onClick={() => openLink(transaction.operation_group_hash)}
+            onClick={() => openLink(transaction.operation_group_hash, nodesList, selectedNode)}
           />
         </ContentDiv>
         {isBurn && (
