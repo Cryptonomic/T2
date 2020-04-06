@@ -61,8 +61,8 @@ const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
-  padding: ${ms(4)};
-  min-height: 600px;
+  padding: ${ms(2)};
+  min-height: 400px;
 `;
 
 const tabs = [TRANSACTIONS, SEND, DELEGATE, WITHDRAW, DEPOSIT];
