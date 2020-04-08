@@ -105,9 +105,10 @@ export function initLedgerTransport() {
 
 export function loadTokens() {
   const savedTokens = getLocalData('tokens');
-  return knownTokenContracts.map((token, index) => {
-    if (savedTokens[index]) {
-      return savedTokens[index];
+  return knownTokenContracts.map(token => {
+    const localTokens = savedTokens.filter(tk => tk.address === token.address);
+    if (localTokens.length > 0) {
+      return localTokens[0];
     }
     return token;
   });

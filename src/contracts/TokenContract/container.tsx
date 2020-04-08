@@ -117,8 +117,9 @@ function ActionPanel() {
           <Fragment>
             <Transactions
               transactions={showedTransactions}
-              selectedAccountHash={selectedAccountHash}
+              selectedAccountHash={selectedParentHash}
               selectedParentHash={selectedParentHash}
+              symbol={symbol}
             />
             {pageCount > 1 && (
               <PageNumbers

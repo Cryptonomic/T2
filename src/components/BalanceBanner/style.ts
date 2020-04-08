@@ -3,7 +3,6 @@ import { lighten } from 'polished';
 import Notifications from '@material-ui/icons/Notifications';
 import IconButton from '@material-ui/core/IconButton';
 import { H4 } from '../Heading';
-import TezosAmount from '../TezosAmount';
 import TezosIcon from '../TezosIcon';
 import Button from '../Button';
 import { ms } from '../../styles/helpers';
@@ -48,10 +47,8 @@ export const AddressInfo = styled.div`
   flex-wrap: wrap;
 `;
 
-export const Amount = styled(TezosAmount)`
-  margin: 0;
-  padding: ${ms(-3)} 0;
-  line-height: 1;
+export const Gap = styled.div`
+  width: 10px;
 `;
 
 export const Delegate = styled.span`
