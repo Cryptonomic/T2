@@ -750,10 +750,9 @@ export function transferThunk(destination: string, amount: string, fee: number, 
       amount: parsedAmount,
       destination,
       kind: TRANSACTION,
-      source: keyStore.publicKeyHash,
+      source: selectedParentHash,
       operation_group_hash: operationId,
-      fee,
-      consumed_gas: GAS
+      fee
     });
 
     const tokenIndex = findTokenIndex(tokens, selectedAccountHash);

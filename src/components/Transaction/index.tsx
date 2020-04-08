@@ -99,7 +99,7 @@ const timeFormatter = timestamp => {
   return moment(time).format('LT');
 };
 
-const getStatus = (transaction, selectedAccountHash, t) => {
+const getStatus = (transaction, selectedAccountHash, t, isToken) => {
   const type = transaction.kind;
   const isSameLocation = transaction.source === selectedAccountHash;
   const isFee = !!transaction.fee;
@@ -159,6 +159,26 @@ const getStatus = (transaction, selectedAccountHash, t) => {
       };
     }
     default: {
+      if (isSameLocation && isToken) {
+        return {
+          icon: 'send',
+          preposition: t('general.to'),
+          state: t('components.transaction.sent'),
+          isFee,
+          color: isAmount ? 'error1' : 'gray8',
+          sign: isAmount ? '-' : ''
+        };
+      } else if (!isSameLocation && isToken) {
+        return {
+          icon: 'receive',
+          preposition: t('general.from'),
+          state: t('components.transaction.received'),
+          isFee: false,
+          color: isAmount ? 'check' : 'gray8',
+          sign: isAmount ? '+' : ''
+        };
+      }
+
       const isFlag =
         !transaction.parameters &&
         (transaction.consumed_gas === REG_TX_GAS_CONSUMPTION ||
@@ -253,16 +273,18 @@ interface Props {
   transaction: any;
   selectedAccountHash: string;
   selectedParentHash: string;
+  symbol?: string;
 }
 
 function Transaction(props: Props) {
-  const { transaction, selectedAccountHash, selectedParentHash } = props;
+  const { transaction, selectedAccountHash, selectedParentHash, symbol } = props;
   const { t } = useTranslation();
   const fee = transaction.fee ? Number.parseInt(transaction.fee, 10) : 0;
   const { icon, preposition, state, isFee, color, sign, isBurn } = getStatus(
     transaction,
     selectedAccountHash,
-    t
+    t,
+    !!symbol
   );
   const { selectedNode, nodesList } = useSelector<RootState, SettingsState>(
     rootstate => rootstate.settings,
@@ -289,7 +311,7 @@ function Transaction(props: Props) {
         </TransactionDate>
         <AmountContainer color={color}>
           {sign}
-          <TezosAmount color={color} size={ms(-1)} amount={amount} format={6} />
+          <TezosAmount color={color} size={ms(-1)} amount={amount} format={6} symbol={symbol} />
         </AmountContainer>
       </Header>
       <Container>

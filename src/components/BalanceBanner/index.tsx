@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
 
 import TezosAddress from '../TezosAddress';
+import TezosAmount from '../TezosAmount';
 import Update from '../Update';
 import Modal from '../CustomModal';
 import Tooltip from '../Tooltip';
@@ -26,7 +27,6 @@ import {
   AddressTitle,
   AddressTitleIcon,
   AddressInfo,
-  Amount,
   Delegate,
   DelegateContainer,
   Breadcrumbs,
@@ -42,7 +42,8 @@ import {
   WarningTxt,
   StoreTxt,
   BellIcon,
-  TooltipContent
+  TooltipContent,
+  Gap
 } from './style';
 
 interface Props {
@@ -169,9 +170,10 @@ function BalanceBanner(props: Props) {
             text={publicKeyHash}
             size={ms(1.7)}
           />
+          <Gap />
 
           {isReady || storeType === Mnemonic ? (
-            <Amount
+            <TezosAmount
               color="white"
               size={ms(4.5)}
               amount={balance}

@@ -96,7 +96,7 @@ const TezosAmount = (props: Props) => {
 
   function getIcon() {
     if (!!symbol) {
-      return symbol;
+      return ` ${symbol}`;
     }
 
     if (!!iconName) {

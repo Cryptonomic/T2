@@ -19,10 +19,11 @@ interface Props {
   transactions: any[];
   selectedAccountHash: string;
   selectedParentHash: string;
+  symbol?: string;
 }
 
 export default function Transactions(props: Props) {
-  const { transactions, selectedAccountHash, selectedParentHash } = props;
+  const { transactions, selectedAccountHash, selectedParentHash, symbol } = props;
 
   const transactionsByDate = transactions.reduce((acc, curr) => {
     const date = moment(curr.timestamp).format('l');
@@ -40,6 +41,7 @@ export default function Transactions(props: Props) {
             transaction={transaction}
             selectedAccountHash={selectedAccountHash}
             selectedParentHash={selectedParentHash}
+            symbol={symbol}
           />
         );
       })}
