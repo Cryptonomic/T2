@@ -59,17 +59,14 @@ function Deposit(props: Props) {
   }, [isFeeLoaded]);
 
   function onGetMax() {
-    const max = addresses[0].balance - fee;
-    let newAmount = '0';
-    if (max > 0) {
-      newAmount = (max / utez).toFixed(6);
-    }
+    const max = addresses[0].balance - 1;
+    const newAmount = max > 0 ? (max / utez).toFixed(6) : '0';
     setAmount(newAmount);
   }
 
   function getBalanceState() {
     const realAmount = !amount ? Number(amount) : 0;
-    const max = addresses[0].balance - fee;
+    const max = addresses[0].balance - 1;
 
     if (max <= 0 || max < realAmount) {
       return {
