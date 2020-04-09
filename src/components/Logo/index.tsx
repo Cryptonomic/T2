@@ -6,14 +6,14 @@ import { logo, logoLink } from '../../config.json';
 import { openLink } from '../../utils/general';
 import Button from '../Button';
 
-const tezosLogo = '../resources/tezosLogo.svg';
-const customLogo = `../resources/${logo}`;
+const tezosLogo = require(`../../../resources/tezosLogo.svg`); // eslint-disable-line import/no-dynamic-require
+const customLogo = require(`../../../resources/${logo}`); // eslint-disable-line import/no-dynamic-require
 
 const Tz = styled.div`
   width: ${ms(7)};
   height: ${ms(7)};
   background-color: ${({ theme: { colors } }) => colors.accent};
-  mask: url(${tezosLogo}) no-repeat;
+  mask: url(${tezosLogo.default}) no-repeat;
   mask-size: cover;
 `;
 
@@ -32,7 +32,7 @@ const ButtonContainer = styled(Button)`
 const Logo = () => (
   <ButtonContainer onClick={() => openLink(logoLink)} buttonTheme="plain">
     {logo.length === 0 && <Tz />}
-    {logo.length > 0 && <LogoImg src={customLogo} />}
+    {logo.length > 0 && <LogoImg src={customLogo.default} />}
   </ButtonContainer>
 );
 
