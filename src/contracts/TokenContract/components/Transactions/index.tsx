@@ -2,8 +2,9 @@ import React from 'react';
 import moment from 'moment';
 
 import styled from 'styled-components';
-import TransactionsLabel from '../TransactionsLabel';
+import TransactionsLabel from '../../../../components/TransactionsLabel';
 import Transaction from '../Transaction';
+import { TokenTransaction } from '../../../../types/general';
 
 const Container = styled.section`
   height: 100%;
@@ -16,17 +17,17 @@ const Container = styled.section`
 const SectionContainer = styled.div``;
 
 interface Props {
-  transactions: any[];
-  selectedAccountHash: string;
+  transactions: TokenTransaction[];
   selectedParentHash: string;
+  symbol: string;
 }
 
 export default function Transactions(props: Props) {
-  const { transactions, selectedAccountHash, selectedParentHash } = props;
+  const { transactions, selectedParentHash, symbol } = props;
 
   const transactionsByDate = transactions.reduce((acc, curr) => {
     const date = moment(curr.timestamp).format('l');
-    acc[date] = [].concat(acc[date] || [], curr);
+    acc[date] = [...(acc[date] || []), curr];
     return acc;
   }, {});
 
@@ -38,8 +39,8 @@ export default function Transactions(props: Props) {
           <Transaction
             key={index}
             transaction={transaction}
-            selectedAccountHash={selectedAccountHash}
             selectedParentHash={selectedParentHash}
+            symbol={symbol}
           />
         );
       })}

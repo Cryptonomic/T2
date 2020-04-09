@@ -108,7 +108,7 @@ export function loadTokens() {
   return knownTokenContracts.map(token => {
     const localTokens = savedTokens.filter(tk => tk.address === token.address);
     if (localTokens.length > 0) {
-      return localTokens[0];
+      return { ...localTokens[0], kind: token.kind };
     }
     return token;
   });

@@ -8,7 +8,7 @@ import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
 import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
-import Transactions from '../../components/Transactions';
+import Transactions from './components/Transactions';
 
 import Loader from '../../components/Loader';
 
@@ -117,7 +117,6 @@ function ActionPanel() {
           <Fragment>
             <Transactions
               transactions={showedTransactions}
-              selectedAccountHash={selectedParentHash}
               selectedParentHash={selectedParentHash}
               symbol={symbol}
             />
