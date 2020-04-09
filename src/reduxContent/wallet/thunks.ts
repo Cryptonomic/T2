@@ -226,7 +226,8 @@ export function syncTokenThunk(tokenAddress) {
         tokenAddress,
         selectedParentHash,
         mainNode,
-        tokens[tokenIndex].transactions
+        tokens[tokenIndex].transactions,
+        tokens[tokenIndex].kind
       );
       const [balance, transactions] = await Promise.all([balanceAsync, transAsync]);
       tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions };
@@ -298,7 +299,8 @@ export function syncWalletThunk() {
           token.address,
           selectedParentHash,
           mainNode,
-          token.transactions
+          token.transactions,
+          token.kind
         );
 
         return { ...token, mapid, administrator, balance, transactions };

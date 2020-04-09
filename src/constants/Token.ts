@@ -1,5 +1,10 @@
 import { Token } from '../types/general';
 import { TRANSACTIONS } from './TabConstants';
+export const TZIP7 = 'tzip7';
+
+export const tokenRegStrs = {
+  tzip7: /Left[(]Left[(]Left[(]Pair"([A-Za-z0-9]*)"[(]Pair"([A-Za-z0-9]*)["]([0-9]*)[))))]/
+};
 
 export const knownTokenContracts: Token[] = [
   {
@@ -9,7 +14,8 @@ export const knownTokenContracts: Token[] = [
     symbol: 'TKS',
     balance: 0,
     transactions: [],
-    activeTab: TRANSACTIONS
+    activeTab: TRANSACTIONS,
+    kind: TZIP7
   },
   {
     network: 'carthagenet',
@@ -18,6 +24,7 @@ export const knownTokenContracts: Token[] = [
     symbol: 'SECT',
     balance: 0,
     transactions: [],
-    activeTab: TRANSACTIONS
+    activeTab: TRANSACTIONS,
+    kind: TZIP7
   }
 ];

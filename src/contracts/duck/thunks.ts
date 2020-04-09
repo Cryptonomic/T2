@@ -10,7 +10,7 @@ import { updateIdentityAction, updateTokensAction } from '../../reduxContent/wal
 import { tezToUtez } from '../../utils/currancy';
 
 import { saveIdentitiesToLocal } from '../../utils/wallet';
-import { createTransaction } from '../../utils/transaction';
+import { createTransaction, createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION, DELEGATION } from '../../constants/TransactionTypes';
 
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
@@ -746,7 +746,7 @@ export function transferThunk(destination: string, amount: string, fee: number, 
       )
     );
 
-    const transaction = createTransaction({
+    const transaction = createTokenTransaction({
       amount: parsedAmount,
       destination,
       kind: TRANSACTION,

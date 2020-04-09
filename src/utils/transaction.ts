@@ -6,7 +6,9 @@ import {
 } from 'conseiljs';
 
 import * as status from '../constants/StatusTypes';
-import { Node } from '../types/general';
+import { Node, TokenTransaction, TokenKind } from '../types/general';
+import { TRANSACTION } from '../constants/TransactionTypes';
+import { tokenRegStrs } from '../constants/Token';
 
 export function createTransaction(transaction) {
   const newTransaction = { ...transaction };
@@ -40,6 +42,36 @@ export function createTransaction(transaction) {
     source: null,
     storage_limit: null,
     timestamp: Date.now(),
+    ...newTransaction
+  };
+}
+
+const initTokenTransaction: TokenTransaction = {
+  amount: 0,
+  block_level: '',
+  destination: '',
+  fee: 0,
+  kind: TRANSACTION,
+  operation_group_hash: '',
+  status: status.CREATED,
+  source: '',
+  timestamp: Date.now(),
+  parameters: ''
+};
+
+export function createTokenTransaction(transaction) {
+  const newTransaction = { ...transaction };
+
+  if (typeof newTransaction.fee === 'string') {
+    newTransaction.fee = Number(newTransaction.fee);
+  }
+
+  if (typeof newTransaction.amount === 'string') {
+    newTransaction.amount = Number(newTransaction.amount);
+  }
+
+  return {
+    initTokenTransaction,
     ...newTransaction
   };
 }
@@ -187,13 +219,12 @@ export async function getSyncTransactions(
   return syncTransactionsWithState(newTransactions, stateTransactions);
 }
 
-const tokenRegex = /Left[(]Left[(]Left[(]Pair"([A-Za-z0-9]*)"[(]Pair"([A-Za-z0-9]*)["]([0-9]*)[))))]/;
-
 export async function getSyncTokenTransactions(
   tokenAddress: string,
   managerAddress: string,
   node: Node,
-  stateTransactions: any[]
+  stateTransactions: any[],
+  tokenKind: TokenKind
 ) {
   let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch(
     e => {
@@ -204,11 +235,11 @@ export async function getSyncTokenTransactions(
   );
 
   newTransactions = newTransactions.map(transaction => {
-    const params = transaction.parameters.replace(/\s/g, '').match(tokenRegex);
-    return createTransaction({
+    const params = transaction.parameters.replace(/\s/g, '').match(tokenRegStrs[tokenKind]);
+    return createTokenTransaction({
       ...transaction,
       status: status.READY,
-      amount: params[3],
+      amount: Number(params[3]),
       source: params[1],
       destination: params[2]
     });
