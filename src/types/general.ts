@@ -66,6 +66,21 @@ export interface AverageFees {
   high: number;
 }
 
+export interface TokenTransaction {
+  amount: number;
+  block_level: string;
+  destination: string;
+  fee: number;
+  kind: string;
+  status: string;
+  source: string;
+  timestamp: number;
+  parameters: string;
+  operation_group_hash: string;
+}
+
+export type TokenKind = 'tzip7';
+
 export interface Token {
   network: string;
   address: string;
@@ -74,8 +89,9 @@ export interface Token {
   balance: number;
   mapid?: number;
   administrator?: string;
-  transactions: any[];
+  transactions: TokenTransaction[];
   activeTab?: string;
+  kind: TokenKind;
 }
 
 export type BookMark = Account | Token;
