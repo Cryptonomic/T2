@@ -153,22 +153,14 @@ function Send(props: Props) {
   }, [isFeeLoaded]);
 
   function onUseMax() {
-    const burnFee = isBurn ? 257000 : 0;
-    const max = addressBalance - fee - burnFee;
-    let newAmount = '0';
-    let newTotal = fee;
-    let newBalance = addressBalance - newTotal;
-    if (max > 0) {
-      newAmount = (max / utez).toFixed(6);
-      newTotal = addressBalance;
-      newBalance = 0;
-    }
+    const max = addressBalance - 1;
+    const newAmount = (max / utez).toFixed(6);
     setState(prevState => {
       return {
         ...prevState,
         amount: newAmount,
-        total: newTotal,
-        balance: newBalance
+        total: max,
+        balance: 1
       };
     });
   }
@@ -198,10 +190,9 @@ function Send(props: Props) {
   }
 
   function handleAmountChange(newAmount: string) {
-    const burnFee = isBurn ? 257000 : 0;
     const commaReplacedAmount = newAmount ? newAmount.replace(',', '.') : '0';
     const numAmount = parseFloat(commaReplacedAmount) * utez;
-    const newTotal = numAmount + fee + burnFee;
+    const newTotal = numAmount;
     const newBalance = addressBalance - newTotal;
     setState(prevState => {
       return {
@@ -214,16 +205,9 @@ function Send(props: Props) {
   }
 
   function handleFeeChange(newFee) {
-    const burnFee = isBurn ? 257000 : 0;
-    const newAmount = amount || '0';
-    const numAmount = parseFloat(newAmount) * utez;
-    const newTotal = numAmount + newFee + burnFee;
-    const newBalance = addressBalance - newTotal;
     setState(prevState => {
       return {
         ...prevState,
-        total: newTotal,
-        balance: newBalance,
         fee: newFee
       };
     });
