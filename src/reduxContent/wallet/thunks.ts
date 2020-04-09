@@ -1,5 +1,6 @@
 import path from 'path';
 import { push } from 'react-router-redux';
+import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import {
   TezosFileWallet,
   TezosWalletUtil,
@@ -12,7 +13,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
 import { CREATED } from '../../constants/StatusTypes';
-import { createTransaction } from '../../utils/transaction';
+import { createTransaction, getSyncTokenTransactions } from '../../utils/transaction';
 
 import { findAccountIndex, getSyncAccount, syncAccountWithState } from '../../utils/account';
 
@@ -206,31 +207,33 @@ export function syncIdentityThunk(publicKeyHash) {
   };
 }
 
-export function syncTokenThunk(publicKeyHash) {
+export function syncTokenThunk(tokenAddress) {
   return async (dispatch, state) => {
     const { selectedNode, nodesList } = state().settings;
     const { selectedParentHash } = state().app;
     const tokens: Token[] = state().wallet.tokens;
 
     const mainNode = getMainNode(nodesList, selectedNode);
-
-    const newTokens = await Promise.all(
-      tokens
-        .filter(token => token.mapid && token.mapid > 0)
-        .map(async token => {
-          const mapid = token.mapid || 0;
-
-          const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
-            mainNode.tezosUrl,
-            mapid,
-            selectedParentHash
-          );
-          return { ...token, balance };
-        })
-    );
-
-    setLocalData('tokens', newTokens);
-    dispatch(updateTokensAction(newTokens));
+    const tokenIndex = findTokenIndex(tokens, tokenAddress);
+    if (tokenIndex > -1) {
+      const mapid = tokens[tokenIndex].mapid || 0;
+      const balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(
+        mainNode.tezosUrl,
+        mapid,
+        selectedParentHash
+      );
+      const transAsync = getSyncTokenTransactions(
+        tokenAddress,
+        selectedParentHash,
+        mainNode,
+        tokens[tokenIndex].transactions,
+        tokens[tokenIndex].kind
+      );
+      const [balance, transactions] = await Promise.all([balanceAsync, transAsync]);
+      tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions };
+      setLocalData('tokens', tokens);
+      dispatch(updateTokensAction([...tokens]));
+    }
   };
 }
 
@@ -292,7 +295,15 @@ export function syncWalletThunk() {
           mapid,
           selectedParentHash
         ).catch(() => 0);
-        return { ...token, mapid, administrator, balance };
+        const transactions = await getSyncTokenTransactions(
+          token.address,
+          selectedParentHash,
+          mainNode,
+          token.transactions,
+          token.kind
+        );
+
+        return { ...token, mapid, administrator, balance, transactions };
       })
     );
 
@@ -310,7 +321,7 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
     try {
       dispatch(setWalletIsSyncingAction(true));
       if (addressType === AddressType.Token) {
-        await dispatch(syncTokenThunk(selectedParentHash));
+        await dispatch(syncTokenThunk(selectedAccountHash));
       } else if (selectedAccountHash === selectedParentHash) {
         await dispatch(syncIdentityThunk(selectedAccountHash));
       } else {
@@ -509,17 +520,22 @@ export function connectLedgerThunk() {
     dispatch(setIsLedgerConnectingAction(true));
     dispatch(setIsLoadingAction(true));
     dispatch(createMessageAction('', false));
-    try {
-      const identities = await loadWalletFromLedger(derivation);
-      dispatch(setWalletAction(identities, '', `Ledger Nano S - ${derivation}`, ''));
-      const { publicKeyHash } = identities[0];
-      dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
-      dispatch(automaticAccountRefresh());
-      dispatch(push('/home'));
-      await dispatch(syncWalletThunk());
-    } catch (e) {
-      console.error(e);
-      dispatch(createMessageAction(e.name, true));
+    const devicesList = await TransportNodeHid.list();
+    if (devicesList.length === 0) {
+      dispatch(createMessageAction('general.errors.no_ledger_detected', true));
+    } else {
+      try {
+        const identities = await loadWalletFromLedger(derivation);
+        dispatch(setWalletAction(identities, '', `Ledger Nano S - ${derivation}`, ''));
+        const { publicKeyHash } = identities[0];
+        dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
+        dispatch(automaticAccountRefresh());
+        dispatch(push('/home'));
+        await dispatch(syncWalletThunk());
+      } catch (e) {
+        console.error(e);
+        dispatch(createMessageAction(e.name, true));
+      }
     }
     dispatch(setIsLoadingAction(false));
     dispatch(setIsLedgerConnectingAction(false));

@@ -6,7 +6,9 @@ import {
 } from 'conseiljs';
 
 import * as status from '../constants/StatusTypes';
-import { Node } from '../types/general';
+import { Node, TokenTransaction, TokenKind } from '../types/general';
+import { TRANSACTION } from '../constants/TransactionTypes';
+import { tokenRegStrs } from '../constants/Token';
 
 export function createTransaction(transaction) {
   const newTransaction = { ...transaction };
@@ -40,6 +42,36 @@ export function createTransaction(transaction) {
     source: null,
     storage_limit: null,
     timestamp: Date.now(),
+    ...newTransaction
+  };
+}
+
+const initTokenTransaction: TokenTransaction = {
+  amount: 0,
+  block_level: '',
+  destination: '',
+  fee: 0,
+  kind: TRANSACTION,
+  operation_group_hash: '',
+  status: status.CREATED,
+  source: '',
+  timestamp: Date.now(),
+  parameters: ''
+};
+
+export function createTokenTransaction(transaction) {
+  const newTransaction = { ...transaction };
+
+  if (typeof newTransaction.fee === 'string') {
+    newTransaction.fee = Number(newTransaction.fee);
+  }
+
+  if (typeof newTransaction.amount === 'string') {
+    newTransaction.amount = Number(newTransaction.amount);
+  }
+
+  return {
+    initTokenTransaction,
     ...newTransaction
   };
 }
@@ -110,6 +142,54 @@ export async function getTransactions(accountHash, node: Node) {
   // TODO sort by timestamp
 }
 
+export async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
+  const { conseilUrl, apiKey, network } = node;
+
+  let query = ConseilQueryBuilder.blankQuery();
+  query = ConseilQueryBuilder.addFields(
+    query,
+    'timestamp',
+    'block_level',
+    'source',
+    'destination',
+    'amount',
+    'kind',
+    'fee',
+    'status',
+    'operation_group_hash',
+    'parameters'
+  );
+  query = ConseilQueryBuilder.addPredicate(
+    query,
+    'kind',
+    ConseilOperator.EQ,
+    ['transaction'],
+    false
+  );
+  query = ConseilQueryBuilder.addPredicate(query, 'status', ConseilOperator.EQ, ['applied'], false);
+  query = ConseilQueryBuilder.addPredicate(
+    query,
+    'destination',
+    ConseilOperator.EQ,
+    [tokenAddress],
+    false
+  );
+  query = ConseilQueryBuilder.addPredicate(
+    query,
+    'parameters',
+    ConseilOperator.LIKE,
+    [managerAddress],
+    false
+  );
+  query = ConseilQueryBuilder.addOrdering(query, 'timestamp', ConseilSortDirection.DESC);
+  query = ConseilQueryBuilder.setLimit(query, 1000);
+  return await TezosConseilClient.getOperations(
+    { url: conseilUrl, apiKey, network },
+    network,
+    query
+  ).catch(e => []);
+}
+
 export function syncTransactionsWithState(serverTrs: any[], localTrs: any[]) {
   const newTransactions = localTrs.filter(
     tr => !serverTrs.find(syncTr => syncTr.operation_group_hash === tr.operation_group_hash)
@@ -135,6 +215,35 @@ export async function getSyncTransactions(
       status: status.READY
     })
   );
+
+  return syncTransactionsWithState(newTransactions, stateTransactions);
+}
+
+export async function getSyncTokenTransactions(
+  tokenAddress: string,
+  managerAddress: string,
+  node: Node,
+  stateTransactions: any[],
+  tokenKind: TokenKind
+) {
+  let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch(
+    e => {
+      console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
+      console.error(e);
+      return [];
+    }
+  );
+
+  newTransactions = newTransactions.map(transaction => {
+    const params = transaction.parameters.replace(/\s/g, '').match(tokenRegStrs[tokenKind]);
+    return createTokenTransaction({
+      ...transaction,
+      status: status.READY,
+      amount: Number(params[3]),
+      source: params[1],
+      destination: params[2]
+    });
+  });
 
   return syncTransactionsWithState(newTransactions, stateTransactions);
 }
