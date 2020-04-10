@@ -129,7 +129,7 @@
     "url": "https://github.com/Cryptonomic/T2.git"
   },
   "author": {
-    "name": "Cryptonomic",
+    "name": "Cryptonomic Inc",
     "email": "info@cryptonomic.tech"
   },
   "license": "GPL-3.0-only",
@@ -230,7 +230,7 @@
     "zxcvbn": "^4.4.2"
   },
   "engines": {
-    "node": "12.13.1",
-    "npm": "6.12.1"
+    "node": "12.16.1",
+    "npm": "6.13.4"
   }
 }
