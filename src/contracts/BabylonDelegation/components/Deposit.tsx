@@ -42,7 +42,7 @@ interface Props {
 function Deposit(props: Props) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [fee, setFee] = useState(AVERAGEFEES.medium);
+  const [fee, setFee] = useState(5000);
   const [amount, setAmount] = useState('');
   const [passPhrase, setPassPhrase] = useState('');
   const [open, setOpen] = useState(false);

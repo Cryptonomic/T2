@@ -108,7 +108,7 @@ interface Props {
 const initialState = {
   toAddress: '',
   amount: '',
-  fee: AVERAGEFEES.medium,
+  fee: 5000,
   isBurn: false,
   total: AVERAGEFEES.medium,
   balance: 0
