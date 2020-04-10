@@ -67,10 +67,12 @@ import { ACTIVATION } from '../../constants/TransactionTypes';
 import { WalletState } from '../../types/store';
 import { Identity, Token, AddressType } from '../../types/general';
 
-const { unlockFundraiserIdentity, unlockIdentityWithMnemonic } = TezosWalletUtil;
+const {
+  unlockFundraiserIdentity,
+  unlockIdentityWithMnemonic,
+  restoreIdentityWithSecretKey
+} = TezosWalletUtil;
 const { createWallet } = TezosFileWallet;
-
-const { getAccount } = TezosConseilClient;
 
 const { sendIdentityActivationOperation } = TezosNodeWriter;
 let currentAccountRefreshInterval: any = null;
@@ -364,7 +366,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
             pkh.trim()
           );
           identity.storeType = StoreType.Fundraiser;
-          const account = await getAccount(
+          const account = await TezosConseilClient.getAccount(
             { url: conseilUrl, apiKey, network },
             network,
             identity.publicKeyHash
@@ -408,7 +410,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
             1: StoreType.Fundraiser
           };
           identity.storeType = storeTypesMap[identity.storeType];
-          const account = await getAccount(
+          const account = await TezosConseilClient.getAccount(
             { url: conseilUrl, apiKey, network },
             network,
             identity.publicKeyHash
@@ -461,6 +463,55 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
     } catch (e) {
       console.log(`-debug: Error in: importAddress for:${activeTab}`);
       console.error(e);
+      if (e.name === "The provided string doesn't look like hex data") {
+        dispatch(createMessageAction('general.errors.no_hex_data', true));
+      } else {
+        dispatch(createMessageAction(e.name, true));
+      }
+      dispatch(setIsLoadingAction(false));
+    }
+  };
+}
+
+export function importPrivateKeyThunk(key) {
+  return async (dispatch, state) => {
+    const { walletLocation, walletFileName, walletPassword, identities } = state().wallet;
+
+    dispatch(createMessageAction('', false));
+    dispatch(setIsLoadingAction(true));
+    try {
+      let identity: any = null;
+      identity = await restoreIdentityWithSecretKey(key);
+      identity.storeType = StoreType.Mnemonic;
+
+      if (identity) {
+        const { publicKeyHash } = identity;
+        if (findIdentityIndex(identities, publicKeyHash) === -1) {
+          delete identity.seed;
+          identity.order = identities.length + 1;
+          identity = createIdentity(identity);
+
+          dispatch(addNewIdentityAction(identity));
+          dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
+          await saveUpdatedWallet(
+            state().wallet.identities,
+            walletLocation,
+            walletFileName,
+            walletPassword
+          );
+
+          await saveIdentitiesToLocal(state().wallet.identities);
+          dispatch(setIsLoadingAction(false));
+          dispatch(push('/home'));
+          await dispatch(
+            syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash, AddressType.Manager)
+          );
+        } else {
+          dispatch(createMessageAction('components.messageBar.messages.identity_exist', true));
+        }
+      }
+    } catch (e) {
+      console.error(`Error restoring account from secret key: ${e}`);
       if (e.name === "The provided string doesn't look like hex data") {
         dispatch(createMessageAction('general.errors.no_hex_data', true));
       } else {
@@ -526,7 +577,7 @@ export function connectLedgerThunk() {
     } else {
       try {
         const identities = await loadWalletFromLedger(derivation);
-        dispatch(setWalletAction(identities, '', `Ledger Nano S - ${derivation}`, ''));
+        dispatch(setWalletAction(identities, '', `Ledger device - ${derivation}`, ''));
         const { publicKeyHash } = identities[0];
         dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
         dispatch(automaticAccountRefresh());

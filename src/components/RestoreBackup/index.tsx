@@ -7,7 +7,7 @@ import TextField from '../TextField';
 import Button from '../Button';
 import SeedInput from './SeedInput';
 import PasswordInput from '../PasswordInput';
-import { importAddressThunk } from '../../reduxContent/wallet/thunks';
+import { importAddressThunk, importPrivateKeyThunk } from '../../reduxContent/wallet/thunks';
 import * as ADD_ADDRESS_TYPES from '../../constants/AddAddressTypes';
 
 const MainContainer = styled.div`
@@ -99,13 +99,18 @@ function RestoreBackup() {
   const [error, setError] = useState(false);
 
   const importAddress = () => {
-    const strSeed = seeds.join(' ');
-    dispatch(importAddressThunk(ADD_ADDRESS_TYPES.RESTORE, strSeed, '', '', '', password));
+    if (type === 'phrase') {
+      dispatch(
+        importAddressThunk(ADD_ADDRESS_TYPES.RESTORE, seeds.join(' '), '', '', '', password)
+      );
+    } else if (type === 'key') {
+      dispatch(importPrivateKeyThunk(key));
+    }
   };
 
   const onEnterPress = (keyValue, disabled) => {
     if (keyValue === 'Enter' && !disabled) {
-      if ((seeds.length === 15 || seeds.length === 24) && type === 'phrase') {
+      if ([12, 15, 18, 21, 24].includes(seeds.length) && type === 'phrase') {
         importAddress();
       }
     }
