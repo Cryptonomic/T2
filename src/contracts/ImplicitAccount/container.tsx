@@ -15,9 +15,8 @@ import AccountStatus from '../../components/AccountStatus';
 
 import Delegate from './components/Delegate';
 import Send from './components/Send';
-import Receive from './components/Receive';
 
-import { TRANSACTIONS, SEND, RECEIVE, DELEGATE } from '../../constants/TabConstants';
+import { TRANSACTIONS, SEND, DELEGATE } from '../../constants/TabConstants';
 import { READY } from '../../constants/StatusTypes';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
@@ -76,17 +75,15 @@ const DescriptionContainer = styled.p`
 
 interface DescriptionProps {
   onSendClick: () => void;
-  onReceiveClick: () => void;
 }
 
 const Description = (props: DescriptionProps) => {
-  const { onSendClick, onReceiveClick } = props;
+  const { onSendClick } = props;
   return (
     <DescriptionContainer>
       <Trans i18nKey="components.actionPanel.description">
         It is pretty empty here. Get started
-        <Link onClick={onSendClick}> sending</Link> and
-        <Link onClick={onReceiveClick}> receiving</Link> tez from this address.
+        <Link onClick={onSendClick}> sending</Link>!
       </Trans>
     </DescriptionContainer>
   );
@@ -124,8 +121,6 @@ function ActionPanel() {
     switch (activeTab) {
       case DELEGATE:
         return <Delegate isReady={ready} />;
-      case RECEIVE:
-        return <Receive address={selectedAccountHash} />;
       case SEND:
         return <Send isReady={ready} addressBalance={balance} />;
       case TRANSACTIONS:
@@ -150,12 +145,7 @@ function ActionPanel() {
           <EmptyState
             imageSrc={transactionsEmptyState}
             title={t('components.actionPanel.empty-title')}
-            description={
-              <Description
-                onReceiveClick={() => onChangeTab(RECEIVE)}
-                onSendClick={() => onChangeTab(SEND)}
-              />
-            }
+            description={<Description onSendClick={() => onChangeTab(SEND)} />}
           />
         ) : (
           <Fragment>
