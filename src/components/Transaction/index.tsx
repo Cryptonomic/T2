@@ -13,6 +13,7 @@ import { READY } from '../../constants/StatusTypes';
 import {
   REG_TX_GAS_CONSUMPTION,
   REG_TX_GAS_CONSUMPTION_ATHENS,
+  REG_TX_GAS_CONSUMPTION_BABYLON,
   EMPTY_OUT_TX_GAS_CONSUMPTION
 } from '../../constants/ConsumedGasValue';
 import { RootState, SettingsState } from '../../types/store';
@@ -120,7 +121,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
       return {
         icon: 'star',
         preposition: t('general.of'),
-        state: t('components.transaction.activitation'),
+        state: t('components.transaction.activation'),
         isFee: false,
         color: 'gray8',
         sign: ''
@@ -163,6 +164,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
         !transaction.parameters &&
         (transaction.consumed_gas === REG_TX_GAS_CONSUMPTION ||
           transaction.consumed_gas === REG_TX_GAS_CONSUMPTION_ATHENS ||
+          transaction.consumed_gas === REG_TX_GAS_CONSUMPTION_BABYLON ||
           transaction.consumed_gas === EMPTY_OUT_TX_GAS_CONSUMPTION);
 
       if (isSameLocation && isFlag) {
@@ -268,12 +270,14 @@ function Transaction(props: Props) {
     rootstate => rootstate.settings,
     shallowEqual
   );
+
   let amount = 0;
   if (transaction.amount) {
     amount = parseInt(transaction.amount, 10);
   } else if (transaction.balance) {
     amount = parseInt(transaction.balance, 10);
   }
+
   const address = getAddress(transaction, selectedAccountHash, selectedParentHash, t);
   const origination =
     transaction.kind === 'origination' && selectedAccountHash !== selectedParentHash;
