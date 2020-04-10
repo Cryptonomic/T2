@@ -389,7 +389,7 @@ function AddDelegateModal(props: Props) {
             />
           </FeeContainer>
           <GasInputContainer>
-            <TextField disabled={true} label={t('general.nouns.gas')} defaultValue="0.257000" />
+            <TextField disabled={true} label={t('general.verbs.burn')} defaultValue="0.257000" />
             <TezosIconInput color="gray5" iconName="tezos" />
             <Tooltip position="bottom" content={renderGasToolTip()}>
               <BurnTooltip size="small">
