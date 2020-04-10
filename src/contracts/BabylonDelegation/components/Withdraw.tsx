@@ -58,7 +58,7 @@ function Withdraw(props: Props) {
   }, [isFeeLoaded]);
 
   function onGetMax() {
-    const max = balance;
+    const max = balance - 1;
     let newAmount = '0';
     if (max > 0) {
       newAmount = (max / utez).toFixed(6);
@@ -68,7 +68,7 @@ function Withdraw(props: Props) {
 
   function getBalanceState() {
     const realAmount = !amount ? Number(amount) : 0;
-    const max = balance;
+    const max = balance - 1;
 
     if (max <= 0 || max < realAmount) {
       return {

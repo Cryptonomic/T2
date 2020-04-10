@@ -11,6 +11,7 @@ import { name, ledgerReferral } from '../../config.json';
 import { setLocalData, getLocalData, resetLocalData } from '../../utils/localData';
 import { changeLocaleThunk } from '../Settings/duck/thunk';
 import { connectLedgerThunk } from '../../reduxContent/wallet/thunks';
+import { getSelectedPath } from '../../reduxContent/settings/selectors';
 
 import {
   SectionContainer,
@@ -63,7 +64,7 @@ function LoginHome(props: Props) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const locale = useSelector((state: RootState) => state.settings.locale);
-  const activePath = useSelector((state: RootState) => state.settings.selectedPath);
+  const activePath = useSelector(getSelectedPath);
   const isLedgerConnecting = useSelector((state: RootState) => state.app.isLedgerConnecting);
   const [isAgreement, setIsAgreement] = useState(() => getLocalData(AGREEMENT_STORAGE));
   const [isLanguageSelected, setIsLanguageSelected] = useState(() =>

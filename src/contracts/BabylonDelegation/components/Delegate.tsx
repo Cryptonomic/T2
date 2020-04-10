@@ -39,16 +39,12 @@ interface Props {
 function Delegate(props: Props) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [fee, setFee] = useState(AVERAGEFEES.medium);
+  const [fee, setFee] = useState(5000);
   const [newAddress, setAddress] = useState('');
   const [passPhrase, setPassPhrase] = useState('');
   const [isAddressIssue, setIsAddressIssue] = useState(false);
   const [open, setOpen] = useState(false);
-  const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(
-    OperationKindType.Delegation,
-    true,
-    true
-  );
+  const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Delegation, true, true);
 
   const { isLoading, isLedger, selectedAccountHash } = useSelector<RootState, AppState>(
     (state: RootState) => state.app,
@@ -56,10 +52,6 @@ function Delegate(props: Props) {
   );
 
   const { isReady } = props;
-
-  useEffect(() => {
-    setFee(newFees.medium);
-  }, [isFeeLoaded]);
 
   const isDisabled =
     !isReady || isLoading || isAddressIssue || !newAddress || (!passPhrase && !isLedger);
