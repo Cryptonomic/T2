@@ -27,8 +27,8 @@ export const getAccountSelector = createSelector(
   selectedAccountHashSelector,
   selectedParentHashSelector,
   identitiesSelector,
-  (accountHash, parentHash, identites) => {
-    const selectedIdentity = identites.find(identity => identity.publicKeyHash === parentHash);
+  (accountHash, parentHash, identities) => {
+    const selectedIdentity = identities.find(identity => identity.publicKeyHash === parentHash);
     if (selectedIdentity) {
       const { accounts, publicKeyHash, balance, privateKey } = selectedIdentity;
       const regularAddresses = [{ pkh: publicKeyHash, balance }];

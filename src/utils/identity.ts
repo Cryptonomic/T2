@@ -1,5 +1,4 @@
 import { StoreType } from 'conseiljs';
-import { unionBy } from 'lodash';
 import { TRANSACTIONS } from '../constants/TabConstants';
 import { CREATED, READY } from '../constants/StatusTypes';
 import { Node, Identity } from '../types/general';

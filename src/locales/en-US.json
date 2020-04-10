@@ -59,7 +59,8 @@
     },
     "errors": {
       "no_hex_data": "The provided string doesn't look like hex data",
-      "no_ledger_detected": "Ledger disconnected"
+      "no_ledger_detected": "Ledger device not found",
+      "ledger_error": "Error communicating with Ledger device"
     },
     "decimal_separator": ".",
     "back": "Back",
@@ -297,9 +298,9 @@
       "seed_encrypted_label": "This seed phrase is encrypted with a password",
       "seed_phrase_password": "Seed Phrase Password",
       "enter_private_key": "Enter your private key",
-      "seed_phrase": "SEED PHRASE",
-      "private_key": "PRIVATE KEY",
-      "secret_key_15": "15 Word Secret Key",
+      "seed_phrase": "Seed Phrase",
+      "private_key": "Private Key",
+      "secret_key_15": "15 - 24 Word Mnemonic",
       "errors": {
         "invalid_length": "Seed phrases must contain no more than 15 words.",
         "invalid_words": "Detected invalid word(s). Please double check."
@@ -357,7 +358,7 @@
       "pending": "Pending...",
       "burn": "Burn",
       "public_key_reveal": "PUBLIC KEY REVEAL",
-      "activitation": "ACTIVATION",
+      "activation": "ACTIVATION",
       "updated_delegate": "UPDATED DELEGATE",
       "origination": "ORIGINATION",
       "sent": "Sent",
