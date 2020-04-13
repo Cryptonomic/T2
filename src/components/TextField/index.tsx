@@ -30,7 +30,7 @@ const LabelWrapper = styled(InputLabel)`
 const ErrorText = styled(FormHelperText)`
   &&& {
     font-size: 12px;
-    margin-top: 5px;
+    margin: 5px 0 0 0;
     line-height: 18px;
     height: 18px;
   }
@@ -93,7 +93,7 @@ function TextField(props: Props) {
         {...other}
       />
 
-      <ErrorText component="div">{errorText}</ErrorText>
+      <ErrorText>{errorText}</ErrorText>
     </Container>
   );
 }

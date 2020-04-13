@@ -123,7 +123,6 @@ function SeedInput(props: Props) {
       options={seedJson}
       closeIcon=""
       popupIcon=""
-      disableOpenOnFocus={true}
       filterSelectedOptions={true}
       inputValue={inputVal}
       value={seeds}

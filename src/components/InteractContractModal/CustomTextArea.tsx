@@ -79,7 +79,7 @@ const ErrorWrapper = styled(FormHelperText)`
   &&& {
     color: ${({ theme: { colors } }) => colors.error1};
     font-size: 12px;
-    margin-top: 5px;
+    margin: 5px 0 0 0;
     line-height: 18px;
     height: 18px;
   }
@@ -106,7 +106,7 @@ const CustomTextArea = (props: Props) => {
         rowsMax={5}
         {...other}
       />
-      <ErrorWrapper component="div">{errorText}</ErrorWrapper>
+      <ErrorWrapper>{errorText}</ErrorWrapper>
     </FormControlWrapper>
   );
 };
