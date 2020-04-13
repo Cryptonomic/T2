@@ -8,7 +8,7 @@ import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
 import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
-import Transactions from '../../components/Transactions';
+import Transactions from './components/Transactions';
 
 import Loader from '../../components/Loader';
 import AccountStatus from '../../components/AccountStatus';
@@ -26,7 +26,6 @@ import { sortArr } from '../../utils/array';
 import { isReady } from '../../utils/general';
 
 import { RootState } from '../../types/store';
-import { AddressType } from '../../types/general';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 import { getAccountSelector } from '../duck/selectors';

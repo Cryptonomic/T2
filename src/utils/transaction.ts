@@ -131,12 +131,13 @@ export async function getTransactions(accountHash, node: Node) {
       TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)
     )
   )
-    .then(responses =>
-      responses.reduce((result, r) => {
+    .then(responses => {
+      console.log('transactions----', responses);
+      return responses.reduce((result, r) => {
         r.forEach(rr => result.push(rr));
         return result;
-      })
-    )
+      });
+    })
     .then(transactions => transactions.sort((a, b) => a.timestamp - b.timestamp));
 }
 
