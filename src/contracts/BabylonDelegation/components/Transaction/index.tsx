@@ -3,22 +3,22 @@ import { useSelector, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { ms } from '../../styles/helpers';
-import TezosAddress from '../TezosAddress';
-import TezosAmount from '../TezosAmount';
-import TezosIcon from '../TezosIcon';
-import { openLinkToBlockExplorer } from '../../utils/general';
-import * as types from '../../constants/TransactionTypes';
-import { READY } from '../../constants/StatusTypes';
+import { ms } from '../../../../styles/helpers';
+import TezosAddress from '../../../../components/TezosAddress';
+import TezosAmount from '../../../../components/TezosAmount';
+import TezosIcon from '../../../../components/TezosIcon';
+import { openLinkToBlockExplorer } from '../../../../utils/general';
+import * as types from '../../../../constants/TransactionTypes';
+import { READY } from '../../../../constants/StatusTypes';
 import {
   REG_TX_GAS_CONSUMPTION,
   REG_TX_GAS_CONSUMPTION_ATHENS,
   REG_TX_GAS_CONSUMPTION_BABYLON,
   EMPTY_OUT_TX_GAS_CONSUMPTION
-} from '../../constants/ConsumedGasValue';
-import { RootState, SettingsState } from '../../types/store';
-import { getMainNode } from '../../utils/settings';
-import { Node } from '../../types/general';
+} from '../../../../constants/ConsumedGasValue';
+import { RootState, SettingsState } from '../../../../types/store';
+import { getMainNode } from '../../../../utils/settings';
+import { Node } from '../../../../types/general';
 
 const AmountContainer = styled.div<{ color: string }>`
   color: ${({ theme: { colors }, color }) => colors[color]};

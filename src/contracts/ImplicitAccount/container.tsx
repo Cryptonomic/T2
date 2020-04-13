@@ -8,7 +8,7 @@ import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
 import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
-import Transactions from '../../components/Transactions';
+import Transactions from './components/Transactions';
 
 import Loader from '../../components/Loader';
 import AccountStatus from '../../components/AccountStatus';

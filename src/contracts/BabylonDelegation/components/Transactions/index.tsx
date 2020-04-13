@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 
 import styled from 'styled-components';
-import TransactionsLabel from '../TransactionsLabel';
+import TransactionsLabel from '../../../../components/TransactionsLabel';
 import Transaction from '../Transaction';
 
 const Container = styled.section`
