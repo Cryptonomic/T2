@@ -2,12 +2,13 @@ import { NodeStatus, AddressType } from '../../types/general';
 
 export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_LEDGER = 'SET_LEDGER';
-export const SET_IS_LEDGER_CONNECTIONG = 'SET_IS_LEDGER_CONNECTIONG';
+export const SET_IS_LEDGER_CONNECTING = 'SET_IS_LEDGER_CONNECTING';
 export const WALLET_IS_SYNCING = 'WALLET_IS_SYNCING';
 export const ADD_NEW_VERSION = 'ADD_NEW_VERSION';
 export const SET_NODES_STATUS = 'SET_NODES_STATUS';
 export const UPDATE_FETCHED_TIME = 'UPDATE_FETCHED_TIME';
 export const CHANGE_ACCOUNT_HASH = 'CHANGE_ACCOUNT_HASH';
+export const SHOW_SIGN_VERIFY = 'SHOW_SIGN_VERIFY';
 export const LOGOUT = 'LOGOUT';
 
 export interface SetIsLoadingAction {
@@ -19,13 +20,17 @@ export interface LogoutAction {
   type: typeof LOGOUT;
 }
 
+export interface ShowSignVerifyAction {
+  type: typeof SHOW_SIGN_VERIFY;
+}
+
 export interface SetLedgerAction {
   type: typeof SET_LEDGER;
   isLedger: boolean;
 }
 
 export interface SetIsLedgerConnectingAction {
-  type: typeof SET_IS_LEDGER_CONNECTIONG;
+  type: typeof SET_IS_LEDGER_CONNECTING;
   isLedgerConnecting: boolean;
 }
 
@@ -62,6 +67,10 @@ export interface ChangeAccountAction {
   payload: ChangeAccountType;
 }
 
+export interface ShowSignVerifyAction {
+  type: typeof SHOW_SIGN_VERIFY;
+}
+
 export type AppActionTypes =
   | SetIsLoadingAction
   | LogoutAction
@@ -71,4 +80,5 @@ export type AppActionTypes =
   | AddNewVersionAction
   | SetNodesStatusAction
   | UpdateFetchedTimeAction
-  | ChangeAccountAction;
+  | ChangeAccountAction
+  | ShowSignVerifyAction;

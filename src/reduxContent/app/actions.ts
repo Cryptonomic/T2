@@ -1,23 +1,25 @@
 import {
   SET_IS_LOADING,
-  LOGOUT,
-  SET_LEDGER,
-  ADD_NEW_VERSION,
-  SET_IS_LEDGER_CONNECTIONG,
-  WALLET_IS_SYNCING,
-  SET_NODES_STATUS,
-  UPDATE_FETCHED_TIME,
-  CHANGE_ACCOUNT_HASH,
   SetIsLoadingAction,
+  LOGOUT,
   LogoutAction,
+  SET_LEDGER,
   SetLedgerAction,
+  SET_IS_LEDGER_CONNECTING,
   SetIsLedgerConnectingAction,
+  WALLET_IS_SYNCING,
   SetWalletIsSyncingAction,
+  ADD_NEW_VERSION,
   AddNewVersionAction,
+  SET_NODES_STATUS,
   SetNodesStatusAction,
+  UPDATE_FETCHED_TIME,
   UpdateFetchedTimeAction,
+  CHANGE_ACCOUNT_HASH,
   ChangeAccountAction,
-  ChangeAccountType
+  ChangeAccountType,
+  SHOW_SIGN_VERIFY,
+  ShowSignVerifyAction
 } from './types';
 import { NodeStatus, AddressType } from '../../types/general';
 
@@ -45,7 +47,7 @@ export function setIsLedgerConnectingAction(
   isLedgerConnecting: boolean
 ): SetIsLedgerConnectingAction {
   return {
-    type: SET_IS_LEDGER_CONNECTIONG,
+    type: SET_IS_LEDGER_CONNECTING,
     isLedgerConnecting
   };
 }
@@ -93,4 +95,8 @@ export function changeAccountAction(
     selectedAccountType: accountType
   };
   return { type: CHANGE_ACCOUNT_HASH, payload };
+}
+
+export function showSignVerifyAction(): ShowSignVerifyAction {
+  return { type: SHOW_SIGN_VERIFY };
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { TezosConseilClient, TezosNodeReader, OperationKindType } from 'conseiljs';
-import { changeAccountAction, addNewVersionAction } from './actions';
+import { changeAccountAction, addNewVersionAction, showSignVerifyAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
 import { getVersionFromApi } from '../../utils/general';
@@ -103,5 +103,11 @@ export function getNewVersionThunk() {
     if (RemoteVersionIndex > parseInt(LocalVersionIndex, 10)) {
       dispatch(addNewVersionAction(result.currentVersionString));
     }
+  };
+}
+
+export function showSignVeiryThunk() {
+  return async dispatch => {
+    dispatch(showSignVerifyAction());
   };
 }

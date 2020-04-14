@@ -322,6 +322,16 @@ function AddressBlock(props: Props) {
       </AddressLabel>
 
       <AddDelegateLabel>
+        <DelegateTitle
+          onClick={() => {
+            console.log(`${publicKeyHash}`);
+          }}
+        >
+          {t('general.nouns.sign_n_verify')}
+        </DelegateTitle>
+      </AddDelegateLabel>
+
+      <AddDelegateLabel>
         <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
       </AddDelegateLabel>
       {tokens.map((token, index) => {
