@@ -5,7 +5,7 @@ import {
   SET_IS_LOADING,
   LOGOUT,
   SET_LEDGER,
-  SET_IS_LEDGER_CONNECTIONG,
+  SET_IS_LEDGER_CONNECTING,
   WALLET_IS_SYNCING,
   ADD_NEW_VERSION,
   SET_NODES_STATUS,
@@ -44,7 +44,7 @@ export function appReducer(state: AppState = initState, action: AppActionTypes) 
       return initState;
     case SET_LEDGER:
       return { ...state, isLedger: action.isLedger };
-    case SET_IS_LEDGER_CONNECTIONG:
+    case SET_IS_LEDGER_CONNECTING:
       return { ...state, isLedgerConnecting: action.isLedgerConnecting };
     case WALLET_IS_SYNCING:
       return { ...state, isWalletSyncing: action.isWalletSyncing };
