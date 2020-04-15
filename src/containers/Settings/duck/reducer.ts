@@ -12,17 +12,12 @@ import {
 import { SettingsActionTypes } from './types';
 import { SettingsState } from '../../../types/store';
 
-const baseDefaults: SettingsState = {
-  locale: 'en-US',
-  selectedNode: '',
-  nodesList: [],
-  selectedPath: '',
-  pathsList: []
-};
 const walletSettings = getWalletSettings();
-const initialState = { ...baseDefaults, ...walletSettings };
 
-export function settingsReducer(state = initialState, action: SettingsActionTypes): SettingsState {
+export function settingsReducer(
+  state = walletSettings,
+  action: SettingsActionTypes
+): SettingsState {
   switch (action.type) {
     case CHANGE_LOCALE: {
       return { ...state, locale: action.locale };

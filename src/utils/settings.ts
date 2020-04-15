@@ -1,17 +1,34 @@
-import { getLocalData } from '../utils/localData';
+import { getLocalData, resetLocalData } from '../utils/localData';
 import { Node, Path } from '../types/general';
+
+const defaultSettings = {
+  locale: 'en-US',
+  selectedNode: '',
+  nodesList: [],
+  selectedPath: '',
+  pathsList: []
+};
 
 export function getWalletSettings() {
   const localSettings = getLocalData('settings');
-  if (localSettings.selectedNode) {
+  if (
+    (!!localSettings.selectedNode && localSettings.nodesList.length === 0) ||
+    (!!localSettings.selectedPath && localSettings.pathsList.length === 0)
+  ) {
+    resetLocalData('settings');
+    return getInitWalletSettings();
+  } else {
     return localSettings;
   }
+}
+
+export function getInitWalletSettings() {
   try {
     const fileSettings = require('../extraResources/walletSettings.json');
-    return fileSettings;
+    return { ...defaultSettings, ...fileSettings };
   } catch (err) {
     console.error('load setting error', err);
-    return localSettings;
+    return defaultSettings;
   }
 }
 
