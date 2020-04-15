@@ -1,3 +1,4 @@
+import { getInitWalletSettings } from './settings';
 const Store = require('electron-store');
 const schema = {
   settings: {
@@ -48,14 +49,10 @@ const schema = {
   }
 };
 
+const defaultSettings = getInitWalletSettings();
+
 const defaultStore = {
-  settings: {
-    locale: 'en-US',
-    selectedNode: '',
-    nodesList: [],
-    selectedPath: '',
-    pathsList: []
-  },
+  settings: defaultSettings,
   identities: [],
   isShowedLanguageScene: false,
   isPPAccepted: false,
@@ -83,6 +80,9 @@ export function removeLocalData(key: string) {
 
 // reset data in store
 export function resetLocalData(key: string) {
-  // store.set(key, defaultStore[key]);
+  store.set(key, defaultStore[key]);
+}
+
+export function resetAllLocalData() {
   store.set(defaultStore);
 }

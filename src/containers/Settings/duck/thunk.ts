@@ -29,7 +29,7 @@ export const addNodeThunk = (node: Node) => {
   return (dispatch, state) => {
     dispatch({ type: ADD_NODE, node });
     setLocalData('settings.nodesList', state().settings.nodesList);
-    setLocalData('settings.selectedNode', state.settings.selectedNode);
+    setLocalData('settings.selectedNode', state().settings.selectedNode);
   };
 };
 
@@ -37,7 +37,7 @@ export const removeNodeThunk = (name: string) => {
   return (dispatch, state) => {
     dispatch({ type: REMOVE_NODE, name });
     setLocalData('settings.nodesList', state().settings.nodesList);
-    setLocalData('settings.selectedNode', state.settings.selectedNode);
+    setLocalData('settings.selectedNode', state().settings.selectedNode);
   };
 };
 
