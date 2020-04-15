@@ -58,7 +58,9 @@
       "format": "Format",
       "tokens": "Tokens",
       "token_contract": "Token Contract",
-      "sign_n_verify": "Sign & Verify"
+      "sign_n_verify": "Sign & Verify",
+      "platform": "Platform",
+      "network": "Network"
     },
     "errors": {
       "no_hex_data": "The provided string doesn't look like hex data",
