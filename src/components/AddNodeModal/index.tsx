@@ -71,32 +71,19 @@ function AddNodeModal(props: Props) {
     return url.toLowerCase().indexOf('https://') === 0;
   }
   function handleAddNode() {
-    const newNode: Node = {
-      displayName: name,
-      platform,
-      network,
-      tezosUrl,
-      conseilUrl,
-      apiKey
-    };
+    if (!isValidUrl(tezosUrl)) {
+      setTezosError(t('components.addNodeModal.error'));
+      return;
+    }
+
+    if (isValidUrl(conseilUrl)) {
+      setConseilError(t('components.addNodeModal.error'));
+      return;
+    }
+
+    const newNode: Node = { displayName: name, platform, network, tezosUrl, conseilUrl, apiKey };
     onAdd(newNode);
     handleClose();
-  }
-
-  function onChangeTezoUrl(url: string) {
-    if (isValidUrl(url)) {
-      setTezosUrl(url);
-    } else {
-      setTezosError(t('components.addNodeModal.error'));
-    }
-  }
-
-  function onChangeConseilUrl(url: string) {
-    if (isValidUrl(url)) {
-      setConseilUrl(url);
-    } else {
-      setConseilError(t('components.addNodeModal.error'));
-    }
   }
 
   const isDisabled =
@@ -141,9 +128,9 @@ function AddNodeModal(props: Props) {
 
         <UrlContainer>
           <TextField
-            label="Tezos URL (e.g https://127.0.0.1:19731/)"
+            label="Tezos URL (e.g https://127.0.0.1)"
             value={tezosUrl}
-            onChange={val => onChangeTezoUrl(val)}
+            onChange={val => setTezosUrl(val)}
             errorText={tezosError}
           />
           {tezosError && <FeedbackIcon iconName="warning" size={ms(0)} color="error1" />}
@@ -151,9 +138,9 @@ function AddNodeModal(props: Props) {
 
         <UrlContainer>
           <TextField
-            label="Conseil URL (e.g https://127.0.0.1:19731/)"
+            label="Conseil URL (e.g https://127.0.0.1)"
             value={conseilUrl}
-            onChange={val => onChangeConseilUrl(val)}
+            onChange={val => setConseilUrl(val)}
             errorText={conseilError}
           />
           {conseilError && <FeedbackIcon iconName="warning" size={ms(0)} color="error1" />}
