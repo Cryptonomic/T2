@@ -26,11 +26,6 @@ import {
   NameSection,
   Section,
   Background,
-  BgContainerImg,
-  BgCircle1,
-  BgCircle2,
-  BgCircle3,
-  BgCircle4,
   CardContainer,
   CardImg,
   CardTitle,
@@ -42,12 +37,6 @@ import {
 
 import { openLink } from '../../utils/general';
 import { RootState } from '../../types/store';
-
-import bgHero from '../../../resources/bg-hero/bg-hero.jpg';
-import bgCircle01 from '../../../resources/bg-hero/bg-circle_01.png';
-import bgCircle02 from '../../../resources/bg-hero/bg-circle_02.png';
-import bgCircle03 from '../../../resources/bg-hero/bg-circle_03.png';
-import bgCircle04 from '../../../resources/bg-hero/bg-circle_04.png';
 
 import keystoreImg from '../../../resources/imgs/Keystore.svg';
 import ledgerUnconnectedImg from '../../../resources/ledger-unconnected.svg';
@@ -225,13 +214,7 @@ function LoginHome(props: Props) {
         agreeTermsAndPolicy={() => updateStatusAgreement()}
         onBack={goToLanguageSelect}
       />
-      <Background>
-        <BgContainerImg src={bgHero} />
-        <BgCircle1 src={bgCircle01} />
-        <BgCircle2 src={bgCircle02} />
-        <BgCircle3 src={bgCircle03} />
-        <BgCircle4 src={bgCircle04} />
-      </Background>
+      <Background />
     </SectionContainer>
   );
 }
