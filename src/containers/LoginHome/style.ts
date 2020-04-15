@@ -114,75 +114,7 @@ export const Background = styled.div`
   z-index: -1;
   width: 100%;
   height: 100%;
-`;
-
-export const BgContainerImg = styled.img`
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate3d(-50%, 0, 0);
-  height: 100vh;
-  overflow-x: hidden;
-  z-index: 0;
-  animation: fadeIn 3s forwards;
-  animation-delay: 0.5s;
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-`;
-
-const BgCircleCss = css`
-  z-index: 1;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate3d(-50%, 0, 0);
-  height: 100vh;
-  overflow-x: hidden;
-  opacity: 0;
-  backface-visibility: hidden;
-  animation: fadeInOut 2000ms ease-in-out infinite alternate;
-
-  @keyframes fadeInOut {
-    0% {
-      opacity: 0;
-      transform: translate3d(-50%, 0, 0);
-    }
-    50% {
-      opacity: 1;
-      transform: translate3d(-50%, 0, 0);
-    }
-    100% {
-      opacity: 1;
-      transform: translate3d(-50%, 0, 0);
-    }
-  }
-`;
-
-export const BgCircle1 = styled.img`
-  ${BgCircleCss};
-  animation-delay: 2000ms;
-`;
-
-export const BgCircle2 = styled.img`
-  ${BgCircleCss};
-  animation-delay: 2400ms;
-`;
-
-export const BgCircle3 = styled.img`
-  ${BgCircleCss};
-  animation-delay: 2800ms;
-`;
-
-export const BgCircle4 = styled.img`
-  ${BgCircleCss};
-  animation-delay: 3200ms;
+  color: #edf0f7;
 `;
 
 export const CardContainer = styled.div`
