@@ -1,129 +1,126 @@
-import React from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { lighten } from 'polished';
+import { useSelector } from 'react-redux';
+import { OperationKindType } from 'conseiljs';
+import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
 
-import Button from '../../components/Button';
-import BalanceBanner from '../../components/BalanceBanner';
+import CloseIcon from '@material-ui/icons/Close';
+import { Modal, Tabs, Tab } from '@material-ui/core';
+import Loader from '../../components/Loader';
 import Sign from './components/Sign';
 import Verify from './components/Verify';
 
-import { SIGN, VERIFY } from '../../constants/TabConstants';
-import { ms } from '../../styles/helpers';
-
-import { isReady } from '../../utils/general';
-
+import { useFetchFees } from '../../reduxContent/app/thunks';
 import { RootState } from '../../types/store';
 
-import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from '../duck/selectors';
-
-const Container = styled.section`
-  flex-grow: 1;
-  overflow: hidden;
-`;
-
-const Tab = styled(Button)<{ isActive: boolean; ready: boolean }>`
-  background: ${({ isActive, theme: { colors } }) => (isActive ? colors.white : colors.accent)};
-  color: ${({ isActive, theme: { colors } }) =>
-    isActive ? colors.primary : lighten(0.4, colors.accent)};
-  cursor: ${({ ready }) => (ready ? 'pointer' : 'initial')};
-  text-align: center;
-  font-weight: 500;
-  padding: ${ms(-1)} ${ms(1)};
-  border-radius: 0;
-`;
-
-const TabList = styled.div<{ count: number }>`
-  background-color: ${({ theme: { colors } }) => colors.accent};
-  display: grid;
-  grid-template-columns: ${({ count }) => (count > 4 ? `repeat(${count}, 1fr)` : 'repeat(4, 1fr)')};
-  grid-column-gap: 50px;
-`;
-
-const TabText = styled.span<{ ready: boolean }>`
-  opacity: ${({ ready }) => (ready ? '1' : '0.5')};
-`;
-
-const SectionContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  padding: ${ms(2)};
-  min-height: 400px;
-`;
-
-const tabs = [SIGN, VERIFY];
-
-function ActionPanel() {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const selectedAccount = useSelector(getAccountSelector);
-
-  const { selectedAccountHash } = useSelector(
-    (rootState: RootState) => rootState.app,
-    shallowEqual
-  );
-
-  const {
-    balance,
-    activeTab,
-    storeType,
-    status,
-    script,
-    privateKey,
-    delegate_value,
-    storage
-  } = selectedAccount;
-
-  function onChangeTab(newTab: string) {
-    dispatch(updateActiveTabThunk(newTab));
+export const ModalWrapper = styled(Modal)`
+  &&& {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+`;
 
-  function renderSection() {
-    switch (activeTab) {
-      case VERIFY:
-        return <Verify />;
-      case SIGN:
-      default:
-        return <Sign />;
+export const ModalContainer = styled.div`
+  background-color: ${({ theme: { colors } }) => colors.white};
+  outline: none;
+  position: relative;
+  min-width: 671px;
+  max-width: 750px;
+  width: 672px;
+`;
+
+export const CloseIconWrapper = styled(CloseIcon)`
+  &&& {
+    fill: ${({ theme: { colors } }) => colors.white};
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    top: 23px;
+    right: 23px;
+  }
+`;
+
+export const ModalTitle = styled.div`
+  padding: 27px 36px;
+  font-size: 24px;
+  letter-spacing: 1px;
+  line-height: 34px;
+  font-weight: 300;
+  color: ${({ theme: { colors } }) => colors.white};
+  width: 100%;
+  background-color: ${({ theme: { colors } }) => colors.accent};
+`;
+
+export const TabsWrapper = styled(Tabs)`
+  .MuiTabs-indicator {
+    background-color: ${({ theme: { colors } }) => colors.white};
+    display: none;
+  }
+`;
+
+export const TabWrapper = styled(Tab)`
+  &.MuiTab-root {
+    height: 60px;
+    background-color: ${({ theme: { colors } }) => colors.accent};
+    color: ${({ theme: { colors } }) => colors.white};
+    text-transform: initial;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  &.Mui-selected {
+    background-color: ${({ theme: { colors } }) => colors.white};
+  }
+`;
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
+
+function SignVerifyModal(props: Props) {
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState(0);
+  const [enterCounts, setEnterCounts] = useState<number[]>([0, 0]);
+  const isLoading = useSelector<RootState, boolean>((state: RootState) => state.app.isLoading);
+  const { open, onClose } = props;
+
+  function onEnterPress(event) {
+    if (event.key === 'Enter') {
+      enterCounts[activeTab] += 1;
+      setEnterCounts(enterCounts);
     }
   }
-  return (
-    <Container>
-      <BalanceBanner
-        storeType={storeType}
-        isReady={isReady(status, storeType)}
-        balance={balance || 0}
-        privateKey={privateKey}
-        publicKeyHash={selectedAccountHash || 'Inactive'}
-        delegatedAddress={delegate_value}
-      />
 
-      <TabList count={tabs.length}>
-        {tabs.map(tab => {
-          const ready = isReady(status, storeType, tab);
-          return (
-            <Tab
-              isActive={activeTab === tab}
-              key={tab}
-              ready={ready}
-              buttonTheme="plain"
-              onClick={() => {
-                if (ready) {
-                  onChangeTab(tab);
-                }
-              }}
-            >
-              <TabText ready={ready}>{t(tab)}</TabText>
-            </Tab>
-          );
-        })}
-      </TabList>
-      <SectionContainer>{renderSection()}</SectionContainer>
-    </Container>
+  return (
+    <ModalWrapper open={open} onKeyDown={onEnterPress}>
+      {open ? (
+        <ModalContainer>
+          <CloseIconWrapper onClick={() => onClose()} />
+          <ModalTitle>{t('general.nouns.sign_n_verify')}</ModalTitle>
+          <TabsWrapper
+            value={activeTab}
+            onChange={(e, val) => setActiveTab(val)}
+            variant="fullWidth"
+            textColor="primary"
+          >
+            <TabWrapper label={t('general.verbs.sign')} />
+            <TabWrapper label={t('general.verbs.verify')} />
+          </TabsWrapper>
+
+          <SwipeableViews index={activeTab}>
+            <Sign />
+            <Verify />
+          </SwipeableViews>
+          {isLoading && <Loader />}
+        </ModalContainer>
+      ) : (
+        <ModalContainer />
+      )}
+    </ModalWrapper>
   );
 }
 
-export default ActionPanel;
+export default SignVerifyModal;

@@ -23,6 +23,8 @@ import SecurityNoticeModal from '../SecurityNoticeModal';
 import Tooltip from '../Tooltip';
 import TokenNav from '../TokenNav';
 
+import SignVerifyModal from '../../contracts/SignVerify';
+
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
 import { getAddressType } from '../../utils/account';
@@ -162,6 +164,7 @@ function AddressBlock(props: Props) {
   const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
   const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+  const [isSignModalOpen, setIsSignModalOpen] = useState(false);
   const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() =>
     getLocalData('isHideDelegateTooltip')
   );
@@ -322,11 +325,7 @@ function AddressBlock(props: Props) {
       </AddressLabel>
 
       <AddDelegateLabel>
-        <DelegateTitle
-          onClick={() => {
-            console.log(`${publicKeyHash}`);
-          }}
-        >
+        <DelegateTitle onClick={() => setIsSignModalOpen(true)}>
           {t('general.nouns.sign_n_verify')}
         </DelegateTitle>
       </AddDelegateLabel>
@@ -391,6 +390,10 @@ function AddressBlock(props: Props) {
           />
         );
       })}
+
+      {isSignModalOpen && (
+        <SignVerifyModal open={isSignModalOpen} onClose={() => setIsSignModalOpen(false)} />
+      )}
 
       {isInteractModalOpen && (
         <InteractContractModal
