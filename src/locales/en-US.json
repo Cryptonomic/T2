@@ -24,7 +24,10 @@
       "mint": "Mint",
       "burn": "Burn",
       "sign": "Sign",
-      "verify": "Verify"
+      "verify": "Verify",
+      "match": "Match",
+      "no_match": "No Match",
+      "copy": "Copy"
     },
     "nouns": {
       "amount": "Amount",
@@ -60,7 +63,10 @@
       "token_contract": "Token Contract",
       "sign_n_verify": "Sign & Verify",
       "platform": "Platform",
-      "network": "Network"
+      "network": "Network",
+      "message": "Message",
+      "signature": "Signature",
+      "ok": "Ok"
     },
     "errors": {
       "no_hex_data": "The provided string doesn't look like hex data",
