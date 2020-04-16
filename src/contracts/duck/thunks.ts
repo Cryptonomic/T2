@@ -3,7 +3,10 @@ import {
   TezosNodeReader,
   BabylonDelegationHelper,
   TezosParameterFormat,
-  Tzip7ReferenceTokenHelper
+  Tzip7ReferenceTokenHelper,
+  ConseilDataClient,
+  ConseilQueryBuilder,
+  ConseilOperator
 } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction, updateTokensAction } from '../../reduxContent/wallet/actions';
@@ -946,4 +949,48 @@ export function burnThunk(destination: string, amount: string, fee: number, pass
   };
 }
 
+export function publicKeyThunk(address: string) {
+  return async (dispatch, state): Promise<string> => {
+    const { selectedNode, nodesList } = state().settings;
+    const mainNode = getMainNode(nodesList, selectedNode);
+    const { network, conseilUrl, apiKey } = mainNode;
+
+    const serverInfo = { url: conseilUrl, apiKey, network };
+
+    let publicKeyQuery = ConseilQueryBuilder.blankQuery();
+    publicKeyQuery = ConseilQueryBuilder.addFields(publicKeyQuery, 'public_key');
+    publicKeyQuery = ConseilQueryBuilder.addPredicate(
+      publicKeyQuery,
+      'kind',
+      ConseilOperator.EQ,
+      ['reveal'],
+      false
+    );
+    publicKeyQuery = ConseilQueryBuilder.addPredicate(
+      publicKeyQuery,
+      'status',
+      ConseilOperator.EQ,
+      ['applied'],
+      false
+    );
+    publicKeyQuery = ConseilQueryBuilder.addPredicate(
+      publicKeyQuery,
+      'source',
+      ConseilOperator.EQ,
+      [address],
+      false
+    );
+    publicKeyQuery = ConseilQueryBuilder.setLimit(publicKeyQuery, 1);
+
+    return (
+      await ConseilDataClient.executeEntityQuery(
+        serverInfo,
+        'tezos',
+        network,
+        'operations',
+        publicKeyQuery
+      )
+    )[0].public_key;
+  };
+}
 export default invokeAddressThunk;
