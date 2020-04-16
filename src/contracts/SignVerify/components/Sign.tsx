@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { TezosWalletUtil } from 'conseiljs';
 import Button from '@material-ui/core/Button';
 import { clipboard } from 'electron';
@@ -8,11 +8,13 @@ import { clipboard } from 'electron';
 import CustomTextArea from '../../../components/CustomTextArea';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { RootState } from '../../../types/store';
+import { publicKeyThunk } from '../../duck/thunks';
 
 import { Container, MainContainer, ButtonContainer, InvokeButton, SnackbarWrapper } from './style';
 
 const Sign = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const { isLoading, selectedParentHash, isLedger } = useSelector(
     (rootState: RootState) => rootState.app,
     shallowEqual
@@ -29,6 +31,12 @@ const Sign = () => {
       selectedParentHash,
       isLedger
     );
+    try {
+      const publicKey = dispatch(publicKeyThunk(keyStore.publicKey));
+      // TODO: show warning if publicKey !== keyStore.publicKey
+    } catch {
+      // TODO: show waning
+    }
 
     const op = await TezosWalletUtil.signText(keyStore, message);
     setResult(op);
@@ -46,6 +54,8 @@ const Sign = () => {
     <Container>
       <MainContainer>
         <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} />
+        {/* TODO: result area with copy button */}
+        {/* TODO: warning area */}
       </MainContainer>
       <ButtonContainer>
         <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onSign}>

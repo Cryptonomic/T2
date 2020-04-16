@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { TezosWalletUtil } from 'conseiljs';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
@@ -8,13 +8,14 @@ import Button from '@material-ui/core/Button';
 import CustomTextArea from '../../../components/CustomTextArea';
 import TextField from '../../../components/TextField';
 import InputAddress from '../../../components/InputAddress';
-
 import { RootState } from '../../../types/store';
+import { publicKeyThunk } from '../../duck/thunks';
 
 import { Container, MainContainer, ButtonContainer, InvokeButton } from './style';
 
 const Verify = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const isLoading = useSelector((rootState: RootState) => rootState.app.isLoading);
   const [message, setMessage] = useState('');
   const [signature, setSignature] = useState('');
@@ -27,7 +28,10 @@ const Verify = () => {
   const isDisabled = isLoading || !message || !signature || !address || isAddressIssue;
 
   async function onVerify() {
-    const isVerified = await TezosWalletUtil.checkSignature(signature, message, address);
+    const publicKey = dispatch(publicKeyThunk(address)); // TODO: show error if can't get public key
+
+    const isVerified = await TezosWalletUtil.checkSignature(signature, message, publicKey);
+
     setResult(isVerified);
     setIsOpen(true);
   }
@@ -45,6 +49,8 @@ const Verify = () => {
           onChange={val => setAddress(val)}
           onIssue={val => setIsAddressIssue(val)}
         />
+        {/* TODO: result area with copy button */}
+        {/* TODO: error area */}
       </MainContainer>
       <ButtonContainer>
         <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onVerify}>

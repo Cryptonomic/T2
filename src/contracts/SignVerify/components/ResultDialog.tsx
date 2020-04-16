@@ -19,10 +19,7 @@ export default function ResultDialog(props: Props) {
     <Dialog open={open} onClose={() => onClose()} aria-labelledby="Sign and Verify Dialog">
       <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          Let Google help apps determine location. This means sending anonymous location data to
-          Google, even when no apps are running.
-        </DialogContentText>
+        <DialogContentText id="alert-dialog-description" />
       </DialogContent>
       <DialogActions>
         <Button onClick={() => onClose()} color="primary" autoFocus={true}>

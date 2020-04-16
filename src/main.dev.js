@@ -45,7 +45,7 @@ app.on('ready', async () => {
     minHeight: 768,
     minWidth: 1024,
     show: false,
-    title: 'Cryptonomic',
+    title: 'Tezori',
     webPreferences: {
       nodeIntegration: true
     },
@@ -71,7 +71,4 @@ app.on('ready', async () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
 });
