@@ -1,47 +1,47 @@
 import styled from 'styled-components';
-import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
 import Button from '../../../components/Button';
 
 export const Container = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  padding: 0 20px 20px 20px;
-  position: relative;
+  padding-bottom: 50px;
 `;
 
-export const RowContainer = styled.div`
+export const MainContainer = styled.div`
+  width: 100%;
+  padding: 40px 40px 30px 40px;
+`;
+
+export const ButtonContainer = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-`;
-
-export const UseMax = styled.div`
-  position: absolute;
-  right: 23px;
-  top: 24px;
-  font-size: 12px;
-  font-weight: 500;
-  display: block;
-  color: ${({ theme: { colors } }) => colors.accent};
-  cursor: pointer;
-`;
-
-export const PasswordButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  height: 100px;
+  height: 60px;
   margin-top: auto;
-  width: 100%;
+  padding: 0 40px;
 `;
 
 export const InvokeButton = styled(Button)`
   width: 194px;
   height: 50px;
-  margin-bottom: 10px;
   margin-left: auto;
   padding: 0;
+`;
+
+export const SnackbarWrapper = styled(Snackbar)`
+  &&& {
+    &.MuiSnackbar-root {
+      min-width: 500px;
+      max-width: 500px;
+    }
+    .MuiSnackbarContent-root {
+      width: 100%;
+    }
+    .MuiSnackbarContent-message {
+      width: 100%;
+      word-break: break-word;
+    }
+  }
 `;
