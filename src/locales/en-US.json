@@ -39,6 +39,7 @@
       "account": "account",
       "label_account": "Account",
       "label_address": "Address",
+      "signer_address": "Signer Address",
       "delegate_address": "Delegate Address",
       "remaining_balance": "Remaining Balance",
       "gas": "Gas",

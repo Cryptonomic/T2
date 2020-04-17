@@ -43,7 +43,7 @@ const Verify = () => {
         <TextField label={t('general.nouns.signature')} onChange={val => setSignature(val)} />
 
         <InputAddress
-          label={t('general.nouns.label_address')}
+          label={t('general.nouns.signer_address')}
           operationType="send_babylon"
           tooltip={false}
           onChange={val => setAddress(val)}

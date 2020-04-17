@@ -8,6 +8,7 @@ import BabylonDelegation from '../../contracts/BabylonDelegation';
 import GenericContract from '../../contracts/GenericContract';
 import TokenContract from '../../contracts/TokenContract';
 import ImplicitAccount from '../../contracts/ImplicitAccount';
+import StakerToken from '../../contracts/StakerToken';
 
 import { sortArr } from '../../utils/array';
 import { Container, SideBarContainer, AccountItem } from './style';
@@ -23,6 +24,8 @@ function HomeMain() {
         return <BabylonDelegation />;
       case AddressType.Token:
         return <TokenContract />;
+      case AddressType.STKR:
+        return <StakerToken />;
       default:
         return <GenericContract />;
     }

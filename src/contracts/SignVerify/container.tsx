@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { OperationKindType } from 'conseiljs';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +10,6 @@ import Loader from '../../components/Loader';
 import Sign from './components/Sign';
 import Verify from './components/Verify';
 
-import { useFetchFees } from '../../reduxContent/app/thunks';
 import { RootState } from '../../types/store';
 
 export const ModalWrapper = styled(Modal)`
