@@ -52,7 +52,8 @@ export enum AddressType {
   Smart,
   Delegated,
   Token,
-  None
+  None,
+  STKR
 }
 
 export interface RegularAddress {
@@ -79,7 +80,11 @@ export interface TokenTransaction {
   operation_group_hash: string;
 }
 
-export type TokenKind = 'tzip7';
+export enum TokenKind {
+  tzip7 = 'tzip7',
+  stkr = 'stkr',
+  usdtez = 'usdtez'
+}
 
 export interface Token {
   network: string;
