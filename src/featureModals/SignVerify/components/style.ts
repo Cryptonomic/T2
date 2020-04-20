@@ -29,19 +29,3 @@ export const InvokeButton = styled(Button)`
     margin-left: auto;
     padding: 0;
 `;
-
-export const SnackbarWrapper = styled(Snackbar)`
-    &&& {
-        &.MuiSnackbar-root {
-            min-width: 500px;
-            max-width: 500px;
-        }
-        .MuiSnackbarContent-root {
-            width: 100%;
-        }
-        .MuiSnackbarContent-message {
-            width: 100%;
-            word-break: break-word;
-        }
-    }
-`;

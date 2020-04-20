@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { TezosWalletUtil } from 'conseiljs';
-import Button from '@material-ui/core/Button';
-import { clipboard } from 'electron';
 
 import CustomTextArea from '../../../components/CustomTextArea';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { RootState } from '../../../types/store';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, InvokeButton, SnackbarWrapper } from './style';
+import { Container, MainContainer, ButtonContainer, InvokeButton } from './style';
 
 const Sign = () => {
     const { t } = useTranslation();
@@ -34,14 +32,6 @@ const Sign = () => {
         setResult(op);
     }
 
-    function copyToClipboard() {
-        try {
-            clipboard.writeText(result);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
     return (
         <Container>
             <MainContainer>
@@ -54,23 +44,6 @@ const Sign = () => {
                     {t('general.verbs.sign')}
                 </InvokeButton>
             </ButtonContainer>
-            {/* TODO: remove snackbar */}
-            <SnackbarWrapper
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                open={!!result}
-                onClose={() => setResult('')}
-                message={result}
-                action={
-                    <React.Fragment>
-                        <Button color="secondary" size="small" onClick={() => copyToClipboard()}>
-                            {t('general.verbs.copy')}
-                        </Button>
-                        <Button color="secondary" size="small" onClick={() => setResult('')}>
-                            {t('general.nouns.ok')}
-                        </Button>
-                    </React.Fragment>
-                }
-            />
         </Container>
     );
 };
