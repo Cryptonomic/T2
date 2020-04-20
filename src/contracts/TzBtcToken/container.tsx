@@ -2,33 +2,31 @@ import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Button from '../../components/Button';
-import BalanceBanner from './BalanceBanner';
+import BalanceBanner from '../../components/BalanceBanner';
 import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
-import Transactions from './TransactionsContainer';
 
 import Loader from '../../components/Loader';
-import AccountStatus from '../../components/AccountStatus';
 
-import { TRANSACTIONS } from '../../constants/TabConstants';
-import { READY } from '../../constants/StatusTypes';
+import Transactions from './TransactionContainer';
+import Send from './Send';
+
+import { TRANSACTIONS, SEND, BURN, MINT } from '../../constants/TabConstants';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
 import { sortArr } from '../../utils/array';
-import { isReady } from '../../utils/general';
 
 import { RootState } from '../../types/store';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from '../duck/selectors';
+import { getTokenSelector } from '../duck/selectors';
 
 const Container = styled.section`
     flex-grow: 1;
-    overflow: hidden;
 `;
 
 const Tab = styled(Button)<{ isActive: boolean; ready: boolean }>`
@@ -60,32 +58,34 @@ const SectionContainer = styled.div`
     min-height: 400px;
 `;
 
-const tabs = [TRANSACTIONS];
-
 function ActionPanel() {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [currentPage, setCurrentPage] = useState(1);
-    const selectedAccount = useSelector(getAccountSelector);
+    const selectedToken = useSelector(getTokenSelector);
 
     const { isLoading, selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
-    const { balance, activeTab, storeType, status, privateKey, delegate_value, transactions } = selectedAccount;
+    const { balance, activeTab, symbol, displayName, administrator, transactions } = selectedToken;
+
+    const isAdmin = selectedParentHash === administrator;
+    const tabs = isAdmin ? [TRANSACTIONS, SEND, MINT, BURN] : [TRANSACTIONS, SEND];
 
     function onChangeTab(newTab: string) {
-        dispatch(updateActiveTabThunk(newTab));
+        dispatch(updateActiveTabThunk(newTab, true));
     }
 
     function renderSection() {
-        const ready = status === READY;
         switch (activeTab) {
+            case SEND:
+                return <Send isReady={true} balance={balance} symbol={symbol} />;
             case TRANSACTIONS:
             default: {
-                if (!ready) {
-                    return <AccountStatus address={selectedAccount} />;
+                if (!transactions || transactions.length === 0) {
+                    return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
 
-                const JSTransactions = transactions.sort(sortArr({ sortOrder: 'desc', sortBy: 'timestamp' }));
+                const JSTransactions = (transactions || []).sort(sortArr({ sortOrder: 'desc', sortBy: 'timestamp' }));
                 const itemsCount = 5;
                 const pageCount = Math.ceil(JSTransactions.length / itemsCount);
 
@@ -95,11 +95,9 @@ function ActionPanel() {
                     lastNumber = JSTransactions.length;
                 }
                 const showedTransactions = JSTransactions.slice(firstNumber, lastNumber);
-                return transactions.length === 0 ? (
-                    <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />
-                ) : (
+                return (
                     <Fragment>
-                        <Transactions transactions={showedTransactions} selectedAccountHash={selectedAccountHash} selectedParentHash={selectedParentHash} />
+                        <Transactions transactions={showedTransactions} selectedParentHash={selectedParentHash} symbol={symbol} />
                         {pageCount > 1 && (
                             <PageNumbers
                                 currentPage={currentPage}
@@ -118,34 +116,21 @@ function ActionPanel() {
     return (
         <Container>
             <BalanceBanner
-                storeType={storeType}
-                isReady={isReady(status, storeType)}
+                isReady={true}
                 balance={balance || 0}
+                privateKey={''}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
-                delegatedAddress={delegate_value}
-                displayName="StakerDAO Token"
-                symbol="STKR"
+                delegatedAddress={''}
+                displayName={displayName}
+                symbol={symbol}
             />
 
             <TabList count={tabs.length}>
-                {tabs.map(tab => {
-                    const ready = isReady(status, storeType, tab);
-                    return (
-                        <Tab
-                            isActive={activeTab === tab}
-                            key={tab}
-                            ready={ready}
-                            buttonTheme="plain"
-                            onClick={() => {
-                                if (ready) {
-                                    onChangeTab(tab);
-                                }
-                            }}
-                        >
-                            <TabText ready={ready}>{t(tab)}</TabText>
-                        </Tab>
-                    );
-                })}
+                {tabs.map(tab => (
+                    <Tab isActive={activeTab === tab} key={tab} ready={true} buttonTheme="plain" onClick={() => onChangeTab(tab)}>
+                        <TabText ready={true}>{t(tab)}</TabText>
+                    </Tab>
+                ))}
             </TabList>
             <SectionContainer>{renderSection()}</SectionContainer>
         </Container>
