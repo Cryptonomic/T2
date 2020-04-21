@@ -24,7 +24,7 @@ import { findIdentity, findIdentityIndex, createIdentity, getSyncIdentity, syncI
 
 import { clearOperationId, getNodesStatus, getNodesError, getSelectedKeyStore } from '../../utils/general';
 
-import { saveUpdatedWallet, loadPersistedState, saveIdentitiesToLocal, loadWalletFromLedger } from '../../utils/wallet';
+import { saveUpdatedWallet, loadPersistedState, saveIdentitiesToLocal, loadWalletFromLedger, loadTokens } from '../../utils/wallet';
 
 import { findTokenIndex } from '../../utils/token';
 
@@ -370,6 +370,15 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
     };
 }
 
+function setTokensThunk() {
+    return (dispatch, state) => {
+        const { selectedNode, nodesList } = state().settings;
+        const mainNode = getMainNode(nodesList, selectedNode);
+        const tokens = loadTokens(mainNode.network);
+        dispatch(updateTokensAction(tokens));
+    };
+}
+
 export function importAddressThunk(activeTab, seed, pkh?, activationCode?, username?, passPhrase?) {
     return async (dispatch, state) => {
         const { walletLocation, walletFileName, walletPassword, identities } = state().wallet;
@@ -448,6 +457,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                         );
                     }
                     dispatch(addNewIdentityAction(identity));
+                    dispatch(setTokensThunk());
                     dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
                     await saveUpdatedWallet(state().wallet.identities, walletLocation, walletFileName, walletPassword);
                     await saveIdentitiesToLocal(state().wallet.identities);
@@ -515,7 +525,7 @@ export function importPrivateKeyThunk(key) {
 
 // todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
 export function loginThunk(loginType, walletLocation, walletFileName, password) {
-    return async dispatch => {
+    return async (dispatch, state) => {
         const completeWalletPath = path.join(walletLocation, walletFileName);
         dispatch(setIsLoadingAction(true));
         dispatch(createMessageAction('', false));
@@ -540,6 +550,8 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
                 const { publicKeyHash } = identities[0];
                 dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
             }
+
+            dispatch(setTokensThunk());
 
             dispatch(automaticAccountRefresh());
             dispatch(setIsLoadingAction(false));
@@ -569,6 +581,7 @@ export function connectLedgerThunk() {
             try {
                 const identities = await loadWalletFromLedger(derivation);
                 dispatch(setWalletAction(identities, '', `Ledger device - ${derivation}`, ''));
+                dispatch(setTokensThunk());
                 const { publicKeyHash } = identities[0];
                 dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
                 dispatch(automaticAccountRefresh());
