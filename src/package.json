@@ -1,21 +1,25 @@
 {
-  "name": "galleon",
-  "productName": "Galleon",
-  "version": "1.0.7b",
-  "description": "A wallet for the Tezos blockchain.",
-  "main": "./main.prod.js",
-  "author": {
-    "name": "Cryptonomic Inc",
-    "email": "info@cryptonomic.tech",
-    "url": "https://github.com/cryptonomic"
-  },
-  "scripts": {
-    "electron-rebuild": "node ../scripts/ElectronRebuild.js",
-    "postinstall": "npm run electron-rebuild"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "@ledgerhq/hw-transport-node-hid": "5.13.0",
-    "conseiljs": "0.4.2-beta.2"
-  }
+    "name": "galleon",
+    "productName": "Galleon",
+    "version": "1.0.8b",
+    "description": "A wallet for the Tezos blockchain.",
+    "main": "./main.prod.js",
+    "author": {
+        "name": "Cryptonomic Inc",
+        "email": "info@cryptonomic.tech",
+        "url": "https://github.com/cryptonomic/tezori"
+    },
+    "scripts": {
+        "electron-rebuild": "node ../scripts/ElectronRebuild.js",
+        "postinstall": "npm run electron-rebuild"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@ledgerhq/hw-transport-node-hid": "5.13.0",
+        "conseiljs": "0.4.2-beta.5"
+    },
+    "engines": {
+        "node": "12.16.1",
+        "npm": "6.13.4"
+    }
 }
