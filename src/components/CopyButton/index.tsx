@@ -6,88 +6,83 @@ import { Tooltip, Button, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
 const Container = styled(Button)<{ realcolor: string }>`
-  &&& {
-    padding: 0;
-    font-size: 14px;
-    color: ${({ realcolor, theme: { colors } }) => colors[realcolor]};
-    &.MuiButton-textSecondary:hover {
-      background-color: transparent;
+    &&& {
+        padding: 0;
+        font-size: 14px;
+        color: ${({ realcolor, theme: { colors } }) => colors[realcolor]};
+        &.MuiButton-textSecondary:hover {
+            background-color: transparent;
+        }
+        .MuiButton-startIcon {
+            margin-right: 5px;
+        }
     }
-    .MuiButton-startIcon {
-      margin-right: 5px;
-    }
-  }
 `;
 
 const IconButtonWrapper = styled(IconButton)<{ realcolor: string }>`
-  &&& {
-    color: ${({ realcolor, theme: { colors } }) => colors[realcolor]};
-    margin-left: 5px;
-  }
+    &&& {
+        color: ${({ realcolor, theme: { colors } }) => colors[realcolor]};
+        margin-left: 5px;
+    }
 `;
 
 const CopyIconWrapper = styled(ContentCopy)`
-  &&& {
-    width: 19px;
-    height: 19px;
-  }
+    &&& {
+        width: 19px;
+        height: 19px;
+    }
 `;
 
 interface Props {
-  text: string;
-  title?: string;
-  color: string;
+    text: string;
+    title?: string;
+    color: string;
 }
 
 function CopyButton(props: Props) {
-  const { text, title, color } = props;
-  const { t } = useTranslation();
+    const { text, title, color } = props;
+    const { t } = useTranslation();
 
-  const [isShowed, setIsShowed] = useState(false);
+    const [isShowed, setIsShowed] = useState(false);
 
-  function copyToClipboard() {
-    try {
-      clipboard.writeText(text);
-      setIsShowed(true);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  return (
-    <Tooltip
-      open={isShowed}
-      title={t('components.copyIcon.copied')}
-      leaveDelay={500}
-      placement="top-end"
-      onClose={() => setIsShowed(false)}
-      PopperProps={{
-        popperOptions: {
-          modifiers: {
-            offset: {
-              enabled: true,
-              offset: '50px, 0px'
-            }
-          }
+    function copyToClipboard() {
+        try {
+            clipboard.writeText(text);
+            setIsShowed(true);
+        } catch (e) {
+            console.error(e);
         }
-      }}
-    >
-      {title ? (
-        <Container
-          realcolor={color}
-          startIcon={<CopyIconWrapper />}
-          disableRipple={true}
-          onClick={() => copyToClipboard()}
+    }
+
+    return (
+        <Tooltip
+            open={isShowed}
+            title={<React.Fragment>{t('components.copyIcon.copied')}</React.Fragment>}
+            leaveDelay={500}
+            placement="top-end"
+            onClose={() => setIsShowed(false)}
+            PopperProps={{
+                popperOptions: {
+                    modifiers: {
+                        offset: {
+                            enabled: true,
+                            offset: '50px, 0px'
+                        }
+                    }
+                }
+            }}
         >
-          {title}
-        </Container>
-      ) : (
-        <IconButtonWrapper size="small" realcolor={color} onClick={() => copyToClipboard()}>
-          <CopyIconWrapper />
-        </IconButtonWrapper>
-      )}
-    </Tooltip>
-  );
+            {title ? (
+                <Container realcolor={color} startIcon={<CopyIconWrapper />} disableRipple={true} onClick={() => copyToClipboard()}>
+                    {title}
+                </Container>
+            ) : (
+                <IconButtonWrapper size="small" realcolor={color} onClick={() => copyToClipboard()}>
+                    <CopyIconWrapper />
+                </IconButtonWrapper>
+            )}
+        </Tooltip>
+    );
 }
 
 export default CopyButton;
