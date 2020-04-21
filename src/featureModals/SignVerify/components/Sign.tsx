@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { TezosWalletUtil } from 'conseiljs';
-import Button from '@material-ui/core/Button';
-import { clipboard } from 'electron';
 
 import CustomTextArea from '../../../components/CustomTextArea';
+import CopyButton from '../../../components/CopyButton';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { RootState } from '../../../types/store';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, InvokeButton, SnackbarWrapper } from './style';
+import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, WarningIcon } from './style';
 
 const Sign = () => {
     const { t } = useTranslation();
@@ -19,58 +18,42 @@ const Sign = () => {
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const [message, setMessage] = useState('');
     const [result, setResult] = useState('');
+    const [error, setError] = useState(false);
     const isDisabled = isLoading || !message;
 
-    async function onSign() {
+    const onSign = async () => {
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger);
         try {
-            const publicKey = dispatch(publicKeyThunk(keyStore.publicKey));
-            // TODO: show warning if publicKey !== keyStore.publicKey
-        } catch {
-            // TODO: show warning
+            const publicKey: unknown = await dispatch(publicKeyThunk(keyStore.publicKey));
+            if (publicKey !== keyStore.publicKey) {
+                throw Error(t('general.verbs.no_match'));
+            }
+        } catch (e) {
+            setError(true);
+            setResult(e.message);
+            return;
         }
 
         const op = await TezosWalletUtil.signText(keyStore, message);
+        setError(false);
         setResult(op);
-    }
-
-    function copyToClipboard() {
-        try {
-            clipboard.writeText(result);
-        } catch (e) {
-            console.error(e);
-        }
-    }
+    };
 
     return (
         <Container>
             <MainContainer>
                 <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} />
-                {/* TODO: result area with copy button */}
-                {/* TODO: warning area */}
             </MainContainer>
+            <ResultContainer>
+                {error && result && <WarningIcon />}
+                <Result error={error}>{result}</Result>
+                {!error && result && <CopyButton text={result} title="" color="accent" />}
+            </ResultContainer>
             <ButtonContainer>
                 <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
                     {t('general.verbs.sign')}
                 </InvokeButton>
             </ButtonContainer>
-            {/* TODO: remove snackbar */}
-            <SnackbarWrapper
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                open={!!result}
-                onClose={() => setResult('')}
-                message={result}
-                action={
-                    <React.Fragment>
-                        <Button color="secondary" size="small" onClick={() => copyToClipboard()}>
-                            {t('general.verbs.copy')}
-                        </Button>
-                        <Button color="secondary" size="small" onClick={() => setResult('')}>
-                            {t('general.nouns.ok')}
-                        </Button>
-                    </React.Fragment>
-                }
-            />
         </Container>
     );
 };
