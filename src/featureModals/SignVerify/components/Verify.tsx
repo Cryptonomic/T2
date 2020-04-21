@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { TezosWalletUtil } from 'conseiljs';
-import Snackbar from '@material-ui/core/Snackbar';
-import Button from '@material-ui/core/Button';
 
 import CustomTextArea from '../../../components/CustomTextArea';
 import TextField from '../../../components/TextField';
@@ -11,7 +9,7 @@ import InputAddress from '../../../components/InputAddress';
 import { RootState } from '../../../types/store';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, InvokeButton } from './style';
+import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon } from './style';
 
 const Verify = () => {
     const { t } = useTranslation();
@@ -21,19 +19,33 @@ const Verify = () => {
     const [signature, setSignature] = useState('');
     const [address, setAddress] = useState('');
     const [isAddressIssue, setIsAddressIssue] = useState(false);
-    const [result, setResult] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    const title = result ? t('general.verbs.match') : t('general.verbs.no_match');
+    const [result, setResult] = useState('');
+    const [error, setError] = useState(false);
 
     const isDisabled = isLoading || !message || !signature || !address || isAddressIssue;
 
     async function onVerify() {
-        const publicKey = dispatch(publicKeyThunk(address)); // TODO: show error if can't get public key
+        let publicKey;
 
-        const isVerified = await TezosWalletUtil.checkSignature(signature, message, publicKey);
+        try {
+            publicKey = await dispatch(publicKeyThunk(address));
+        } catch (e) {
+            setResult(e.message);
+            setError(true);
+            return;
+        }
 
-        setResult(isVerified);
-        setIsOpen(true);
+        try {
+            const isVerified = await TezosWalletUtil.checkSignature(signature, message, publicKey);
+            if (!isVerified) {
+                throw Error();
+            }
+            setResult(t('general.verbs.match'));
+            setError(false);
+        } catch {
+            setResult(t('general.verbs.no_match'));
+            setError(true);
+        }
     }
 
     return (
@@ -49,29 +61,14 @@ const Verify = () => {
                     onChange={val => setAddress(val)}
                     onIssue={val => setIsAddressIssue(val)}
                 />
-                {/* TODO: result area with copy button */}
-                {/* TODO: error area */}
             </MainContainer>
             <ButtonContainer>
+                {error && <WarningIcon />}
+                {result && <Result>{result}</Result>}
                 <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onVerify}>
                     {t('general.verbs.verify')}
                 </InvokeButton>
             </ButtonContainer>
-            {/* TODO: remove snackbar */}
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center'
-                }}
-                open={isOpen}
-                onClose={() => setIsOpen(false)}
-                message={title}
-                action={
-                    <Button color="secondary" size="small" onClick={() => setIsOpen(false)}>
-                        {t('general.nouns.ok')}
-                    </Button>
-                }
-            />
         </Container>
     );
 };
