@@ -87,6 +87,7 @@ const getStatus = (transaction, selectedParentHash, t) => {
     const isAmount = !!transaction.amount;
 
     if (transaction.source === selectedParentHash && !transaction.entryPoint) {
+        // TODO: need a better way to id non-transfer calls
         return {
             icon: 'send',
             preposition: t('general.to'),
@@ -95,7 +96,7 @@ const getStatus = (transaction, selectedParentHash, t) => {
             color: isAmount ? 'error1' : 'gray8',
             sign: isAmount ? '-' : ''
         };
-    } else if (transaction.destination === selectedParentHash) {
+    } else if (transaction.destination === selectedParentHash && !transaction.entryPoint) {
         return {
             icon: 'receive',
             preposition: t('general.from'),
