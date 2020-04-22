@@ -47,6 +47,8 @@ import { getMainNode, getMainPath } from '../../utils/settings';
 import { ACTIVATION } from '../../constants/TransactionTypes';
 import { Identity, Token, AddressType } from '../../types/general';
 
+import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
+
 const { unlockFundraiserIdentity, unlockIdentityWithMnemonic, restoreIdentityWithSecretKey } = TezosWalletUtil;
 const { createWallet } = TezosFileWallet;
 
@@ -198,7 +200,13 @@ export function syncTokenThunk(tokenAddress) {
             } else if (tokens[tokenIndex].kind === 'tzbtc') {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                transAsync = [];
+                transAsync = tzbtcUtil.syncTokenTransactions(
+                    tokenAddress,
+                    selectedParentHash,
+                    mainNode,
+                    tokens[tokenIndex].transactions,
+                    tokens[tokenIndex].kind
+                );
             }
 
             const [balance, transactions] = await Promise.all([balanceAsync, transAsync]);
@@ -305,7 +313,6 @@ export function syncWalletThunk() {
 
                     return { ...token, mapid, administrator, balance, transactions: [] };
                 } else if (token.kind === TokenKind.tzbtc) {
-                    console.log(`processing tzbtc ${JSON.stringify(token)}`);
                     try {
                         const validCode = await TzbtcTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
                         if (!validCode) {
@@ -314,22 +321,22 @@ export function syncWalletThunk() {
                     } catch {
                         console.log(`warning, tzbtc fingerprint mismatch for token: ${JSON.stringify(token)}`);
                     }
-                    console.log('AA');
+
                     let mapid = token.mapid;
                     const administrator = token.administrator || '';
-                    console.log('BB');
+
                     if (!mapid || mapid === -1) {
                         const newStorage = await TzbtcTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => {
                             return { mapid: -1 };
                         });
                         mapid = newStorage.mapid;
                     }
-                    console.log(`CC ${mapid}`);
+
                     if (mapid === -1) {
                         console.log(`warning, could not process token: ${JSON.stringify(token)}`);
                         return { ...token, mapid, administrator, balance: 0 };
                     }
-                    console.log('DD');
+
                     const balance = await TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
 
                     return { ...token, mapid, administrator, balance, transactions: [] };

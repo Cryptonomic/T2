@@ -182,7 +182,6 @@ export async function getSyncTransactions(accountHash: string, node: Node, state
 }
 
 export async function getSyncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
-    console.log(`getSyncTokenTransactions for ${tokenAddress}, ${managerAddress}`);
     let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch(e => {
         console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
         console.error(e);
