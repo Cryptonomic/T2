@@ -26,16 +26,15 @@ export default function TransactionContainer(props: Props) {
     const { transactions, selectedParentHash, symbol } = props;
 
     const transactionsByDate = transactions.reduce((acc, curr) => {
-        const date = moment(curr.timestamp).format('l');
+        const date = moment(curr.timestamp).format('LL');
         acc[date] = [...(acc[date] || []), curr];
         return acc;
     }, {});
 
     const renderDayTransactions = (day, grTransactions, grIndex) => {
-        console.log('rendering transactions tzbtc');
         return (
             <SectionContainer key={grIndex}>
-                <TransactionsLabel date={new Date(day)} />
+                <TransactionsLabel date={day} skipFormat={true} />
                 {grTransactions.map((transaction, index) => {
                     return <Transaction key={index} transaction={transaction} selectedParentHash={selectedParentHash} symbol={symbol} />;
                 })}
