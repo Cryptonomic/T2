@@ -46,7 +46,7 @@
             "details": "Details",
             "conseil": "Conseil",
             "tezos": "Tezos",
-            "total_balance": "Total Balance",
+            "total_balance": "Manager Balance",
             "language": "Language",
             "transactions": "Transactions",
             "source": "Source",
@@ -107,7 +107,7 @@
             "gas_tool_tip": "{{gas}} tz is required by the network to create a delegated address",
             "warning1": "Total exceeds available funds",
             "warning2": "Manager Addresses are not yet allowed to have less than 1 µtz",
-            "add_delegate_title": "Add a Delegate",
+            "add_delegate_title": "Delegation Contracts",
             "deploy_delegation": "Deploy Delegation..."
         },
         "interactModal": {
@@ -203,8 +203,8 @@
             "delegate_warning": "Your delegate settings will not show up until confirmed on the blockchain."
         },
         "delegateConfirmationModal": {
-            "new_address_label": "Change Delegate to New Address",
-            "delegate_warning": "Your delegation change will not show up until the change is confirmed on the blockchain."
+            "new_address_label": "Change Baker Address",
+            "delegate_warning": "It will take about 5 weeks (12 cycles) to receive delegation rewards from your baker."
         },
         "changeDelegationLedgerConfirmModal": {
             "change_delegate_title": "Confirm Changing Delegate",
