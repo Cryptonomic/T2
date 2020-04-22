@@ -1,14 +1,14 @@
 import { TzbtcTokenHelper } from 'conseiljs';
-import { createMessageAction } from '../../../reduxContent/message/actions';
-import { updateTokensAction } from '../../../reduxContent/wallet/actions';
+import { createMessageAction } from '../../reduxContent/message/actions';
+import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
-import { createTokenTransaction } from '../../../utils/transaction';
-import { TRANSACTION } from '../../../constants/TransactionTypes';
+import { createTokenTransaction } from '../../utils/transaction';
+import { TRANSACTION } from '../../constants/TransactionTypes';
 
-import { getSelectedKeyStore } from '../../../utils/general';
-import { getMainNode, getMainPath } from '../../../utils/settings';
+import { getSelectedKeyStore } from '../../utils/general';
+import { getMainNode, getMainPath } from '../../utils/settings';
 
-import { findTokenIndex } from '../../../utils/token';
+import { findTokenIndex } from '../../utils/token';
 
 export function transferThunk(destination: string, amount: string, fee: number, password: string) {
     return async (dispatch, state) => {

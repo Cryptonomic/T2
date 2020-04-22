@@ -45,7 +45,6 @@ import {
 
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { ACTIVATION } from '../../constants/TransactionTypes';
-import { WalletState } from '../../types/store';
 import { Identity, Token, AddressType } from '../../types/general';
 
 const { unlockFundraiserIdentity, unlockIdentityWithMnemonic, restoreIdentityWithSecretKey } = TezosWalletUtil;
