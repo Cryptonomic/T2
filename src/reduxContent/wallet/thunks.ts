@@ -354,7 +354,7 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
     return async dispatch => {
         try {
             dispatch(setWalletIsSyncingAction(true));
-            if (addressType === AddressType.Token) {
+            if (addressType === AddressType.Token || addressType === AddressType.STKR || addressType === AddressType.TzBTC) {
                 await dispatch(syncTokenThunk(selectedAccountHash));
             } else if (selectedAccountHash === selectedParentHash) {
                 await dispatch(syncIdentityThunk(selectedAccountHash));
