@@ -16,7 +16,11 @@ export function publicKeyThunk(address: string) {
         publicKeyQuery = ConseilQueryBuilder.addPredicate(publicKeyQuery, 'source', ConseilOperator.EQ, [address], false);
         publicKeyQuery = ConseilQueryBuilder.setLimit(publicKeyQuery, 1);
 
-        return (await ConseilDataClient.executeEntityQuery(serverInfo, 'tezos', network, 'operations', publicKeyQuery))[0].public_key;
+        try {
+            return (await ConseilDataClient.executeEntityQuery(serverInfo, 'tezos', network, 'operations', publicKeyQuery))[0]?.public_key;
+        } catch (e) {
+            throw Error('Can not get public key');
+        }
     };
 }
 

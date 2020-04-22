@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import Snackbar from '@material-ui/core/Snackbar';
+import Warning from '@material-ui/icons/Warning';
+
 import Button from '../../../components/Button';
 
 export const Container = styled.div`
@@ -23,25 +24,31 @@ export const ButtonContainer = styled.div`
     padding: 0 40px;
 `;
 
+export const ResultContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    width: 100%;
+    padding: 0 40px;
+`;
+
+export const Result = styled.div<any>`
+    flex: ${props => (!props.error ? 1 : '')};
+    width: ${props => (!props.error ? '90%' : '')};
+    word-wrap: break-word;
+`;
+
+export const WarningIcon = styled(Warning)`
+    &&& {
+        fill: ${({ theme: { colors } }) => colors.error1};
+        margin-right: 5px;
+    }
+`;
+
 export const InvokeButton = styled(Button)`
     width: 194px;
     height: 50px;
     margin-left: auto;
     padding: 0;
-`;
-
-export const SnackbarWrapper = styled(Snackbar)`
-    &&& {
-        &.MuiSnackbar-root {
-            min-width: 500px;
-            max-width: 500px;
-        }
-        .MuiSnackbarContent-root {
-            width: 100%;
-        }
-        .MuiSnackbarContent-message {
-            width: 100%;
-            word-break: break-word;
-        }
-    }
 `;
