@@ -13,7 +13,7 @@ import InputError from '../../../components/InputError';
 
 import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
-import { transferThunk } from '../../duck/thunks';
+import { transferThunk } from './thunks';
 
 import { SEND } from '../../../constants/TabConstants';
 import { AVERAGEFEES } from '../../../constants/FeeValue';
