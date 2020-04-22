@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../../components/Button';
 import BalanceBanner from '../../components/BalanceBanner';
@@ -17,8 +17,6 @@ import Send from './Send';
 import { TRANSACTIONS, SEND, BURN, MINT } from '../../constants/TabConstants';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
-
-import { sortArr } from '../../utils/array';
 
 import { RootState } from '../../types/store';
 
