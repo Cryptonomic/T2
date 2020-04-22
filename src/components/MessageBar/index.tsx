@@ -42,9 +42,9 @@ function MessageBar() {
     }
 
     function formatHash() {
-        /*if (hash.length > 10) {
+        if (hash.length > 10) {
             return `${hash.slice(0, 4)}...${hash.slice(hash.length - 4, hash.length)}`;
-        }*/
+        }
         return hash;
     }
 
