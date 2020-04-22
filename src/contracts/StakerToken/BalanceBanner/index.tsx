@@ -12,7 +12,7 @@ import { syncWalletThunk } from '../../../reduxContent/wallet/thunks';
 
 import { RootState } from '../../../types/store';
 
-const { Mnemonic } = StoreType;
+const { Mnemonic } = StoreType; // TODO: not relevant here
 
 import { AddressInfo, AddressTitle, Container, Delegate, TopRow, BottomRow, DelegateContainer, Breadcrumbs, Gap } from './style';
 

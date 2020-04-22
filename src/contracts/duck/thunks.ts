@@ -1,13 +1,4 @@
-import {
-    TezosNodeWriter,
-    TezosNodeReader,
-    BabylonDelegationHelper,
-    TezosParameterFormat,
-    Tzip7ReferenceTokenHelper,
-    ConseilDataClient,
-    ConseilQueryBuilder,
-    ConseilOperator
-} from 'conseiljs';
+import { TezosNodeWriter, TezosNodeReader, BabylonDelegationHelper, TezosParameterFormat, Tzip7ReferenceTokenHelper } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction, updateTokensAction } from '../../reduxContent/wallet/actions';
 import { tezToUtez } from '../../utils/currancy';
