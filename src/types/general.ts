@@ -79,6 +79,7 @@ export interface TokenTransaction {
     timestamp: number;
     parameters: string;
     operation_group_hash: string;
+    entryPoint?: string;
 }
 
 export enum TokenKind {
