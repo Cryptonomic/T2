@@ -318,7 +318,7 @@ function AddressBlock(props: Props) {
                 if (token.kind === 'tzbtc') {
                     tokenType = AddressType.TzBTC;
                 }
-                console.log(`looking at token ${JSON.stringify(token)}`);
+
                 return (
                     <TokenNav
                         key={token.address}
