@@ -21,7 +21,7 @@ export function syncTokenTransactions(tokenAddress) {
         let balanceAsync;
         let transAsync;
         if (tokens[tokenIndex].kind === 'stkr') {
-            const mapid = tokens[tokenIndex].mapid || 0;
+            const mapid = tokens[tokenIndex].mapid || 0; // TODO: if 0, return empty
             balanceAsync = await StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
             transAsync = [];
         }

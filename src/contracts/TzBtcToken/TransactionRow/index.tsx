@@ -83,10 +83,10 @@ const timeFormatter = timestamp => {
 };
 
 const getStatus = (transaction, selectedParentHash, t) => {
-    const isSameLocation = transaction.source === selectedParentHash;
     const isFee = !!transaction.fee;
     const isAmount = !!transaction.amount;
-    if (isSameLocation) {
+
+    if (transaction.source === selectedParentHash && !transaction.entryPoint) {
         return {
             icon: 'send',
             preposition: t('general.to'),
@@ -95,14 +95,23 @@ const getStatus = (transaction, selectedParentHash, t) => {
             color: isAmount ? 'error1' : 'gray8',
             sign: isAmount ? '-' : ''
         };
-    } else {
+    } else if (transaction.destination === selectedParentHash) {
         return {
             icon: 'receive',
             preposition: t('general.from'),
             state: t('components.transaction.received'),
-            isFee: false,
+            isFee,
             color: isAmount ? 'check' : 'gray8',
             sign: isAmount ? '+' : ''
+        };
+    } else {
+        return {
+            icon: 'star',
+            preposition: '',
+            state: t('components.transaction.invoked'),
+            isFee,
+            color: isAmount ? 'check' : 'gray8',
+            sign: ''
         };
     }
 };
@@ -142,7 +151,13 @@ function Transaction(props: Props) {
                         {state}
                         {address ? <span>{preposition}</span> : null}
                     </StateText>
-                    {address}
+                    {transaction.entryPoint ? (
+                        <span>
+                            {transaction.entryPoint} of {address}
+                        </span>
+                    ) : (
+                        address
+                    )}
                     <LinkIcon
                         iconName="new-window"
                         size={ms(0)}

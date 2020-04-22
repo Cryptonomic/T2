@@ -185,7 +185,8 @@ export function syncTokenThunk(tokenAddress) {
 
         const mainNode = getMainNode(nodesList, selectedNode);
         const tokenIndex = findTokenIndex(tokens, tokenAddress);
-
+        console.log('syncTokenThunk');
+        console.log(`${tokenAddress}, ${tokenIndex}, ${JSON.stringify(tokens[tokenIndex])}`);
         if (tokenIndex > -1) {
             let balanceAsync;
             let transAsync;
@@ -249,10 +250,8 @@ export function syncWalletThunk() {
             })
         );
 
-        console.log(`processing token list: ${JSON.stringify(tokens)}`);
         const newTokens = await Promise.all(
             tokens.map(async token => {
-                console.log(`processing ${JSON.stringify(token)}`);
                 if (token.kind === TokenKind.tzip7 || token.kind === TokenKind.usdtez) {
                     try {
                         const validCode = await Tzip7ReferenceTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
@@ -338,8 +337,9 @@ export function syncWalletThunk() {
                     }
 
                     const balance = await TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
+                    const transactions = await tzbtcUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
 
-                    return { ...token, mapid, administrator, balance, transactions: [] };
+                    return { ...token, mapid, administrator, balance, transactions };
                 } else {
                     console.log(`warning, unsupported token: ${JSON.stringify(token)}`);
                     return { ...token, mapid: -1, administrator: '', balance: 0, transactions: [] };

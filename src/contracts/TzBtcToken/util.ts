@@ -11,20 +11,36 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
         return [];
     });
 
+    const transferPattern = /Pair"([1-9A-Za-z^OIl]{36})"\(Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)\)/;
+    const mintPattern = /Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)/;
+
     newTransactions = newTransactions.map(transaction => {
-        try {
-            const params = transaction.parameters.replace(/\s/g, '').match(/Pair"([1-9A-Za-z^OIl]{36})"\(Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)\)/);
-            console.log(`params: ${params[2]} ${Number(params[3])}`);
-            return createTokenTransaction({
-                ...transaction,
-                status: status.READY,
-                amount: Number(params[3]),
-                source: params[1],
-                destination: params[2]
-            });
-        } catch (e) {
-            console.log(`---- failed ${JSON.stringify(transaction)} with ${e}\nparams: ${transaction.parameters.replace(/\s/g, '')}`);
-            return createTokenTransaction({ ...transaction, status: status.READY });
+        const params = transaction.parameters.replace(/\s/g, '');
+        if (transferPattern.test(params)) {
+            try {
+                const parts = params.match(transferPattern);
+
+                // TODO: should support failed transactions
+                return createTokenTransaction({ ...transaction, status: status.READY, amount: Number(parts[3]), source: parts[1], destination: parts[2] });
+            } catch (e) {
+                /* */
+            }
+        } else if (mintPattern.test(params)) {
+            try {
+                const parts = params.match(mintPattern);
+
+                // TODO: should support failed transactions
+                return createTokenTransaction({
+                    ...transaction,
+                    status: status.READY,
+                    amount: Number(parts[2]),
+                    source: managerAddress,
+                    destination: parts[1],
+                    entryPoint: 'mint'
+                });
+            } catch (e) {
+                /* */
+            }
         }
     });
 
@@ -32,6 +48,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
 }
 
 export async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
+    // TODO: consider reusing the common function
     const { conseilUrl, apiKey, network } = node;
 
     let direct = ConseilQueryBuilder.blankQuery();
@@ -55,12 +72,40 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
     direct = ConseilQueryBuilder.addOrdering(direct, 'timestamp', ConseilSortDirection.DESC);
     direct = ConseilQueryBuilder.setLimit(direct, 1_000);
 
-    return Promise.all([direct].map(q => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
+    let indirect = ConseilQueryBuilder.blankQuery();
+    indirect = ConseilQueryBuilder.addFields(
+        indirect,
+        'timestamp',
+        'block_level',
+        'source',
+        'destination',
+        'amount',
+        'kind',
+        'fee',
+        'status',
+        'operation_group_hash',
+        'parameters'
+    );
+    indirect = ConseilQueryBuilder.addPredicate(indirect, 'kind', ConseilOperator.EQ, ['transaction'], false);
+    indirect = ConseilQueryBuilder.addPredicate(indirect, 'status', ConseilOperator.EQ, ['applied'], false);
+    indirect = ConseilQueryBuilder.addPredicate(indirect, 'destination', ConseilOperator.EQ, [tokenAddress], false);
+    indirect = ConseilQueryBuilder.addPredicate(indirect, 'parameters', ConseilOperator.LIKE, [managerAddress], false);
+    indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
+    indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
+
+    return Promise.all([direct, indirect].map(q => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
         .then(responses =>
             responses.reduce((result, r) => {
                 r.forEach(rr => result.push(rr));
                 return result;
             })
         )
-        .then(transactions => transactions.sort((a, b) => a.timestamp - b.timestamp));
+        .then(transactions => {
+            console.log(`tzbtc: ${transactions.map(t => t.operation_group_hash).join(', ')}`);
+            return transactions.filter((obj, pos, arr) => arr.map(o => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
+        })
+        .then(transactions => {
+            console.log(`tzbtc: ${transactions.map(t => t.operation_group_hash).join(', ')}`);
+            return transactions.sort((a, b) => a.timestamp - b.timestamp);
+        });
 }

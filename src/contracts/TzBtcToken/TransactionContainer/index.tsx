@@ -31,14 +31,17 @@ export default function TransactionContainer(props: Props) {
         return acc;
     }, {});
 
-    const renderDayTransactions = (day, grTransactions, grIndex) => (
-        <SectionContainer key={grIndex}>
-            <TransactionsLabel date={new Date(day)} />
-            {grTransactions.map((transaction, index) => {
-                return <Transaction key={index} transaction={transaction} selectedParentHash={selectedParentHash} symbol={symbol} />;
-            })}
-        </SectionContainer>
-    );
+    const renderDayTransactions = (day, grTransactions, grIndex) => {
+        console.log('rendering transactions tzbtc');
+        return (
+            <SectionContainer key={grIndex}>
+                <TransactionsLabel date={new Date(day)} />
+                {grTransactions.map((transaction, index) => {
+                    return <Transaction key={index} transaction={transaction} selectedParentHash={selectedParentHash} symbol={symbol} />;
+                })}
+            </SectionContainer>
+        );
+    };
 
     return <Container>{Object.keys(transactionsByDate).map((day, index) => renderDayTransactions(day, transactionsByDate[day], index))}</Container>;
 }

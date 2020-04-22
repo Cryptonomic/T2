@@ -54,7 +54,7 @@ const initTokenTransaction: TokenTransaction = {
     parameters: ''
 };
 
-export function createTokenTransaction(transaction) {
+export function createTokenTransaction(transaction): TokenTransaction {
     const newTransaction = { ...transaction };
 
     if (typeof newTransaction.fee === 'string') {
@@ -99,7 +99,6 @@ export async function getTransactions(accountHash, node: Node) {
 
     return Promise.all([target, origin].map(q => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
         .then(responses => {
-            console.log('transactions----', responses);
             return responses.reduce((result, r) => {
                 r.forEach(rr => result.push(rr));
                 return result;
@@ -160,7 +159,10 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
                 return result;
             })
         )
-        .then(transactions => transactions.sort((a, b) => a.timestamp - b.timestamp));
+        .then(transactions => {
+            console.log(`transactions: ${transactions.map(t => t.operation_group_hash).join(', ')}`);
+            return transactions.sort((a, b) => a.timestamp - b.timestamp);
+        });
 }
 
 export function syncTransactionsWithState(remote: any[], local: any[]) {
