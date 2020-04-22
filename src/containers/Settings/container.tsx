@@ -13,7 +13,7 @@ import LanguageSelector from '../../components/LanguageSelector';
 import CustomSelectItem from './CustomSelectItem';
 import SettingsMenuItem from './MenuItem';
 
-import { getMainPath } from '../../utils/settings';
+import { getMainPath, getInitWalletSettings } from '../../utils/settings';
 import { Node, Path } from '../../types/general';
 
 import { changeLocaleThunk, changeNodeThunk, addNodeThunk, removeNodeThunk, changePathThunk, addPathThunk, removePathThunk } from './duck/thunk';
@@ -21,6 +21,7 @@ import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 import { RootState, SettingsState } from '../../types/store';
 
 import { Container, BackButtonContainer, Content, Content6, ContentTitle, RowForParts, Part, ItemWrapper, AddIcon } from './styles';
+const defaultNodeList = getInitWalletSettings().nodesList;
 
 const SettingsContainer = () => {
     const history = useHistory();
@@ -128,11 +129,19 @@ const SettingsContainer = () => {
                             onChange={onChangeCustomSelectNodes}
                             renderValue={value => <CustomSelectItem value={value} />}
                         >
-                            {nodesList.map(({ displayName }, index: number) => (
-                                <ItemWrapper key={displayName} value={displayName}>
-                                    <SettingsMenuItem index={index} name={displayName} selected={selectedNode} onClick={onRemoveNode} />
-                                </ItemWrapper>
-                            ))}
+                            {nodesList.map(({ displayName, network }, index: number) => {
+                                const foundIndexed = defaultNodeList.findIndex(node => node.network === network);
+                                return (
+                                    <ItemWrapper key={displayName} value={displayName}>
+                                        <SettingsMenuItem
+                                            isRemove={foundIndexed < 0 && index > 0}
+                                            name={displayName}
+                                            selected={selectedNode}
+                                            onClick={onRemoveNode}
+                                        />
+                                    </ItemWrapper>
+                                );
+                            })}
                             <ItemWrapper value="add-more">
                                 <AddIcon />
                                 {t('containers.homeSettings.add_custom_node')}
@@ -158,7 +167,7 @@ const SettingsContainer = () => {
                         >
                             {pathsList.map(({ label, derivation }, index: number) => (
                                 <ItemWrapper key={label} value={label}>
-                                    <SettingsMenuItem index={index} name={label} url={derivation} selected={selectedPath} onClick={onRemovePath} />
+                                    <SettingsMenuItem isRemove={index > 0} name={label} url={derivation} selected={selectedPath} onClick={onRemovePath} />
                                 </ItemWrapper>
                             ))}
                             <ItemWrapper value="add-more">
