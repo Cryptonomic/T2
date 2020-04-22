@@ -85,23 +85,22 @@ function ActionPanel() {
                     return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
 
-                const JSTransactions = (transactions || []).sort(sortArr({ sortOrder: 'desc', sortBy: 'timestamp' }));
+                const processedTransactions = transactions.sort((a, b) => b.timestamp - a.timestamp).filter(e => e);
                 const itemsCount = 5;
-                const pageCount = Math.ceil(JSTransactions.length / itemsCount);
+                const pageCount = Math.ceil(processedTransactions.length / itemsCount);
 
                 const firstNumber = (currentPage - 1) * itemsCount;
-                let lastNumber = currentPage * itemsCount;
-                if (lastNumber > JSTransactions.length) {
-                    lastNumber = JSTransactions.length;
-                }
-                const showedTransactions = JSTransactions.slice(firstNumber, lastNumber);
+                const lastNumber = Math.min(currentPage * itemsCount, processedTransactions.length);
+
+                const transactionSlice = processedTransactions.slice(firstNumber, lastNumber);
+
                 return (
                     <Fragment>
-                        <Transactions transactions={showedTransactions} selectedParentHash={selectedParentHash} symbol={symbol} />
+                        <Transactions transactions={transactionSlice} selectedParentHash={selectedParentHash} symbol={symbol} />
                         {pageCount > 1 && (
                             <PageNumbers
                                 currentPage={currentPage}
-                                totalNumber={JSTransactions.length}
+                                totalNumber={processedTransactions.length}
                                 firstNumber={firstNumber}
                                 lastNumber={lastNumber}
                                 onClick={val => setCurrentPage(val)}
