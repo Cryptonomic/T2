@@ -160,13 +160,15 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
             })
         )
         .then(transactions => {
-            console.log(`transactions: ${transactions.map(t => t.operation_group_hash).join(', ')}`);
             return transactions.sort((a, b) => a.timestamp - b.timestamp);
         });
 }
 
-export function syncTransactionsWithState(remote: any[], local: any[]) {
-    const newTransactions = local.filter(tr => !remote.find(syncTr => syncTr.operation_group_hash === tr.operation_group_hash));
+export function syncTransactionsWithState(remote: TokenTransaction[], local: TokenTransaction[]) {
+    const cleanRemote = remote.filter(e => e);
+    const cleanLocal = local.filter(e => e);
+
+    const newTransactions = cleanLocal.filter(tr => !cleanRemote.find(syncTr => syncTr.operation_group_hash === tr.operation_group_hash));
 
     return [...remote, ...newTransactions].sort((a, b) => a.timestamp - b.timestamp);
 }

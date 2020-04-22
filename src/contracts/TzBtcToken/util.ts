@@ -20,8 +20,13 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
             try {
                 const parts = params.match(transferPattern);
 
-                // TODO: should support failed transactions
-                return createTokenTransaction({ ...transaction, status: status.READY, amount: Number(parts[3]), source: parts[1], destination: parts[2] });
+                return createTokenTransaction({
+                    ...transaction,
+                    status: transaction.status !== 'applied' ? status.FAILED : status.READY,
+                    amount: Number(parts[3]),
+                    source: parts[1],
+                    destination: parts[2]
+                });
             } catch (e) {
                 /* */
             }
@@ -29,18 +34,19 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
             try {
                 const parts = params.match(mintPattern);
 
-                // TODO: should support failed transactions
                 return createTokenTransaction({
                     ...transaction,
-                    status: status.READY,
+                    status: transaction.status !== 'applied' ? status.FAILED : status.READY,
                     amount: Number(parts[2]),
                     source: managerAddress,
-                    destination: parts[1],
+                    destination: tokenAddress, // TODO: target address of mint operation parts[1]
                     entryPoint: 'mint'
                 });
             } catch (e) {
                 /* */
             }
+        } else {
+            // TODO
         }
     });
 
@@ -101,11 +107,11 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
             })
         )
         .then(transactions => {
-            console.log(`tzbtc: ${transactions.map(t => t.operation_group_hash).join(', ')}`);
-            return transactions.filter((obj, pos, arr) => arr.map(o => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
+            return transactions
+                .filter(o => o !== undefined)
+                .filter((obj, pos, arr) => arr.map(o => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
         })
         .then(transactions => {
-            console.log(`tzbtc: ${transactions.map(t => t.operation_group_hash).join(', ')}`);
             return transactions.sort((a, b) => a.timestamp - b.timestamp);
         });
 }
