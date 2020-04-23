@@ -1,5 +1,5 @@
 {
-    "name": "Galleon",
+    "name": "Galleon Preview",
     "version": "1.0.9b",
     "network": "mainnet",
     "blockExplorerHost": "https://mininax.io",
@@ -12,5 +12,6 @@
     "LocalVersionIndex": "20",
     "helpUrl": "https://cryptonomic.tech/support.html",
     "ledgerReferral": "https://shop.ledger.com/pages/ledger-nano-x?r=631fb45e26da",
+
     "versionReferenceURL": "https://galleon-wallet.tech/version.json"
 }

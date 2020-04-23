@@ -70,7 +70,7 @@
     }
   },
   "build": {
-    "productName": "Galleon",
+    "productName": "Galleon Preview",
     "appId": "tech.galleon-wallet.galleon",
     "afterSign": "./scripts/SignMacPackage.js",
     "files": [
