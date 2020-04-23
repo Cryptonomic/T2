@@ -110,6 +110,9 @@
             "add_delegate_title": "Delegation Contracts",
             "deploy_delegation": "Deploy Delegation..."
         },
+        "signVerifyModal": {
+            "not_revealed": "This account is not active yet on the blockchain so your signature cannot be verified independently. Please provide your public key to the verifier so they can manually check your signature."
+        },
         "interactModal": {
             "interact_contract": "Interact with Contracts",
             "invoke_contract": "Invoke an Existing Contract",
@@ -255,7 +258,7 @@
                 "special_chars": "Addresses cannot contain any special characters.",
                 "send_funds": "You cannot send funds to yourself.",
                 "invoke_address": "Smart Contract addresses can only start with KT1",
-                "not_exist": "This contract doesn't exist on the blockchain.",
+                "not_exist": "This account doesn't exist on the blockchain, or has 0 balance.",
                 "not_smartcontract": "This is a delegated address and not a smart contract. Please use send tab to transfer funds.",
                 "use_interact": "This is a smart contract address. Please use interact with contracts button to transfer funds."
             }
@@ -392,8 +395,8 @@
             "working_hard": "We are working hard on making this page."
         },
         "withdrawDeposit": {
-            "withdraw_warning": "Transfer balance to the manager account at {{managerAddress}}.",
-            "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}"
+            "withdraw_warning": "To withdraw funds back to your manager account, {{managerAddress}}, please select a fee of at least 0.005 XTZ and ensure you have at least that amount in your manager account to cover the transaction.",
+            "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}."
         }
     },
     "containers": {
