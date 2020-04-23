@@ -31,7 +31,7 @@ const Link = styled.span`
     text-decoration: underline;
 `;
 
-const url = 'https://github.com/Cryptonomic/Tezori';
+const url = 'https://cryptonomic.tech/galleon.html';
 
 interface Props {
     version: string;
