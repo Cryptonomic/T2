@@ -26,7 +26,7 @@ const Sign = () => {
         try {
             const publicKey: unknown = await dispatch(publicKeyThunk(keyStore.publicKey));
             if (publicKey !== keyStore.publicKey) {
-                throw Error(t('general.verbs.no_match'));
+                throw Error(t('components.signVerifyModal.not_revealed'));
             }
         } catch (e) {
             setError(true);
