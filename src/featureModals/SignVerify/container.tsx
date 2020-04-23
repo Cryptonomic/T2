@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
 
@@ -9,6 +9,8 @@ import { Modal, Tabs, Tab } from '@material-ui/core';
 import Loader from '../../components/Loader';
 import Sign from './components/Sign';
 import Verify from './components/Verify';
+
+import { setModalActiveTab } from '../../reduxContent/modal/actions';
 
 import { RootState } from '../../types/store';
 
@@ -80,9 +82,10 @@ interface Props {
 
 function SignVerifyModal(props: Props) {
     const { t } = useTranslation();
-    const [activeTab, setActiveTab] = useState(0);
+    const dispatch = useDispatch();
     const [enterCounts, setEnterCounts] = useState<number[]>([0, 0]);
     const isLoading = useSelector<RootState, boolean>((state: RootState) => state.app.isLoading);
+    const activeTab = useSelector<RootState, number>((state: RootState) => state.modal.activeTab);
     const { open, onClose } = props;
 
     function onEnterPress(event) {
@@ -92,13 +95,17 @@ function SignVerifyModal(props: Props) {
         }
     }
 
+    function onTabChange(value) {
+        dispatch(setModalActiveTab(value));
+    }
+
     return (
         <ModalWrapper open={open} onKeyDown={onEnterPress}>
             {open ? (
                 <ModalContainer>
                     <CloseIconWrapper onClick={() => onClose()} />
                     <ModalTitle>{t('general.nouns.sign_n_verify')}</ModalTitle>
-                    <TabsWrapper value={activeTab} onChange={(e, val) => setActiveTab(val)} variant="fullWidth" textColor="primary">
+                    <TabsWrapper value={activeTab} onChange={(e, val) => onTabChange(val)} variant="fullWidth" textColor="primary">
                         <TabWrapper label={t('general.verbs.sign')} />
                         <TabWrapper label={t('general.verbs.verify')} />
                     </TabsWrapper>
