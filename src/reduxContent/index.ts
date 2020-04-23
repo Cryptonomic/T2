@@ -4,14 +4,16 @@ import { walletReducer } from './wallet/reducers';
 import { messageReducer } from './message/reducers';
 import { settingsReducer } from '../containers/Settings/duck/reducer';
 import { appReducer } from './app/reducers';
+import { modalReducer } from './modal/reducers';
 import { RootState } from '../types/store';
 
 export default function createRootReducer(history: any) {
-  return combineReducers({
-    router: connectRouter(history),
-    wallet: walletReducer,
-    settings: settingsReducer,
-    message: messageReducer,
-    app: appReducer
-  });
+    return combineReducers({
+        router: connectRouter(history),
+        wallet: walletReducer,
+        settings: settingsReducer,
+        message: messageReducer,
+        app: appReducer,
+        modal: modalReducer
+    });
 }
