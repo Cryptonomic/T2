@@ -24,7 +24,7 @@ import Tooltip from '../Tooltip';
 import TokenNav from '../TokenNav';
 
 import SignVerifyModal from '../../featureModals/SignVerify';
-
+import { setModalOpen } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
 import { getAddressType } from '../../utils/account';
@@ -156,13 +156,14 @@ function AddressBlock(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const selectedAccountHash = useSelector<RootState, string>(state => state.app.selectedAccountHash);
+    const isSignModalOpen = useSelector<RootState, boolean>(state => state.modal.open);
     const selectedNode = useSelector(getSelectedNode);
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
 
     const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
     const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
-    const [isSignModalOpen, setIsSignModalOpen] = useState(false);
+    // const [isSignModalOpen, setIsSignModalOpen] = useState(false);
     const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() => getLocalData('isHideDelegateTooltip'));
 
     const { publicKeyHash, balance, accounts, status, storeType } = accountBlock;
@@ -192,6 +193,10 @@ function AddressBlock(props: Props) {
 
     function goToAccount(addressId, index, addressType) {
         dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType));
+    }
+
+    function setIsSignModalOpen(open) {
+        dispatch(setModalOpen(open));
     }
 
     const getAddresses = addresses => {
