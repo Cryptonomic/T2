@@ -4,49 +4,50 @@ import { useTranslation } from 'react-i18next';
 
 import { Container, TabList, Tab, TabText, SectionContainer } from './style';
 
-import BalanceBanner from './BalanceBanner';
+import BalanceBanner from './components/BalanceBanner';
 import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
-import Transactions from './TransactionsContainer';
+import Transactions from './components/Transactions';
+import Details from './components/Details';
 
 import Loader from '../../components/Loader';
-import AccountStatus from '../../components/AccountStatus';
 
-import { TRANSACTIONS } from '../../constants/TabConstants';
+import { TRANSACTIONS, DETAILS } from '../../constants/TabConstants';
 import { READY } from '../../constants/StatusTypes';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
 import { sortArr } from '../../utils/array';
-import { isReady } from '../../utils/general';
 
 import { RootState } from '../../types/store';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
-import { getAccountSelector } from '../duck/selectors';
+import { getTokenSelector } from '../duck/selectors';
 
-const tabs = [TRANSACTIONS];
+const tabs = [DETAILS, TRANSACTIONS];
 
 function ActionPanel() {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [currentPage, setCurrentPage] = useState(1);
-    const selectedAccount = useSelector(getAccountSelector);
+    const selectedToken = useSelector(getTokenSelector);
 
     const { isLoading, selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
-    const { balance, activeTab, storeType, status, delegate_value, transactions } = selectedAccount;
+    const { balance, activeTab, symbol, displayName, details, transactions } = selectedToken;
 
     function onChangeTab(newTab: string) {
-        dispatch(updateActiveTabThunk(newTab));
+        dispatch(updateActiveTabThunk(newTab, true));
     }
 
     function renderSection() {
         const ready = status === READY;
         switch (activeTab) {
+            case DETAILS:
+                return <Details pkh={selectedAccountHash} details={details} />;
             case TRANSACTIONS:
             default: {
-                if (!ready) {
-                    return <AccountStatus address={selectedAccount} />;
+                if (!transactions || transactions.length === 0) {
+                    return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
 
                 const JSTransactions = transactions.sort(sortArr({ sortOrder: 'desc', sortBy: 'timestamp' }));
@@ -59,15 +60,14 @@ function ActionPanel() {
                     lastNumber = JSTransactions.length;
                 }
                 const showedTransactions = JSTransactions.slice(firstNumber, lastNumber);
-                return transactions.length === 0 ? (
-                    <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />
-                ) : (
+
+                return (
                     <Fragment>
-                        <Transactions transactions={showedTransactions} selectedAccountHash={selectedAccountHash} selectedParentHash={selectedParentHash} />
+                        <Transactions transactions={showedTransactions} selectedParentHash={selectedParentHash} symbol={symbol} />
                         {pageCount > 1 && (
                             <PageNumbers
                                 currentPage={currentPage}
-                                totalNumber={JSTransactions.length}
+                                totalNumber={showedTransactions.length}
                                 firstNumber={firstNumber}
                                 lastNumber={lastNumber}
                                 onClick={val => setCurrentPage(val)}
@@ -81,35 +81,14 @@ function ActionPanel() {
     }
     return (
         <Container>
-            <BalanceBanner
-                storeType={storeType}
-                isReady={isReady(status, storeType)}
-                balance={balance || 0}
-                publicKeyHash={selectedAccountHash || 'Inactive'}
-                delegatedAddress={delegate_value}
-                displayName="StakerDAO Token"
-                symbol="STKR"
-            />
+            <BalanceBanner isReady={true} balance={balance || 0} publicKeyHash={selectedAccountHash || 'Inactive'} displayName={displayName} symbol={symbol} />
 
             <TabList count={tabs.length}>
-                {tabs.map(tab => {
-                    const ready = isReady(status, storeType, tab);
-                    return (
-                        <Tab
-                            isActive={activeTab === tab}
-                            key={tab}
-                            ready={ready}
-                            buttonTheme="plain"
-                            onClick={() => {
-                                if (ready) {
-                                    onChangeTab(tab);
-                                }
-                            }}
-                        >
-                            <TabText ready={ready}>{t(tab)}</TabText>
-                        </Tab>
-                    );
-                })}
+                {tabs.map(tab => (
+                    <Tab isActive={activeTab === tab} key={tab} ready={true} buttonTheme="plain" onClick={() => onChangeTab(tab)}>
+                        <TabText ready={true}>{t(tab)}</TabText>
+                    </Tab>
+                ))}
             </TabList>
             <SectionContainer>{renderSection()}</SectionContainer>
         </Container>

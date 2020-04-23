@@ -67,7 +67,12 @@
             "network": "Network",
             "message": "Message",
             "signature": "Signature",
-            "ok": "Ok"
+            "ok": "Ok",
+            "council": "Council",
+            "stage": "Stage",
+            "phase": "Phase",
+            "supply": "Supply",
+            "paused": "Paused"
         },
         "errors": {
             "no_hex_data": "The provided string doesn't look like hex data",

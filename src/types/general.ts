@@ -100,7 +100,8 @@ export interface Token {
     transactions: TokenTransaction[];
     activeTab?: string;
     kind: TokenKind;
-    icon?: string; // TODO
+    icon?: string; // TODO,
+    details?: any;
 }
 
 export type BookMark = Account | Token;
