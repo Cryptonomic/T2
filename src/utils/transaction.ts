@@ -65,7 +65,7 @@ export function createTokenTransaction(transaction): TokenTransaction {
         newTransaction.amount = Number(newTransaction.amount);
     }
 
-    return { initTokenTransaction, ...newTransaction };
+    return { ...initTokenTransaction, ...newTransaction };
 }
 
 export async function getTransactions(accountHash, node: Node) {
