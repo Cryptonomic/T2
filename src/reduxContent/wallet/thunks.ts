@@ -293,24 +293,33 @@ export function syncWalletThunk() {
                         console.log(`warning, stkr fingerprint mismatch for token: ${JSON.stringify(token)}`);
                     }
 
-                    let mapid = token.mapid;
+                    let mapid = token.mapid || -1;
                     const administrator = token.administrator || '';
+                    let details: any = {
+                        council: [],
+                        stage: 0,
+                        phase: 0,
+                        supply: 0,
+                        paused: false,
+                        mapid: -1
+                    };
 
-                    if (!mapid || mapid === -1) {
+                    if (!mapid || mapid === -1 || (token.details && mapid !== token.details.mapid)) {
                         const newStorage = await StakerDAOTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => {
-                            return { mapid: -1 };
+                            return details;
                         });
                         mapid = newStorage.mapid;
+                        details = { ...newStorage };
                     }
 
                     if (mapid === -1) {
                         console.log(`warning, could not process token: ${JSON.stringify(token)}`);
-                        return { ...token, mapid, administrator, balance: 0 };
+                        return { ...token, mapid, administrator, balance: 0, details };
                     }
 
                     const balance = await StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
 
-                    return { ...token, mapid, administrator, balance, transactions: [] };
+                    return { ...token, mapid, administrator, balance, transactions: [], details };
                 } else if (token.kind === TokenKind.tzbtc) {
                     try {
                         const validCode = await TzbtcTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
