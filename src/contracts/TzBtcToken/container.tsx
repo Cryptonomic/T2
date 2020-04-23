@@ -18,6 +18,7 @@ import { TRANSACTIONS, SEND, BURN, MINT } from '../../constants/TabConstants';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
+import { sortArr } from '../../utils/array';
 import { RootState } from '../../types/store';
 
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
@@ -83,7 +84,7 @@ function ActionPanel() {
                     return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
 
-                const processedTransactions = transactions.sort((a, b) => b.timestamp - a.timestamp).filter(e => e);
+                const processedTransactions = transactions.sort(sortArr({ sortOrder: 'desc', sortBy: 'timestamp' }));
                 const itemsCount = 5;
                 const pageCount = Math.ceil(processedTransactions.length / itemsCount);
 
