@@ -1,32 +1,35 @@
 import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient } from 'conseiljs';
 
 import * as status from '../../constants/StatusTypes';
-import { Node, TokenKind } from '../../types/general';
+import { Node, TokenKind, TokenTransaction } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
 
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
-    let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch(e => {
+    const newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch(e => {
         console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
         console.error(e);
         return [];
     });
 
+    const realTrans: TokenTransaction[] = [];
+
     const transferPattern = /Pair"([1-9A-Za-z^OIl]{36})"\(Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)\)/;
     const mintPattern = /Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)/;
 
-    newTransactions = newTransactions.map(transaction => {
+    newTransactions.forEach(transaction => {
         const params = transaction.parameters.replace(/\s/g, '');
         if (transferPattern.test(params)) {
             try {
                 const parts = params.match(transferPattern);
 
-                return createTokenTransaction({
+                const trans = createTokenTransaction({
                     ...transaction,
                     status: transaction.status !== 'applied' ? status.FAILED : status.READY,
                     amount: Number(parts[3]),
                     source: parts[1],
                     destination: parts[2]
                 });
+                realTrans.push(trans);
             } catch (e) {
                 /* */
             }
@@ -34,7 +37,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
             try {
                 const parts = params.match(mintPattern);
 
-                return createTokenTransaction({
+                const trans = createTokenTransaction({
                     ...transaction,
                     status: transaction.status !== 'applied' ? status.FAILED : status.READY,
                     amount: Number(parts[2]),
@@ -42,6 +45,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                     destination: tokenAddress, // TODO: target address of mint operation parts[1]
                     entryPoint: 'mint'
                 });
+                realTrans.push(trans);
             } catch (e) {
                 /* */
             }
@@ -50,7 +54,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
         }
     });
 
-    return syncTransactionsWithState(newTransactions, stateTransactions);
+    return syncTransactionsWithState(realTrans, stateTransactions);
 }
 
 export async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
