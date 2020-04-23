@@ -1,32 +1,32 @@
 {
-  "selectedNode": "Tezos Testnet",
-  "nodesList": [
-    {
-      "displayName": "Tezos Testnet",
-      "platform": "tezos",
-      "network": "carthagenet",
-      "tezosUrl": "https://tezos-dev.cryptonomic-infra.tech:443",
-      "conseilUrl": "https://conseil-dev.cryptonomic-infra.tech:443",
-      "apiKey": "galleon"
-    },
-    {
-      "displayName": "Tezos Mainnet",
-      "platform": "tezos",
-      "network": "mainnet",
-      "tezosUrl": "https://tezos-prod.cryptonomic-infra.tech:443",
-      "conseilUrl": "https://conseil-prod.cryptonomic-infra.tech:443",
-      "apiKey": "galleon"
-    }
-  ],
-  "selectedPath": "Default",
-  "pathsList": [
-    {
-      "label": "Default",
-      "derivation": "44'/1729'/0'/0'/0'"
-    },
-    {
-      "label": "TezBox",
-      "derivation": "44'/1729'/0'/0'"
-    }
-  ]
+    "selectedNode": "Tezos Testnet",
+    "nodesList": [
+        {
+            "displayName": "Tezos Testnet",
+            "platform": "tezos",
+            "network": "carthagenet",
+            "tezosUrl": "https://tezos-dev.cryptonomic-infra.tech:443",
+            "conseilUrl": "https://conseil-dev.cryptonomic-infra.tech:443",
+            "apiKey": "tezori"
+        },
+        {
+            "displayName": "Tezos Mainnet",
+            "platform": "tezos",
+            "network": "mainnet",
+            "tezosUrl": "https://tezos-prod.cryptonomic-infra.tech:443",
+            "conseilUrl": "https://conseil-prod.cryptonomic-infra.tech:443",
+            "apiKey": "tezori"
+        }
+    ],
+    "selectedPath": "Default",
+    "pathsList": [
+        {
+            "label": "Default",
+            "derivation": "44'/1729'/0'/0'/0'"
+        },
+        {
+            "label": "TezBox",
+            "derivation": "44'/1729'/0'/0'"
+        }
+    ]
 }

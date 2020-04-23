@@ -70,9 +70,8 @@
     }
   },
   "build": {
-    "productName": "Galleon Preview",
-    "appId": "tech.galleon-wallet.galleon",
-    "afterSign": "./scripts/SignMacPackage.js",
+    "productName": "Tezori",
+    "appId": "tech.cryptonomic.tezori",
     "files": [
       "dist/",
       "locales/",
