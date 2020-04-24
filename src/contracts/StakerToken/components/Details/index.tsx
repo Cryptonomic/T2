@@ -50,22 +50,18 @@ export default function Details(props: Props) {
     return (
         <Container>
             {isReady && (
-                <>
-                    {
-                        <p>
-                            The token is {paused ? 'inactive' : 'active'}. The DAO is in governance stage {stage}, phase {t('general.nouns.' + phaseMap[phase])}
-                            . Current council member are:{' '}
-                            {council.length &&
-                                council.map(link => (
-                                    <LinkContainer onClick={() => onClick(link)} key={link}>
-                                        <LinkTitle>{link}</LinkTitle>
-                                        <BroadIcon iconName="new-window" size={ms(0)} color="black" />
-                                    </LinkContainer>
-                                ))}
-                            . Total token supply is {supply}.
-                        </p>
-                    }
-                </>
+                <p>
+                    The token is {paused ? 'inactive' : 'active'}. The DAO is in governance stage {stage}, phase {t('general.nouns.' + phaseMap[phase])}.
+                    Current council member are:{' '}
+                    {council.length &&
+                        council.map(link => (
+                            <LinkContainer onClick={() => onClick(link)} key={link}>
+                                <LinkTitle>{link}</LinkTitle>
+                                <BroadIcon iconName="new-window" size={ms(0)} color="black" />
+                            </LinkContainer>
+                        ))}
+                    . Total token supply is {supply}.
+                </p>
             )}
         </Container>
     );
