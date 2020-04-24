@@ -70,6 +70,7 @@ function MessageBar() {
                 <MessageContent
                     content={text}
                     hash={formatHash()}
+                    realHash={hash}
                     openLink={() => openLink()}
                     onClose={() => onClose()}
                     isError={isError}
