@@ -39,8 +39,9 @@ export interface SettingsState {
 
 export interface ModalState {
     open: boolean;
-    activeTab: number;
-    defaultMessage: string;
+    activeTab: string;
+    tabs: string[];
+    tabsValues: Array<Record<string, string>>;
 }
 
 export interface RootState {

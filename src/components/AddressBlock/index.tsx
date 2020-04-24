@@ -24,7 +24,7 @@ import Tooltip from '../Tooltip';
 import TokenNav from '../TokenNav';
 
 import SignVerifyModal from '../../featureModals/SignVerify';
-import { setModalOpen } from '../../reduxContent/modal/actions';
+import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
 import { getAddressType } from '../../utils/account';
@@ -163,7 +163,6 @@ function AddressBlock(props: Props) {
     const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
     const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
-    // const [isSignModalOpen, setIsSignModalOpen] = useState(false);
     const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() => getLocalData('isHideDelegateTooltip'));
 
     const { publicKeyHash, balance, accounts, status, storeType } = accountBlock;
@@ -197,6 +196,9 @@ function AddressBlock(props: Props) {
 
     function setIsSignModalOpen(open) {
         dispatch(setModalOpen(open));
+        if (!open) {
+            dispatch(clearModal());
+        }
     }
 
     const getAddresses = addresses => {

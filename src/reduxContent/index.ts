@@ -5,7 +5,6 @@ import { messageReducer } from './message/reducers';
 import { settingsReducer } from '../containers/Settings/duck/reducer';
 import { appReducer } from './app/reducers';
 import { modalReducer } from './modal/reducers';
-import { RootState } from '../types/store';
 
 export default function createRootReducer(history: any) {
     return combineReducers({

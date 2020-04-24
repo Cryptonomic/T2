@@ -13,7 +13,7 @@ import TopBar from '../../components/TopBar';
 import VersionStatus from '../../components/VersionStatus';
 import MessageBar from '../../components/MessageBar';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { setModalOpen, setModalDefaultMessage, setModalActiveTab } from '../../reduxContent/modal/actions';
+import { setModalOpen, setModalTab, setModalActiveTab } from '../../reduxContent/modal/actions';
 import { getNewVersionThunk } from '../../reduxContent/app/thunks';
 import { getIsNodesSelector } from '../../reduxContent/settings/selectors';
 import { getWalletName } from '../../reduxContent/wallet/selectors';
@@ -43,18 +43,30 @@ function App() {
         });
 
         ipcRenderer.on('wallet', (event, url) => {
-            const sampleUrl = { type: 'plain', text: 'text' };
-            dispatch(setModalDefaultMessage(sampleUrl.text));
+            const searchParams = new URLSearchParams(new URL(url).search);
 
-            if (sampleUrl.type === 'plain') {
-                dispatch(setModalActiveTab(0));
+            if (!searchParams.has('type') && !searchParams.has('text')) {
+                return;
             }
 
-            if (sampleUrl.type === 'auth') {
-                dispatch(setModalActiveTab(1));
+            if (searchParams.get('type') === 'plain') {
+                dispatch(setModalTab({ type: searchParams.get('type'), message: searchParams.get('text') }));
+                dispatch(setModalActiveTab(searchParams.get('type')));
+                dispatch(setModalOpen(true));
             }
 
-            dispatch(setModalOpen(true));
+            if (searchParams.get('type') === 'auth' && searchParams.has('callback') && searchParams.has('metadata')) {
+                dispatch(
+                    setModalTab({
+                        type: searchParams.get('type'),
+                        message: searchParams.get('text'),
+                        callback: searchParams.get('callback'),
+                        metadata: searchParams.get('metadata')
+                    })
+                );
+                dispatch(setModalActiveTab(searchParams.get('type')));
+                dispatch(setModalOpen(true));
+            }
         });
     }, []);
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
 
@@ -12,7 +12,7 @@ import Verify from './components/Verify';
 
 import { setModalActiveTab } from '../../reduxContent/modal/actions';
 
-import { RootState } from '../../types/store';
+import { RootState, ModalState } from '../../types/store';
 
 export const ModalWrapper = styled(Modal)`
     &&& {
@@ -83,13 +83,15 @@ interface Props {
 function SignVerifyModal(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [enterCounts, setEnterCounts] = useState<number[]>([0, 0]);
+    const [enterCounts, setEnterCounts] = useState<{}>({});
     const isLoading = useSelector<RootState, boolean>((state: RootState) => state.app.isLoading);
-    const activeTab = useSelector<RootState, number>((state: RootState) => state.modal.activeTab);
+    const activeTab = useSelector<RootState, string | null>((state: RootState) => state.modal.activeTab);
+    const { tabs } = useSelector<RootState, ModalState>(state => state.modal, shallowEqual);
     const { open, onClose } = props;
+    const swipeIndex = tabs.findIndex((type: string) => type === activeTab);
 
     function onEnterPress(event) {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && activeTab) {
             enterCounts[activeTab] += 1;
             setEnterCounts(enterCounts);
         }
@@ -106,11 +108,11 @@ function SignVerifyModal(props: Props) {
                     <CloseIconWrapper onClick={() => onClose()} />
                     <ModalTitle>{t('general.nouns.sign_n_verify')}</ModalTitle>
                     <TabsWrapper value={activeTab} onChange={(e, val) => onTabChange(val)} variant="fullWidth" textColor="primary">
-                        <TabWrapper label={t('general.verbs.sign')} />
-                        <TabWrapper label={t('general.verbs.verify')} />
+                        <TabWrapper label={t('general.verbs.sign')} value="plain" />
+                        <TabWrapper label={t('general.verbs.verify')} value="auth" />
                     </TabsWrapper>
 
-                    <SwipeableViews index={activeTab}>
+                    <SwipeableViews index={swipeIndex}>
                         <Sign />
                         <Verify />
                     </SwipeableViews>
