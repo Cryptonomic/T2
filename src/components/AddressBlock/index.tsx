@@ -324,6 +324,7 @@ function AddressBlock(props: Props) {
                         key={token.address}
                         isActive={token.address === selectedAccountHash}
                         token={token}
+                        tokenIcon={token.icon}
                         onClick={() => goToAccount(token.address, index, tokenType)}
                     />
                 );

@@ -25,7 +25,6 @@ export function transferThunk(destination: string, amount: string, fee: number, 
         }
 
         const mainPath = getMainPath(pathsList, selectedPath);
-
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
         const parsedAmount = Number(amount.replace(/,/g, '.'));

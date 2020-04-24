@@ -100,7 +100,7 @@ export interface Token {
     transactions: TokenTransaction[];
     activeTab?: string;
     kind: TokenKind;
-    icon?: string; // TODO,
+    icon?: string;
     details?: any;
 }
 
