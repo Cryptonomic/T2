@@ -71,6 +71,11 @@ const HashTitle = styled.div`
     font-weight: 500;
 `;
 
+const CopyBtnWrapper = styled(CopyButton)`
+    width: 15px;
+    height: 15px;
+`;
+
 interface Props {
     content: string;
     hash: string;
@@ -96,10 +101,17 @@ const MessageContent = (props: Props) => {
             {!!hash && (
                 <MessageFooter>
                     <HashTitle>{t('components.messageBar.operation_id')}:</HashTitle>
-
                     <HashValue>{hash}</HashValue>
-
-                    <CopyButton text={realHash} color="#ffffff" />
+                    <CopyBtnWrapper
+                        text={realHash}
+                        color="white"
+                        iconStyle={{
+                            width: '15px',
+                            height: '15px',
+                            position: 'relative',
+                            top: '3px'
+                        }}
+                    />
 
                     <LinkContainer onClick={() => openLink()}>
                         <LinkTitle>{t('components.messageBar.view_block_explorer')}</LinkTitle>
