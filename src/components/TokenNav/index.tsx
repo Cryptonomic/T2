@@ -17,6 +17,7 @@ const Container = styled.div<{ isActive: boolean }>`
 const SideImg = styled.img`
     margin-right: 12px;
     width: 32px;
+    object-fit: contain;
 `;
 const MainContainer = styled.div``;
 const TokenTitle = styled.p<{ isActive: boolean }>`
@@ -38,14 +39,13 @@ const TokenBalance = styled.p<{ isActive: boolean }>`
 interface Props {
     isActive: boolean;
     token: Token;
-    tokenIcon?: string;
     onClick?: () => void;
 }
 
 function TokenNav(props: Props) {
-    const { isActive, token, tokenIcon, onClick } = props;
+    const { isActive, token, onClick } = props;
 
-    const icon = tokenIcon ? tokenIcon : defaultIcon;
+    const icon = token.icon ? token.icon : defaultIcon;
 
     return (
         <Container isActive={isActive} onClick={onClick}>
