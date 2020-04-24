@@ -1,42 +1,28 @@
 import React from 'react';
+import { shell } from 'electron';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { ms } from '../../../../styles/helpers';
+import TezosIcon from '../../../../components/TezosIcon';
+
 const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
     padding: 0 20px 20px 20px;
-    position: relative;
 `;
 
-const ItemContainer = styled.div`
-    width: 100%;
-    height: 57px;
-    border-bottom: solid 1px rgba(148, 169, 209, 0.27);
-    display: flex;
-    align-items: center;
+const BroadIcon = styled(TezosIcon)`
+    margin-left: 2px;
 `;
 
-const ItemTitle = styled.div`
+const LinkContainer = styled.span`
+    margin-left: 7px;
+    cursor: pointer;
+`;
+
+const LinkTitle = styled.span`
     font-size: 12px;
-    color: rgba(0, 0, 0, 0.38);
-    line-height: 18px;
-    width: 70px;
-    padding-right: 15px;
+    text-decoration: underline;
 `;
-
-const ItemContent = styled.div`
-    font-size: 16px;
-    line-height: 24px;
-    color: ${({ theme: { colors } }) => colors.primary};
-    font-weight: 300;
-    display: flex;
-    align-items: center;
-`;
-
-const ITEM_LIST = ['council', 'stage', 'phase', 'supply', 'paused'];
 
 interface Props {
     pkh: string;
@@ -44,28 +30,43 @@ interface Props {
 }
 
 export default function Details(props: Props) {
-    const { details, pkh } = props;
+    const { details } = props;
     const { t } = useTranslation();
+
+    const onClick = (link: string) => {
+        shell.openExternal(link);
+    };
+
+    const phaseMap = {
+        0: 'proposal',
+        1: 'evaluation',
+        2: 'voting',
+        3: 'implementation'
+    };
+
+    const { paused, stage, phase, supply, council } = details;
+    const isReady = paused !== undefined && stage !== undefined && phase !== undefined && supply !== undefined;
 
     return (
         <Container>
-            {!!details &&
-                ITEM_LIST.map(item => {
-                    let content = '';
-                    if (item === 'council') {
-                        content = `[${details[item].toString()}]`;
-                    } else if (item === 'paused') {
-                        content = details[item].toString();
-                    } else {
-                        content = details[item];
+            {isReady && (
+                <>
+                    {
+                        <p>
+                            The token is {paused ? 'inactive' : 'active'}. The DAO is in governance stage {stage}, phase {t('general.nouns.' + phaseMap[phase])}
+                            . Current council member are:{' '}
+                            {council.length &&
+                                council.map(link => (
+                                    <LinkContainer onClick={() => onClick(link)} key={link}>
+                                        <LinkTitle>{link}</LinkTitle>
+                                        <BroadIcon iconName="new-window" size={ms(0)} color="black" />
+                                    </LinkContainer>
+                                ))}
+                            . Total token supply is {supply}.
+                        </p>
                     }
-                    return (
-                        <ItemContainer key={item}>
-                            <ItemTitle>{t(`general.nouns.${item}`)}:</ItemTitle>
-                            {<ItemContent>{content}</ItemContent>}
-                        </ItemContainer>
-                    );
-                })}
+                </>
+            )}
         </Container>
     );
 }
