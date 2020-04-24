@@ -28,7 +28,13 @@ const Auth = () => {
 
     useEffect(() => {
         const tab = tabsValues.find(({ type }) => type === activeTab);
-        // TODO: expand tab values from url
+        /*
+
+        TODO: extract data tab
+
+        const { message, metadata, callback } = tab;
+
+        */
         if (tab) {
             setMessage(tab.message);
         }

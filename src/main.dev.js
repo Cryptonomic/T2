@@ -1,7 +1,5 @@
 const electron = require('electron');
 const app = electron.app;
-const protocol = electron.protocol;
-const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
 
 const openCustomProtocol = (url, appWindow) => {
@@ -52,6 +50,7 @@ app.on('window-all-closed', () => {
     }
 });
 
+// Protocol handler for osx
 app.on('open-url', (event, url) => {
     event.preventDefault();
     openCustomProtocol(url, mainWindow);
@@ -89,6 +88,11 @@ app.on('ready', async () => {
             mainWindow.focus();
         }
     });
+
+    // Protocol handler for win32
+    if (process.platform === 'win32') {
+        openCustomProtocol(process.argv.slice(1), mainWindow);
+    }
 
     mainWindow.on('closed', () => {
         mainWindow = null;
