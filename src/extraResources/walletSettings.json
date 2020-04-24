@@ -7,15 +7,7 @@
             "network": "carthagenet",
             "tezosUrl": "https://tezos-dev.cryptonomic-infra.tech:443",
             "conseilUrl": "https://conseil-dev.cryptonomic-infra.tech:443",
-            "apiKey": "tezori"
-        },
-        {
-            "displayName": "Tezos Mainnet",
-            "platform": "tezos",
-            "network": "mainnet",
-            "tezosUrl": "https://tezos-prod.cryptonomic-infra.tech:443",
-            "conseilUrl": "https://conseil-prod.cryptonomic-infra.tech:443",
-            "apiKey": "tezori"
+            "apiKey": "galleon"
         }
     ],
     "selectedPath": "Default",
