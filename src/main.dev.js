@@ -56,6 +56,8 @@ app.on('open-url', (event, url) => {
     openCustomProtocol(url, mainWindow);
 });
 
+app.setAsDefaultProtocolClient('galleon');
+
 app.on('ready', async () => {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
         await installExtensions();
