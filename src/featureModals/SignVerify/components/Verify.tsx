@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { TezosWalletUtil } from 'conseiljs';
 
 import CustomTextArea from '../../../components/CustomTextArea';
 import TextField from '../../../components/TextField';
 import InputAddress from '../../../components/InputAddress';
 import { RootState } from '../../../types/store';
+import { getSelectedKeyStore } from '../../../utils/general';
 import { publicKeyThunk } from '../thunks';
 
 import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon } from './style';
@@ -14,7 +15,8 @@ import { Container, MainContainer, ButtonContainer, InvokeButton, Result, Warnin
 const Verify = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const isLoading = useSelector((rootState: RootState) => rootState.app.isLoading);
+    const { isLoading, selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const [message, setMessage] = useState('');
     const [signature, setSignature] = useState('');
     const [address, setAddress] = useState('');
@@ -27,8 +29,14 @@ const Verify = () => {
     async function onVerify() {
         let publicKey;
 
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger);
+
         try {
-            publicKey = await dispatch(publicKeyThunk(address));
+            if (keyStore.publicKeyHash === address) {
+                publicKey = keyStore.publicKey;
+            } else {
+                publicKey = await dispatch(publicKeyThunk(address));
+            }
         } catch (e) {
             setResult(e.message);
             setError(true);
@@ -37,13 +45,16 @@ const Verify = () => {
 
         try {
             const isVerified = await TezosWalletUtil.checkSignature(signature, message, publicKey);
+
             if (!isVerified) {
-                throw Error();
+                setResult(t('general.verbs.no_match'));
+                setError(true);
+            } else {
+                setResult(t('general.verbs.match'));
+                setError(false);
             }
-            setResult(t('general.verbs.match'));
-            setError(false);
-        } catch {
-            setResult(t('general.verbs.no_match'));
+        } catch (e) {
+            setResult(`Signature verification failure: ${e}`);
             setError(true);
         }
     }

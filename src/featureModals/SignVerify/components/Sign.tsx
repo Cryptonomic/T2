@@ -24,7 +24,7 @@ const Sign = () => {
     const onSign = async () => {
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger);
         try {
-            const publicKey: unknown = await dispatch(publicKeyThunk(keyStore.publicKey));
+            const publicKey: any = await dispatch(publicKeyThunk(keyStore.publicKeyHash));
             if (publicKey !== keyStore.publicKey) {
                 throw Error(t('components.signVerifyModal.not_revealed'));
             }
