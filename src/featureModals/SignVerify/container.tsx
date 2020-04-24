@@ -9,6 +9,7 @@ import { Modal, Tabs, Tab } from '@material-ui/core';
 import Loader from '../../components/Loader';
 import Sign from './components/Sign';
 import Verify from './components/Verify';
+import Auth from './components/Auth';
 
 import { setModalActiveTab } from '../../reduxContent/modal/actions';
 
@@ -109,12 +110,14 @@ function SignVerifyModal(props: Props) {
                     <ModalTitle>{t('general.nouns.sign_n_verify')}</ModalTitle>
                     <TabsWrapper value={activeTab} onChange={(e, val) => onTabChange(val)} variant="fullWidth" textColor="primary">
                         <TabWrapper label={t('general.verbs.sign')} value="plain" />
-                        <TabWrapper label={t('general.verbs.verify')} value="auth" />
+                        <TabWrapper label={t('general.verbs.verify')} value="verify" />
+                        <TabWrapper label={`dApp ${t('general.verbs.authenticate')}`} value="auth" />
                     </TabsWrapper>
 
                     <SwipeableViews index={swipeIndex}>
                         <Sign />
                         <Verify />
+                        <Auth />
                     </SwipeableViews>
                     {isLoading && <Loader />}
                 </ModalContainer>
