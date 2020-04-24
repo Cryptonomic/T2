@@ -104,7 +104,7 @@ export function loadTokens(network: string) {
     return newTokens.map(token => {
         const localTokens = savedTokens.filter(tk => tk.address === token.address);
         if (localTokens.length > 0) {
-            return { ...localTokens[0], kind: token.kind };
+            return { ...localTokens[0], kind: token.kind, icon: token.icon };
         }
         return token;
     });
