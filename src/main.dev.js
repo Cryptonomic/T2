@@ -1,7 +1,25 @@
 const electron = require('electron');
 const app = electron.app;
 const protocol = electron.protocol;
+const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
+
+const openCustomProtocol = (url, appWindow) => {
+    const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
+
+    if (!currentURL) {
+        return;
+    }
+
+    if (currentURL[1] === '/login') {
+        appWindow.webContents.send('login', 'Please open a wallet and try the request again');
+        return;
+    }
+
+    if (currentURL[1] === '/home/main') {
+        appWindow.webContents.send('wallet', url);
+    }
+};
 
 let mainWindow = null;
 
@@ -34,15 +52,15 @@ app.on('window-all-closed', () => {
     }
 });
 
+app.on('open-url', (event, url) => {
+    event.preventDefault();
+    openCustomProtocol(url, mainWindow);
+});
+
 app.on('ready', async () => {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
         await installExtensions();
     }
-
-    protocol.registerStringProtocol('custom-url', (request, callback) => {
-        const url = request.url.substr(11);
-        callback(url);
-    });
 
     mainWindow = new BrowserWindow({
         height: 768,
