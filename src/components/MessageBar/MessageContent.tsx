@@ -1,12 +1,11 @@
 import React from 'react';
-import { clipboard } from 'electron';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@material-ui/icons/Close';
-import ContentCopy from '@material-ui/icons/FileCopyOutlined';
-import { IconButton } from '@material-ui/core';
+
 import styled from 'styled-components';
 import { ms } from '../../styles/helpers';
-import TezosIcon from '../TezosIcon/';
+import TezosIcon from '../TezosIcon';
+import CopyButton from '../CopyButton';
 
 const MessageContainer = styled.div<{ isError: boolean }>`
     padding: 25px 30px 30px 30px;
@@ -14,6 +13,7 @@ const MessageContainer = styled.div<{ isError: boolean }>`
     width: 100%;
     color: ${({ theme: { colors } }) => colors.white};
 `;
+
 const StyledCloseIcon = styled(CloseIcon)`
     cursor: pointer;
     position: absolute;
@@ -23,12 +23,15 @@ const StyledCloseIcon = styled(CloseIcon)`
     right: 10px;
     fill: #ffffff !important;
 `;
+
 const CheckIcon = styled(TezosIcon)`
     margin-right: 13px;
 `;
+
 const BroadIcon = styled(TezosIcon)`
     margin-left: 2px;
 `;
+
 const MessageHeader = styled.div<{ isWrap: boolean }>`
     display: flex;
     justify-content: center;
@@ -38,6 +41,7 @@ const MessageHeader = styled.div<{ isWrap: boolean }>`
     letter-spacing: 1.1px;
     white-space: ${({ isWrap }) => (!isWrap ? 'normal' : 'nowrap')};
 `;
+
 const MessageFooter = styled.div`
     display: flex;
     justify-content: center;
@@ -45,12 +49,14 @@ const MessageFooter = styled.div`
     line-height: 16px;
     padding-top: 16px;
 `;
+
 const LinkContainer = styled.div`
     display: flex;
     align-items: center;
     margin-left: 7px;
     cursor: pointer;
 `;
+
 const LinkTitle = styled.div`
     font-size: 12px;
     text-decoration: underline;
@@ -59,24 +65,10 @@ const HashValue = styled.div`
     font-size: 12px;
     margin-left: 5px;
 `;
+
 const HashTitle = styled.div`
     font-size: 10px;
     font-weight: 500;
-`;
-const IconButtonWrapper = styled(IconButton)`
-    &&& {
-        color: ${({ theme: { colors } }) => colors.white};
-        margin-left: 3px;
-        position: relative;
-        top: 3px;
-    }
-`;
-
-const CopyIconWrapper = styled(ContentCopy)`
-    &&& {
-        width: 15px;
-        height: 15px;
-    }
 `;
 
 interface Props {
@@ -93,14 +85,6 @@ const MessageContent = (props: Props) => {
     const { content, realHash, hash, openLink, onClose, isError, localeParam } = props;
     const { t } = useTranslation();
 
-    function copyToClipboard() {
-        try {
-            clipboard.writeText(realHash);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
     return (
         <MessageContainer isError={isError}>
             <StyledCloseIcon onClick={() => onClose()} />
@@ -108,18 +92,19 @@ const MessageContent = (props: Props) => {
                 {!!hash && <CheckIcon iconName="checkmark2" size={ms(0)} color="white" />}
                 {t(content, { localeParam })}
             </MessageHeader>
-            {/* {!!hash && <LinkButton onClick={openLink}>See it on chain</LinkButton>} */}
+
             {!!hash && (
                 <MessageFooter>
                     <HashTitle>{t('components.messageBar.operation_id')}:</HashTitle>
+
                     <HashValue>{hash}</HashValue>
+
+                    <CopyButton text={realHash} color="#ffffff" />
+
                     <LinkContainer onClick={() => openLink()}>
                         <LinkTitle>{t('components.messageBar.view_block_explorer')}</LinkTitle>
                         <BroadIcon iconName="new-window" size={ms(0)} color="white" />
                     </LinkContainer>
-                    <IconButtonWrapper size="small" onClick={() => copyToClipboard()}>
-                        <CopyIconWrapper />
-                    </IconButtonWrapper>
                 </MessageFooter>
             )}
         </MessageContainer>
