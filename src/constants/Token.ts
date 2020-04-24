@@ -14,7 +14,8 @@ export const knownTokenContracts: Token[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.stkr
+        kind: TokenKind.stkr,
+        icon: '../../../resources/contracts/stakerdao-icon.png'
     },
     {
         network: 'mainnet',
@@ -24,7 +25,8 @@ export const knownTokenContracts: Token[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzbtc
+        kind: TokenKind.tzbtc,
+        icon: '../../../resources/contracts/tzbtc-icon.png'
     },
     {
         network: 'carthagenet',
@@ -54,7 +56,8 @@ export const knownTokenContracts: Token[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.stkr
+        kind: TokenKind.stkr,
+        icon: '../../../resources/contracts/stakerdao-icon.png'
     },
     {
         network: 'carthagenet',
@@ -64,6 +67,7 @@ export const knownTokenContracts: Token[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzbtc
+        kind: TokenKind.tzbtc,
+        icon: '../../../resources/contracts/tzbtc-icon.png'
     }
 ];
