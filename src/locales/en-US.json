@@ -72,7 +72,11 @@
             "stage": "Stage",
             "phase": "Phase",
             "supply": "Supply",
-            "paused": "Paused"
+            "paused": "Paused",
+            "proposal": "Proposal",
+            "evaluation": "evaluation",
+            "voting": "Voting",
+            "implementation": "Implementation"
         },
         "errors": {
             "no_hex_data": "The provided string doesn't look like hex data",
