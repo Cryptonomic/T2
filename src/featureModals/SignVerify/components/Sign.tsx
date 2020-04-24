@@ -16,7 +16,8 @@ const Sign = () => {
     const dispatch = useDispatch();
     const { isLoading, selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
-    const [message, setMessage] = useState('');
+    const defaultMessage = useSelector<RootState, string>((state: RootState) => state.modal.defaultMessage);
+    const [message, setMessage] = useState(defaultMessage);
     const [result, setResult] = useState('');
     const [error, setError] = useState(false);
     const isDisabled = isLoading || !message;
@@ -42,7 +43,7 @@ const Sign = () => {
     return (
         <Container>
             <MainContainer>
-                <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} />
+                <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} defaultValue={message} />
             </MainContainer>
             <ResultContainer>
                 {error && result && <WarningIcon />}

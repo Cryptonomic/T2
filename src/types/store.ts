@@ -40,6 +40,7 @@ export interface SettingsState {
 export interface ModalState {
     open: boolean;
     activeTab: number;
+    defaultMessage: string;
 }
 
 export interface RootState {
