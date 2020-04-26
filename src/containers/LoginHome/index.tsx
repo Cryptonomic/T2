@@ -90,7 +90,7 @@ function LoginHome(props: Props) {
     }
 
     function onDownload() {
-        const url = 'https://github.com/Cryptonomic/Tezori';
+        const url = 'https://github.com/Cryptonomic/Deployments/wiki/Galleon:-Tutorials';
         openLink(url);
     }
 

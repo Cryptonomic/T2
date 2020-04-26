@@ -45,7 +45,7 @@ app.on('ready', async () => {
     minHeight: 768,
     minWidth: 1024,
     show: false,
-    title: 'Tezori',
+    title: 'Galleon Preview',
     webPreferences: {
       nodeIntegration: true
     },

@@ -12,7 +12,7 @@ import { ms } from '../../styles/helpers';
 import { openLink } from '../../utils/general';
 import { setLocalData } from '../../utils/localData';
 
-const url = 'https://github.com/Cryptonomic/Tezori';
+const url = 'https://github.com/Cryptonomic/Deployments/wiki/Galleon:-FAQ#smart-contracts';
 
 const ModalWrapper = styled(Modal)`
     &&& {

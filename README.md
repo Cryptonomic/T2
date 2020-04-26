@@ -1,4 +1,4 @@
-# Tezori
+# Galleon
 
 A wallet for the Tezos blockchain based on [Conseil](https://github.com/Cryptonomic/Conseil) and [ConseilJS](https://github.com/Cryptonomic/ConseilJS).
 
@@ -41,24 +41,23 @@ Add the file `src/extraResources/walletSettings.json`:
 
 To install all dependencies:
 
-`npm i`
-
-`cd src`
-
-`npm i`
-
-`cd ..`
+```bash
+npm i
+cd src
+npm i
+cd ..
+```
 
 To run during development:
 
 `npm run dev`
 
-To package for deployment:
+To package for deployment for the local target:
 
-`npm run package-all`
+`npm run package`
 
 ## Customize Logo
 
 Change the `tezosLogo.svg` file in `resources/` folder.
 
-Chnage the `logo` field in `src/config.json`.
+Change the `logo` field in `src/config.json`.
