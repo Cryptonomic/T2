@@ -1,7 +1,7 @@
 {
-  "name": "cryptonomic",
-  "version": "1.0.9",
-  "description": "",
+  "name": "tezori",
+  "version": "1.0.10",
+  "description": "An open-source wallet framework for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
@@ -129,7 +129,8 @@
   },
   "author": {
     "name": "Cryptonomic Inc",
-    "email": "info@cryptonomic.tech"
+    "email": "info@cryptonomic.tech",
+    "url": "https://github.com/cryptonomic/tezori"
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
