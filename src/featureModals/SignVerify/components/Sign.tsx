@@ -36,7 +36,7 @@ const Sign = () => {
 
         let op: string;
         if (isLedger) {
-            op = await TezosLedgerWallet.signText(keyStore.derivationPath, message);
+            op = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
         } else {
             op = await TezosWalletUtil.signText(keyStore, message);
         }
