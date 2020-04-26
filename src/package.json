@@ -1,8 +1,8 @@
 {
     "name": "tezori",
     "productName": "Tezori Preview",
-    "version": "1.0.9b",
-    "description": "A wallet for the Tezos blockchain.",
+    "version": "1.0.10b",
+    "description": "An open-source wallet framework for the Tezos blockchain.",
     "main": "./main.prod.js",
     "author": {
         "name": "Cryptonomic Inc",
@@ -13,10 +13,10 @@
         "electron-rebuild": "node ../scripts/ElectronRebuild.js",
         "postinstall": "npm run electron-rebuild"
     },
-    "license": "MIT",
+    "license": "GPL-3.0-only",
     "dependencies": {
         "@ledgerhq/hw-transport-node-hid": "5.13.0",
-        "conseiljs": "0.4.2-beta.7"
+        "conseiljs": "0.4.2-beta.8"
     },
     "engines": {
         "node": "12.16.1",

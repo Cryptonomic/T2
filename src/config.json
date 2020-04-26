@@ -1,6 +1,6 @@
 {
     "name": "Tezori",
-    "version": "1.0.9b",
+    "version": "1.0.10b",
     "network": "mainnet",
     "blockExplorerHost": "https://mininax.io",
     "logo": "tezosLogo.png",
