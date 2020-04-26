@@ -83,7 +83,7 @@ function ActionPanel() {
                     return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
 
-                const processedTransactions = transactions.sort((a, b) => b.timestamp - a.timestamp).filter(e => e);
+                const processedTransactions = transactions.filter(e => e).sort((a, b) => b.timestamp - a.timestamp);
                 const itemsCount = 5;
                 const pageCount = Math.ceil(processedTransactions.length / itemsCount);
 

@@ -11,3 +11,4 @@ export const MINT = 'general.verbs.mint';
 export const BURN = 'general.verbs.burn';
 export const SIGN = 'general.verbs.sign';
 export const VERIFY = 'general.verbs.verify';
+export const DETAILS = 'general.nouns.details';

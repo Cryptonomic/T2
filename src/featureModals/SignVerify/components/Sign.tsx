@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { TezosWalletUtil } from 'conseiljs';
+import { TezosWalletUtil, TezosLedgerWallet } from 'conseiljs';
 
 import CustomTextArea from '../../../components/CustomTextArea';
 import CopyButton from '../../../components/CopyButton';
@@ -24,7 +24,7 @@ const Sign = () => {
     const onSign = async () => {
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger);
         try {
-            const publicKey: unknown = await dispatch(publicKeyThunk(keyStore.publicKey));
+            const publicKey: any = await dispatch(publicKeyThunk(keyStore.publicKeyHash));
             if (publicKey !== keyStore.publicKey) {
                 throw Error(t('components.signVerifyModal.not_revealed'));
             }
@@ -34,7 +34,13 @@ const Sign = () => {
             return;
         }
 
-        const op = await TezosWalletUtil.signText(keyStore, message);
+        let op: string;
+        if (isLedger) {
+            op = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
+        } else {
+            op = await TezosWalletUtil.signText(keyStore, message);
+        }
+
         setError(false);
         setResult(op);
     };

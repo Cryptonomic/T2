@@ -1,7 +1,7 @@
 {
     "name": "galleon",
     "productName": "Galleon Preview",
-    "version": "1.0.9b",
+    "version": "1.0.10b",
     "description": "A wallet for the Tezos blockchain.",
     "main": "./main.prod.js",
     "author": {
@@ -13,10 +13,10 @@
         "electron-rebuild": "node ../scripts/ElectronRebuild.js",
         "postinstall": "npm run electron-rebuild"
     },
-    "license": "MIT",
+    "license": "GPL-3.0-only",
     "dependencies": {
         "@ledgerhq/hw-transport-node-hid": "5.13.0",
-        "conseiljs": "0.4.2-beta.6"
+        "conseiljs": "0.4.2-beta.8"
     },
     "engines": {
         "node": "12.16.1",

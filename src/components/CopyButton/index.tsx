@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { clipboard } from 'electron';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import ContentCopy from '@material-ui/icons/FileCopyOutlined';
 import { Tooltip, Button, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -26,10 +26,11 @@ const IconButtonWrapper = styled(IconButton)<{ realcolor: string }>`
     }
 `;
 
-const CopyIconWrapper = styled(ContentCopy)`
+const CopyIconWrapper = styled(ContentCopy)<{ iconstyle?: any }>`
     &&& {
         width: 19px;
         height: 19px;
+        ${({ iconstyle }) => !!iconstyle && iconstyle}
     }
 `;
 
@@ -37,10 +38,11 @@ interface Props {
     text: string;
     title?: string;
     color: string;
+    iconStyle?: any;
 }
 
 function CopyButton(props: Props) {
-    const { text, title, color } = props;
+    const { text, title, color, iconStyle } = props;
     const { t } = useTranslation();
 
     const [isShowed, setIsShowed] = useState(false);
@@ -73,12 +75,12 @@ function CopyButton(props: Props) {
             }}
         >
             {title ? (
-                <Container realcolor={color} startIcon={<CopyIconWrapper />} disableRipple={true} onClick={() => copyToClipboard()}>
+                <Container realcolor={color} startIcon={<CopyIconWrapper iconstyle={iconStyle} />} disableRipple={true} onClick={() => copyToClipboard()}>
                     {title}
                 </Container>
             ) : (
                 <IconButtonWrapper size="small" realcolor={color} onClick={() => copyToClipboard()}>
-                    <CopyIconWrapper />
+                    <CopyIconWrapper iconstyle={iconStyle} />
                 </IconButtonWrapper>
             )}
         </Tooltip>

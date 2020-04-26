@@ -40,6 +40,8 @@ export function delegateThunk(delegateAddress: string, fee: number, password: st
             return false;
         }
 
+        // TODO: check delegate address change
+
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger);
         const derivation = isLedger ? getMainPath(pathsList, selectedPath) : undefined;
 
@@ -576,7 +578,6 @@ export function transferThunk(destination: string, amount: string, fee: number, 
         }
 
         const mainPath = getMainPath(pathsList, selectedPath);
-
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
         const parsedAmount = Number(amount.replace(/,/g, '.'));

@@ -1,16 +1,16 @@
 {
     "name": "Galleon Preview",
-    "version": "1.0.9b",
+    "version": "1.0.10b",
     "network": "mainnet",
     "blockExplorerHost": "https://mininax.io",
-    "logo": "cryptonomicLogo.png",
-    "logoLink": "https://cryptonomic.tech",
+    "logo": "tezosLogo.png",
+    "logoLink": "https://github.com/Cryptonomic/Tezori",
     "icon": "tezos",
-    "termsService": "https://github.com/Cryptonomic/Deployments/raw/master/Terms_of_Service.pdf",
-    "privacyPolicy": "https://github.com/Cryptonomic/Deployments/raw/master/Privacy_Policy.pdf",
+    "termsService": "https://github.com/Cryptonomic/Tezori",
+    "privacyPolicy": "https://github.com/Cryptonomic/Tezori",
     "tagline": "containers.loginHome.tagline",
     "LocalVersionIndex": "20",
-    "helpUrl": "https://cryptonomic.tech/support.html",
-    "ledgerReferral": "https://shop.ledger.com/pages/ledger-nano-x?r=631fb45e26da",
+    "helpUrl": "https://github.com/Cryptonomic/Tezori",
+    "ledgerReferral": "",
     "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/develop/version.json"
 }
