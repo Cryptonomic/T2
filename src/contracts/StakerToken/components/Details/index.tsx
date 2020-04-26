@@ -51,7 +51,7 @@ export default function Details(props: Props) {
         <Container>
             {isReady && (
                 <p>
-                    The token is {paused ? 'inactive' : 'active'}. The DAO is in governance stage {stage}, phase {t('general.nouns.' + phaseMap[phase])}.
+                    The DAO is in governance stage {stage}, phase {t('general.nouns.' + phaseMap[phase])}.
                     {council.length > 0 && (
                         <>
                             Current council member are:{' '}
@@ -64,7 +64,7 @@ export default function Details(props: Props) {
                             .
                         </>
                     )}{' '}
-                    Total token supply is {supply}.
+                    The token is {paused ? 'inactive' : 'active'} with a total supply of {supply}.
                 </p>
             )}
         </Container>

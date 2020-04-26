@@ -67,7 +67,7 @@ const Verify = () => {
 
                 <InputAddress
                     label={t('general.nouns.signer_address')}
-                    operationType="send_babylon"
+                    operationType="tz1"
                     tooltip={false}
                     onChange={val => setAddress(val)}
                     onIssue={val => setIsAddressIssue(val)}
