@@ -53,7 +53,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
     return syncTransactionsWithState(newTransactions, stateTransactions);
 }
 
-export async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
+async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
     // TODO: consider reusing the common function
     const { conseilUrl, apiKey, network } = node;
 
