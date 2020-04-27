@@ -46,6 +46,7 @@ function TokenNav(props: Props) {
     const { isActive, token, onClick } = props;
 
     const icon = token.icon ? token.icon : defaultIcon;
+    const balance = token.kind === 'tzbtc' ? (token.balance / 10 ** 8).toFixed(8) : token.balance; // TODO: read from token info
 
     return (
         <Container isActive={isActive} onClick={onClick}>
@@ -53,7 +54,7 @@ function TokenNav(props: Props) {
             <MainContainer>
                 <TokenTitle isActive={isActive}>{token.displayName}</TokenTitle>
                 <TokenBalance isActive={isActive}>
-                    {token.balance} {token.symbol}
+                    {balance} {token.symbol}
                 </TokenBalance>
             </MainContainer>
         </Container>
