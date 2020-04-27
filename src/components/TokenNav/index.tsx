@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Token } from '../../types/general';
+import { formatAmount } from '../../utils/currancy';
 import defaultIcon from '../../../resources/contracts/token-icon.svg';
 
 const Container = styled.div<{ isActive: boolean }>`
@@ -46,6 +47,7 @@ function TokenNav(props: Props) {
     const { isActive, token, onClick } = props;
 
     const icon = token.icon ? token.icon : defaultIcon;
+    const balance = token.kind === 'tzbtc' ? formatAmount(token.balance, 2) : token.balance;
 
     return (
         <Container isActive={isActive} onClick={onClick}>
@@ -53,7 +55,7 @@ function TokenNav(props: Props) {
             <MainContainer>
                 <TokenTitle isActive={isActive}>{token.displayName}</TokenTitle>
                 <TokenBalance isActive={isActive}>
-                    {token.balance} {token.symbol}
+                    {balance} {token.symbol}
                 </TokenBalance>
             </MainContainer>
         </Container>
