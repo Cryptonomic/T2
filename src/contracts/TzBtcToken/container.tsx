@@ -114,7 +114,7 @@ function ActionPanel() {
         <Container>
             <BalanceBanner
                 isReady={true}
-                balance={balance || 0}
+                balance={balance / 10 ** 8 || 0 /* TODO */}
                 privateKey={''}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 delegatedAddress={''}
