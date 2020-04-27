@@ -33,9 +33,15 @@ export const ResultContainer = styled.div`
     padding: 0 40px;
 `;
 
-export const Result = styled.div<any>`
-    flex: ${props => (!props.error ? 1 : '')};
-    width: ${props => (!props.error ? '90%' : '')};
+export const InfoContainer = styled.div`
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    height: 60px;
+    width: 100%;
+`;
+
+export const Result = styled.div`
     word-wrap: break-word;
 `;
 
