@@ -1,7 +1,7 @@
 {
-  "name": "tezori",
+  "name": "galleon",
   "version": "1.0.10",
-  "description": "An open-source wallet framework for the Tezos blockchain.",
+  "description": "An open-source wallet for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
@@ -90,14 +90,15 @@
       ]
     },
     "dmg": {
+      "background": "./resources/background.png",
       "contents": [
         {
           "x": 130,
-          "y": 220
+          "y": 180
         },
         {
           "x": 410,
-          "y": 220,
+          "y": 180,
           "type": "link",
           "path": "/Applications"
         }
