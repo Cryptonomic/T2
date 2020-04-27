@@ -23,7 +23,7 @@ import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 import { getTokenSelector } from '../duck/selectors';
 
-const tabs = [DETAILS, TRANSACTIONS];
+const tabs = [DETAILS];
 
 function ActionPanel() {
     const { t } = useTranslation();
