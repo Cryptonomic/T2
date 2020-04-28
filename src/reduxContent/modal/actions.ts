@@ -11,9 +11,10 @@ export const setModalActiveTab = (activeTab: string | null) => ({
     activeTab
 });
 
-export const setModalValue = (value: object) => ({
+export const setModalValue = (value: object, name: string) => ({
     type: SET_MODAL_VALUE,
-    value
+    value,
+    name
 });
 
 export const clearModal = () => ({

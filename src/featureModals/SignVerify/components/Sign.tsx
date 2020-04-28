@@ -41,9 +41,9 @@ const Sign = () => {
     };
 
     useEffect(() => {
-        const value = values.find(({ type }) => type === activeTab);
-        if (value) {
-            setMessage(value.message);
+        const { d } = values[activeTab];
+        if (d) {
+            setMessage(d);
         }
     }, []);
 

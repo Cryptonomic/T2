@@ -3,6 +3,7 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { ipcRenderer } from 'electron';
+import base64url from 'base64url';
 
 import Home from '../Home';
 import Login from '../Login';
@@ -43,28 +44,30 @@ function App() {
         });
 
         ipcRenderer.on('wallet', (event, url) => {
-            const searchParams = new URLSearchParams(new URL(url).search);
+            const urlProps = new URL(url);
+            const pathname = urlProps.pathname.slice(2);
 
-            if (!searchParams.has('type') && !searchParams.has('text')) {
+            if (pathname !== 'sign' && pathname !== 'auth') {
                 return;
             }
 
-            if (searchParams.get('type') === 'plain') {
-                dispatch(setModalValue({ type: searchParams.get('type'), message: searchParams.get('text') }));
-                dispatch(setModalActiveTab(searchParams.get('type')));
-                dispatch(setModalOpen(true, 'sign'));
+            const searchParams = new URLSearchParams(urlProps.search);
+            const req = searchParams.get('r');
+
+            if (!req) {
+                return;
             }
 
-            if (searchParams.get('type') === 'auth' && searchParams.has('callback') && searchParams.has('metadata')) {
-                dispatch(
-                    setModalValue({
-                        type: searchParams.get('type'),
-                        message: searchParams.get('text'),
-                        callback: searchParams.get('callback'),
-                        metadata: searchParams.get('metadata')
-                    })
-                );
-                dispatch(setModalOpen(true, 'auth'));
+            dispatch(setModalValue(JSON.parse(base64url.decode(req)), pathname));
+
+            if (pathname === 'sign') {
+                dispatch(setModalActiveTab(pathname));
+                dispatch(setModalOpen(true, pathname));
+                return;
+            }
+
+            if (pathname === 'auth') {
+                dispatch(setModalOpen(true, pathname));
             }
         });
     }, []);

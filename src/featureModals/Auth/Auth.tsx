@@ -29,7 +29,7 @@ const Auth = (props: Props) => {
     const { t } = useTranslation();
     const isLoading = useSelector<RootState, boolean>((state: RootState) => state.app.isLoading);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
-    const values = useSelector<RootState, Array<Record<string, string>>>(state => state.modal.values, shallowEqual);
+    const values = useSelector<RootState, object>(state => state.modal.values, shallowEqual);
     const [message, setMessage] = useState('');
     const [result, setResult] = useState('');
     const [error, setError] = useState(false);
@@ -41,9 +41,9 @@ const Auth = (props: Props) => {
     };
 
     useEffect(() => {
-        const value = values.find(({ type }) => type === activeModal);
-        if (value) {
-            setMessage(value.message);
+        const { r } = values[activeModal];
+        if (r) {
+            setMessage(r);
         }
     }, []);
 

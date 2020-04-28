@@ -4,9 +4,9 @@ import { ModalState } from '../../types/store';
 const initState = {
     open: false,
     activeModal: '',
-    activeTab: 'plain',
-    tabs: ['plain', 'verify'],
-    values: []
+    activeTab: 'sign',
+    tabs: ['sign', 'verify'],
+    values: {}
 };
 
 export function modalReducer(state: ModalState = initState, action) {
@@ -18,7 +18,7 @@ export function modalReducer(state: ModalState = initState, action) {
             return { ...state, activeTab: action.activeTab };
         }
         case SET_MODAL_VALUE: {
-            return { ...state, values: [...state.values, action.value] };
+            return { ...state, values: { ...state.values, [action.name]: action.value } };
         }
         case CLEAR_MODAL: {
             return initState;

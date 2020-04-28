@@ -46,7 +46,7 @@ function SignVerifyModal(props: Props) {
                     <CloseIconWrapper onClick={() => onClose()} />
                     <ModalTitle>{t('general.nouns.sign_n_verify')}</ModalTitle>
                     <TabsWrapper value={activeTab} onChange={(e, val) => onTabChange(val)} variant="fullWidth" textColor="primary">
-                        <TabWrapper label={t('general.verbs.sign')} value="plain" />
+                        <TabWrapper label={t('general.verbs.sign')} value="sign" />
                         <TabWrapper label={t('general.verbs.verify')} value="verify" />
                     </TabsWrapper>
 

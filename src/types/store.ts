@@ -42,7 +42,7 @@ export interface ModalState {
     activeModal: string;
     activeTab: string;
     tabs: string[];
-    values: Array<Record<string, string>>;
+    values: {};
 }
 
 export interface RootState {
