@@ -41,9 +41,9 @@ const Auth = (props: Props) => {
     };
 
     useEffect(() => {
-        const { r } = values[activeModal];
-        if (r) {
-            setMessage(r);
+        const req = values[activeModal];
+        if (req && req.r) {
+            setMessage(req.r);
         }
     }, []);
 

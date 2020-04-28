@@ -41,9 +41,9 @@ const Sign = () => {
     };
 
     useEffect(() => {
-        const { d } = values[activeTab];
-        if (d) {
-            setMessage(d);
+        const req = values[activeTab];
+        if (req && req.d) {
+            setMessage(req.d);
         }
     }, []);
 
