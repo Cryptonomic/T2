@@ -9,14 +9,14 @@ import { getSelectedKeyStore } from '../../../utils/general';
 import { RootState, ModalState } from '../../../types/store';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, WarningIcon } from './style';
+import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, WarningIcon } from '../../style';
 
 const Sign = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { isLoading, selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
-    const { tabsValues, activeTab } = useSelector<RootState, ModalState>(state => state.modal, shallowEqual);
+    const { values, activeTab } = useSelector<RootState, ModalState>(state => state.modal, shallowEqual);
     const [message, setMessage] = useState('');
     const [result, setResult] = useState('');
     const [error, setError] = useState(false);
@@ -41,9 +41,9 @@ const Sign = () => {
     };
 
     useEffect(() => {
-        const tab = tabsValues.find(({ type }) => type === activeTab);
-        if (tab) {
-            setMessage(tab.message);
+        const value = values.find(({ type }) => type === activeTab);
+        if (value) {
+            setMessage(value.message);
         }
     }, []);
 

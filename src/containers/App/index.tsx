@@ -13,7 +13,7 @@ import TopBar from '../../components/TopBar';
 import VersionStatus from '../../components/VersionStatus';
 import MessageBar from '../../components/MessageBar';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { setModalOpen, setModalTab, setModalActiveTab } from '../../reduxContent/modal/actions';
+import { setModalOpen, setModalValue, setModalActiveTab } from '../../reduxContent/modal/actions';
 import { getNewVersionThunk } from '../../reduxContent/app/thunks';
 import { getIsNodesSelector } from '../../reduxContent/settings/selectors';
 import { getWalletName } from '../../reduxContent/wallet/selectors';
@@ -50,22 +50,21 @@ function App() {
             }
 
             if (searchParams.get('type') === 'plain') {
-                dispatch(setModalTab({ type: searchParams.get('type'), message: searchParams.get('text') }));
+                dispatch(setModalValue({ type: searchParams.get('type'), message: searchParams.get('text') }));
                 dispatch(setModalActiveTab(searchParams.get('type')));
-                dispatch(setModalOpen(true));
+                dispatch(setModalOpen(true, 'sign'));
             }
 
             if (searchParams.get('type') === 'auth' && searchParams.has('callback') && searchParams.has('metadata')) {
                 dispatch(
-                    setModalTab({
+                    setModalValue({
                         type: searchParams.get('type'),
                         message: searchParams.get('text'),
                         callback: searchParams.get('callback'),
                         metadata: searchParams.get('metadata')
                     })
                 );
-                dispatch(setModalActiveTab(searchParams.get('type')));
-                dispatch(setModalOpen(true));
+                dispatch(setModalOpen(true, 'auth'));
             }
         });
     }, []);

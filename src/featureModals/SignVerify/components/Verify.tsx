@@ -9,7 +9,7 @@ import InputAddress from '../../../components/InputAddress';
 import { RootState } from '../../../types/store';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon } from './style';
+import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon } from '../../style';
 
 const Verify = () => {
     const { t } = useTranslation();

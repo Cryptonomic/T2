@@ -1,8 +1,9 @@
-import { SET_MODAL_OPEN, SET_MODAL_ACTIVE_TAB, SET_MODAL_TAB, CLEAR_MODAL } from './types';
+import { SET_MODAL_OPEN, SET_MODAL_ACTIVE_TAB, SET_MODAL_VALUE, CLEAR_MODAL } from './types';
 
-export const setModalOpen = (open: boolean) => ({
+export const setModalOpen = (open: boolean, activeModal: string) => ({
     type: SET_MODAL_OPEN,
-    open
+    open,
+    activeModal
 });
 
 export const setModalActiveTab = (activeTab: string | null) => ({
@@ -10,9 +11,9 @@ export const setModalActiveTab = (activeTab: string | null) => ({
     activeTab
 });
 
-export const setModalTab = (tab: object) => ({
-    type: SET_MODAL_TAB,
-    tab
+export const setModalValue = (value: object) => ({
+    type: SET_MODAL_VALUE,
+    value
 });
 
 export const clearModal = () => ({

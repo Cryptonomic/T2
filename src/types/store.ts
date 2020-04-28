@@ -39,9 +39,10 @@ export interface SettingsState {
 
 export interface ModalState {
     open: boolean;
+    activeModal: string;
     activeTab: string;
     tabs: string[];
-    tabsValues: Array<Record<string, string>>;
+    values: Array<Record<string, string>>;
 }
 
 export interface RootState {

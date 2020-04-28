@@ -1,23 +1,24 @@
-import { SET_MODAL_OPEN, SET_MODAL_ACTIVE_TAB, SET_MODAL_TAB, CLEAR_MODAL } from './types';
+import { SET_MODAL_OPEN, SET_MODAL_ACTIVE_TAB, SET_MODAL_VALUE, CLEAR_MODAL } from './types';
 import { ModalState } from '../../types/store';
 
 const initState = {
     open: false,
+    activeModal: '',
     activeTab: 'plain',
-    tabs: ['plain', 'verify', 'auth'],
-    tabsValues: []
+    tabs: ['plain', 'verify'],
+    values: []
 };
 
 export function modalReducer(state: ModalState = initState, action) {
     switch (action.type) {
         case SET_MODAL_OPEN: {
-            return { ...state, open: action.open };
+            return { ...state, open: action.open, activeModal: action.activeModal };
         }
         case SET_MODAL_ACTIVE_TAB: {
             return { ...state, activeTab: action.activeTab };
         }
-        case SET_MODAL_TAB: {
-            return { ...state, tabsValues: [...state.tabsValues, action.tab] };
+        case SET_MODAL_VALUE: {
+            return { ...state, values: [...state.values, action.value] };
         }
         case CLEAR_MODAL: {
             return initState;
