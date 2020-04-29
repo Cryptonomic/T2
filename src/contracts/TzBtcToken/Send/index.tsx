@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'bignumber.js';
 import { OperationKindType } from 'conseiljs';
 
 import InputAddress from '../../../components/InputAddress';
 import Fees from '../../../components/Fees';
 import PasswordInput from '../../../components/PasswordInput';
-import TezosNumericInput from '../../../components/TezosNumericInput';
+import NumericInput from '../../../components/NumericInput';
 import TokenLedgerConfirmationModal from '../../../components/ConfirmModals/TokenLedgerConfirmationModal';
 
 import InputError from '../../../components/InputError';
@@ -69,7 +70,7 @@ function Send(props: Props) {
             setOpen(true);
         }
 
-        await dispatch(transferThunk(newAddress, amount, fee, passPhrase));
+        await dispatch(transferThunk(newAddress, new BigNumber(amount).multipliedBy(10 ** 8).toNumber(), fee, passPhrase));
         setOpen(false);
         dispatch(setIsLoadingAction(false));
     }
@@ -96,13 +97,14 @@ function Send(props: Props) {
             </RowContainer>
             <RowContainer>
                 <AmountContainer>
-                    <TezosNumericInput
-                        decimalSeparator={t('general.decimal_separator')}
+                    <NumericInput
                         label={t('general.nouns.amount')}
                         amount={amount}
                         onChange={val => setAmount(val)}
                         errorText={error}
                         symbol={symbol}
+                        scale={8}
+                        precision={8}
                     />
                 </AmountContainer>
                 <FeeContainer>
