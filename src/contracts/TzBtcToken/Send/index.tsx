@@ -105,6 +105,8 @@ function Send(props: Props) {
                         symbol={symbol}
                         scale={8}
                         precision={8}
+                        maxValue={new BigNumber(balance).dividedBy(10 ** 8).toNumber() /* TODO */}
+                        minValue={0.000_000_01}
                     />
                 </AmountContainer>
                 <FeeContainer>
