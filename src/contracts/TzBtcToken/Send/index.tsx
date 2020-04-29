@@ -30,13 +30,14 @@ interface Props {
 function Send(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [fee, setFee] = useState(AVERAGEFEES.high);
+    const [fee, setFee] = useState(Math.max(AVERAGEFEES.low, 23647)); // TODO
     const [newAddress, setAddress] = useState('');
     const [passPhrase, setPassPhrase] = useState('');
     const [isAddressIssue, setIsAddressIssue] = useState(false);
     const [amount, setAmount] = useState('');
     const [open, setOpen] = useState(false);
-    const { newFees, miniFee, isFeeLoaded } = useFetchFees(OperationKindType.Transaction, false);
+    const { newFees, isFeeLoaded } = useFetchFees(OperationKindType.Transaction, false);
+    const miniFee = 23647; // TODO
 
     const { isLoading, isLedger, selectedParentHash } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
 
