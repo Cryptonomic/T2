@@ -28,24 +28,21 @@ interface Props {
 }
 
 function Send(props: Props) {
+    const miniFee = 23647; // TODO
+
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [fee, setFee] = useState(Math.max(AVERAGEFEES.low, 23647)); // TODO
+    const [fee, setFee] = useState(Math.max(AVERAGEFEES.low, miniFee + 1000)); // TODO
     const [newAddress, setAddress] = useState('');
     const [passPhrase, setPassPhrase] = useState('');
     const [isAddressIssue, setIsAddressIssue] = useState(false);
     const [amount, setAmount] = useState('');
     const [open, setOpen] = useState(false);
-    const { newFees, isFeeLoaded } = useFetchFees(OperationKindType.Transaction, false);
-    const miniFee = 23647; // TODO
+    const { newFees } = useFetchFees(OperationKindType.Transaction, false);
 
     const { isLoading, isLedger, selectedParentHash } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
 
     const { isReady, balance, symbol } = props;
-
-    useEffect(() => {
-        setFee(newFees.high);
-    }, [isFeeLoaded]);
 
     const isDisabled = !isReady || isLoading || isAddressIssue || !newAddress || (!passPhrase && !isLedger);
 
