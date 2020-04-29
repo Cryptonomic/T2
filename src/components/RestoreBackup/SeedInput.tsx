@@ -68,50 +68,34 @@ function SeedInput(props: Props) {
     }
 
     function onChangeInput(e, val) {
-        let newError = error;
-        let newVal = val;
-        if (!val) {
-            newError = ![12, 15, 18, 21, 24].includes(seeds.length) || badWords.length > 0 ? error : '';
-        } else if (![12, 15, 18, 21, 24].includes(val.length)) {
-            newVal = '';
-            const inputedSeeds = seedPhraseConvert(val);
-            const newBadWords = inputedSeeds.filter(element => seedJson.indexOf(element) === -1);
-            const newSeeds = [...seeds, ...inputedSeeds];
+        const inputWords = seedPhraseConvert(val);
+        const invalidWords = inputWords.filter(element => seedJson.indexOf(element) === -1);
 
-            if (![12, 15, 18, 21, 24].includes(newSeeds.length)) {
-                newError = t('containers.homeAddAddress.errors.invalid_length');
-            } else if (newBadWords.length > 0) {
-                const realBadWords = [...badWords, ...newBadWords];
-                setBadWords(realBadWords);
-                newError = t('containers.homeAddAddress.errors.invalid_words');
-            }
-            onChange(newSeeds);
-        } else {
-            if (![12, 15, 18, 21, 24].includes(seeds.length)) {
-                newError = t('containers.homeAddAddress.errors.invalid_length');
-            } else if (!error) {
-                const seedIndex = seedJson.indexOf(val);
-                if (seedIndex > -1) {
-                    newError = t('containers.homeAddAddress.errors.invalid_length');
-                }
-            }
+        if (inputWords.length > invalidWords.length) {
+            onChange([...seeds, ...inputWords]);
         }
-        setError(newError);
-        setInputVal(newVal);
-        onError(!!newError);
+
+        if (invalidWords.length > 0) {
+            setBadWords([...badWords, ...invalidWords]);
+        }
+
+        setInputVal(val);
     }
 
     function onChangeItems(e, items) {
         const newBadWords = badWords.filter(item => items.indexOf(item) > -1);
         let newError = '';
-        if (![12, 15, 18, 21, 24].includes(items.length)) {
-            newError = t('containers.homeAddAddress.errors.invalid_length');
-        } else if (newBadWords.length > 0) {
+
+        if (newBadWords.length > 0) {
+            newError = t('containers.homeAddAddress.errors.invalid_words');
+        } else if (![12, 15, 18, 21, 24].includes(items.length)) {
             newError = t('containers.homeAddAddress.errors.invalid_length');
         }
+
         setBadWords([...newBadWords]);
         onChange(items);
         onError(!!newError);
+        setError(newError);
     }
 
     return (
@@ -123,7 +107,6 @@ function SeedInput(props: Props) {
             options={seedJson}
             closeIcon=""
             popupIcon=""
-            filterSelectedOptions={true}
             inputValue={inputVal}
             value={seeds}
             onInputChange={onChangeInput}
