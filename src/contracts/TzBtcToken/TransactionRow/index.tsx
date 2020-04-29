@@ -5,7 +5,7 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { ms } from '../../../styles/helpers';
 import TezosAddress from '../../../components/TezosAddress';
-import TezosAmount from '../../../components/TezosAmount';
+import AmountView from '../../../components/AmountView';
 import TezosIcon from '../../../components/TezosIcon';
 import { openLinkToBlockExplorer } from '../../../utils/general';
 import { READY } from '../../../constants/StatusTypes';
@@ -142,7 +142,7 @@ function Transaction(props: Props) {
                 <TransactionDate>{transaction.status === READY ? timeFormatter(transaction.timestamp) : t('components.transaction.pending')}</TransactionDate>
                 <AmountContainer color={color}>
                     {sign}
-                    <TezosAmount color={color} size={ms(-1)} amount={transaction.amount} format={6} symbol={symbol} />
+                    <AmountView color={color} size={ms(-1)} amount={transaction.amount} scale={8} precision={8} round={8} symbol={symbol} />
                 </AmountContainer>
             </Header>
             <Container>
@@ -170,7 +170,7 @@ function Transaction(props: Props) {
                 {isFee && (
                     <Fee>
                         <span>{t('general.nouns.fee')}: </span>
-                        <TezosAmount color="gray5" size={ms(-2)} amount={fee} format={6} />
+                        <AmountView color="gray5" size={ms(-2)} amount={fee} />
                     </Fee>
                 )}
             </Container>

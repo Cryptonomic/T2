@@ -327,7 +327,7 @@
             "private_key": "Private Key",
             "secret_key_15": "15 - 24 Word Mnemonic",
             "errors": {
-                "invalid_length": "Seed phrases must contain no more than 15 words.",
+                "invalid_length": "Seed phrases contain 12, 15, 18, 21 or 24 words.",
                 "invalid_words": "Detected invalid word(s). Please double check."
             }
         },
@@ -414,10 +414,11 @@
             "add_account": "Add an Account",
             "refer_pdf_title": "Please refer to the PDF document that you created during the Fundraiser.",
             "secret_key_15": "15 Word Secret Key",
+            "restore_mnemonic": "12, 15, 18, 21 or 24 Word Secret Key",
             "fundraiser_password": "Fundraiser Password",
             "public_key_hash": "Public key hash",
             "fundraiser_email_address": "Fundraiser Email Address",
-            "activation_code": "Activation Code",
+            "activation_code": "Activation Code (Optional if account was activated)",
             "tooltips": {
                 "password_tooltip": "This is the password that you used when generating a Tezos paper wallet to participate in the Fundraiser.",
                 "email_tooltip": "This is the email address that you used when generating a Tezos paper wallet to participate in the Fundraiser",
@@ -428,7 +429,7 @@
             "create_new_account": "Create New Account",
             "restore_backup": "Restore from Backup",
             "errors": {
-                "invalid_length": "Seed phrases must contain no more than 15 words.",
+                "invalid_length": "Seed phrases contain 12, 15, 18, 21 or 24 words.",
                 "invalid_words": "Detected invalid word(s). Please double check."
             }
         },
