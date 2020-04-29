@@ -12,20 +12,27 @@ interface Props {
     symbol?: string;
     scale: number;
     precision: number;
+    maxValue?: number;
+    minValue?: number;
 }
 
 const NumericInput = (props: Props) => {
-    const { symbol, amount, label, errorText, onChange, scale, precision } = props;
+    const { symbol, amount, label, errorText, onChange, precision, maxValue, minValue } = props;
 
-    function validateInput(text) {
-        onChange(formatAmount(text));
-    }
+    function validateInput(text: string) {
+        const n = new BigNumber(text).toNumber();
 
-    function formatAmount(v: string): string {
-        return new BigNumber(amount)
-            .multipliedBy(10 ** scale)
-            .toNumber()
-            .toFixed(precision);
+        if (minValue !== undefined && minValue > n) {
+            // TODO: show error
+            return;
+        }
+
+        if (maxValue !== undefined && maxValue < n) {
+            // TODO: show error
+            return;
+        }
+
+        onChange(n.toFixed(precision));
     }
 
     return (

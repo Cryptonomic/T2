@@ -83,6 +83,7 @@ function ActionPanel() {
                     return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
 
+                // TODO: move this inside TransactionContainer
                 const processedTransactions = transactions.filter(e => e).sort((a, b) => b.timestamp - a.timestamp);
                 const itemsCount = 5;
                 const pageCount = Math.ceil(processedTransactions.length / itemsCount);

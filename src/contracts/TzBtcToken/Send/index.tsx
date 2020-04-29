@@ -28,23 +28,21 @@ interface Props {
 }
 
 function Send(props: Props) {
+    const miniFee = 23647; // TODO
+
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [fee, setFee] = useState(AVERAGEFEES.high);
+    const [fee, setFee] = useState(Math.max(AVERAGEFEES.low, miniFee + 1000)); // TODO
     const [newAddress, setAddress] = useState('');
     const [passPhrase, setPassPhrase] = useState('');
     const [isAddressIssue, setIsAddressIssue] = useState(false);
     const [amount, setAmount] = useState('');
     const [open, setOpen] = useState(false);
-    const { newFees, miniFee, isFeeLoaded } = useFetchFees(OperationKindType.Transaction, false);
+    const { newFees } = useFetchFees(OperationKindType.Transaction, false);
 
     const { isLoading, isLedger, selectedParentHash } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
 
     const { isReady, balance, symbol } = props;
-
-    useEffect(() => {
-        setFee(newFees.high);
-    }, [isFeeLoaded]);
 
     const isDisabled = !isReady || isLoading || isAddressIssue || !newAddress || (!passPhrase && !isLedger);
 
@@ -105,6 +103,8 @@ function Send(props: Props) {
                         symbol={symbol}
                         scale={8}
                         precision={8}
+                        maxValue={new BigNumber(balance).dividedBy(10 ** 8).toNumber() /* TODO */}
+                        minValue={0.000_000_01 /* TODO 1 / (10 ** scale) */}
                     />
                 </AmountContainer>
                 <FeeContainer>
