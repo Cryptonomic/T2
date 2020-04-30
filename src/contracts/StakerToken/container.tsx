@@ -16,7 +16,7 @@ import { getTokenSelector } from '../duck/selectors';
 import TransactionContainer from '../components/TransactionContainer';
 
 import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
-import BalanceBanner from './components/BalanceBanner';
+import BalanceBanner from '../components/BalanceBanner';
 import Details from './components/Details';
 
 const tabs = [DETAILS];
@@ -29,7 +29,7 @@ function ActionPanel() {
 
     const { isLoading, selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
-    const { balance, activeTab, symbol, displayName, details, transactions } = selectedToken;
+    const { balance, activeTab, displayName, details, transactions } = selectedToken;
 
     function onChangeTab(newTab: string) {
         dispatch(updateActiveTabThunk(newTab, true));
@@ -76,7 +76,13 @@ function ActionPanel() {
     }
     return (
         <Container>
-            <BalanceBanner isReady={true} balance={balance || 0} publicKeyHash={selectedAccountHash || 'Inactive'} displayName={displayName} symbol={symbol} />
+            <BalanceBanner
+                isReady={true}
+                balance={balance || 0}
+                publicKeyHash={selectedAccountHash || 'Inactive'}
+                displayName={displayName}
+                token={selectedToken}
+            />
 
             <TabList count={tabs.length}>
                 {tabs.map(tab => (
