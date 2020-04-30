@@ -56,8 +56,8 @@ const Sign = () => {
     return (
         <Container>
             <MessageContainer>
-                <InfoIcon color="info" iconName="info" /> Signing a message allows others to verify your ownership of this account using only this message,
-                signature and your address/public key.
+                <InfoIcon color="info" iconName="info" />
+                {t('components.signVerifyModal.sign_guidance')}
             </MessageContainer>
             <MainContainer>
                 <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} />
