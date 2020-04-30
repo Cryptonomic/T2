@@ -1,6 +1,6 @@
 import { TezosNodeWriter, TezosNodeReader, BabylonDelegationHelper, TezosParameterFormat, Tzip7ReferenceTokenHelper } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { updateIdentityAction, updateTokensAction } from '../../reduxContent/wallet/actions';
+import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { tezToUtez } from '../../utils/currancy';
 
 import { saveIdentitiesToLocal } from '../../utils/wallet';
@@ -15,13 +15,6 @@ import { findIdentity } from '../../utils/identity';
 import { displayError } from '../../utils/formValidation';
 
 import { Node } from '../../types/general';
-
-import { findTokenIndex } from '../../utils/token';
-
-const { transferBalance, mint, burn } = Tzip7ReferenceTokenHelper;
-
-const GAS = 125000; // TODO
-const FREIGHT = 1000;
 
 const { sendContractInvocationOperation, sendTransactionOperation } = TezosNodeWriter;
 const { withdrawDelegatedFunds, depositDelegatedFunds, setDelegate, sendDelegatedFunds } = BabylonDelegationHelper;
