@@ -4,7 +4,7 @@ import moment from 'moment';
 import styled from 'styled-components';
 import TransactionsLabel from '../../../components/TransactionsLabel';
 import Transaction from '../TransactionRow';
-import { TokenTransaction } from '../../../types/general';
+import { Token, TokenTransaction } from '../../../types/general';
 
 const Container = styled.section`
     height: 100%;
@@ -19,11 +19,11 @@ const SectionContainer = styled.div``;
 interface Props {
     transactions: TokenTransaction[];
     selectedParentHash: string;
-    symbol: string;
+    token: Token;
 }
 
 export default function TransactionContainer(props: Props) {
-    const { transactions, selectedParentHash, symbol } = props;
+    const { transactions, selectedParentHash, token } = props;
 
     const transactionsByDate = transactions.reduce((acc, curr) => {
         const date = moment(curr.timestamp).format('LL');
@@ -36,7 +36,7 @@ export default function TransactionContainer(props: Props) {
             <SectionContainer key={grIndex}>
                 <TransactionsLabel date={day} skipFormat={true} />
                 {grTransactions.map((transaction, index) => {
-                    return <Transaction key={index} transaction={transaction} selectedParentHash={selectedParentHash} symbol={symbol} />;
+                    return <Transaction key={index} transaction={transaction} selectedParentHash={selectedParentHash} token={token} />;
                 })}
             </SectionContainer>
         );

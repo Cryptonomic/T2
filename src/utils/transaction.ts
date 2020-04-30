@@ -3,7 +3,6 @@ import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConsei
 import * as status from '../constants/StatusTypes';
 import { Node, TokenTransaction, TokenKind } from '../types/general';
 import { TRANSACTION } from '../constants/TransactionTypes';
-import { tokenRegStrs } from '../constants/Token';
 
 export function createTransaction(transaction) {
     const newTransaction = { ...transaction };
@@ -107,63 +106,6 @@ export async function getTransactions(accountHash, node: Node) {
         .then(transactions => transactions.sort((a, b) => a.timestamp - b.timestamp));
 }
 
-export async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
-    const { conseilUrl, apiKey, network } = node;
-
-    let direct = ConseilQueryBuilder.blankQuery();
-    direct = ConseilQueryBuilder.addFields(
-        direct,
-        'timestamp',
-        'block_level',
-        'source',
-        'destination',
-        'amount',
-        'kind',
-        'fee',
-        'status',
-        'operation_group_hash',
-        'parameters'
-    );
-    direct = ConseilQueryBuilder.addPredicate(direct, 'kind', ConseilOperator.EQ, ['transaction'], false);
-    direct = ConseilQueryBuilder.addPredicate(direct, 'status', ConseilOperator.EQ, ['applied'], false);
-    direct = ConseilQueryBuilder.addPredicate(direct, 'destination', ConseilOperator.EQ, [tokenAddress], false);
-    direct = ConseilQueryBuilder.addPredicate(direct, 'source', ConseilOperator.EQ, [managerAddress], false);
-    direct = ConseilQueryBuilder.addOrdering(direct, 'timestamp', ConseilSortDirection.DESC);
-    direct = ConseilQueryBuilder.setLimit(direct, 1_000);
-
-    let indirect = ConseilQueryBuilder.blankQuery();
-    indirect = ConseilQueryBuilder.addFields(
-        indirect,
-        'timestamp',
-        'block_level',
-        'source',
-        'destination',
-        'amount',
-        'kind',
-        'fee',
-        'status',
-        'operation_group_hash',
-        'parameters'
-    );
-    indirect = ConseilQueryBuilder.addPredicate(indirect, 'kind', ConseilOperator.EQ, ['transaction'], false);
-    indirect = ConseilQueryBuilder.addPredicate(indirect, 'status', ConseilOperator.EQ, ['applied'], false);
-    indirect = ConseilQueryBuilder.addPredicate(indirect, 'destination', ConseilOperator.EQ, [tokenAddress], false);
-    indirect = ConseilQueryBuilder.addPredicate(indirect, 'parameters', ConseilOperator.LIKE, [managerAddress], false);
-    indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
-    indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
-
-    return Promise.all([direct, indirect].map(q => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
-        .then(responses =>
-            responses.reduce((result, r) => {
-                r.forEach(rr => result.push(rr));
-                return result;
-            })
-        )
-        .then(transactions => {
-            return transactions.sort((a, b) => a.timestamp - b.timestamp);
-        });
-}
-
 export function syncTransactionsWithState(remote: TokenTransaction[], local: TokenTransaction[]) {
     const cleanRemote = remote.filter(e => e);
     const cleanLocal = local.filter(e => e);
@@ -181,32 +123,6 @@ export async function getSyncTransactions(accountHash: string, node: Node, state
     });
 
     newTransactions = newTransactions.map(transaction => createTransaction({ ...transaction, status: status.READY }));
-
-    return syncTransactionsWithState(newTransactions, stateTransactions);
-}
-
-export async function getSyncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
-    let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch(e => {
-        console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
-        console.error(e);
-        return [];
-    });
-
-    newTransactions = newTransactions.map(transaction => {
-        try {
-            const params = transaction.parameters.replace(/\s/g, '').match(tokenRegStrs[tokenKind]);
-            return createTokenTransaction({
-                ...transaction,
-                status: status.READY,
-                amount: Number(params[3]),
-                source: params[1],
-                destination: params[2]
-            });
-        } catch (e) {
-            console.log(`---- failed ${JSON.stringify(transaction)} with ${e}`);
-            return createTokenTransaction({ ...transaction, status: status.READY });
-        }
-    });
 
     return syncTransactionsWithState(newTransactions, stateTransactions);
 }

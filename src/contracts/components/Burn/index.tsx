@@ -67,7 +67,7 @@ function Burn(props: Props) {
             setOpen(true);
         }
 
-        await dispatch(tokenBurnAction(newAddress, amount, fee, passPhrase));
+        await dispatch(tokenBurnAction(newAddress, new BigNumber(amount).multipliedBy(10 ** (token.scale || 0)).toNumber(), fee, passPhrase));
         setOpen(false);
         dispatch(setIsLoadingAction(false));
     }

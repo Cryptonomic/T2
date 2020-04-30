@@ -70,7 +70,7 @@ function Mint(props: Props) {
             setOpen(true);
         }
 
-        await dispatch(tokenMintAction(newAddress, amount, fee, passPhrase));
+        await dispatch(tokenMintAction(newAddress, new BigNumber(amount).multipliedBy(10 ** (token.scale || 0)).toNumber(), fee, passPhrase));
         setOpen(false);
         dispatch(setIsLoadingAction(false));
     }

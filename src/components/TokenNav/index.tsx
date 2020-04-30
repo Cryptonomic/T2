@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { BigNumber } from 'bignumber.js';
 
 import { Token } from '../../types/general';
 import defaultIcon from '../../../resources/contracts/token-icon.svg';
@@ -46,7 +47,10 @@ function TokenNav(props: Props) {
     const { isActive, token, onClick } = props;
 
     const icon = token.icon ? token.icon : defaultIcon;
-    const balance = token.kind === 'tzbtc' ? (token.balance / 10 ** 8).toFixed(8) : token.balance; // TODO: read from token info
+    const balance = new BigNumber(token.balance)
+        .dividedBy(10 ** (token.scale || 0))
+        .toNumber()
+        .toFixed(token.round === undefined ? 6 : token.round);
 
     return (
         <Container isActive={isActive} onClick={onClick}>

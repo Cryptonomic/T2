@@ -4,10 +4,6 @@ import { TRANSACTIONS } from './TabConstants';
 import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
 import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 
-export const tokenRegStrs = {
-    tzip7: /Left[(]Left[(]Left[(]Pair"([A-Za-z0-9]*)"[(]Pair"([A-Za-z0-9]*)["]([0-9]*)[))))]/ // TODO
-};
-
 export const knownTokenContracts: Token[] = [
     {
         network: 'mainnet',
@@ -18,7 +14,10 @@ export const knownTokenContracts: Token[] = [
         transactions: [],
         activeTab: TRANSACTIONS,
         kind: TokenKind.stkr,
-        icon: stakerdaoIcon
+        icon: stakerdaoIcon,
+        scale: 0,
+        precision: 0,
+        round: 0
     },
     {
         network: 'mainnet',
@@ -29,7 +28,10 @@ export const knownTokenContracts: Token[] = [
         transactions: [],
         activeTab: TRANSACTIONS,
         kind: TokenKind.tzbtc,
-        icon: tzbtcIcon
+        icon: tzbtcIcon,
+        scale: 8,
+        precision: 8,
+        round: 8
     },
     {
         network: 'carthagenet',
@@ -52,7 +54,10 @@ export const knownTokenContracts: Token[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7
+        kind: TokenKind.tzip7,
+        scale: 0,
+        precision: 0,
+        round: 0
     },
     {
         network: 'carthagenet',
@@ -63,7 +68,10 @@ export const knownTokenContracts: Token[] = [
         transactions: [],
         activeTab: TRANSACTIONS,
         kind: TokenKind.stkr,
-        icon: stakerdaoIcon
+        icon: stakerdaoIcon,
+        scale: 0,
+        precision: 0,
+        round: 0
     },
     {
         network: 'carthagenet',
@@ -74,6 +82,9 @@ export const knownTokenContracts: Token[] = [
         transactions: [],
         activeTab: TRANSACTIONS,
         kind: TokenKind.tzbtc,
-        icon: tzbtcIcon
+        icon: tzbtcIcon,
+        scale: 8,
+        precision: 8,
+        round: 8
     }
 ];

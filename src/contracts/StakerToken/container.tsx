@@ -2,26 +2,22 @@ import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { Container, TabList, Tab, TabText, SectionContainer } from './style';
-
-import BalanceBanner from './components/BalanceBanner';
-import EmptyState from '../../components/EmptyState';
-import PageNumbers from '../../components/PageNumbers';
-import Transactions from './components/Transactions';
-import Details from './components/Details';
-
-import Loader from '../../components/Loader';
-
-import { TRANSACTIONS, DETAILS } from '../../constants/TabConstants';
-import { READY } from '../../constants/StatusTypes';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
+import EmptyState from '../../components/EmptyState';
+import PageNumbers from '../../components/PageNumbers';
+import Loader from '../../components/Loader';
+import { TRANSACTIONS, DETAILS } from '../../constants/TabConstants';
 import { sortArr } from '../../utils/array';
-
 import { RootState } from '../../types/store';
-
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
+
 import { getTokenSelector } from '../duck/selectors';
+import TransactionContainer from '../components/TransactionContainer';
+
+import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
+import BalanceBanner from './components/BalanceBanner';
+import Details from './components/Details';
 
 const tabs = [DETAILS];
 
@@ -40,12 +36,8 @@ function ActionPanel() {
     }
 
     function renderSection() {
-        const ready = status === READY;
         switch (activeTab) {
-            case DETAILS:
-                return <Details pkh={selectedAccountHash} details={details} />;
-            case TRANSACTIONS:
-            default: {
+            case TRANSACTIONS: {
                 if (!transactions || transactions.length === 0) {
                     return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
@@ -63,7 +55,7 @@ function ActionPanel() {
 
                 return (
                     <Fragment>
-                        <Transactions transactions={showedTransactions} selectedParentHash={selectedParentHash} symbol={symbol} />
+                        <TransactionContainer transactions={showedTransactions} selectedParentHash={selectedParentHash} token={selectedToken} />
                         {pageCount > 1 && (
                             <PageNumbers
                                 currentPage={currentPage}
@@ -77,6 +69,9 @@ function ActionPanel() {
                     </Fragment>
                 );
             }
+            case DETAILS:
+            default:
+                return <Details pkh={selectedAccountHash} details={details} />;
         }
     }
     return (
