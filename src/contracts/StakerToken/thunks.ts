@@ -28,7 +28,7 @@ export function syncTokenTransactions(tokenAddress) {
 
         const [balance, transactions] = await Promise.all([balanceAsync, transAsync]);
         tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions };
-        setLocalData('tokens', tokens);
+
         dispatch(updateTokensAction([...tokens]));
     };
 }
