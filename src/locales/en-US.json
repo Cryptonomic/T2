@@ -25,8 +25,6 @@
             "burn": "Burn",
             "sign": "Sign",
             "verify": "Verify",
-            "match": "Match",
-            "no_match": "No Match",
             "copy": "Copy"
         },
         "nouns": {
@@ -123,7 +121,9 @@
             "not_revealed": "This account is not active yet on the blockchain so your signature cannot be verified independently. Please provide your public key to the verifier so they can manually check your signature.",
             "enter_address_key": "Signer address or public key",
             "sign_guidance": "Signing a message allows others to verify your ownership of this account using only this message, signature and your address/public key.",
-            "verify_guidance": "Enter the message, signature and address provided to you to verify the signature."
+            "verify_guidance": "Enter the message, signature and address provided to you to verify the signature.",
+            "match": "Signature confirmed",
+            "no_match": "Invalid signature"
         },
         "interactModal": {
             "interact_contract": "Interact with Contracts",
