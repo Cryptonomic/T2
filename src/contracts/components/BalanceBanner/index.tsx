@@ -1,30 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { StoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'bignumber.js';
 
-import TezosAddress from '../../../../components/TezosAddress';
-import TezosAmount from '../../../../components/TezosAmount';
-import Update from '../../../../components/Update';
-import { openLink } from '../../../../utils/general';
-import { ms } from '../../../../styles/helpers';
-import { syncWalletThunk } from '../../../../reduxContent/wallet/thunks';
+import TezosAddress from '../../../components/TezosAddress';
+import TezosAmount from '../../../components/TezosAmount';
+import Update from '../../../components/Update';
+import { ms } from '../../../styles/helpers';
+import { syncWalletThunk } from '../../../reduxContent/wallet/thunks';
+import { Token } from '../../../types/general';
 
-import { RootState } from '../../../../types/store';
+import { RootState } from '../../../types/store';
 
 import { AddressInfo, AddressTitle, Container, TopRow, BottomRow, Breadcrumbs, Gap } from './style';
 
 interface Props {
-    storeType?: string | number;
     isReady: boolean;
     balance: number;
     publicKeyHash: string;
     displayName?: string;
-    symbol?: string;
+    token: Token;
 }
 
 function BalanceBanner(props: Props) {
-    const { isReady, balance, publicKeyHash, displayName, symbol } = props;
+    const { isReady, balance, publicKeyHash, displayName, token } = props;
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -39,12 +38,7 @@ function BalanceBanner(props: Props) {
     function onSyncWallet() {
         dispatch(syncWalletThunk());
     }
-
-    function openUrl() {
-        const newUrl = `https://t.me/TezosNotifierBot?start=mininax_${publicKeyHash}`;
-        openLink(newUrl);
-    }
-
+    console.log(JSON.stringify(token.details));
     return (
         <Container>
             <TopRow isReady={isReady}>
@@ -56,7 +50,13 @@ function BalanceBanner(props: Props) {
                 <AddressInfo>
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} />
                     <Gap />
-                    <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
+                    <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={token.symbol} showTooltip={true} />
+                </AddressInfo>
+                <AddressInfo>
+                    {token.details && token.details.paused !== true && 'Token is active.'}{' '}
+                    {token.details &&
+                        token.details.supply &&
+                        'Total supply is ' + new BigNumber(token.details.supply).dividedBy(10 ** (token.scale || 0)).toNumber()}
                 </AddressInfo>
             </BottomRow>
         </Container>

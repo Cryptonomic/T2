@@ -99,13 +99,5 @@ export function initLedgerTransport() {
 }
 
 export function loadTokens(network: string) {
-    const savedTokens = getLocalData('tokens');
-    const newTokens = knownTokenContracts.filter(token => token.network === network);
-    return newTokens.map(token => {
-        const localTokens = savedTokens.filter(tk => tk.address === token.address);
-        if (localTokens.length > 0) {
-            return { ...localTokens[0], kind: token.kind, icon: token.icon };
-        }
-        return token;
-    });
+    return knownTokenContracts.filter(token => token.network === network);
 }

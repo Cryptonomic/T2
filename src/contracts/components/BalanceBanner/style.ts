@@ -2,10 +2,10 @@ import styled from 'styled-components';
 import { lighten } from 'polished';
 import Notifications from '@material-ui/icons/Notifications';
 import IconButton from '@material-ui/core/IconButton';
-import { H4 } from '../../../../components/Heading';
-import TezosIcon from '../../../../components/TezosIcon';
-import Button from '../../../../components/Button';
-import { ms } from '../../../../styles/helpers';
+import { H4 } from '../../../components/Heading';
+import TezosIcon from '../../../components/TezosIcon';
+import Button from '../../../components/Button';
+import { ms } from '../../../styles/helpers';
 
 export const Container = styled.header`
     padding: ${ms(0)} ${ms(4)};

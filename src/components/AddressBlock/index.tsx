@@ -311,7 +311,7 @@ function AddressBlock(props: Props) {
                     return null;
                 }
 
-                let tokenType = AddressType.Token; // HACK
+                let tokenType = AddressType.Token; // TODO
                 if (token.kind === 'stkr') {
                     tokenType = AddressType.STKR;
                 }
