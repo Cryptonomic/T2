@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js';
 
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
-import BalanceBanner from '../../components/BalanceBanner';
+import BalanceBanner from '../components/BalanceBanner';
 import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
 import Loader from '../../components/Loader';
@@ -30,7 +30,7 @@ function ActionPanel() {
 
     const { isLoading, selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
-    const { activeTab, symbol, displayName, administrator, transactions } = selectedToken;
+    const { activeTab, displayName, administrator, transactions } = selectedToken;
 
     const isAdmin = selectedParentHash === administrator;
     const tabs = isAdmin ? [TRANSACTIONS, SEND, MINT, BURN] : [TRANSACTIONS, SEND];
@@ -85,11 +85,9 @@ function ActionPanel() {
             <BalanceBanner
                 isReady={true}
                 balance={new BigNumber(selectedToken.balance).dividedBy(10 ** (selectedToken.scale || 0)).toNumber() || 0}
-                privateKey={''}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
-                delegatedAddress={''}
                 displayName={displayName}
-                symbol={symbol}
+                token={selectedToken}
             />
 
             <TabList count={tabs.length}>

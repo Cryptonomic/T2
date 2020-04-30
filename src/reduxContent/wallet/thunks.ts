@@ -179,6 +179,7 @@ export function syncTokenThunk(tokenAddress) {
             if (tokens[tokenIndex].kind === 'tzip7' || tokens[tokenIndex].kind === 'usdtez') {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                detailsAsync = Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
                 transAsync = tzip7Util.syncTokenTransactions(
                     tokenAddress,
                     selectedParentHash,
@@ -252,13 +253,9 @@ export function syncWalletThunk() {
                     let mapid = token.mapid;
                     let administrator = token.administrator;
 
-                    if (!mapid) {
-                        const newStorage = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => {
-                            return { mapid: -1, administrator: '' };
-                        });
-                        mapid = newStorage.mapid;
-                        administrator = newStorage.administrator;
-                    }
+                    const details = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
+                    mapid = details?.mapid || -1;
+                    administrator = details?.administrator || '';
 
                     if (mapid === -1) {
                         console.log(`warning, could not process token: ${JSON.stringify(token)}`);
@@ -274,7 +271,7 @@ export function syncWalletThunk() {
                         token.kind
                     ); /* TODO */
 
-                    return { ...token, mapid, administrator, balance, transactions };
+                    return { ...token, mapid, administrator, balance, transactions, details };
                 } else if (token.kind === TokenKind.stkr) {
                     try {
                         const validCode = await StakerDAOTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
@@ -285,28 +282,15 @@ export function syncWalletThunk() {
                         console.log(`warning, stkr fingerprint mismatch for token: ${JSON.stringify(token)}`);
                     }
 
-                    let mapid = token.mapid || -1;
+                    let mapid = token.mapid;
                     const administrator = token.administrator || '';
-                    let details: any = {
-                        council: [],
-                        stage: 0,
-                        phase: 0,
-                        supply: 0,
-                        paused: false,
-                        mapid: -1
-                    };
 
-                    if (!mapid || mapid === -1 || (token.details && mapid !== token.details.mapid)) {
-                        const newStorage = await StakerDAOTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => {
-                            return details;
-                        });
-                        mapid = newStorage.mapid;
-                        details = { ...newStorage };
-                    }
+                    const details = await StakerDAOTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
+                    mapid = details?.mapid || -1;
 
                     if (mapid === -1) {
                         console.log(`warning, could not process token: ${JSON.stringify(token)}`);
-                        return { ...token, mapid, administrator, balance: 0, details };
+                        return { ...token, mapid, administrator, balance: 0 };
                     }
 
                     const balance = await StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);

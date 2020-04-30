@@ -2,7 +2,6 @@ import { StakerDAOTokenHelper } from 'conseiljs';
 
 import { Token } from '../../types/general';
 import { findTokenIndex } from '../../utils/token';
-import { setLocalData } from '../../utils/localData';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 import { getMainNode } from '../../utils/settings';
 
@@ -21,7 +20,7 @@ export function syncTokenTransactions(tokenAddress) {
         let balanceAsync;
         let transAsync;
         if (tokens[tokenIndex].kind === 'stkr') {
-            const mapid = tokens[tokenIndex].mapid || 0; // TODO: if 0, return empty
+            const mapid = tokens[tokenIndex].mapid || -1; // TODO: if -1, return empty
             balanceAsync = await StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
             transAsync = [];
         }
