@@ -39,7 +39,10 @@ export const knownTokenContracts: Token[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7
+        kind: TokenKind.tzip7,
+        scale: 6,
+        precision: 6,
+        round: 6
     },
     {
         network: 'carthagenet',

@@ -1,64 +1,25 @@
 import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import styled from 'styled-components';
-import { lighten } from 'polished';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import Button from '../../components/Button';
+import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
+
 import BalanceBanner from '../../components/BalanceBanner';
 import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
-import Transactions from './components/Transactions';
-
 import Loader from '../../components/Loader';
-
-import Send from './components/Send';
-import Burn from './components/Burn';
-import Mint from './components/Mint';
-
-import { TRANSACTIONS, SEND, BURN, MINT } from '../../constants/TabConstants';
-import { ms } from '../../styles/helpers';
-import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
-
-import { sortArr } from '../../utils/array';
-
+import { TRANSACTIONS, SEND, MINT, BURN } from '../../constants/TabConstants';
 import { RootState } from '../../types/store';
-
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
+
+import Transactions from '../components/TransactionContainer';
+import Burn from '../components/Burn';
+import Mint from '../components/Mint';
+import Send from '../components/Send';
+import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
 import { getTokenSelector } from '../duck/selectors';
 
-const Container = styled.section`
-    flex-grow: 1;
-`;
-
-const Tab = styled(Button)<{ isActive: boolean; ready: boolean }>`
-    background: ${({ isActive, theme: { colors } }) => (isActive ? colors.white : colors.accent)};
-    color: ${({ isActive, theme: { colors } }) => (isActive ? colors.primary : lighten(0.4, colors.accent))};
-    cursor: ${({ ready }) => (ready ? 'pointer' : 'initial')};
-    text-align: center;
-    font-weight: 500;
-    padding: ${ms(-1)} ${ms(1)};
-    border-radius: 0;
-`;
-
-const TabList = styled.div<{ count: number }>`
-    background-color: ${({ theme: { colors } }) => colors.accent};
-    display: grid;
-    grid-template-columns: ${({ count }) => (count > 4 ? `repeat(${count}, 1fr)` : 'repeat(4, 1fr)')};
-    grid-column-gap: 50px;
-`;
-
-const TabText = styled.span<{ ready: boolean }>`
-    opacity: ${({ ready }) => (ready ? '1' : '0.5')};
-`;
-
-const SectionContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    padding: ${ms(2)};
-    min-height: 400px;
-`;
+import { burnThunk, mintThunk, transferThunk } from './thunks';
 
 function ActionPanel() {
     const { t } = useTranslation();
@@ -80,11 +41,11 @@ function ActionPanel() {
     function renderSection() {
         switch (activeTab) {
             case MINT:
-                return <Mint isReady={true} balance={balance} symbol={symbol} />;
+                return <Mint isReady={true} token={selectedToken} tokenMintAction={mintThunk} />;
             case BURN:
-                return <Burn isReady={true} balance={balance} symbol={symbol} />;
+                return <Burn isReady={true} token={selectedToken} tokenBurnAction={burnThunk} />;
             case SEND:
-                return <Send isReady={true} balance={balance} symbol={symbol} />;
+                return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
             case TRANSACTIONS:
             default: {
                 if (!transactions || transactions.length === 0) {
