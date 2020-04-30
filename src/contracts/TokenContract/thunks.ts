@@ -189,7 +189,7 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
             dispatch(createMessageAction('components.messageBar.messages.burn_operation_success', false, clearedOperationId));
 
             const transaction = createTransaction({
-                amount,
+                amount: amount * -1,
                 destination,
                 kind: TRANSACTION,
                 source: keyStore.publicKeyHash,

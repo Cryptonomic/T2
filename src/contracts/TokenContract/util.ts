@@ -56,7 +56,7 @@ export async function getSyncTokenTransactions(tokenAddress: string, managerAddr
                 return createTokenTransaction({
                     ...transaction,
                     status: transaction.status !== 'applied' ? status.FAILED : status.READY,
-                    amount: Number(parts[2]),
+                    amount: Number(parts[2]) * -1,
                     source: managerAddress,
                     destination: parts[1],
                     entryPoint: 'burn'
