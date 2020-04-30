@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import Button from '../../components/Button';
-import { ms } from '../../styles/helpers';
+
+import Button from '../../../components/Button';
+import { ms } from '../../../styles/helpers';
 
 export const Container = styled.section`
     flex-grow: 1;
-    overflow: hidden;
 `;
 
 export const Tab = styled(Button)<{ isActive: boolean; ready: boolean }>`

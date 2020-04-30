@@ -102,6 +102,10 @@ export interface Token {
     kind: TokenKind;
     icon?: string;
     details?: any;
+    scale?: number;
+    precision?: number;
+    round?: number;
+    transactionFeeFloor?: number;
 }
 
 export type BookMark = Account | Token;
