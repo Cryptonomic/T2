@@ -99,8 +99,8 @@ function Send(props: Props) {
                         onChange={val => setAmount(val)}
                         errorText={error}
                         symbol={token.symbol}
-                        scale={8}
-                        precision={8}
+                        scale={token.scale || 0}
+                        precision={token.precision || 6}
                         maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
                         minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
                     />

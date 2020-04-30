@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'bignumber.js';
 import { OperationKindType } from 'conseiljs';
 
 import { Token } from '../../../types/general';
 import InputAddress from '../../../components/InputAddress';
 import Fees from '../../../components/Fees';
 import PasswordInput from '../../../components/PasswordInput';
-import TezosNumericInput from '../../../components/TezosNumericInput';
+import NumericInput from '../../../components/NumericInput';
 import TokenLedgerConfirmationModal from '../../../components/ConfirmModals/TokenLedgerConfirmationModal';
 
 import InputError from '../../../components/InputError';
@@ -96,13 +97,16 @@ function Mint(props: Props) {
             </RowContainer>
             <RowContainer>
                 <AmountContainer>
-                    <TezosNumericInput
-                        decimalSeparator={t('general.decimal_separator')}
+                    <NumericInput
                         label={t('general.nouns.amount')}
                         amount={amount}
                         onChange={val => setAmount(val)}
                         errorText={error}
                         symbol={token.symbol}
+                        scale={token.scale || 0}
+                        precision={token.precision || 6}
+                        maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
+                        minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
                     />
                 </AmountContainer>
                 <FeeContainer>
