@@ -11,6 +11,7 @@ export const BroadIcon = styled(TezosIcon)`
 `;
 
 export const LinkContainer = styled.span`
+    display: inline-block;
     margin-left: 7px;
     cursor: pointer;
 `;

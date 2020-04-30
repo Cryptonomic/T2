@@ -12,7 +12,7 @@ import { findIdentity } from '../../../utils/identity';
 import { RootState } from '../../../types/store';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, InfoContainer } from './style';
+import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, InfoContainer, MessageContainer, InfoIcon } from './style';
 
 const Sign = () => {
     const { t } = useTranslation();
@@ -55,6 +55,10 @@ const Sign = () => {
 
     return (
         <Container>
+            <MessageContainer>
+                <InfoIcon color="info" iconName="info" />
+                {t('components.signVerifyModal.sign_guidance')}
+            </MessageContainer>
             <MainContainer>
                 <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} />
             </MainContainer>
