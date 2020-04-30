@@ -1,18 +1,22 @@
 import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient } from 'conseiljs';
 
 import * as status from '../../constants/StatusTypes';
-import { Node } from '../../types/general';
+import { Node, TokenKind } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
 
-export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[]) {
+export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
     let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch(e => {
         console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
         console.error(e);
         return [];
     });
 
-    const transferPattern = /Pair"([1-9A-Za-z^OIl]{36})"\(Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)\)/;
-    const mintPattern = /Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)/;
+    const addressPattern = '([1-9A-Za-z^OIl]{36})';
+    const amountPattern = '([0-9]+)';
+
+    const transferPattern = new RegExp(`Left[(]Left[(]Left[(]Pair"${addressPattern}"[(]Pair"${addressPattern}"([0-9]+)[))))]`);
+    const mintPattern = new RegExp(`Right[(]Right[(]Right[(]Left[(]Pair"${addressPattern}"${amountPattern}[))))]`);
+    const burnPattern = new RegExp(`Right[(]Right[(]Right[(]Right[(]Pair"${addressPattern}"${amountPattern}[))))]`);
 
     newTransactions = newTransactions.map(transaction => {
         const params = transaction.parameters.replace(/\s/g, '');
@@ -39,8 +43,23 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                     status: transaction.status !== 'applied' ? status.FAILED : status.READY,
                     amount: Number(parts[2]),
                     source: managerAddress,
-                    destination: tokenAddress, // TODO: target address of mint operation parts[1]
+                    destination: parts[1],
                     entryPoint: 'mint'
+                });
+            } catch (e) {
+                /* */
+            }
+        } else if (burnPattern.test(params)) {
+            try {
+                const parts = params.match(burnPattern);
+
+                return createTokenTransaction({
+                    ...transaction,
+                    status: transaction.status !== 'applied' ? status.FAILED : status.READY,
+                    amount: Number(parts[2]) * -1,
+                    source: managerAddress,
+                    destination: parts[1],
+                    entryPoint: 'burn'
                 });
             } catch (e) {
                 /* */
@@ -53,8 +72,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
     return syncTransactionsWithState(newTransactions, stateTransactions);
 }
 
-async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
-    // TODO: consider reusing the common function
+export async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
     const { conseilUrl, apiKey, network } = node;
 
     let direct = ConseilQueryBuilder.blankQuery();
@@ -106,11 +124,6 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
                 return result;
             })
         )
-        .then(transactions => {
-            return transactions
-                .filter(o => o !== undefined)
-                .filter((obj, pos, arr) => arr.map(o => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
-        })
         .then(transactions => {
             return transactions.sort((a, b) => a.timestamp - b.timestamp);
         });
