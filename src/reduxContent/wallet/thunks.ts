@@ -192,7 +192,7 @@ export function syncTokenThunk(tokenAddress) {
             if (tokens[tokenIndex].kind === 'tzip7' || tokens[tokenIndex].kind === 'usdtez') {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                transAsync = tzip7Util.getSyncTokenTransactions(
+                transAsync = tzip7Util.syncTokenTransactions(
                     tokenAddress,
                     selectedParentHash,
                     mainNode,
@@ -279,7 +279,7 @@ export function syncWalletThunk() {
                     }
 
                     const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await tzip7Util.getSyncTokenTransactions(
+                    const transactions = await tzip7Util.syncTokenTransactions(
                         token.address,
                         selectedParentHash,
                         mainNode,

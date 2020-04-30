@@ -4,7 +4,7 @@ import * as status from '../../constants/StatusTypes';
 import { Node, TokenKind } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
 
-export async function getSyncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
+export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
     let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch(e => {
         console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
         console.error(e);
@@ -14,7 +14,7 @@ export async function getSyncTokenTransactions(tokenAddress: string, managerAddr
     const addressPattern = '([1-9A-Za-z^OIl]{36})';
     const amountPattern = '([0-9]+)';
 
-    const transferPattern = /Left[(]Left[(]Left[(]Pair"([A-Za-z0-9]*)"[(]Pair"([A-Za-z0-9]+)["]([0-9]+)[))))]/;
+    const transferPattern = new RegExp(`Left[(]Left[(]Left[(]Pair"${addressPattern}"[(]Pair"${addressPattern}"([0-9]+)[))))]`);
     const mintPattern = new RegExp(`Right[(]Right[(]Right[(]Left[(]Pair"${addressPattern}"${amountPattern}[))))]`);
     const burnPattern = new RegExp(`Right[(]Right[(]Right[(]Right[(]Pair"${addressPattern}"${amountPattern}[))))]`);
 
