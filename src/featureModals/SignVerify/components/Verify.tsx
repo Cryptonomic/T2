@@ -34,6 +34,8 @@ const Verify = () => {
         try {
             if (keyStore.publicKeyHash === address) {
                 publicKey = keyStore.publicKey;
+            } else if (address.startsWith('edpk') && address.length === 54) {
+                publicKey = address.substring;
             } else {
                 publicKey = await dispatch(publicKeyThunk(address));
             }
@@ -62,14 +64,15 @@ const Verify = () => {
     return (
         <Container>
             <MessageContainer>
-                <InfoIcon color="info" iconName="info" /> Enter the message, signature and address provided to you to verify the signature.
+                <InfoIcon color="info" iconName="info" />
+                {t('components.signVerifyModal.verify_guidance')}
             </MessageContainer>
             <MainContainer>
                 <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} />
                 <TextField label={t('general.nouns.signature')} onChange={val => setSignature(val)} />
 
                 <InputAddress
-                    label={t('general.nouns.signer_address')}
+                    label={t('components.signVerifyModal.enter_address_key')}
                     operationType="tz1"
                     tooltip={false}
                     onChange={val => setAddress(val)}
