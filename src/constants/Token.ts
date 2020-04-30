@@ -1,5 +1,5 @@
 import { Token, TokenKind } from '../types/general';
-import { TRANSACTIONS } from './TabConstants';
+import { TRANSACTIONS, DETAILS } from './TabConstants';
 
 import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
 import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
@@ -12,7 +12,7 @@ export const knownTokenContracts: Token[] = [
         symbol: 'STKR',
         balance: 0,
         transactions: [],
-        activeTab: TRANSACTIONS,
+        activeTab: DETAILS,
         kind: TokenKind.stkr,
         icon: stakerdaoIcon,
         scale: 0,
@@ -66,7 +66,7 @@ export const knownTokenContracts: Token[] = [
         symbol: 'STKR',
         balance: 0,
         transactions: [],
-        activeTab: TRANSACTIONS,
+        activeTab: DETAILS,
         kind: TokenKind.stkr,
         icon: stakerdaoIcon,
         scale: 0,
