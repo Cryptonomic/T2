@@ -10,7 +10,7 @@ import { RootState } from '../../../types/store';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon } from './style';
+import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon, MessageContainer, InfoIcon } from './style';
 
 const Verify = () => {
     const { t } = useTranslation();
@@ -61,6 +61,9 @@ const Verify = () => {
 
     return (
         <Container>
+            <MessageContainer>
+                <InfoIcon color="info" iconName="info" /> Enter the message, signature and address provided to you to verify the signature.
+            </MessageContainer>
             <MainContainer>
                 <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} />
                 <TextField label={t('general.nouns.signature')} onChange={val => setSignature(val)} />
