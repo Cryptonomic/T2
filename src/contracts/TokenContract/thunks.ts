@@ -15,7 +15,7 @@ const { transferBalance, mint, burn } = Tzip7ReferenceTokenHelper;
 const GAS = 125000; // TODO
 const FREIGHT = 1000;
 
-export function transferThunk(destination: string, amount: string /* TODO */, fee: number, password: string) {
+export function transferThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
@@ -32,8 +32,6 @@ export function transferThunk(destination: string, amount: string /* TODO */, fe
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const parsedAmount = Number(amount.replace(/,/g, '.'));
-
         const operationId: string | boolean = await transferBalance(
             tezosUrl,
             keyStore,
@@ -41,7 +39,7 @@ export function transferThunk(destination: string, amount: string /* TODO */, fe
             fee,
             selectedParentHash,
             destination,
-            parsedAmount,
+            amount,
             GAS,
             FREIGHT
         ).catch(err => {
@@ -58,7 +56,7 @@ export function transferThunk(destination: string, amount: string /* TODO */, fe
         dispatch(createMessageAction('components.messageBar.messages.started_token_success', false, operationId));
 
         const transaction = createTokenTransaction({
-            amount: parsedAmount,
+            amount,
             destination,
             kind: TRANSACTION,
             source: selectedParentHash,
@@ -77,7 +75,7 @@ export function transferThunk(destination: string, amount: string /* TODO */, fe
     };
 }
 
-export function mintThunk(destination: string, amount: string, fee: number, password: string) {
+export function mintThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
@@ -95,9 +93,7 @@ export function mintThunk(destination: string, amount: string, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const parsedAmount = Number(amount.replace(/,/g, '.'));
-
-        const res: any = await mint(tezosUrl, keyStore, selectedAccountHash, fee, destination, parsedAmount, GAS, FREIGHT).catch(err => {
+        const res: any = await mint(tezosUrl, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch(err => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
@@ -125,12 +121,13 @@ export function mintThunk(destination: string, amount: string, fee: number, pass
             dispatch(createMessageAction('components.messageBar.messages.mint_operation_success', false, clearedOperationId));
 
             const transaction = createTransaction({
-                amount: parsedAmount,
+                amount,
                 destination,
                 kind: TRANSACTION,
                 source: keyStore.publicKeyHash,
                 operation_group_hash: clearedOperationId,
-                fee
+                fee,
+                entryPoint: 'mint'
             });
 
             const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
@@ -146,7 +143,7 @@ export function mintThunk(destination: string, amount: string, fee: number, pass
     };
 }
 
-export function burnThunk(destination: string, amount: string, fee: number, password: string) {
+export function burnThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
@@ -164,9 +161,7 @@ export function burnThunk(destination: string, amount: string, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const parsedAmount = Number(amount.replace(/,/g, '.'));
-
-        const res: any = await burn(tezosUrl, keyStore, selectedAccountHash, fee, destination, parsedAmount, GAS, FREIGHT).catch(err => {
+        const res: any = await burn(tezosUrl, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch(err => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
@@ -194,12 +189,13 @@ export function burnThunk(destination: string, amount: string, fee: number, pass
             dispatch(createMessageAction('components.messageBar.messages.burn_operation_success', false, clearedOperationId));
 
             const transaction = createTransaction({
-                amount: parsedAmount,
+                amount,
                 destination,
                 kind: TRANSACTION,
                 source: keyStore.publicKeyHash,
                 operation_group_hash: clearedOperationId,
-                fee
+                fee,
+                entryPoint: 'burn'
             });
 
             const tokenIndex = findTokenIndex(tokens, selectedAccountHash);

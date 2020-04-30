@@ -58,7 +58,7 @@ function ActionPanel() {
 
                 return (
                     <Fragment>
-                        <Transactions transactions={transactionSlice} selectedParentHash={selectedParentHash} symbol={selectedToken.symbol} />
+                        <Transactions transactions={transactionSlice} selectedParentHash={selectedParentHash} token={selectedToken} />
                         {pageCount > 1 && (
                             <PageNumbers
                                 currentPage={currentPage}
@@ -74,6 +74,7 @@ function ActionPanel() {
             }
         }
     }
+
     return (
         <Container>
             <BalanceBanner

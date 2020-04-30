@@ -15,7 +15,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
 import { CREATED } from '../../constants/StatusTypes';
-import { createTransaction, getSyncTokenTransactions } from '../../utils/transaction';
+import { createTransaction } from '../../utils/transaction';
 import { TokenKind } from '../../types/general';
 
 import { findAccountIndex, getSyncAccount, syncAccountWithState } from '../../utils/account';
@@ -27,8 +27,6 @@ import { clearOperationId, getNodesStatus, getNodesError, getSelectedKeyStore } 
 import { saveUpdatedWallet, loadPersistedState, saveIdentitiesToLocal, loadWalletFromLedger, loadTokens } from '../../utils/wallet';
 
 import { findTokenIndex } from '../../utils/token';
-
-import { setLocalData } from '../../utils/localData';
 
 import { setWalletAction, setIdentitiesAction, addNewIdentityAction, updateIdentityAction, updateTokensAction } from './actions';
 
@@ -48,6 +46,7 @@ import { ACTIVATION } from '../../constants/TransactionTypes';
 import { Identity, Token, AddressType } from '../../types/general';
 
 import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
+import * as tzip7Util from '../../contracts/TokenContract/util';
 
 const { unlockFundraiserIdentity, unlockIdentityWithMnemonic, restoreIdentityWithSecretKey } = TezosWalletUtil;
 const { createWallet } = TezosFileWallet;
@@ -185,34 +184,35 @@ export function syncTokenThunk(tokenAddress) {
 
         const mainNode = getMainNode(nodesList, selectedNode);
         const tokenIndex = findTokenIndex(tokens, tokenAddress);
-        console.log('syncTokenThunk');
-        console.log(`${tokenAddress}, ${tokenIndex}, ${JSON.stringify(tokens[tokenIndex])}`);
+
         if (tokenIndex > -1) {
             let balanceAsync;
             let transAsync;
+            let detailsAsync;
             if (tokens[tokenIndex].kind === 'tzip7' || tokens[tokenIndex].kind === 'usdtez') {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                transAsync = getSyncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions, tokens[tokenIndex].kind);
-            } else if (tokens[tokenIndex].kind === 'stkr') {
-                const mapid = tokens[tokenIndex].mapid || 0;
-                balanceAsync = StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                transAsync = [];
-            } else if (tokens[tokenIndex].kind === 'tzbtc') {
-                const mapid = tokens[tokenIndex].mapid || 0;
-                balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                transAsync = tzbtcUtil.syncTokenTransactions(
+                transAsync = tzip7Util.getSyncTokenTransactions(
                     tokenAddress,
                     selectedParentHash,
                     mainNode,
                     tokens[tokenIndex].transactions,
                     tokens[tokenIndex].kind
                 );
+            } else if (tokens[tokenIndex].kind === 'stkr') {
+                const mapid = tokens[tokenIndex].mapid || 0;
+                balanceAsync = StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                detailsAsync = StakerDAOTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
+                transAsync = [];
+            } else if (tokens[tokenIndex].kind === 'tzbtc') {
+                const mapid = tokens[tokenIndex].mapid || 0;
+                balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
             }
 
-            const [balance, transactions] = await Promise.all([balanceAsync, transAsync]);
-            tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions };
-            setLocalData('tokens', tokens);
+            const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
+            tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions, details };
+
             dispatch(updateTokensAction([...tokens]));
         }
     };
@@ -279,8 +279,13 @@ export function syncWalletThunk() {
                     }
 
                     const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
-
-                    const transactions = await getSyncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
+                    const transactions = await tzip7Util.getSyncTokenTransactions(
+                        token.address,
+                        selectedParentHash,
+                        mainNode,
+                        token.transactions,
+                        token.kind
+                    ); /* TODO */
 
                     return { ...token, mapid, administrator, balance, transactions };
                 } else if (token.kind === TokenKind.stkr) {
@@ -346,7 +351,7 @@ export function syncWalletThunk() {
                     }
 
                     const balance = await TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await tzbtcUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
+                    const transactions = await tzbtcUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions); /* TODO */
 
                     return { ...token, mapid, administrator, balance, transactions };
                 } else {
@@ -356,7 +361,6 @@ export function syncWalletThunk() {
             })
         );
 
-        setLocalData('tokens', newTokens);
         dispatch(updateTokensAction(newTokens));
         dispatch(setIdentitiesAction(syncIdentities));
         dispatch(updateFetchedTimeAction(new Date()));

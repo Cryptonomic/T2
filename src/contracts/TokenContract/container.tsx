@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'bignumber.js';
 
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
@@ -29,7 +30,7 @@ function ActionPanel() {
 
     const { isLoading, selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
-    const { balance, activeTab, symbol, displayName, administrator, transactions } = selectedToken;
+    const { activeTab, symbol, displayName, administrator, transactions } = selectedToken;
 
     const isAdmin = selectedParentHash === administrator;
     const tabs = isAdmin ? [TRANSACTIONS, SEND, MINT, BURN] : [TRANSACTIONS, SEND];
@@ -63,7 +64,7 @@ function ActionPanel() {
 
                 return (
                     <Fragment>
-                        <Transactions transactions={transactionSlice} selectedParentHash={selectedParentHash} symbol={symbol} />
+                        <Transactions transactions={transactionSlice} selectedParentHash={selectedParentHash} token={selectedToken} />
                         {pageCount > 1 && (
                             <PageNumbers
                                 currentPage={currentPage}
@@ -83,7 +84,7 @@ function ActionPanel() {
         <Container>
             <BalanceBanner
                 isReady={true}
-                balance={balance || 0}
+                balance={new BigNumber(selectedToken.balance).dividedBy(10 ** (selectedToken.scale || 0)).toNumber() || 0}
                 privateKey={''}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 delegatedAddress={''}

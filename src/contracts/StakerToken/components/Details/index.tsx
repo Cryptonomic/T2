@@ -1,28 +1,10 @@
 import React from 'react';
 import { shell } from 'electron';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { ms } from '../../../../styles/helpers';
-import TezosIcon from '../../../../components/TezosIcon';
 
-const Container = styled.div`
-    padding: 0 20px 20px 20px;
-`;
-
-const BroadIcon = styled(TezosIcon)`
-    margin-left: 2px;
-`;
-
-const LinkContainer = styled.span`
-    margin-left: 7px;
-    cursor: pointer;
-`;
-
-const LinkTitle = styled.span`
-    font-size: 12px;
-    text-decoration: underline;
-`;
+import { Container, BroadIcon, LinkContainer, LinkTitle } from './style';
 
 interface Props {
     pkh: string;
@@ -51,7 +33,7 @@ export default function Details(props: Props) {
         <Container>
             {isReady && (
                 <p>
-                    The DAO is in governance stage {stage}, phase {t('general.nouns.' + phaseMap[phase])}.
+                    The DAO is in governance stage {stage + 1}, phase {t('general.nouns.' + phaseMap[phase])}.
                     {council.length > 0 && (
                         <>
                             Current council member are:{' '}
