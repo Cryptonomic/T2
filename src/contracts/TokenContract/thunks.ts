@@ -5,7 +5,7 @@ import { updateTokensAction } from '../../reduxContent/wallet/actions';
 import { createTransaction, createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
-import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
+import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
 import { findTokenIndex } from '../../utils/token';
@@ -93,53 +93,39 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const res: any = await mint(tezosUrl, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch(err => {
+        const groupid: string = await mint(tezosUrl, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch(err => {
+            console.log(err);
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
-            return false;
+            return '';
         });
 
-        if (res) {
-            const operationResult =
-                res &&
-                res.results &&
-                res.results.contents &&
-                res.results.contents[0] &&
-                res.results.contents[0].metadata &&
-                res.results.contents[0].metadata.operation_result;
-
-            if (operationResult && operationResult.errors && operationResult.errors.length) {
-                const error = 'components.messageBar.messages.mint_operation_failed';
-                console.error(error);
-                dispatch(createMessageAction(error, true));
-                return false;
-            }
-
-            const clearedOperationId = clearOperationId(res.operationGroupID);
-
-            dispatch(createMessageAction('components.messageBar.messages.mint_operation_success', false, clearedOperationId));
-
-            const transaction = createTransaction({
-                amount,
-                destination,
-                kind: TRANSACTION,
-                source: keyStore.publicKeyHash,
-                operation_group_hash: clearedOperationId,
-                fee,
-                entryPoint: 'mint'
-            });
-
-            const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
-
-            if (tokenIndex > -1) {
-                tokens[tokenIndex].transactions.push(transaction);
-            }
-
-            dispatch(updateTokensAction([...tokens]));
-            return true;
+        if (groupid.length === 0) {
+            return false;
         }
-        return false;
+
+        dispatch(createMessageAction('components.messageBar.messages.mint_operation_success', false, groupid));
+
+        const transaction = createTransaction({
+            amount,
+            destination,
+            kind: TRANSACTION,
+            source: keyStore.publicKeyHash,
+            operation_group_hash: groupid,
+            fee,
+            entryPoint: 'mint'
+        });
+
+        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+
+        if (tokenIndex > -1) {
+            tokens[tokenIndex].transactions.push(transaction);
+        }
+
+        dispatch(updateTokensAction([...tokens]));
+
+        return true;
     };
 }
 
@@ -161,52 +147,37 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const res: any = await burn(tezosUrl, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch(err => {
+        const groupid: string = await burn(tezosUrl, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch(err => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
-            return false;
+            return '';
         });
 
-        if (res) {
-            const operationResult =
-                res &&
-                res.results &&
-                res.results.contents &&
-                res.results.contents[0] &&
-                res.results.contents[0].metadata &&
-                res.results.contents[0].metadata.operation_result;
-
-            if (operationResult && operationResult.errors && operationResult.errors.length) {
-                const error = 'components.messageBar.messages.burn_operation_failed';
-                console.error(error);
-                dispatch(createMessageAction(error, true));
-                return false;
-            }
-
-            const clearedOperationId = clearOperationId(res.operationGroupID);
-
-            dispatch(createMessageAction('components.messageBar.messages.burn_operation_success', false, clearedOperationId));
-
-            const transaction = createTransaction({
-                amount: amount * -1,
-                destination,
-                kind: TRANSACTION,
-                source: keyStore.publicKeyHash,
-                operation_group_hash: clearedOperationId,
-                fee,
-                entryPoint: 'burn'
-            });
-
-            const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
-
-            if (tokenIndex > -1) {
-                tokens[tokenIndex].transactions.push(transaction);
-            }
-
-            dispatch(updateTokensAction([...tokens]));
-            return true;
+        if (groupid.length === 0) {
+            return false;
         }
-        return false;
+
+        dispatch(createMessageAction('components.messageBar.messages.burn_operation_success', false, groupid));
+
+        const transaction = createTransaction({
+            amount: amount * -1,
+            destination,
+            kind: TRANSACTION,
+            source: keyStore.publicKeyHash,
+            operation_group_hash: groupid,
+            fee,
+            entryPoint: 'burn'
+        });
+
+        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+
+        if (tokenIndex > -1) {
+            tokens[tokenIndex].transactions.push(transaction);
+        }
+
+        dispatch(updateTokensAction([...tokens]));
+
+        return true;
     };
 }
