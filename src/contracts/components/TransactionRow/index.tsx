@@ -60,7 +60,7 @@ const getStatus = (transaction, selectedParentHash, t) => {
             preposition: '',
             state: t('components.transaction.invoked'),
             isFee,
-            color: isAmount ? 'check' : 'gray8',
+            color: 'gray0',
             sign: ''
         };
     }
