@@ -64,16 +64,11 @@ export function goHomeAndClearState() {
 
 export function automaticAccountRefresh() {
     return dispatch => {
-        const oneSecond = 1000; // milliseconds
-        const oneMinute = 60 * oneSecond;
-        const minutes = 1;
-        const REFRESH_INTERVAL = minutes * oneMinute;
-
         if (currentAccountRefreshInterval) {
             clearAutomaticAccountRefresh();
         }
 
-        currentAccountRefreshInterval = setInterval(() => dispatch(syncWalletThunk()), REFRESH_INTERVAL);
+        currentAccountRefreshInterval = setInterval(() => dispatch(syncWalletThunk()), 60_000);
     };
 }
 
@@ -89,10 +84,7 @@ export function updateAccountActiveTab(selectedAccountHash, selectedParentHash, 
         const account = identity.accounts[foundIndex];
 
         if (foundIndex > -1) {
-            identity.accounts[foundIndex] = {
-                ...account,
-                activeTab
-            };
+            identity.accounts[foundIndex] = { ...account, activeTab };
 
             dispatch(updateIdentityAction(identity));
         }
@@ -104,12 +96,7 @@ export function updateIdentityActiveTab(selectedAccountHash, activeTab) {
         const { identities } = state().wallet;
         const identity = findIdentity(identities, selectedAccountHash);
         if (identity) {
-            dispatch(
-                updateIdentityAction({
-                    ...identity,
-                    activeTab
-                })
-            );
+            dispatch(updateIdentityAction({ ...identity, activeTab }));
         }
     };
 }
