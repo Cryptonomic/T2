@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import Warning from '@material-ui/icons/Warning';
 
 import Button from '../../../components/Button';
+import TezosIcon from '../../../components/TezosIcon';
+import { ms } from '../../../styles/helpers';
 
 export const Container = styled.div`
     height: 100%;
@@ -31,6 +33,22 @@ export const ResultContainer = styled.div`
     height: 60px;
     width: 100%;
     padding: 0 40px;
+`;
+
+export const MessageContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 60px;
+    width: 100%;
+    padding: 40px 40px 0px 40px;
+    color: #4e71ab;
+    font-weight: 300;
+`;
+
+export const InfoIcon = styled(TezosIcon)`
+    font-size: ${ms(2)};
+    padding: 1px 7px 0px 0px;
 `;
 
 export const InfoContainer = styled.div`
