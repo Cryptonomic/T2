@@ -48,7 +48,7 @@ const AmountView = (props: Props) => {
         return new BigNumber(amount)
             .dividedBy(10 ** scale)
             .toNumber()
-            .toFixed(precision);
+            .toFixed(round);
     }
 
     function getIcon() {
