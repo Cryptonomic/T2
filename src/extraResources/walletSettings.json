@@ -2,19 +2,19 @@
     "selectedNode": "Tezos Testnet",
     "nodesList": [
         {
-            "displayName": "Tezos Testnet",
-            "platform": "tezos",
-            "network": "carthagenet",
-            "tezosUrl": "https://tezos-dev.cryptonomic-infra.tech:443",
-            "conseilUrl": "https://conseil-dev.cryptonomic-infra.tech:443",
-            "apiKey": "galleon"
-        },
-        {
             "displayName": "Tezos Mainnet",
             "platform": "tezos",
             "network": "mainnet",
             "tezosUrl": "https://tezos-prod.cryptonomic-infra.tech:443",
             "conseilUrl": "https://conseil-prod.cryptonomic-infra.tech:443",
+            "apiKey": "galleon"
+        },
+        {
+            "displayName": "Tezos Testnet",
+            "platform": "tezos",
+            "network": "carthagenet",
+            "tezosUrl": "https://tezos-dev.cryptonomic-infra.tech:443",
+            "conseilUrl": "https://conseil-dev.cryptonomic-infra.tech:443",
             "apiKey": "galleon"
         }
     ],
