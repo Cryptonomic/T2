@@ -352,7 +352,9 @@
             "warnings": {
                 "total_exceeds": "Total exceeds available funds",
                 "not_allowed": "Manager Addresses are not yet allowed to have less than 1 µtz"
-            }
+            },
+            "burn_notice": "Burn tokens to destroy tokens from a current holder and reduce total supply.",
+            "mint_notice": "Mint tokens to give brand new tokens to a recipient and increase total supply."
         },
         "sendConfirmationModal": {
             "send_confirmation": "Send Confirmation",

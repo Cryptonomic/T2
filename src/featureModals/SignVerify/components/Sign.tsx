@@ -10,6 +10,8 @@ import CopyButton from '../../../components/CopyButton';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { findIdentity } from '../../../utils/identity';
 import { RootState } from '../../../types/store';
+import { getMainPath } from '../../../utils/settings';
+
 import { publicKeyThunk } from '../thunks';
 
 import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, InfoContainer, MessageContainer, InfoIcon } from './style';
@@ -19,15 +21,18 @@ const Sign = () => {
     const dispatch = useDispatch();
     const { isLoading, selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
+    const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
     const [message, setMessage] = useState('');
     const [result, setResult] = useState('');
     const [error, setError] = useState(false);
     const [key, setKey] = useState('');
     const isDisabled = isLoading || !message;
     const [keyRevealed, setKeyRevealed] = useState(true);
+    const { selectedPath, pathsList } = settings;
+    const derivationPath = isLedger ? getMainPath(pathsList, selectedPath) : '';
 
     const onSign = async () => {
-        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger);
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
 
         try {
             const publicKey: any = await dispatch(publicKeyThunk(keyStore.publicKeyHash));

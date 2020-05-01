@@ -45,6 +45,7 @@ export interface Identity {
     status: string;
     transactions: any[]; // todo transaction type
     delegate_value: string;
+    derivationPath?: string;
 }
 
 export enum AddressType {

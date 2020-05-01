@@ -89,6 +89,7 @@ export async function loadWalletFromLedger(derivationPath: string): Promise<Iden
     });
 
     identity.storeType = StoreType.Hardware;
+    identity.derivationPath = derivationPath;
     const identities = [identity];
     const localIdentities = getLocalData('identities');
     return prepareToLoad(identities, localIdentities);
