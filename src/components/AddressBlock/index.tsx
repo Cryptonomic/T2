@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { darken } from 'polished';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircle from '@material-ui/icons/AddCircle';
 import CloseIcon from '@material-ui/icons/Close';
@@ -12,7 +11,7 @@ import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
 import { H3 } from '../Heading';
 import Button from '../Button';
-import TezosAmount from '../TezosAmount';
+import AmountView from '../AmountView';
 import Address from '../Address/';
 import AddressStatus from '../AddressStatus';
 import { READY, PENDING } from '../../constants/StatusTypes';
@@ -296,7 +295,9 @@ function AddressBlock(props: Props) {
 
             <AddressLabel>
                 <AccountTitle>{t('general.nouns.total_balance')}</AccountTitle>
-                {ready || storeType === Mnemonic ? <TezosAmount color="primary" size={ms(0)} amount={balance + smartBalance} format={2} /> : null}
+                {ready || storeType === Mnemonic ? (
+                    <AmountView color="primary" size={ms(0)} amount={balance + smartBalance} scale={6} precision={6} round={2} />
+                ) : null}
             </AddressLabel>
 
             <AddDelegateLabel>

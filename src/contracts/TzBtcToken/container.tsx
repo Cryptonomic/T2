@@ -79,7 +79,7 @@ function ActionPanel() {
         <Container>
             <BalanceBanner
                 isReady={true}
-                balance={new BigNumber(selectedToken.balance).dividedBy(10 ** (selectedToken.scale || 0)).toNumber()}
+                balance={selectedToken.balance}
                 privateKey={''}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 delegatedAddress={''}
