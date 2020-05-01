@@ -1,6 +1,6 @@
 {
   "name": "galleon",
-  "version": "1.0.10",
+  "version": "1.1.0b",
   "description": "An open-source wallet for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {

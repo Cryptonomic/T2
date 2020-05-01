@@ -1,6 +1,6 @@
 {
     "name": "Galleon Preview",
-    "version": "1.0.10b",
+    "version": "1.1.0b",
     "network": "mainnet",
     "blockExplorerHost": "https://mininax.io",
     "logo": "cryptonomicLogo.png",
