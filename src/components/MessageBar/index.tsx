@@ -5,7 +5,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import MessageContent from './MessageContent';
 
 import { clearMessageAction } from '../../reduxContent/message/actions';
-import { openLinkToBlockExplorer } from '../../utils/general';
+import { openBlockExplorerForOperation } from '../../utils/general';
 import { RootState, MessageState } from '../../types/store';
 import { getMainNode } from '../../utils/settings';
 
@@ -37,7 +37,7 @@ function MessageBar() {
         const { selectedNode, nodesList } = settings;
         const currentNode = getMainNode(nodesList, selectedNode);
 
-        openLinkToBlockExplorer(hash, currentNode.network);
+        openBlockExplorerForOperation(hash, currentNode.network);
         onClose();
     }
 
