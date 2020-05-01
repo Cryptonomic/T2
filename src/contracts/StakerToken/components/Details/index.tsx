@@ -1,8 +1,9 @@
 import React from 'react';
-import { shell } from 'electron';
 import { useTranslation } from 'react-i18next';
 
 import { ms } from '../../../../styles/helpers';
+
+import { openBlockExplorerForAccount } from '../../../../utils/general';
 
 import { Container, BroadIcon, LinkContainer, LinkTitle, ContentTitle } from './style';
 
@@ -15,8 +16,8 @@ export default function Details(props: Props) {
     const { details } = props;
     const { t } = useTranslation();
 
-    const onClick = (link: string) => {
-        shell.openExternal(link);
+    const onClick = (account: string) => {
+        openBlockExplorerForAccount(account);
     };
 
     const phaseMap = {
@@ -51,6 +52,7 @@ export default function Details(props: Props) {
                         The DAO is in governance stage {stage}, phase {t('general.nouns.' + phaseMap[phase])}.
                         {council.length > 0 && (
                             <>
+                                {' '}
                                 Current council member are:{' '}
                                 {council.map(link => (
                                     <LinkContainer onClick={() => onClick(link)} key={link}>
