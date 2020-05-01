@@ -68,6 +68,7 @@ function InputAddress(props: Props) {
     const { t } = useTranslation();
     const [error, setError] = useState('');
     const { selectedNode, nodesList } = useSelector((state: RootState) => state.settings, shallowEqual);
+    const addressPrefixes = /^(tz1|tz2|tz3|KT1)/;
 
     async function getAccountFromServer(pkh: string) {
         const mainNode = getMainNode(nodesList, selectedNode);
@@ -96,7 +97,7 @@ function InputAddress(props: Props) {
     };
 
     const getRegExState = () => {
-        let firstCharactersRegEx = /^(tz1|tz2|tz3|kt1|TZ1|TZ2|TZ3|KT1)/;
+        let firstCharactersRegEx = addressPrefixes;
         let regErrorTxt = t('components.inputAddress.errors.send_address');
 
         if (operationType === 'invoke') {
@@ -109,7 +110,7 @@ function InputAddress(props: Props) {
             firstCharactersRegEx = /^(tz1|tz2|tz3|TZ1|TZ2|TZ3)/;
             regErrorTxt = t('components.inputAddress.errors.delegate_address');
         } else if (operationType === 'tz1') {
-            firstCharactersRegEx = /^(tz1)/;
+            firstCharactersRegEx = /^(tz1|edpk)/;
             regErrorTxt = t('components.inputAddress.errors.verify_tz1');
         }
 
@@ -125,7 +126,7 @@ function InputAddress(props: Props) {
 
         if (!firstCharactersRegEx.test(addressText) && addressText !== '') {
             newError = regErrorTxt;
-        } else if (addressText.length !== 36) {
+        } else if (addressPrefixes.test(addressText) && addressText.length !== 36) {
             newError = t('components.inputAddress.errors.length');
         } else if (charMatch.test(addressText)) {
             newError = t('components.inputAddress.errors.special_chars');
@@ -135,7 +136,7 @@ function InputAddress(props: Props) {
             errorState = false;
         }
 
-        if (!errorState && addressText) {
+        if (!errorState && addressText && addressPrefixes.test(addressText)) {
             const account = await getAccountFromServer(addressText);
 
             if (!account || account.length === 0) {

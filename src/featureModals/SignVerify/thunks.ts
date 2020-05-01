@@ -19,7 +19,7 @@ export function publicKeyThunk(address: string) {
         try {
             return (await ConseilDataClient.executeEntityQuery(serverInfo, 'tezos', network, 'operations', publicKeyQuery))[0]?.public_key;
         } catch (e) {
-            throw Error('Can not get public key');
+            throw Error('Public key not revealed on chain.');
         }
     };
 }
