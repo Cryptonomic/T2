@@ -104,10 +104,10 @@ function InputAddress(props: Props) {
             firstCharactersRegEx = /^(KT1)/;
             regErrorTxt = t('components.inputAddress.errors.invoke_address');
         } else if (operationType === 'send_babylon') {
-            firstCharactersRegEx = /^(tz1|tz2|tz3|TZ1|TZ2|TZ3)/;
+            firstCharactersRegEx = /^(tz1|tz2|tz3)/;
             regErrorTxt = t('components.inputAddress.errors.send_babylon');
         } else if (operationType === 'delegate') {
-            firstCharactersRegEx = /^(tz1|tz2|tz3|TZ1|TZ2|TZ3)/;
+            firstCharactersRegEx = /^(tz1|tz2|tz3)/;
             regErrorTxt = t('components.inputAddress.errors.delegate_address');
         } else if (operationType === 'tz1') {
             firstCharactersRegEx = /^(tz1|edpk)/;
@@ -118,7 +118,7 @@ function InputAddress(props: Props) {
     };
 
     const onValidateAddress = async addressText => {
-        const charMatch = /[1-9A-HJ-NP-Za-km-z]]{1,36}/;
+        const charMatch = /[1-9A-HJ-NP-Za-km-z]{36}/;
         const { firstCharactersRegEx, regErrorTxt } = getRegExState();
         let errorState = true;
         let newError = '';
@@ -128,7 +128,7 @@ function InputAddress(props: Props) {
             newError = regErrorTxt;
         } else if (addressPrefixes.test(addressText) && addressText.length !== 36) {
             newError = t('components.inputAddress.errors.length');
-        } else if (charMatch.test(addressText)) {
+        } else if (addressPrefixes.test(addressText) && !charMatch.test(addressText)) {
             newError = t('components.inputAddress.errors.special_chars');
         } else if (address === addressText && addressText !== '') {
             newError = t('components.inputAddress.errors.send_funds');
