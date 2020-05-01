@@ -1,5 +1,8 @@
 import styled from 'styled-components';
+
 import Button from '../../components/Button';
+import { ms } from '../../styles/helpers';
+import TezosIcon from '../../components/TezosIcon';
 
 export const Container = styled.div`
     display: flex;
@@ -42,5 +45,28 @@ export const RowContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+`;
+
+export const MessageContainer = styled.div`
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    height: 30px;
+    width: 100%;
+    color: #4e71ab;
+    font-weight: 300;
+`;
+
+export const InfoIcon = styled(TezosIcon)`
+    font-size: ${ms(2)};
+    padding: 1px 7px 0px 0px;
+`;
+
+export const InfoContainer = styled.div`
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    height: 60px;
     width: 100%;
 `;

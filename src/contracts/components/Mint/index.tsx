@@ -19,7 +19,7 @@ import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { MINT } from '../../../constants/TabConstants';
 import { AVERAGEFEES } from '../../../constants/FeeValue';
 import { RootState, AppState } from '../../../types/store';
-import { Container, AmountContainer, FeeContainer, PasswordButtonContainer, InvokeButton, RowContainer } from '../style';
+import { Container, AmountContainer, FeeContainer, PasswordButtonContainer, InvokeButton, RowContainer, MessageContainer, InfoIcon } from '../style';
 
 interface Props {
     isReady: boolean;
@@ -87,8 +87,14 @@ function Mint(props: Props) {
     return (
         <Container onKeyDown={event => onEnterPress(event.key)}>
             <RowContainer>
+                <MessageContainer>
+                    <InfoIcon color="info" iconName="info" />
+                    {t('components.send.mint_notice')}
+                </MessageContainer>
+            </RowContainer>
+            <RowContainer>
                 <InputAddress
-                    label={t('components.send.holder_address')}
+                    label={t('components.send.recipient_address')}
                     operationType="send"
                     tooltip={false}
                     onChange={val => setAddress(val)}
@@ -105,7 +111,6 @@ function Mint(props: Props) {
                         symbol={token.symbol}
                         scale={token.scale || 0}
                         precision={token.precision || 6}
-                        maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
                         minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
                     />
                 </AmountContainer>
