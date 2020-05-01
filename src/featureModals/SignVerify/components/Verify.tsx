@@ -35,7 +35,7 @@ const Verify = () => {
             if (keyStore.publicKeyHash === address) {
                 publicKey = keyStore.publicKey;
             } else if (address.startsWith('edpk') && address.length === 54) {
-                publicKey = address.substring;
+                publicKey = address;
             } else {
                 publicKey = await dispatch(publicKeyThunk(address));
             }
@@ -49,10 +49,10 @@ const Verify = () => {
             const isVerified = await TezosWalletUtil.checkSignature(signature, message, publicKey);
 
             if (!isVerified) {
-                setResult(t('general.verbs.no_match'));
+                setResult(t('components.signVerifyModal.no_match'));
                 setError(true);
             } else {
-                setResult(t('general.verbs.match'));
+                setResult(t('components.signVerifyModal.match'));
                 setError(false);
             }
         } catch (e) {

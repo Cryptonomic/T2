@@ -33,6 +33,7 @@ function HomeMain() {
                 return <GenericContract />;
         }
     }
+
     return (
         <Container>
             <SideBarContainer>
