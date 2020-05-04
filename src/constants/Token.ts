@@ -3,6 +3,7 @@ import { TRANSACTIONS, DETAILS } from './TabConstants';
 
 import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
 import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
+import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 
 export const knownTokenContracts: Token[] = [
     {
@@ -32,5 +33,19 @@ export const knownTokenContracts: Token[] = [
         scale: 8,
         precision: 8,
         round: 8
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9',
+        displayName: 'USDtz',
+        symbol: 'USDtz',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: usdtzIcon,
+        scale: 6,
+        precision: 6,
+        round: 2
     }
 ];
