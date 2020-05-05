@@ -107,6 +107,10 @@ export function isReady(addressStatus, storeType?, tab?) {
     );
 }
 
+export function openLink(link) {
+    shell.openExternal(link);
+}
+
 export function openBlockExplorerForOperation(operation: string, network: string = 'mainnet') {
     shell.openExternal(`${blockExplorerHost}/${network}/operations/${operation}`);
 }
