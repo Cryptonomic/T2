@@ -2,6 +2,23 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
+const openCustomProtocol = (url, appWindow) => {
+    const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
+
+    if (!currentURL) {
+        return;
+    }
+
+    if (currentURL[1] === '/login') {
+        appWindow.webContents.send('login', 'Please open a wallet and try the request again');
+        return;
+    }
+
+    if (currentURL[1] === '/home/main') {
+        appWindow.webContents.send('wallet', url);
+    }
+};
+
 let mainWindow = null;
 
 if (process.env.NODE_ENV === 'production') {
@@ -18,9 +35,7 @@ const installExtensions = async () => {
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
   const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
-  return Promise.all(
-    extensions.map(name => installer.default(installer[name], forceDownload))
-  ).catch();
+  return Promise.all(extensions.map(name => installer.default(installer[name], forceDownload))).catch();
 };
 
 /**
@@ -35,40 +50,48 @@ app.on('window-all-closed', () => {
   }
 });
 
+app.on('open-url', (event, url) => { // Protocol handler for osx
+    event.preventDefault();
+    openCustomProtocol(url, mainWindow);
+});
+
+app.setAsDefaultProtocolClient('galleon');
+
 app.on('ready', async () => {
-  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-    await installExtensions();
-  }
-
-  mainWindow = new BrowserWindow({
-    height: 768,
-    minHeight: 768,
-    minWidth: 1024,
-    show: false,
-    title: 'Tezori',
-    webPreferences: {
-      nodeIntegration: true
-    },
-    width: 1120
-  });
-
-  mainWindow.loadURL(`file://${__dirname}/app.html`);
-
-  // @TODO: Use 'ready-to-show' event
-  //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
-  mainWindow.webContents.on('did-finish-load', () => {
-    if (!mainWindow) {
-      throw new Error('"mainWindow" is not defined');
+    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+        await installExtensions();
     }
-    if (process.env.START_MINIMIZED) {
-      mainWindow.minimize();
-    } else {
-      mainWindow.show();
-      mainWindow.focus();
-    }
-  });
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+    mainWindow = new BrowserWindow({
+        height: 768,
+        minHeight: 768,
+        minWidth: 1024,
+        show: false,
+        title: 'Tezori',
+        webPreferences: { nodeIntegration: true },
+        width: 1120
+    });
+
+    mainWindow.loadURL(`file://${__dirname}/app.html`);
+
+    // @TODO: Use 'ready-to-show' event
+    //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
+    mainWindow.webContents.on('did-finish-load', () => {
+        if (!mainWindow) {
+            throw new Error('"mainWindow" is not defined');
+        }
+
+        if (process.env.START_MINIMIZED) {
+            mainWindow.minimize();
+        } else {
+            mainWindow.show();
+            mainWindow.focus();
+        }
+    });
+
+    if (process.platform === 'win32') {
+        openCustomProtocol(process.argv.slice(1), mainWindow);
+    }
+
+    mainWindow.on('closed', () => { mainWindow = null; });
 });

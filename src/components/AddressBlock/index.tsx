@@ -23,7 +23,8 @@ import Tooltip from '../Tooltip';
 import TokenNav from '../TokenNav';
 
 import SignVerifyModal from '../../featureModals/SignVerify';
-
+import AuthModal from '../../featureModals/Auth';
+import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
 import { getAddressType } from '../../utils/account';
@@ -155,13 +156,14 @@ function AddressBlock(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const selectedAccountHash = useSelector<RootState, string>(state => state.app.selectedAccountHash);
+    const isModalOpen = useSelector<RootState, boolean>(state => state.modal.open);
+    const activeModal = useSelector<RootState, string>(state => state.modal.activeModal);
     const selectedNode = useSelector(getSelectedNode);
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
 
     const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
     const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
-    const [isSignModalOpen, setIsSignModalOpen] = useState(false);
     const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() => getLocalData('isHideDelegateTooltip'));
 
     const { publicKeyHash, balance, accounts, status, storeType } = accountBlock;
@@ -191,6 +193,13 @@ function AddressBlock(props: Props) {
 
     function goToAccount(addressId, index, addressType) {
         dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType));
+    }
+
+    function setIsModalOpen(open, active) {
+        dispatch(setModalOpen(open, active));
+        if (!open) {
+            dispatch(clearModal());
+        }
     }
 
     const getAddresses = addresses => {
@@ -247,6 +256,8 @@ function AddressBlock(props: Props) {
         t('components.addressBlock.descriptions.description4')
     ];
     const ready = isReady(status, storeType);
+    const isSignModalOpen = isModalOpen && activeModal === 'sign';
+    const isAuthModalOpen = isModalOpen && activeModal === 'auth';
 
     return (
         <Container>
@@ -301,7 +312,7 @@ function AddressBlock(props: Props) {
             </AddressLabel>
 
             <AddDelegateLabel>
-                <DelegateTitle onClick={() => setIsSignModalOpen(true)}>{t('general.nouns.sign_n_verify')}</DelegateTitle>
+                <DelegateTitle onClick={() => setIsModalOpen(true, 'sign')}>{t('general.nouns.sign_n_verify')}</DelegateTitle>
             </AddDelegateLabel>
 
             <AddDelegateLabel>
@@ -367,7 +378,8 @@ function AddressBlock(props: Props) {
                 );
             })}
 
-            {isSignModalOpen && <SignVerifyModal open={isSignModalOpen} onClose={() => setIsSignModalOpen(false)} />}
+            {isSignModalOpen && <SignVerifyModal open={isSignModalOpen} onClose={() => setIsModalOpen(false, 'sign')} />}
+            {isAuthModalOpen && <AuthModal open={isAuthModalOpen} onClose={() => setIsModalOpen(false, 'auth')} />}
 
             {isInteractModalOpen && (
                 <InteractContractModal open={isInteractModalOpen} onClose={() => setIsInteractModalOpen(false)} addresses={regularAddresses} />

@@ -9,7 +9,7 @@ import CustomTextArea from '../../../components/CustomTextArea';
 import CopyButton from '../../../components/CopyButton';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { findIdentity } from '../../../utils/identity';
-import { RootState } from '../../../types/store';
+import { RootState, ModalState } from '../../../types/store';
 import { getMainPath } from '../../../utils/settings';
 
 import { publicKeyThunk } from '../thunks';
@@ -21,6 +21,7 @@ const Sign = () => {
     const dispatch = useDispatch();
     const { isLoading, selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
+    const { values, activeTab } = useSelector<RootState, ModalState>(state => state.modal, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
     const [message, setMessage] = useState('');
     const [result, setResult] = useState('');
@@ -56,6 +57,11 @@ const Sign = () => {
         const identity = findIdentity(identities, selectedParentHash);
         const { publicKey } = identity;
         setKey(publicKey);
+
+        const req = values[activeTab];
+        if (req && req.d) {
+            setMessage(req.d);
+        }
     }, []);
 
     return (
@@ -65,7 +71,7 @@ const Sign = () => {
                 {t('components.signVerifyModal.sign_guidance')}
             </MessageContainer>
             <MainContainer>
-                <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} />
+                <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} defaultValue={message} />
             </MainContainer>
             <ResultContainer>
                 {error && result && <Result>{result}</Result>}
