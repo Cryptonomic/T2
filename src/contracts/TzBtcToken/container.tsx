@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
@@ -6,9 +6,7 @@ import { BigNumber } from 'bignumber.js';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
 import BalanceBanner from '../../components/BalanceBanner';
-import EmptyState from '../../components/EmptyState';
-import PageNumbers from '../../components/PageNumbers';
-import Loader from '../../components/Loader';
+import PaginationList from '../../components/PaginationList';
 import { TRANSACTIONS, SEND } from '../../constants/TabConstants';
 import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
@@ -19,61 +17,19 @@ import { Container, Tab, TabList, TabText, SectionContainer } from '../component
 import { getTokenSelector } from '../duck/selectors';
 import { transferThunk } from './thunks';
 
-function ActionPanel() {
+const ActionPanel = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [currentPage, setCurrentPage] = useState(1);
     const selectedToken = useSelector(getTokenSelector);
-
-    const { isLoading, selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-
+    const { selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { activeTab, displayName, administrator, transactions } = selectedToken;
-
     const isAdmin = selectedParentHash === administrator;
     const tabs = isAdmin ? [TRANSACTIONS, SEND] : [TRANSACTIONS, SEND];
+    const list = transactions.filter(e => e).sort((a, b) => b.timestamp - a.timestamp);
 
-    function onChangeTab(newTab: string) {
+    const onChangeTab = (newTab: string) => {
         dispatch(updateActiveTabThunk(newTab, true));
-    }
-
-    function renderSection() {
-        switch (activeTab) {
-            case SEND:
-                return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
-            case TRANSACTIONS:
-            default: {
-                if (!transactions || transactions.length === 0) {
-                    return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
-                }
-
-                // TODO: move this inside TransactionContainer
-                const processedTransactions = transactions.filter(e => e).sort((a, b) => b.timestamp - a.timestamp);
-                const itemsCount = 5;
-                const pageCount = Math.ceil(processedTransactions.length / itemsCount);
-
-                const firstNumber = (currentPage - 1) * itemsCount;
-                const lastNumber = Math.min(currentPage * itemsCount, processedTransactions.length);
-
-                const transactionSlice = processedTransactions.slice(firstNumber, lastNumber);
-
-                return (
-                    <Fragment>
-                        <Transactions transactions={transactionSlice} selectedParentHash={selectedParentHash} token={selectedToken} />
-                        {pageCount > 1 && (
-                            <PageNumbers
-                                currentPage={currentPage}
-                                totalNumber={processedTransactions.length}
-                                firstNumber={firstNumber}
-                                lastNumber={lastNumber}
-                                onClick={val => setCurrentPage(val)}
-                            />
-                        )}
-                        {isLoading && <Loader />}
-                    </Fragment>
-                );
-            }
-        }
-    }
+    };
 
     return (
         <Container>
@@ -94,9 +50,21 @@ function ActionPanel() {
                     </Tab>
                 ))}
             </TabList>
-            <SectionContainer>{renderSection()}</SectionContainer>
+            <SectionContainer>
+                {activeTab === SEND && <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />}
+                {activeTab === TRANSACTIONS && (
+                    <PaginationList
+                        list={list}
+                        ListComponent={Transactions}
+                        listComponentProps={{ selectedParentHash, token: selectedToken }}
+                        componentListName="transactions"
+                        emptyState={transactionsEmptyState}
+                        emptyStateTitle={t('components.actionPanel.empty-title')}
+                    />
+                )}
+            </SectionContainer>
         </Container>
     );
-}
+};
 
 export default ActionPanel;
