@@ -1,28 +1,12 @@
 import React from 'react';
 import moment from 'moment';
 
-import styled from 'styled-components';
 import TransactionsLabel from '../../../components/TransactionsLabel';
 import Transaction from '../TransactionRow';
-import { Token, TokenTransaction } from '../../../types/general';
+import { Container, SectionContainer } from './style';
+import { Props } from './types';
 
-const Container = styled.section`
-    height: 100%;
-    background-color: ${({ theme: { colors } }) => colors.white};
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-`;
-
-const SectionContainer = styled.div``;
-
-interface Props {
-    transactions: TokenTransaction[];
-    selectedParentHash: string;
-    token: Token;
-}
-
-export default function TransactionContainer(props: Props) {
+const TransactionContainer = (props: Props) => {
     const { transactions, selectedParentHash, token } = props;
 
     const transactionsByDate = transactions.reduce((acc, curr) => {
@@ -31,16 +15,18 @@ export default function TransactionContainer(props: Props) {
         return acc;
     }, {});
 
-    const renderDayTransactions = (day, grTransactions, grIndex) => {
-        return (
-            <SectionContainer key={grIndex}>
-                <TransactionsLabel date={day} skipFormat={true} />
-                {grTransactions.map((transaction, index) => {
-                    return <Transaction key={index} transaction={transaction} selectedParentHash={selectedParentHash} token={token} />;
-                })}
-            </SectionContainer>
-        );
-    };
+    return (
+        <Container>
+            {Object.keys(transactionsByDate).map((day, indexParent) => (
+                <SectionContainer key={indexParent}>
+                    <TransactionsLabel date={day} skipFormat={true} />
+                    {transactionsByDate[day].map((transaction, indexChild) => {
+                        return <Transaction key={indexChild} transaction={transaction} selectedParentHash={selectedParentHash} token={token} />;
+                    })}
+                </SectionContainer>
+            ))}
+        </Container>
+    );
+};
 
-    return <Container>{Object.keys(transactionsByDate).map((day, index) => renderDayTransactions(day, transactionsByDate[day], index))}</Container>;
-}
+export default TransactionContainer;
