@@ -1,8 +1,8 @@
 {
-    "selectedNode": "Tezos Mainnet",
+    "selectedNode": "Tezos Mainnet (nautilus.cloud)",
     "nodesList": [
         {
-            "displayName": "Tezos Mainnet",
+            "displayName": "Tezos Mainnet (nautilus.cloud)",
             "platform": "tezos",
             "network": "mainnet",
             "tezosUrl": "https://tezos-prod.cryptonomic-infra.tech:443",
@@ -10,7 +10,15 @@
             "apiKey": "galleon"
         },
         {
-            "displayName": "Tezos Testnet",
+            "displayName": "Tezos Mainnet (nautilus.cloud + giganode.io)",
+            "platform": "tezos",
+            "network": "mainnet",
+            "tezosUrl": "https://tezos-prod.cryptonomic-infra.tech:443",
+            "conseilUrl": "https://conseil-prod.cryptonomic-infra.tech:443",
+            "apiKey": "galleon"
+        },
+        {
+            "displayName": "Tezos Testnet (nautilus.cloud)",
             "platform": "tezos",
             "network": "carthagenet",
             "tezosUrl": "https://tezos-dev.cryptonomic-infra.tech:443",
