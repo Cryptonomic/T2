@@ -45,27 +45,24 @@ const Sign = () => {
     const derivationPath = isLedger ? getMainPath(pathsList, selectedPath) : '';
 
     const onSign = async () => {
-        // const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
 
-        // try {
-        //     const publicKey: any = await dispatch(publicKeyThunk(keyStore.publicKeyHash));
-        //     setKeyRevealed(publicKey === keyStore.publicKey);
-        // } catch (e) {
-        //     setKeyRevealed(false);
-        // }
+        try {
+            const publicKey: any = await dispatch(publicKeyThunk(keyStore.publicKeyHash));
+            setKeyRevealed(publicKey === keyStore.publicKey);
+        } catch (e) {
+            setKeyRevealed(false);
+        }
 
-        // let signature: string;
-        // if (isLedger) {
-        //     signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
-        // } else {
-        //     signature = await TezosWalletUtil.signText(keyStore, message);
-        // }
+        let signature: string;
+        if (isLedger) {
+            signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
+        } else {
+            signature = await TezosWalletUtil.signText(keyStore, message);
+        }
 
-        // setError(false);
-        // setResult(signature);
-
-        setError(true);
-        setResult('text');
+        setError(false);
+        setResult(signature);
     };
 
     useEffect(() => {
