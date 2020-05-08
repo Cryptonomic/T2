@@ -54,16 +54,17 @@ export const WalletTitle = styled.h3`
     font-weight: normal;
     line-height: 34px;
     letter-spacing: 1.5px;
-    margin: 0 0 0.75rem 0;
+    margin: 0 0 1.625rem 0;
 `;
 
 export const WalletDescription = styled.div`
     font-size: 18px;
     font-weight: 300;
-    line-height: 27px;
-    letter-spacing: 0.7px;
+    line-height: 1.5;
+    letter-spacing: 0.75px;
     color: #1e1313;
     max-width: 659px;
+    margin-bottom: 2.5rem;
 `;
 
 export const ActionButton = styled(Fab)`
@@ -103,5 +104,5 @@ export const WalletFileSection = styled.div`
 `;
 
 export const BackButtonContainer = styled.div`
-    margin-bottom: 30px;
+    margin-bottom: 1.875rem;
 `;
