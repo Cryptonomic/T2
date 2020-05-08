@@ -26,7 +26,10 @@ import {
     PasswordsContainer,
     CreateFileEmptyIcon,
     CreateFileButton,
-    WalletFileSection
+    WalletFileSection,
+    FileDescription,
+    FileDescriptionArrowIcon,
+    ButtonAddIcon
 } from './style';
 import { RootState } from '../../types/store';
 
@@ -148,7 +151,13 @@ function LoginCreate() {
             );
         }
 
-        return <CreateFileEmptyIcon src={createFileEmptyIcon} />;
+        return (
+            <>
+                <CreateFileEmptyIcon src={createFileEmptyIcon} />
+                <FileDescription>Name your wallet file and select a file location</FileDescription>
+                <FileDescriptionArrowIcon iconName="arrow-right" color="gray16" />
+            </>
+        );
     }
 
     const isDisabled = isLoading || !isPasswordValidation || !isPasswordMatched || !walletFileName;
@@ -164,7 +173,7 @@ function LoginCreate() {
                 <FormContainer>
                     <CreateFileSelector>
                         {getWalletFileSection()}
-                        <CreateFileButton size="small" color="secondary" variant="outlined" onClick={evt => saveFile(evt)}>
+                        <CreateFileButton startIcon={<ButtonAddIcon />} size="small" variant="outlined" onClick={evt => saveFile(evt)}>
                             {t('containers.loginCreate.create_new_wallet_btn')}
                         </CreateFileButton>
                     </CreateFileSelector>
