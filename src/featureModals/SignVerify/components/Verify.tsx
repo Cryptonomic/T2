@@ -10,7 +10,7 @@ import { RootState } from '../../../types/store';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon, MessageContainer, InfoIcon, Footer } from './style';
+import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon, MessageContainer, InfoIcon, SuccessIcon, Footer } from './style';
 
 const Verify = () => {
     const { t } = useTranslation();
@@ -82,7 +82,8 @@ const Verify = () => {
             <Footer>
                 <ButtonContainer>
                     {error && <WarningIcon />}
-                    {result && <Result>{result}</Result>}
+                    {!error && result && <SuccessIcon color="check" iconName="checkmark2" />}
+                    {result && <Result isError={error}>{result}</Result>}
                     <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onVerify}>
                         {t('general.verbs.verify')}
                     </InvokeButton>
