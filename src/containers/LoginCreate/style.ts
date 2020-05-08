@@ -18,7 +18,6 @@ export const WalletFileName = styled.div`
 
 export const CheckIcon = styled(TezosIcon)`
     display: block;
-    margin-bottom: 15px;
 `;
 
 export const CreateFileSelector = styled.div`
@@ -110,8 +109,9 @@ export const CreateFileButton = styled(Button)`
 `;
 
 export const WalletFileSection = styled.div`
+    display: flex;
+    align-items: center
     text-align: center;
-    margin-bottom: 1.125rem;
 `;
 
 export const BackButtonContainer = styled.div`
