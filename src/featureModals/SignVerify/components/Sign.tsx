@@ -14,7 +14,19 @@ import { getMainPath } from '../../../utils/settings';
 
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, InfoContainer, MessageContainer, InfoIcon, Footer } from './style';
+import {
+    Container,
+    MainContainer,
+    ButtonContainer,
+    ResultContainer,
+    InvokeButton,
+    Result,
+    InfoContainer,
+    MessageContainer,
+    InfoIcon,
+    WarningIcon,
+    Footer
+} from './style';
 
 const Sign = () => {
     const { t } = useTranslation();
@@ -33,24 +45,27 @@ const Sign = () => {
     const derivationPath = isLedger ? getMainPath(pathsList, selectedPath) : '';
 
     const onSign = async () => {
-        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
+        // const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
 
-        try {
-            const publicKey: any = await dispatch(publicKeyThunk(keyStore.publicKeyHash));
-            setKeyRevealed(publicKey === keyStore.publicKey);
-        } catch (e) {
-            setKeyRevealed(false);
-        }
+        // try {
+        //     const publicKey: any = await dispatch(publicKeyThunk(keyStore.publicKeyHash));
+        //     setKeyRevealed(publicKey === keyStore.publicKey);
+        // } catch (e) {
+        //     setKeyRevealed(false);
+        // }
 
-        let signature: string;
-        if (isLedger) {
-            signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
-        } else {
-            signature = await TezosWalletUtil.signText(keyStore, message);
-        }
+        // let signature: string;
+        // if (isLedger) {
+        //     signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
+        // } else {
+        //     signature = await TezosWalletUtil.signText(keyStore, message);
+        // }
 
-        setError(false);
-        setResult(signature);
+        // setError(false);
+        // setResult(signature);
+
+        setError(true);
+        setResult('text');
     };
 
     useEffect(() => {
@@ -74,7 +89,8 @@ const Sign = () => {
                 <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} defaultValue={message} />
             </MainContainer>
             <ResultContainer>
-                {error && result && <Result>{result}</Result>}
+                {error && <WarningIcon />}
+                {error && result && <Result isError={error}>{result}</Result>}
                 {!error && result && (
                     <TextField
                         label={t('general.nouns.signature')}

@@ -46,11 +46,6 @@ export const MessageContainer = styled.div`
     font-weight: 300;
 `;
 
-export const InfoIcon = styled(TezosIcon)`
-    font-size: ${ms(2)};
-    padding: 1px 7px 0px 0px;
-`;
-
 export const InfoContainer = styled.div`
     display: flex;
     justify-content: left;
@@ -59,22 +54,10 @@ export const InfoContainer = styled.div`
     width: 100%;
 `;
 
-export const Result = styled.div`
+export const Result = styled.div<{ isError?: boolean }>`
     word-wrap: break-word;
-`;
-
-export const WarningIcon = styled(Warning)`
-    &&& {
-        fill: ${({ theme: { colors } }) => colors.error1};
-        margin-right: 5px;
-    }
-`;
-
-export const InvokeButton = styled(Button)`
-    width: 194px;
-    height: 50px;
-    margin-left: auto;
-    padding: 0;
+    font-size: 14px;
+    color: ${({ isError, theme: { colors } }) => (isError ? colors.error1 : colors.check)};
 `;
 
 export const Footer = styled.div`
@@ -83,4 +66,29 @@ export const Footer = styled.div`
     padding: 25px 0;
     display: flex;
     flex-direction: column
+`;
+
+export const InfoIcon = styled(TezosIcon)`
+    font-size: ${ms(2)};
+    padding: 1px 7px 0px 0px;
+`;
+
+export const WarningIcon = styled(Warning)`
+    &&& {
+        fill: ${({ theme: { colors } }) => colors.error1};
+        margin-right: 5px;
+        font-size: ${ms(1)};
+    }
+`;
+
+export const SuccessIcon = styled(TezosIcon)`
+    font-size: ${ms(1)};
+    margin-right: 5px;
+`;
+
+export const InvokeButton = styled(Button)`
+    width: 194px;
+    height: 50px;
+    margin-left: auto;
+    padding: 0;
 `;
