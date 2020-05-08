@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import Fab from '@material-ui/core/Fab';
 import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+
 import TezosIcon from '../../components/TezosIcon/';
 
 export const WalletFileName = styled.div`
@@ -22,16 +24,22 @@ export const CheckIcon = styled(TezosIcon)`
 export const CreateFileSelector = styled.div`
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    flex-direction: column;
-    border-width: 1.5px;
-    border-style: dashed;
-    border-color: ${({ theme: { colors } }) => colors.gray9};
-    background: white;
-    border-radius: 5px;
-    width: 13rem;
-    height: 13.5rem;
-    margin-right: 2.37rem;
+    width: 100%;
+    margin-bottom: 1.625rem;
+`;
+
+export const FileDescription = styled.span`
+    color: ${({ theme: { colors } }) => colors.gray16};
+    letter-spacing: -0.71px;
+`;
+
+export const FileDescriptionArrowIcon = styled(TezosIcon)`
+    font-size: 0.625rem;
+    margin: 3px 0px 0px 10px;
+`;
+
+export const ButtonAddIcon = styled(AddIcon)`
+    color: ${({ theme: { colors } }) => colors.blue1};
 `;
 
 export const CreateContainer = styled.div`
@@ -76,7 +84,7 @@ export const ActionButton = styled(Fab)`
 
 export const FormContainer = styled.div`
     display: flex;
-    margin-top: 1rem;
+    flex-direction: column;
 `;
 
 export const PasswordsContainer = styled.div`
@@ -86,15 +94,18 @@ export const PasswordsContainer = styled.div`
 `;
 
 export const CreateFileEmptyIcon = styled.img`
-    height: 6.75rem;
-    margin-bottom: 1.18rem;
+    height: 2.6875rem;
+    margin-right: 7px;
 `;
 
 export const CreateFileButton = styled(Button)`
     &&& {
-        width: 147px;
-        border-radius: 20px;
-        margin-bottom: 1.6rem;
+        width: 160px;
+        height: 38px;
+        border-radius: 25px;
+        border: 2px solid ${({ theme: { colors } }) => colors.blue7}
+        color: ${({ theme: { colors } }) => colors.blue7}
+        margin-left: auto;
     }
 `;
 
