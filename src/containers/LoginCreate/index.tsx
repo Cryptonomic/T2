@@ -184,6 +184,7 @@ function LoginCreate() {
                             error={pwdError}
                             suggestion={pwdSuggestion}
                             score={pwdScore}
+                            visibilityIcon={true}
                             changFunc={onChangePassword}
                             onShow={() => onPasswordShow(0)}
                         />
@@ -193,6 +194,7 @@ function LoginCreate() {
                             isShowed={isConfirmPwdShowed}
                             error={confirmPwdText}
                             score={confirmPwdScore}
+                            visibilityIcon={true}
                             changFunc={onConfirmPassword}
                             onShow={() => onPasswordShow(1)}
                         />
