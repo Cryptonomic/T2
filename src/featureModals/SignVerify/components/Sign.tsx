@@ -14,7 +14,7 @@ import { getMainPath } from '../../../utils/settings';
 
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, InfoContainer, MessageContainer, InfoIcon } from './style';
+import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, InfoContainer, MessageContainer, InfoIcon, Footer } from './style';
 
 const Sign = () => {
     const { t } = useTranslation();
@@ -88,16 +88,18 @@ const Sign = () => {
                     />
                 )}
             </ResultContainer>
-            <ButtonContainer>
-                {!keyRevealed && (
-                    <InfoContainer>
-                        The account is not revealed, copy public key? <CopyButton text={key} title="" color="accent" />
-                    </InfoContainer>
-                )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
-                    {t('general.verbs.sign')}
-                </InvokeButton>
-            </ButtonContainer>
+            <Footer>
+                <ButtonContainer>
+                    {!keyRevealed && (
+                        <InfoContainer>
+                            The account is not revealed, copy public key? <CopyButton text={key} title="" color="accent" />
+                        </InfoContainer>
+                    )}
+                    <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
+                        {t('general.verbs.sign')}
+                    </InvokeButton>
+                </ButtonContainer>
+            </Footer>
         </Container>
     );
 };
