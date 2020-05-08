@@ -76,7 +76,7 @@ export const WalletDescription = styled.div`
 
 export const ActionButton = styled(Fab)`
     &&& {
-        margin-top: 39px;
+        margin-left: auto;
         width: 194px;
     }
 `;
