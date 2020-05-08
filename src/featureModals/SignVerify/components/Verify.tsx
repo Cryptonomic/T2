@@ -10,7 +10,7 @@ import { RootState } from '../../../types/store';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon, MessageContainer, InfoIcon } from './style';
+import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon, MessageContainer, InfoIcon, Footer } from './style';
 
 const Verify = () => {
     const { t } = useTranslation();
@@ -79,13 +79,15 @@ const Verify = () => {
                     onIssue={val => setIsAddressIssue(val)}
                 />
             </MainContainer>
-            <ButtonContainer>
-                {error && <WarningIcon />}
-                {result && <Result>{result}</Result>}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onVerify}>
-                    {t('general.verbs.verify')}
-                </InvokeButton>
-            </ButtonContainer>
+            <Footer>
+                <ButtonContainer>
+                    {error && <WarningIcon />}
+                    {result && <Result>{result}</Result>}
+                    <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onVerify}>
+                        {t('general.verbs.verify')}
+                    </InvokeButton>
+                </ButtonContainer>
+            </Footer>
         </Container>
     );
 };

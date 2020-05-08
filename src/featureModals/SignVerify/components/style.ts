@@ -9,7 +9,7 @@ export const Container = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding-bottom: 50px;
+    padding-bottom: 50px 50px 0px;
 `;
 
 export const MainContainer = styled.div`
@@ -75,4 +75,12 @@ export const InvokeButton = styled(Button)`
     height: 50px;
     margin-left: auto;
     padding: 0;
+`;
+
+export const Footer = styled.div`
+    background: ${({ theme: { colors } }) => colors.gray1}
+    margin: auto 0 0;
+    padding: 25px 0;
+    display: flex;
+    flex-direction: column
 `;
