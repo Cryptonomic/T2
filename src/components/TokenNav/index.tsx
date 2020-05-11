@@ -10,7 +10,6 @@ import AmountView from '../AmountView';
 const Container = styled.div<{ isActive: boolean }>`
     margin-bottom: 1px;
     padding: 9px 14px;
-    cursor: pointer;
     background: ${({ isActive, theme: { colors } }) => {
         return isActive ? colors.accent : colors.white;
     }};
