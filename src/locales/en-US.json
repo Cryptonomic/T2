@@ -221,6 +221,7 @@
         },
         "delegateConfirmationModal": {
             "new_address_label": "Change Baker Address",
+            "address_label": "Baker Address",
             "delegate_warning": "It will take about 5 weeks (12 cycles) to receive delegation rewards from your baker."
         },
         "changeDelegationLedgerConfirmModal": {
