@@ -48,6 +48,7 @@ export const Theme = {
         // black colors
         black1: '#1e1313',
         black2: '#4a4a4a',
+        black3: '#000000',
 
         // check colors
         check: '#259c90',
