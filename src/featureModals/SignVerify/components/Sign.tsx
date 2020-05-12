@@ -14,7 +14,19 @@ import { getMainPath } from '../../../utils/settings';
 
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, InfoContainer, MessageContainer, InfoIcon } from './style';
+import {
+    Container,
+    MainContainer,
+    ButtonContainer,
+    ResultContainer,
+    InvokeButton,
+    Result,
+    InfoContainer,
+    MessageContainer,
+    InfoIcon,
+    WarningIcon,
+    Footer
+} from './style';
 
 const Sign = () => {
     const { t } = useTranslation();
@@ -74,7 +86,8 @@ const Sign = () => {
                 <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} defaultValue={message} />
             </MainContainer>
             <ResultContainer>
-                {error && result && <Result>{result}</Result>}
+                {error && <WarningIcon />}
+                {error && result && <Result isError={error}>{result}</Result>}
                 {!error && result && (
                     <TextField
                         label={t('general.nouns.signature')}
@@ -88,16 +101,18 @@ const Sign = () => {
                     />
                 )}
             </ResultContainer>
-            <ButtonContainer>
-                {!keyRevealed && (
-                    <InfoContainer>
-                        The account is not revealed, copy public key? <CopyButton text={key} title="" color="accent" />
-                    </InfoContainer>
-                )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
-                    {t('general.verbs.sign')}
-                </InvokeButton>
-            </ButtonContainer>
+            <Footer>
+                <ButtonContainer>
+                    {!keyRevealed && (
+                        <InfoContainer>
+                            The account is not revealed, copy public key? <CopyButton text={key} title="" color="accent" />
+                        </InfoContainer>
+                    )}
+                    <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
+                        {t('general.verbs.sign')}
+                    </InvokeButton>
+                </ButtonContainer>
+            </Footer>
         </Container>
     );
 };
