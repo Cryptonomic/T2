@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
 import { OperationKindType } from 'conseiljs';
+import IconButton from '@material-ui/core/IconButton';
 
+import { READY } from '../../../constants/StatusTypes';
 import InputAddress from '../../../components/InputAddress';
 import Fees from '../../../components/Fees';
 import PasswordInput from '../../../components/PasswordInput';
@@ -14,6 +16,7 @@ import { ms } from '../../../styles/helpers';
 import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { delegateThunk } from '../../duck/thunks';
+import { setModalOpen } from '../../../reduxContent/modal/actions';
 
 import { AVERAGEFEES } from '../../../constants/FeeValue';
 import { RootState, AppState } from '../../../types/store';
@@ -29,7 +32,13 @@ import {
     TooltipTitle,
     TooltipContent,
     BoldSpan,
-    FeeTooltipBtn
+    FeeTooltipBtn,
+    AddDelegationContainer,
+    AddCircleWrapper,
+    AddDelegationTooltipTitle,
+    AddDelegationTooltipText,
+    AddDelegationTooltipIcon,
+    NoFundTooltip
 } from './style';
 
 interface Props {
@@ -45,7 +54,7 @@ function Delegate(props: Props) {
     const [isAddressIssue, setIsAddressIssue] = useState(false);
     const [open, setOpen] = useState(false);
     const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(OperationKindType.Delegation, true);
-
+    const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
     const { isLoading, isLedger, selectedAccountHash } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
 
     const { isReady } = props;
@@ -55,6 +64,7 @@ function Delegate(props: Props) {
     }, [isFeeLoaded]);
 
     const isDisabled = !isReady || isLoading || isAddressIssue || !newAddress || (!passPhrase && !isLedger);
+    const isManagerReady = identities.find(i => i.publicKeyHash === selectedAccountHash)?.status === READY;
 
     async function onDelegate() {
         dispatch(setIsLoadingAction(true));
@@ -137,6 +147,38 @@ function Delegate(props: Props) {
                     {t('components.delegate.change_delegate')}
                 </InvokeButton>
             </PasswordButtonContainer>
+            <AddDelegationContainer>
+                {isManagerReady ? (
+                    <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, 'delegate_contract'))} />
+                ) : (
+                    <Tooltip
+                        position="top"
+                        offset={[-7.5, 0]}
+                        boxShadow={true}
+                        content={<NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>}
+                    >
+                        <IconButton size="small" color="primary">
+                            <AddCircleWrapper active={0} />
+                        </IconButton>
+                    </Tooltip>
+                )}
+                {t('components.delegate.add_delegation_contract')}
+                <Tooltip
+                    position="top"
+                    offset={[-7.5, 0]}
+                    boxShadow={true}
+                    content={
+                        <>
+                            <AddDelegationTooltipTitle>{t('components.delegate.add_delegation_tooltip_title')}</AddDelegationTooltipTitle>
+                            <AddDelegationTooltipText>{t('components.delegate.add_delegation_tooltip_text')}</AddDelegationTooltipText>
+                        </>
+                    }
+                >
+                    <IconButton size="small">
+                        <AddDelegationTooltipIcon iconName="help" size={ms(1)} color="primary" />
+                    </IconButton>
+                </Tooltip>
+            </AddDelegationContainer>
             {isLedger && open && (
                 <DelegateLedgerConfirmationModal
                     fee={fee}
