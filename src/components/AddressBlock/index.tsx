@@ -49,12 +49,14 @@ const AddressLabel = styled.div`
     justify-content: space-between;
 `;
 
-const AddDelegateLabel = styled(AddressLabel)`
+const AddDelegateLabel = styled(AddressLabel)<{ isActive?: boolean }>`
     display: flex;
     flex-direction: row;
     font-size: 14px;
     margin-top: 20px;
     margin-bottom: 1px;
+    background: ${({ isActive, theme: { colors } }) => (isActive ? colors.blue1 : colors.gray1)};
+    color: ${({ isActive, theme: { colors } }) => (isActive ? colors.white : colors.primary)};
 `;
 
 const AddressesTitle = styled.div`
@@ -261,9 +263,19 @@ function AddressBlock(props: Props) {
     return (
         <Container>
             {ready ? (
-                <Address isManager={true} isActive={isManagerActive} balance={balance} onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)} />
+                <Address
+                    isManager={true}
+                    isActive={!isModalOpen && isManagerActive}
+                    balance={balance}
+                    onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
+                />
             ) : (
-                <AddressStatus isManager={true} isActive={isManagerActive} status={status} onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)} />
+                <AddressStatus
+                    isManager={true}
+                    isActive={!isModalOpen && isManagerActive}
+                    status={status}
+                    onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
+                />
             )}
             <AddDelegateLabel>
                 <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
@@ -279,7 +291,7 @@ function AddressBlock(props: Props) {
                         key={addressId}
                         isContract={true}
                         accountId={addressId}
-                        isActive={isDelegatedActive}
+                        isActive={!isModalOpen && isDelegatedActive}
                         balance={address.balance}
                         onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
                     />
@@ -287,7 +299,7 @@ function AddressBlock(props: Props) {
                     <AddressStatus
                         key={addressId}
                         isContract={true}
-                        isActive={isDelegatedActive}
+                        isActive={!isModalOpen && isDelegatedActive}
                         status={address.status}
                         onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
                     />
@@ -301,8 +313,8 @@ function AddressBlock(props: Props) {
                 ) : null}
             </AddressLabel>
 
-            <AddDelegateLabel>
-                <DelegateTitle onClick={() => setIsModalOpen(true, 'sign')}>{t('general.nouns.sign_n_verify')}</DelegateTitle>
+            <AddDelegateLabel isActive={isModalOpen} onClick={() => setIsModalOpen(true, 'sign')}>
+                <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
             </AddDelegateLabel>
 
             <AddDelegateLabel>
@@ -324,7 +336,7 @@ function AddressBlock(props: Props) {
                 return (
                     <TokenNav
                         key={token.address}
-                        isActive={token.address === selectedAccountHash}
+                        isActive={!isModalOpen && token.address === selectedAccountHash}
                         token={token}
                         onClick={() => goToAccount(token.address, index, tokenType)}
                     />
@@ -345,7 +357,7 @@ function AddressBlock(props: Props) {
             </AddDelegateLabel>
             {smartAddresses.map((address, index) => {
                 const addressId = address.account_id;
-                const isActive = addressId === selectedAccountHash;
+                const isActive = !isModalOpen && addressId === selectedAccountHash;
                 const smartAddressReady = isReady(address.status);
 
                 return smartAddressReady ? (
