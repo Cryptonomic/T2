@@ -217,10 +217,14 @@
             "delegate_settings": "Delegate Settings",
             "current_delegate": "You are currently delegating to",
             "change_delegate": "Change Delegate",
-            "delegate_warning": "Your delegate settings will not show up until confirmed on the blockchain."
+            "delegate_warning": "Your delegate settings will not show up until confirmed on the blockchain.",
+            "add_delegation_contract": "Add Delegation Contract",
+            "add_delegation_tooltip_title": "What is a Delegation Contract?",
+            "add_delegation_tooltip_text": "You can delegate to multiple bakers using smart contracts. Your delegations will appear under ‘Delegation Contracts’ on the left."
         },
         "delegateConfirmationModal": {
             "new_address_label": "Change Baker Address",
+            "address_label": "Baker Address",
             "delegate_warning": "It will take about 5 weeks (12 cycles) to receive delegation rewards from your baker."
         },
         "changeDelegationLedgerConfirmModal": {
