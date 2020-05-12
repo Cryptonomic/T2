@@ -160,8 +160,6 @@ function AddressBlock(props: Props) {
     const activeModal = useSelector<RootState, string>(state => state.modal.activeModal);
     const selectedNode = useSelector(getSelectedNode);
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
-
-    const [isDelegateModalOpen, setIsDelegateModalOpen] = useState(false);
     const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
     const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() => getLocalData('isHideDelegateTooltip'));
@@ -258,6 +256,7 @@ function AddressBlock(props: Props) {
     const ready = isReady(status, storeType);
     const isSignModalOpen = isModalOpen && activeModal === 'sign';
     const isAuthModalOpen = isModalOpen && activeModal === 'auth';
+    const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
 
     return (
         <Container>
@@ -268,15 +267,6 @@ function AddressBlock(props: Props) {
             )}
             <AddDelegateLabel>
                 <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
-                {isManagerReady ? (
-                    <AddCircleWrapper active={1} onClick={() => setIsDelegateModalOpen(true)} />
-                ) : (
-                    <Tooltip position="bottom" content={<NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>}>
-                        <IconButton size="small" color="primary">
-                            <AddCircleWrapper active={0} />
-                        </IconButton>
-                    </Tooltip>
-                )}
             </AddDelegateLabel>
 
             {delegatedAddresses.map((address, index) => {
@@ -385,14 +375,21 @@ function AddressBlock(props: Props) {
                 <InteractContractModal open={isInteractModalOpen} onClose={() => setIsInteractModalOpen(false)} addresses={regularAddresses} />
             )}
 
-            {isDelegateModalOpen && <AddDelegateModal open={isDelegateModalOpen} onClose={() => setIsDelegateModalOpen(false)} managerBalance={balance} />}
+            {isDelegateModalOpen && (
+                <AddDelegateModal open={isDelegateModalOpen} onClose={() => setIsModalOpen(false, 'delegate_contract')} managerBalance={balance} />
+            )}
             <SecurityNoticeModal open={isSecurityModalOpen} onClose={() => setIsSecurityModalOpen(false)} onProceed={onProceedSecurityModal} />
             {isDelegateToolTip && (
                 <NoSmartAddressesContainer>
                     <CloseIconWrapper onClick={() => hideDelegateTooltip()} />
                     <NoSmartAddressesTitle>{t('components.addressBlock.delegation_tips')}</NoSmartAddressesTitle>
                     {renderNoSmartAddressesDescription(noSmartAddressesDescriptionContent)}
-                    <NoSmartAddressesButton small={true} buttonTheme="secondary" onClick={() => setIsDelegateModalOpen(true)} disabled={!isManagerReady}>
+                    <NoSmartAddressesButton
+                        small={true}
+                        buttonTheme="secondary"
+                        onClick={() => setIsModalOpen(true, 'delegate_contract')}
+                        disabled={!isManagerReady}
+                    >
                         {t('components.addDelegateModal.add_delegate_title')}
                     </NoSmartAddressesButton>
                 </NoSmartAddressesContainer>
