@@ -263,6 +263,7 @@
                 "invalid_wallet_password": "Hatalı cüzdan/şifre kombinasyonu.",
                 "account_not_exist": "Bu hesap bulunamıyor.",
                 "ledger_not_connect": "Ledger bağlantıyı reddetti.",
+                "ledger_linux_error": "TODO:",
                 "invoke_operation_failed": "Akıllı Sözleşme operasyonu başarısız.",
                 "success_invoke_operation": "Akıllı Sözleşme çalıştırma operasyonu başarılı.",
                 "success_contract_origination": "Akıllı Sözleşme oluşturma operasyonu başarılı."

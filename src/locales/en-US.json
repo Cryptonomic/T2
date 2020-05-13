@@ -313,6 +313,7 @@
                 "invalid_wallet_password": "Invalid wallet/password combination.",
                 "account_not_exist": "The account does not exist.",
                 "ledger_not_connect": "Connection refused by Ledger.",
+                "ledger_linux_error": "If you're having trouble conecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "Smart Contract operation failed",
                 "success_invoke_operation": "Successfully started contract invocation.",
                 "success_contract_origination": "Successfully started contract deployment.",

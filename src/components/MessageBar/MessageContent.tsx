@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import CloseIcon from '@material-ui/icons/Close';
 
 import styled from 'styled-components';
@@ -58,17 +58,21 @@ const LinkContainer = styled.div`
 `;
 
 const CustomLinkContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-left: 7px;
     cursor: pointer;
+`;
+
+const CustomLinkTitle = styled.div`
+    display: inline-block;
+    font-size: 12px;
+    text-decoration: underline;
 `;
 
 const LinkTitle = styled.div`
     font-size: 12px;
     text-decoration: underline;
 `;
+
 const HashValue = styled.div`
     font-size: 12px;
     margin-left: 5px;
@@ -98,18 +102,16 @@ const MessageContent = (props: Props) => {
     const { content, realHash, hash, openLink, onClose, isError, localeParam } = props;
     const { t } = useTranslation();
 
-    if (content.includes('https')) {
-        const index = content.indexOf('https');
-        const title = content.slice(0, index).trim();
-        const link = content.slice(index);
-
+    if (content === 'components.messageBar.messages.ledger_linux_error') {
         return (
             <MessageContainer isError={isError}>
                 <StyledCloseIcon onClick={() => onClose()} />
-                <MessageHeader>{t(title)}</MessageHeader>
-                <CustomLinkContainer onClick={() => openLink(link)}>
-                    <LinkTitle>{link}</LinkTitle>
-                    <BroadIcon iconName="new-window" size={ms(0)} color="white" />
+                <CustomLinkContainer onClick={() => openLink(realHash)}>
+                    <Trans i18nKey="components.messageBar.messages.ledger_linux_error">
+                        If you're having trouble conecting to a Ledger device, please see
+                        <CustomLinkTitle>these steps</CustomLinkTitle>
+                        <BroadIcon iconName="new-window" size={ms(0)} color="white" />
+                    </Trans>
                 </CustomLinkContainer>
             </MessageContainer>
         );
