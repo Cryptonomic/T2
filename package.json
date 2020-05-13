@@ -1,6 +1,6 @@
 {
   "name": "galleon",
-  "version": "1.1.1b",
+  "version": "1.1.2b",
   "description": "An open-source wallet for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
@@ -71,11 +71,13 @@
   },
   "build": {
     "protocols": [
-        {
-          "name": "galleon",
-          "schemes": [ "galleon" ]
-        }
-      ],
+      {
+        "name": "galleon",
+        "schemes": [
+          "galleon"
+        ]
+      }
+    ],
     "productName": "Galleon Preview",
     "appId": "tech.galleon-wallet.galleon",
     "afterSign": "./scripts/SignMacPackage.js",
