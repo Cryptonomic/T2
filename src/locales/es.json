@@ -263,6 +263,7 @@
                 "invalid_wallet_password": "Combinación billetera/contraseña inválida.",
                 "account_not_exist": "Esta cuenta no existe",
                 "ledger_not_connect": "Conexión rechazada por el Ledger.",
+                "ledger_linux_error": "TODO:",
                 "invoke_operation_failed": "La operación del Contrato Inteligente falló",
                 "success_invoke_operation": "La operación del Contrato Inteligente fue exitosa.",
                 "success_contract_origination": "Comenzó exitosamente el despliegue del contrato."
@@ -394,7 +395,7 @@
             "want_to_import_fundraiser_paper_wallet": "¿Quieres importar tu billetera de papel de la Fundraiser?",
             "create_named_wallet": "<1><0>Crear una billetera <1>{{name}}</1></0></1>primero",
             "tagline": "Una billetera comunitaria para Tezos",
-            "app_name": "Galleon",
+            "app_name": "{{name}}",
             "keystore_wallet": "Keystore Monedero",
             "ledger_wallet": "Ledger Monedero",
             "connect_ledger": "Conectar con Ledger",

@@ -9,7 +9,7 @@ This code was written for the community. Use it, hack it, fork it as you please!
 
 ## Development
 
-The wallet is built on [React](https://reactjs.org/) and [Electron](https://electronjs.org/) and uses [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate)
+The wallet is built on [React](https://reactjs.org/) and [Electron](https://electronjs.org/) and uses [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate).
 
 Active development happens on the develop branch with periodic merges to master.
 
@@ -36,7 +36,6 @@ Add the file `src/extraResources/walletSettings.json`:
     }
   ]
 }
-
 ```
 
 To install all dependencies:

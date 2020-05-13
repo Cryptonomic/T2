@@ -37,10 +37,19 @@ export interface SettingsState {
   pathsList: Path[];
 }
 
+export interface ModalState {
+    open: boolean;
+    activeModal: string;
+    activeTab: string;
+    tabs: string[];
+    values: {};
+}
+
 export interface RootState {
   router: any;
   wallet: WalletState;
   message: MessageState;
   settings: SettingsState;
   app: AppState;
+  modal: ModalState;
 }

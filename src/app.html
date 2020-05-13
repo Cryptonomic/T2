@@ -2,7 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Galleon Preview</title>
+    <script>
+      {
+        const { name } = require('./config.json');
+        const title = document.createElement('title');
+        title.text = name;
+        document.getElementsByTagName('head')[0].appendChild(title);
+      }
+    </script>
     <script>
       (() => {
         if (!process.env.START_HOT) {
