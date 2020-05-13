@@ -1,11 +1,9 @@
 {
     "name": "Tezori",
     "version": "1.0.10b",
-    "network": "mainnet",
     "blockExplorerHost": "https://mininax.io",
     "logo": "tezosLogo.png",
     "logoLink": "https://github.com/Cryptonomic/Tezori",
-    "icon": "tezos",
     "termsService": "https://github.com/Cryptonomic/Tezori",
     "privacyPolicy": "https://github.com/Cryptonomic/Tezori",
     "tagline": "containers.loginHome.tagline",
