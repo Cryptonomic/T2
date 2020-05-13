@@ -11,8 +11,7 @@ import noticeImg from '../../../resources/imgs/security-notice.svg';
 import { ms } from '../../styles/helpers';
 import { openLink } from '../../utils/general';
 import { setLocalData } from '../../utils/localData';
-
-const url = 'https://github.com/Cryptonomic/Deployments/wiki/Galleon:-FAQ#smart-contracts';
+import { helpUrl } from '../../config.json';
 
 const ModalWrapper = styled(Modal)`
     &&& {
@@ -142,7 +141,7 @@ function SecurityNoticeModal(props: Props) {
                     <NoticeSvg src={noticeImg} />
                     <NoticeTitle>{t('components.securityNoticeModal.security_notice')}</NoticeTitle>
                     <NoticeContent>{t('components.securityNoticeModal.notice_content')}</NoticeContent>
-                    <LinkContainer onClick={() => openLink(url)}>
+                    <LinkContainer onClick={() => openLink(helpUrl)}>
                         {t('components.securityNoticeModal.learn_more')}
                         <LinkIcon iconName="new-window" size={ms(0)} color="accent" />
                     </LinkContainer>

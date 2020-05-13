@@ -1,4 +1,5 @@
 import path from 'path';
+import { ipcRenderer } from 'electron';
 import { push } from 'react-router-redux';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import {
@@ -559,6 +560,7 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
 export function connectLedgerThunk() {
     return async (dispatch, state) => {
         const { selectedPath, pathsList } = state().settings;
+        const osPlatform = ipcRenderer.sendSync('os-platform');
         const derivation = getMainPath(pathsList, selectedPath);
         dispatch(setLedgerAction(true));
         dispatch(setIsLedgerConnectingAction(true));
@@ -579,7 +581,11 @@ export function connectLedgerThunk() {
                 await dispatch(syncWalletThunk());
             } catch (e) {
                 console.error(e);
-                dispatch(createMessageAction(e.name, true));
+                let message = e.name;
+                if (osPlatform === 'linux') {
+                    message = 'components.messageBar.messages.ledger_linux_error';
+                }
+                dispatch(createMessageAction(message, true, 'https://cryptonomic.zendesk.com/hc/en-us/articles/360039616411'));
             }
         }
         dispatch(setIsLoadingAction(false));

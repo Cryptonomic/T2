@@ -1,6 +1,8 @@
 {
     "general": {
         "verbs": {
+            "authenticate": "Authenticate",
+            "authentication": "Authentication",
             "send": "Send",
             "copy_address": "Copy Address",
             "show": "Show",
@@ -215,10 +217,14 @@
             "delegate_settings": "Delegate Settings",
             "current_delegate": "You are currently delegating to",
             "change_delegate": "Change Delegate",
-            "delegate_warning": "Your delegate settings will not show up until confirmed on the blockchain."
+            "delegate_warning": "Your delegate settings will not show up until confirmed on the blockchain.",
+            "add_delegation_contract": "Add Delegation Contract",
+            "add_delegation_tooltip_title": "What is a Delegation Contract?",
+            "add_delegation_tooltip_text": "You can delegate to multiple bakers using smart contracts. Your delegations will appear under ‘Delegation Contracts’ on the left."
         },
         "delegateConfirmationModal": {
             "new_address_label": "Change Baker Address",
+            "address_label": "Baker Address",
             "delegate_warning": "It will take about 5 weeks (12 cycles) to receive delegation rewards from your baker."
         },
         "changeDelegationLedgerConfirmModal": {
@@ -307,6 +313,7 @@
                 "invalid_wallet_password": "Invalid wallet/password combination.",
                 "account_not_exist": "The account does not exist.",
                 "ledger_not_connect": "Connection refused by Ledger.",
+                "ledger_linux_error": "If you're having trouble conecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "Smart Contract operation failed",
                 "success_invoke_operation": "Successfully started contract invocation.",
                 "success_contract_origination": "Successfully started contract deployment.",
@@ -456,7 +463,7 @@
             "want_to_import_fundraiser_paper_wallet": "Want to import your Fundraiser paper",
             "create_named_wallet": "wallet? <1><0>Create a <1>{{name}}</1> wallet</0></1> first.",
             "tagline": "A community wallet for Tezos",
-            "app_name": "Galleon",
+            "app_name": "{{name}}",
             "keystore_wallet": "Keystore Wallet",
             "ledger_wallet": "Ledger Wallet",
             "connect_ledger": "Connect with Ledger",
@@ -472,7 +479,7 @@
             "create_wallet_btn": "Create Wallet",
             "create_wallet_password_label": "Create Wallet Password",
             "confirm_wallet_password_label": "Confirm Wallet Password",
-            "create_new_wallet_btn": "Select File Destination",
+            "create_new_wallet_btn": "New Wallet File",
             "create_wallet_title": "Create a new wallet",
             "create_wallet_description": "Your wallet information will be saved to your computer. It will be encrypted with a password that you set.",
             "crack_time_description": "It will take <span>{{time}}</span> to crack!",

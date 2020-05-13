@@ -263,6 +263,7 @@
                 "invalid_wallet_password": "Falsche Wallet/Passwort Kombination.",
                 "account_not_exist": "Das Konto existiert nicht.",
                 "ledger_not_connect": "Verbindung von Ledger abgelehnt.",
+                "ledger_linux_error": "TODO:",
                 "invoke_operation_failed": "Smart Contract Operation fehlgeschlagen",
                 "success_invoke_operation": "Der Smart Contract Aufruf wurde erfolgreich gestartet",
                 "success_contract_origination": "Die Smart Contract Bereitstellung wurde erfolgreich gestartet"
@@ -394,7 +395,7 @@
             "want_to_import_fundraiser_paper_wallet": "Wollen Sie ein Papierwallet aus dem Fundraiser importieren?",
             "create_named_wallet": "Wallet? <1><0>Erstelle <1>{{name}}</1> zuerst ein</0></1> neues Wallet.",
             "tagline": "Ein Community Wallet für Tezos",
-            "app_name": "Galleon",
+            "app_name": "{{name}}",
             "keystore_wallet": "Keystore Wallet",
             "ledger_wallet": "Ledger Wallet",
             "connect_ledger": "Verbinde mit Ledger",
