@@ -110,7 +110,7 @@ function LoginHome(props: Props) {
         <SectionContainer>
             <DefaultContainer>
                 <NameSection>
-                    <AppName>{name}</AppName>
+                    <AppName>{t('containers.loginHome.app_name', { name })}</AppName>
                 </NameSection>
                 <Section>
                     <CardContainer>
