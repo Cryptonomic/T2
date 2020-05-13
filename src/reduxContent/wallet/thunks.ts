@@ -583,7 +583,7 @@ export function connectLedgerThunk() {
                 console.error(e);
                 let message = e.name;
                 if (osPlatform === 'linux') {
-                    message = 'linux custom message';
+                    message = 'Unable to connect Ledger device? https://cryptonomic.zendesk.com/hc/en-us/articles/360039616411';
                 }
                 dispatch(createMessageAction(message, true));
             }
