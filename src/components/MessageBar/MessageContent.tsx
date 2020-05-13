@@ -32,7 +32,7 @@ const BroadIcon = styled(TezosIcon)`
     margin-left: 2px;
 `;
 
-const MessageHeader = styled.div<{ isWrap: boolean }>`
+const MessageHeader = styled.div<{ isWrap?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,6 +52,14 @@ const MessageFooter = styled.div`
 
 const LinkContainer = styled.div`
     display: flex;
+    align-items: center;
+    margin-left: 7px;
+    cursor: pointer;
+`;
+
+const CustomLinkContainer = styled.div`
+    display: flex;
+    justify-content: center;
     align-items: center;
     margin-left: 7px;
     cursor: pointer;
@@ -82,13 +90,30 @@ interface Props {
     realHash: string;
     isError: boolean;
     localeParam: number;
-    openLink: () => void;
+    openLink: (link?: string) => void;
     onClose: () => void;
 }
 
 const MessageContent = (props: Props) => {
     const { content, realHash, hash, openLink, onClose, isError, localeParam } = props;
     const { t } = useTranslation();
+
+    if (content.includes('https')) {
+        const index = content.indexOf('https');
+        const title = content.slice(0, index).trim();
+        const link = content.slice(index);
+
+        return (
+            <MessageContainer isError={isError}>
+                <StyledCloseIcon onClick={() => onClose()} />
+                <MessageHeader>{t(title)}</MessageHeader>
+                <CustomLinkContainer onClick={() => openLink(link)}>
+                    <LinkTitle>{link}</LinkTitle>
+                    <BroadIcon iconName="new-window" size={ms(0)} color="white" />
+                </CustomLinkContainer>
+            </MessageContainer>
+        );
+    }
 
     return (
         <MessageContainer isError={isError}>
