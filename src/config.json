@@ -10,5 +10,5 @@
     "LocalVersionIndex": "19",
     "helpUrl": "https://cryptonomic.tech/support.html",
     "ledgerReferral": "https://shop.ledger.com/pages/ledger-nano-x?r=631fb45e26da",
-    "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/develop/version.json"
+    "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/Deployments/master/Galleon/version.json"
 }
