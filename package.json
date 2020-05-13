@@ -1,7 +1,7 @@
 {
-  "name": "tezori",
-  "version": "1.0.10",
-  "description": "An open-source wallet framework for the Tezos blockchain.",
+  "name": "galleon",
+  "version": "1.1.1b",
+  "description": "An open-source wallet for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
@@ -72,12 +72,13 @@
   "build": {
     "protocols": [
         {
-          "name": "tezori",
-          "schemes": [ "tezori" ]
+          "name": "galleon",
+          "schemes": [ "galleon" ]
         }
       ],
-    "productName": "Tezori",
-    "appId": "tech.cryptonomic.tezori",
+    "productName": "Galleon Preview",
+    "appId": "tech.galleon-wallet.galleon",
+    "afterSign": "./scripts/SignMacPackage.js",
     "files": [
       "dist/",
       "locales/",
@@ -95,14 +96,15 @@
       ]
     },
     "dmg": {
+      "background": "./resources/background.png",
       "contents": [
         {
           "x": 130,
-          "y": 220
+          "y": 180
         },
         {
           "x": 410,
-          "y": 220,
+          "y": 180,
           "type": "link",
           "path": "/Applications"
         }
@@ -111,7 +113,6 @@
     },
     "win": {
       "target": [
-        "nsis",
         "msi"
       ]
     },

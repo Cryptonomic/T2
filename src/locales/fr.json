@@ -347,7 +347,7 @@
             "last_updated": "Dernière modification {{date}}"
         },
         "versionStatus": {
-            "version_update": "Vous utilisez une ancienne version de Tezori, qui n'est peut-être pas entièrement fonctionnelle. Merci de télécharger v{{version}} à "
+            "version_update": "Vous utilisez une ancienne version de Galleon, qui n'est peut-être pas entièrement fonctionnelle. Merci de télécharger v{{version}} à "
         },
         "comingSoon": {
             "coming_soon": "Bientôt disponible!",

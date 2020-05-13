@@ -1,6 +1,14 @@
 {
-    "selectedNode": "Tezos Testnet",
+    "selectedNode": "Tezos Mainnet",
     "nodesList": [
+        {
+            "displayName": "Tezos Mainnet",
+            "platform": "tezos",
+            "network": "mainnet",
+            "tezosUrl": "https://tezos-prod.cryptonomic-infra.tech:443",
+            "conseilUrl": "https://conseil-prod.cryptonomic-infra.tech:443",
+            "apiKey": "galleon"
+        },
         {
             "displayName": "Tezos Testnet",
             "platform": "tezos",

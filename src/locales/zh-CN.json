@@ -347,7 +347,7 @@
             "last_updated": "最后更新于{{date}}"
         },
         "versionStatus": {
-            "version_update": "你正在使用Tezori的一个更老的版本，它可能不是完全可用。请下载v{{version}}于 "
+            "version_update": "你正在使用Galleon的一个更老的版本，它可能不是完全可用。请下载v{{version}}于 "
         },
         "comingSoon": {
             "coming_soon": "即将上线",
