@@ -4,6 +4,8 @@ const { ipcMain } = electron;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
+const appName = require('./config.json').name;
+
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
 
@@ -44,13 +46,7 @@ const installExtensions = async () => {
     return Promise.all(extensions.map(name => installer.default(installer[name], forceDownload))).catch();
 };
 
-/**
- * Add event listeners...
- */
-
 app.on('window-all-closed', () => {
-    // Respect the OSX convention of having the application in memory even
-    // after all windows have been closed
     if (process.platform !== 'darwin') {
         app.quit();
     }
@@ -74,15 +70,13 @@ app.on('ready', async () => {
         minHeight: 768,
         minWidth: 1024,
         show: false,
-        title: 'Tezori',
+        title: appName,
         webPreferences: { nodeIntegration: true },
         width: 1120
     });
 
     mainWindow.loadURL(`file://${__dirname}/app.html`);
 
-    // @TODO: Use 'ready-to-show' event
-    //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
     mainWindow.webContents.on('did-finish-load', () => {
         if (!mainWindow) {
             throw new Error('"mainWindow" is not defined');
