@@ -9,6 +9,7 @@
     "tagline": "containers.loginHome.tagline",
     "LocalVersionIndex": "19",
     "helpUrl": "https://cryptonomic.tech/support.html",
+    "ledgerAppUrl": "https://support.ledger.com/hc/en-us/articles/360016057774-Tezos-XTZ-",
     "ledgerReferral": "https://shop.ledger.com/pages/ledger-nano-x?r=631fb45e26da",
     "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/Deployments/master/Galleon/version.json"
 }

@@ -12,7 +12,7 @@ import { setLocalData, getLocalData, resetLocalData } from '../../utils/localDat
 import { changeLocaleThunk } from '../Settings/duck/thunk';
 import { connectLedgerThunk } from '../../reduxContent/wallet/thunks';
 import { getSelectedPath } from '../../reduxContent/settings/selectors';
-import { helpUrl } from '../../config.json';
+import { ledgerAppUrl } from '../../config.json';
 
 import {
     SectionContainer,
@@ -90,14 +90,6 @@ function LoginHome(props: Props) {
         await dispatch(connectLedgerThunk());
     }
 
-    function onDownload() {
-        openLink(helpUrl);
-    }
-
-    function onOrderDevice() {
-        openLink(ledgerReferral);
-    }
-
     function openTermsService() {
         goTo('conditions/termsOfService');
     }
@@ -139,13 +131,13 @@ function LoginHome(props: Props) {
                         <Tip>
                             <div>{t('containers.loginHome.dont_have_ledger_wallet')}</div>
                             <div>
-                                <Link onClick={() => onDownload()}>{t('containers.loginHome.download_it_here')}</Link>
+                                <Link onClick={() => openLink(ledgerAppUrl)}>{t('containers.loginHome.download_it_here')}</Link>
                             </div>
                         </Tip>
                         <Tip>
                             <div>
                                 {t('containers.loginHome.need_device')}&nbsp;
-                                <Link onClick={() => onOrderDevice()}>{t('containers.loginHome.get_it_here')}</Link>
+                                <Link onClick={() => openLink(ledgerReferral)}>{t('containers.loginHome.get_it_here')}</Link>
                             </div>
                         </Tip>
                     </CardContainer>
