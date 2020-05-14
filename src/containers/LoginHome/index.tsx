@@ -12,6 +12,7 @@ import { setLocalData, getLocalData, resetLocalData } from '../../utils/localDat
 import { changeLocaleThunk } from '../Settings/duck/thunk';
 import { connectLedgerThunk } from '../../reduxContent/wallet/thunks';
 import { getSelectedPath } from '../../reduxContent/settings/selectors';
+import { helpUrl } from '../../config.json';
 
 import {
     SectionContainer,
@@ -90,8 +91,7 @@ function LoginHome(props: Props) {
     }
 
     function onDownload() {
-        const url = 'https://github.com/Cryptonomic/Tezori';
-        openLink(url);
+        openLink(helpUrl);
     }
 
     function onOrderDevice() {
@@ -110,7 +110,7 @@ function LoginHome(props: Props) {
         <SectionContainer>
             <DefaultContainer>
                 <NameSection>
-                    <AppName>{name}</AppName>
+                    <AppName>{t('containers.loginHome.app_name', { name })}</AppName>
                 </NameSection>
                 <Section>
                     <CardContainer>

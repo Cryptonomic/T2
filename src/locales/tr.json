@@ -263,6 +263,7 @@
                 "invalid_wallet_password": "Hatalı cüzdan/şifre kombinasyonu.",
                 "account_not_exist": "Bu hesap bulunamıyor.",
                 "ledger_not_connect": "Ledger bağlantıyı reddetti.",
+                "ledger_linux_error": "TODO:",
                 "invoke_operation_failed": "Akıllı Sözleşme operasyonu başarısız.",
                 "success_invoke_operation": "Akıllı Sözleşme çalıştırma operasyonu başarılı.",
                 "success_contract_origination": "Akıllı Sözleşme oluşturma operasyonu başarılı."
@@ -395,7 +396,7 @@
             "want_to_import_fundraiser_paper_wallet": "Proje Destek zamanı oluşturulan kağıt cüzdana mı erişmek istiyorsun?",
             "create_named_wallet": " Öncelikle <0>yeni bir cüzdanı oluştur</0>.",
             "tagline": "Tezos ailesi için bir cüzdan",
-            "app_name": "Tezori",
+            "app_name": "{{name}}",
             "keystore_wallet": "Anahtar Dosyalı Cüzdan",
             "ledger_wallet": "Ledger Cüzdan",
             "connect_ledger": "Ledger ile Bağlan",

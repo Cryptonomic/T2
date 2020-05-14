@@ -583,9 +583,9 @@ export function connectLedgerThunk() {
                 console.error(e);
                 let message = e.name;
                 if (osPlatform === 'linux') {
-                    message = 'linux custom message';
+                    message = 'components.messageBar.messages.ledger_linux_error';
                 }
-                dispatch(createMessageAction(message, true));
+                dispatch(createMessageAction(message, true, 'https://cryptonomic.zendesk.com/hc/en-us/articles/360039616411'));
             }
         }
         dispatch(setIsLoadingAction(false));
