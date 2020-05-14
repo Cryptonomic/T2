@@ -160,11 +160,10 @@ function LoginHome(props: Props) {
                         </CreateWalletButton>
                         <Linebar />
                         <Tip>
-                            <div>{t('containers.loginHome.want_to_import_fundraiser_paper_wallet')}</div>
                             <div>
-                                <Trans i18nKey="containers.loginHome.create_named_wallet" values={{ name }}>
-                                    wallet?
-                                    <Link onClick={() => goTo('create')}>Create a {name} wallet</Link> first.
+                                {t('containers.loginHome.want_to_import_fundraiser_paper_wallet')}
+                                <Trans i18nKey="containers.loginHome.create_named_wallet">
+                                    <Link onClick={() => goTo('create')}>Create a wallet</Link> first.
                                 </Trans>
                             </div>
                         </Tip>
