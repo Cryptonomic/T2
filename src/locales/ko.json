@@ -315,7 +315,8 @@
         },
         "settingController": {
             "settings": "설정",
-            "logout": "로그아웃"
+            "logout": "로그아웃",
+            "help": "HELP"
         },
         "termsModal": {
             "hi_there": "안녕하세요!",
@@ -392,7 +393,7 @@
             "create_new_wallet_btn": "새로운 지갑 만들기",
             "open_exisiting_wallet_btn": "기존 지갑 열기",
             "want_to_import_fundraiser_paper_wallet": "기금 모금 페이퍼 지갑을 불러오겠습니까?",
-            "create_named_wallet": "<1><0>우선 <1>{{name}}</1> 지갑을 만드세요.</0></1>",
+            "create_named_wallet": " <0>우선 지갑을 만드세요.</0>",
             "tagline": "Tezos를 위한 커뮤니티 지갑",
             "app_name": "Tezori",
             "keystore_wallet": "Keystore 지갑",

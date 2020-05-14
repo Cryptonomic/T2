@@ -315,7 +315,8 @@
         },
         "settingController": {
             "settings": "设置",
-            "logout": "登出"
+            "logout": "登出",
+            "help": "HELP"
         },
         "termsModal": {
             "hi_there": "你好！",
@@ -392,7 +393,7 @@
             "create_new_wallet_btn": "创建新钱包",
             "open_exisiting_wallet_btn": "打开已有钱包",
             "want_to_import_fundraiser_paper_wallet": "想要导入你的资金筹集活动纸钱包吗?",
-            "create_named_wallet": "<1><0>首先创建一个<1>{{name}}</1>钱包。</0></1>",
+            "create_named_wallet": " <0>首先创建一个钱包。</0><",
             "tagline": "为Tezos而生的社区钱包",
             "app_name": "Tezori",
             "keystore_wallet": "Keystore 钱包",
