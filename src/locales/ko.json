@@ -263,7 +263,7 @@
                 "invalid_wallet_password": "지갑/암호 조합이 유효하지 않습니다.",
                 "account_not_exist": "계정이 존재하지 않습니다.",
                 "ledger_not_connect": "Ledger가 연결을 거부했습니다.",
-                "ledger_linux_error": "TODO:",
+                "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "스마트 컨트랙트 작업이 실패했습니다.",
                 "success_invoke_operation": "컨트랙트 호출이 성공적으로 시작되었습니다.",
                 "success_contract_origination": "컨트랙트 배포를 성공적으로 시작했습니다."

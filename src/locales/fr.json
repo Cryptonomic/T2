@@ -263,7 +263,7 @@
                 "invalid_wallet_password": "Combinaison wallet/mot de passe invalide.",
                 "account_not_exist": "Le compte n`existe pas.",
                 "ledger_not_connect": "Connexion refusée par le Ledger.",
-                "ledger_linux_error": "TODO:",
+                "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "L'opération de Contrat Intelligent a échoué",
                 "success_invoke_operation": "L’invocation du contrat a commencé avec succès.",
                 "success_contract_origination": "Le déploiement du contrat a commencé avec succès."

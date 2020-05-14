@@ -259,7 +259,7 @@
                 "invalid_wallet_password": "Неверная комбинация кошелька/пароля.",
                 "account_not_exist": "Аккаунт не существует.",
                 "ledger_not_connect": "Ledger отказал в соединении.",
-                "ledger_linux_error": "TODO:",
+                "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "Операция Смарт Контракта не удалась",
                 "success_invoke_operation": "Операция по призванию контракта началась успешно.",
                 "success_contract_origination": "Операция по развёртке контракта началась успешно."

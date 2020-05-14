@@ -263,7 +263,7 @@
                 "invalid_wallet_password": "無効なウォレット/パスワードの組み合わせ",
                 "account_not_exist": "アカウントは存在しません。",
                 "ledger_not_connect": "Ledgerに接続を拒否されました",
-                "ledger_linux_error": "TODO:",
+                "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "スマートコントラクト操作を失敗しました",
                 "success_invoke_operation": "コントラクト呼び出しをうまく開始しました。",
                 "success_contract_origination": "コントラクト展開をうまく開始しました。"
