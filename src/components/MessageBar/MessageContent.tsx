@@ -108,7 +108,7 @@ const MessageContent = (props: Props) => {
                 <StyledCloseIcon onClick={() => onClose()} />
                 <CustomLinkContainer onClick={() => openLink(realHash)}>
                     <Trans i18nKey="components.messageBar.messages.ledger_linux_error">
-                        If you're having trouble conecting to a Ledger device, please see
+                        If you're having trouble connecting to a Ledger device, please see
                         <CustomLinkTitle>these steps</CustomLinkTitle>
                         <BroadIcon iconName="new-window" size={ms(0)} color="white" />
                     </Trans>
