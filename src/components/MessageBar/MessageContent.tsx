@@ -103,6 +103,7 @@ const MessageContent = (props: Props) => {
     const { t } = useTranslation();
 
     if (content === 'components.messageBar.messages.ledger_linux_error') {
+        // TODO
         return (
             <MessageContainer isError={isError}>
                 <StyledCloseIcon onClick={() => onClose()} />
@@ -118,6 +119,7 @@ const MessageContent = (props: Props) => {
     }
 
     if (content === 'components.messageBar.messages.ledger_not_connect') {
+        // TODO
         return (
             <MessageContainer isError={isError}>
                 <StyledCloseIcon onClick={() => onClose()} />
