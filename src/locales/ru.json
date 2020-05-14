@@ -259,6 +259,7 @@
                 "invalid_wallet_password": "Неверная комбинация кошелька/пароля.",
                 "account_not_exist": "Аккаунт не существует.",
                 "ledger_not_connect": "Ledger отказал в соединении.",
+                "ledger_linux_error": "TODO:",
                 "invoke_operation_failed": "Операция Смарт Контракта не удалась",
                 "success_invoke_operation": "Операция по призванию контракта началась успешно.",
                 "success_contract_origination": "Операция по развёртке контракта началась успешно."
@@ -391,7 +392,7 @@
             "want_to_import_fundraiser_paper_wallet": "Хотите импортировать вашего бумажного кошелька Фандрейзера?",
             "create_named_wallet": " <0>Создайте кошелёк</0> сначала.",
             "tagline": "Коммьюнити кошелёк для Tezos",
-            "app_name": "Tezori",
+            "app_name": "{{name}}",
             "keystore_wallet": "Keystore Кошелёк ",
             "ledger_wallet": "Ledger Кошелёк",
             "connect_ledger": "Подсоединить к Ledger",
