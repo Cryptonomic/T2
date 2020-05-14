@@ -315,7 +315,8 @@
         },
         "settingController": {
             "settings": "PARAMETRES",
-            "logout": "FIN DE SESSION"
+            "logout": "FIN DE SESSION",
+            "help": "HELP"
         },
         "termsModal": {
             "hi_there": "Salut !",
@@ -392,7 +393,7 @@
             "create_new_wallet_btn": "Créer un nouveau wallet",
             "open_exisiting_wallet_btn": "Ouvrir un wallet existant",
             "want_to_import_fundraiser_paper_wallet": "Vous voulez importez votre papier de levée de fonds",
-            "create_named_wallet": "wallet? <1><0>Créer un <1>{{name}}</1> wallet</0></1> en premier.",
+            "create_named_wallet": " <0>Créer un wallet</0> en premier.",
             "tagline": "Un wallet communautaire pour Tezos",
             "app_name": "Tezori",
             "keystore_wallet": "Keystore Wallet",

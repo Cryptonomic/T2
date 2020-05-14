@@ -315,7 +315,8 @@
         },
         "settingController": {
             "settings": "設定",
-            "logout": "ログアウト"
+            "logout": "ログアウト",
+            "help": "HELP"
         },
         "termsModal": {
             "hi_there": "こんにちは！",
@@ -392,7 +393,7 @@
             "create_new_wallet_btn": "新しいウォレットを作成",
             "open_exisiting_wallet_btn": "既存のウォレットを開く",
             "want_to_import_fundraiser_paper_wallet": "Fundraiser ペーパーウォレットをインポートしますか？",
-            "create_named_wallet": "<1><0><1> {{name}}</1>ウォレットを最初に作成してください。</0></1>",
+            "create_named_wallet": " <0>ウォレットを最初に作成してください。</0>",
             "tagline": "Tezosのコミュニティウォレット",
             "app_name": "Tezori",
             "keystore_wallet": "Keystore Wallet",
