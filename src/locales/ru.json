@@ -396,7 +396,7 @@
             "keystore_wallet": "Keystore Кошелёк ",
             "ledger_wallet": "Ledger Кошелёк",
             "connect_ledger": "Подсоединить к Ledger",
-            "dont_have_ledger_wallet": "Не имеете приложение НLedger Tezos кошелька?",
+            "dont_have_ledger_wallet": "Не имеете приложение Ledger Tezos кошелька?",
             "download_it_here": "Скачать его здесь.",
             "connect_your_device": "Пожалуйста<1> подсоедините ваше устройство</1>,<3> вставьте пин-номер</3>, и<5> откройте приложение Tezos Кошелёк </5>.",
             "connecting": "Соединяем...",
