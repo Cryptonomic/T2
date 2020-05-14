@@ -117,6 +117,15 @@ const MessageContent = (props: Props) => {
         );
     }
 
+    if (content === 'components.messageBar.messages.ledger_not_connect') {
+        return (
+            <MessageContainer isError={isError}>
+                <StyledCloseIcon onClick={() => onClose()} />
+                <MessageHeader>{t(content, { localeParam })}</MessageHeader>
+            </MessageContainer>
+        );
+    }
+
     return (
         <MessageContainer isError={isError}>
             <StyledCloseIcon onClick={() => onClose()} />

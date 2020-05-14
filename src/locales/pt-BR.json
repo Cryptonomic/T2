@@ -263,7 +263,7 @@
                 "invalid_wallet_password": "Combinação de wallet/senha inválida.",
                 "account_not_exist": "A conta não existe.",
                 "ledger_not_connect": "Conexão recusada pela Ledger.",
-                "ledger_linux_error": "TODO:",
+                "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "Falha na operação de contrato inteligente",
                 "success_invoke_operation": "Chamada de contrato iniciada com sucesso.",
                 "success_contract_origination": "Implantação de contrato iniciada com sucesso."

@@ -263,7 +263,7 @@
                 "invalid_wallet_password": "无效的钱包/密码组合。",
                 "account_not_exist": "账户不存在。",
                 "ledger_not_connect": "连接被 Ledger 拒绝了。",
-                "ledger_linux_error": "TODO:",
+                "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "智能合同操作失败了",
                 "success_invoke_operation": "成功地开始了合同调用。",
                 "success_contract_origination": "成功地开始了合同部署。"
