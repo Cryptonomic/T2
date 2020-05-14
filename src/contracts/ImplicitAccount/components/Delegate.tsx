@@ -162,7 +162,7 @@ function Delegate(props: Props) {
                         </IconButton>
                     </Tooltip>
                 )}
-                {t('components.delegate.add_delegation_contract')}
+                <BoldSpan onClick={() => dispatch(setModalOpen(true, 'delegate_contract'))}>{t('components.delegate.add_delegation_contract')}</BoldSpan>
                 <Tooltip
                     position="top"
                     offset={[-7.5, 0]}
