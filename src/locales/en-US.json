@@ -197,7 +197,7 @@
             "descriptions": {
                 "description1": "Write down your seed phrase on a piece of paper and keep it in a safe place. You will need your seed phrase to recover your account.",
                 "description2": "Make sure to keep your seed phrase in a safe place. If you forget your seed phrase, you will not be able to recover your account. We do not store your seed phrase and cannot help you recover it if you lose it.",
-                "description3": "In order to ensure that you wrote down up your seed phrase, please type in the following four seed words."
+                "description3": "In order to ensure that you wrote down your seed phrase, please type in the following four seed words."
             },
             "generate_other_seed": "Generate Another Seed Phrase",
             "copy_seed": "Copy Seed Phrase",
@@ -438,7 +438,7 @@
                 "public_key_hash_tooltip": "This is the public key hash as provided in the paper wallet."
             },
             "import_fundraiser": "Import Fundraiser Wallet",
-            "create_new_account": "Create New Account",
+            "create_new_account": "Create a New Account",
             "restore_backup": "Restore from Backup",
             "errors": {
                 "invalid_length": "Seed phrases contain 12, 15, 18, 21 or 24 words.",
