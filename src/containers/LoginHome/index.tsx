@@ -12,7 +12,7 @@ import { setLocalData, getLocalData, resetLocalData } from '../../utils/localDat
 import { changeLocaleThunk } from '../Settings/duck/thunk';
 import { connectLedgerThunk } from '../../reduxContent/wallet/thunks';
 import { getSelectedPath } from '../../reduxContent/settings/selectors';
-import { helpUrl } from '../../config.json';
+import { ledgerAppUrl } from '../../config.json';
 
 import {
     SectionContainer,
@@ -91,7 +91,7 @@ function LoginHome(props: Props) {
     }
 
     function onDownload() {
-        openLink(helpUrl);
+        openLink(ledgerAppUrl);
     }
 
     function onOrderDevice() {
