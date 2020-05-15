@@ -1,6 +1,8 @@
 {
     "general": {
         "verbs": {
+            "authenticate": "Authenticate",
+            "authentication": "Authentication",
             "send": "Gönder",
             "copy_address": "Adresi Kopyala",
             "show": "Göster",
@@ -20,7 +22,12 @@
             "proceed": "Devam Et",
             "close": "Close",
             "withdraw": "Withdraw",
-            "deposit": "Deposit"
+            "deposit": "Deposit",
+            "mint": "Mint",
+            "burn": "Burn",
+            "sign": "Sign",
+            "verify": "Verify",
+            "copy": "Copy"
         },
         "nouns": {
             "amount": "Miktar",
@@ -32,6 +39,7 @@
             "account": "Hesap",
             "label_account": "Hesap",
             "label_address": "Adres",
+            "signer_address": "Signer Address",
             "delegate_address": "Fırıncı Adresi",
             "remaining_balance": "Kalan Bakiye",
             "gas": "Yakım",
@@ -50,11 +58,30 @@
             "storage": "Depolama",
             "burn": "Yakım",
             "smart_contract": "Akıllı Sözleşme",
-            "code": "Kod"
+            "code": "Kod",
+            "format": "Format",
+            "tokens": "Tokens",
+            "token_contract": "Token Contract",
+            "sign_n_verify": "Sign & Verify",
+            "platform": "Platform",
+            "network": "Network",
+            "message": "Message",
+            "signature": "Signature",
+            "ok": "Ok",
+            "council": "Council",
+            "stage": "Stage",
+            "phase": "Phase",
+            "supply": "Supply",
+            "paused": "Paused",
+            "proposal": "Proposal",
+            "evaluation": "evaluation",
+            "voting": "Voting",
+            "implementation": "Implementation"
         },
         "errors": {
             "no_hex_data": "Girilen bilgiler onaltılık düzeninde değil.",
-            "no_ledger_detected": "Ledger çıkartıldı."
+            "no_ledger_detected": "Ledger çıkartıldı.",
+            "ledger_error": "Error communicating with Ledger device"
         },
         "decimal_separator": ".",
         "back": "Geri",
@@ -89,7 +116,16 @@
             "gas_tool_tip": "Delege adres oluşturmak için Tezos ağının {{gas}} tz gaz yakması gerekiyor.",
             "warning1": "Bakiye yetersiz",
             "warning2": "Yönetici Adreslerin bakiyesi en az 1 µtz olabilir",
-            "add_delegate_title": "Delege Adres Oluştur"
+            "add_delegate_title": "Delege Adres Oluştur",
+            "deploy_delegation": "Deploy Delegation..."
+        },
+        "signVerifyModal": {
+            "not_revealed": "This account is not active yet on the blockchain so your signature cannot be verified independently. Please provide your public key to the verifier so they can manually check your signature.",
+            "enter_address_key": "Signer address or public key",
+            "sign_guidance": "Signing a message allows others to verify your ownership of this account using only this message, signature and your address/public key.",
+            "verify_guidance": "Enter the message, signature and address provided to you to verify the signature.",
+            "match": "Signature confirmed",
+            "no_match": "Invalid signature"
         },
         "interactModal": {
             "interact_contract": "Akıllı Sözleşme Operasyonları",
@@ -104,7 +140,8 @@
             "parameters": "Parametreler",
             "view_scan": "Mininax'DE GÖRÜNTÜLE",
             "initial_storage": "İlk Depolama",
-            "paste_micheline_code": "Akıllı Sözleşme'nizin Micheline kodunu yapıştırın"
+            "paste_micheline_code": "Akıllı Sözleşme'nizin Micheline kodunu yapıştırın",
+            "entry_point": "Entry Point"
         },
         "addNodeModal": {
             "error": "Nod'un protokolü https olmalı",
@@ -121,7 +158,8 @@
         },
         "address": {
             "manager_address": "Yönetici Adres",
-            "delegated_address": "Delege Adres {{index}}"
+            "delegated_address": "Delege Adres {{index}}",
+            "delegation_contract": "Delegation Contract {{index}}"
         },
         "addressBlock": {
             "descriptions": {
@@ -144,7 +182,13 @@
         },
         "balanceBanner": {
             "breadcrumbs": "Hesap {{parentIndex}} > {{addressLabel}}",
-            "delegated_to": "Delege edilen Fırıncı'nın adresi: "
+            "delegated_to": "Delege edilen Fırıncı'nın adresi: ",
+            "secret_key": "Secret Key",
+            "reveal_key": "Click to reveal secret key.",
+            "hide_key": "Click to hide secret key.",
+            "warning": "Warning!",
+            "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
+            "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
         },
         "copyIcon": {
             "copied": "Kopyalandı!"
@@ -173,10 +217,14 @@
             "delegate_settings": "Fırıncı Ayarları",
             "current_delegate": "Şu anda delege ettiğiniz Fırıncı",
             "change_delegate": "Fırıncı değiştir",
-            "delegate_warning": "Yeni delege ayarlarınız, blok zincirinde kabul edilene kadar görünmeyecektir."
+            "delegate_warning": "Yeni delege ayarlarınız, blok zincirinde kabul edilene kadar görünmeyecektir.",
+            "add_delegation_contract": "Add Delegation Contract",
+            "add_delegation_tooltip_title": "What is a Delegation Contract?",
+            "add_delegation_tooltip_text": "You can delegate to multiple bakers using smart contracts. Your delegations will appear under ‘Delegation Contracts’ on the left."
         },
         "delegateConfirmationModal": {
             "new_address_label": "Yeni Fırıncı'nın Adresi",
+            "address_label": "Baker Address",
             "delegate_warning": "Yaptığınız Fırıncı değişikliği blok zincirine kayıt edilene kadar cüzdana yansımayacaktır."
         },
         "changeDelegationLedgerConfirmModal": {
@@ -222,6 +270,8 @@
             },
             "errors": {
                 "send_address": "Adresler sadece TZ1, TZ2, TZ3 veya KT1 ile başlayabilir.",
+                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
                 "delegate_address": "Sadece TZ1, TZ2 veya TZ3 ile başlayan adreslere delege edebilirsiniz.",
                 "length": "Adresler 36 karakter uzunluğunda olmalıdır.",
                 "special_chars": "Addresler özel karakter barındıramaz.",
@@ -266,7 +316,13 @@
                 "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "Akıllı Sözleşme operasyonu başarısız.",
                 "success_invoke_operation": "Akıllı Sözleşme çalıştırma operasyonu başarılı.",
-                "success_contract_origination": "Akıllı Sözleşme oluşturma operasyonu başarılı."
+                "success_contract_origination": "Akıllı Sözleşme oluşturma operasyonu başarılı.",
+                "started_token_failed": "Started token transaction failed.",
+                "started_token_success": "Successfully started token transaction.",
+                "mint_operation_failed": "Mint operation failed.",
+                "mint_operation_success": "Successfully started mint token.",
+                "burn_operation_failed": "Burn operation failed.",
+                "burn_operation_success": "Successfully started burn token."
             }
         },
         "pdfReader": {
@@ -295,6 +351,7 @@
         "send": {
             "send_xtz": "XTZ Gönder",
             "recipient_address": "Alıcının Adresi",
+            "holder_address": "Holder Address",
             "burn_tooltip_title": "Neden bir yakım ücreti var?",
             "burn_tooltip_content": "Girdiğiniz alıcı adresinin bakiyesi sıfır. Bakiyesiz yönetici adreslere (tz1,2,3) gönderi yapmak bir kerelik <1> 0.257 </1>XTZ yakım ücretine tabidir.",
             "fee_tooltip_title": "Bu işlem için ücretler neden normalden yüksek?",
@@ -302,7 +359,9 @@
             "warnings": {
                 "total_exceeds": "Yetersiz bakiye",
                 "not_allowed": "Yönetici Adreslerin bakiyesi en az 1 µtz olabilir"
-            }
+            },
+            "burn_notice": "Burn tokens to destroy tokens from a current holder and reduce total supply.",
+            "mint_notice": "Mint tokens to give brand new tokens to a recipient and increase total supply."
         },
         "sendConfirmationModal": {
             "send_confirmation": "Gönderiyi Onayla",
@@ -313,6 +372,10 @@
             "confirm_transaction": "Gönderiyi Onayla",
             "send_description": "Gönderi operasyonu yapmak üzeresiniz. Lütfen aşağıdaki bilgilerin cihazınızda görülenler ile aynı olduğuna emin olun.",
             "confirm_description": "Eğer tüm bilgiler doğruysa, lütfen gönderiyi cihazınızda <1> onaylayın</1>."
+        },
+        "tokenLedgerConfirmModal": {
+            "confirm_token": "Confirm Token Contract",
+            "op_description": "You are about to {{op}} your Tokens. Please carefully review the details on your device."
         },
         "settingController": {
             "settings": "AYARLAR",
@@ -338,7 +401,6 @@
             "sent": "GÖNDERİ",
             "received": "TAHSİLAT",
             "this_address": "Adres",
-            "your_manager_address": "Hesap 1 için <0>sizin</0> Yönetici Adresiniz",
             "invoke_function": "FONKSIYON ÇALIŞTIRILDI",
             "add_delegate": "OLUŞTURMA - DELEGE",
             "deployment": "OLUŞTURMA - AKILLI SÖZLEŞME",
@@ -353,6 +415,10 @@
         "comingSoon": {
             "coming_soon": "Yakında!",
             "working_hard": ""
+        },
+        "withdrawDeposit": {
+            "withdraw_warning": "To withdraw funds back to your manager account, {{managerAddress}}, please select a fee of at least 0.005 XTZ and ensure you have at least that amount in your manager account to cover the transaction.",
+            "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}."
         }
     },
     "containers": {
@@ -360,6 +426,7 @@
             "add_account": "Hesap Oluştur",
             "refer_pdf_title": "Lütfen Proje Destek zamanı yaratılan PDF dökümanınıza bakınız.",
             "secret_key_15": "15 Kelimelik Anahtar Cümle",
+            "restore_mnemonic": "12, 15, 18, 21 or 24 Word Secret Key",
             "fundraiser_password": "Proje Destek Şifresi",
             "public_key_hash": "Adres",
             "fundraiser_email_address": "Email Adresi",
@@ -402,6 +469,8 @@
             "connect_ledger": "Ledger ile Bağlan",
             "dont_have_ledger_wallet": "Ledger'ınız da Tezos Wallet uygulaması yok mu?",
             "download_it_here": "Hemen indirin.",
+            "need_device": "Need a Ledger device?",
+            "get_it_here": "Get it here",
             "connect_your_device": "Lütfen<1> cihazınızı bağlayın</1>,<3> pininizi girin</3>, ve<5> Tezos Wallet uygulamasını açın</5>.",
             "connecting": "Bağlanıyor...",
             "selectedPath": "Derivasyon Seçimi: "

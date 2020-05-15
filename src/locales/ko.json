@@ -1,6 +1,8 @@
 {
     "general": {
         "verbs": {
+            "authenticate": "Authenticate",
+            "authentication": "Authentication",
             "send": "전송",
             "copy_address": "주소 복사",
             "show": "표시",
@@ -20,7 +22,12 @@
             "proceed": "처리",
             "close": "Close",
             "withdraw": "Withdraw",
-            "deposit": "Deposit"
+            "deposit": "Deposit",
+            "mint": "Mint",
+            "burn": "Burn",
+            "sign": "Sign",
+            "verify": "Verify",
+            "copy": "Copy"
         },
         "nouns": {
             "amount": "금액",
@@ -32,6 +39,7 @@
             "account": "계정",
             "label_account": "계정",
             "label_address": "주소",
+            "signer_address": "Signer Address",
             "delegate_address": "베이커의 주소",
             "remaining_balance": "잔액",
             "gas": "Gas",
@@ -50,11 +58,30 @@
             "storage": "스토리지",
             "burn": "소각",
             "smart_contract": "스마트 컨트랙트",
-            "code": "코드"
+            "code": "코드",
+            "format": "Format",
+            "tokens": "Tokens",
+            "token_contract": "Token Contract",
+            "sign_n_verify": "Sign & Verify",
+            "platform": "Platform",
+            "network": "Network",
+            "message": "Message",
+            "signature": "Signature",
+            "ok": "Ok",
+            "council": "Council",
+            "stage": "Stage",
+            "phase": "Phase",
+            "supply": "Supply",
+            "paused": "Paused",
+            "proposal": "Proposal",
+            "evaluation": "evaluation",
+            "voting": "Voting",
+            "implementation": "Implementation"
         },
         "errors": {
             "no_hex_data": "입력 한 데이터가 잘못되었습니다.",
-            "no_ledger_detected": "Ledger 연결 해제"
+            "no_ledger_detected": "Ledger 연결 해제",
+            "ledger_error": "Error communicating with Ledger device"
         },
         "decimal_separator": ".",
         "back": "뒤로",
@@ -89,7 +116,16 @@
             "gas_tool_tip": "위임용 주소를 만들려면 네트워크에서 {{gas}} tz가 필요합니다.",
             "warning1": "총 이용 가능한 금액을 초과합니다.",
             "warning2": "관리자 주소는 아직 1 µtz 미만이어야 합니다.",
-            "add_delegate_title": "대리인 추가"
+            "add_delegate_title": "대리인 추가",
+            "deploy_delegation": "Deploy Delegation..."
+        },
+        "signVerifyModal": {
+            "not_revealed": "This account is not active yet on the blockchain so your signature cannot be verified independently. Please provide your public key to the verifier so they can manually check your signature.",
+            "enter_address_key": "Signer address or public key",
+            "sign_guidance": "Signing a message allows others to verify your ownership of this account using only this message, signature and your address/public key.",
+            "verify_guidance": "Enter the message, signature and address provided to you to verify the signature.",
+            "match": "Signature confirmed",
+            "no_match": "Invalid signature"
         },
         "interactModal": {
             "interact_contract": "컨트랙트로 상호작용",
@@ -104,7 +140,8 @@
             "parameters": "파라미터",
             "view_scan": "Mininax에서 보기",
             "initial_storage": "초기 스토리지",
-            "paste_micheline_code": "스마트 계약서 Micheline 코드 붙여넣기"
+            "paste_micheline_code": "스마트 계약서 Micheline 코드 붙여넣기",
+            "entry_point": "Entry Point"
         },
         "addNodeModal": {
             "error": "노드의 프로토콜은 https여야 합니다.",
@@ -121,7 +158,8 @@
         },
         "address": {
             "manager_address": "관리자 주소",
-            "delegated_address": "위임된 주소 {{index}}"
+            "delegated_address": "위임된 주소 {{index}}",
+            "delegation_contract": "Delegation Contract {{index}}"
         },
         "addressBlock": {
             "descriptions": {
@@ -144,7 +182,13 @@
         },
         "balanceBanner": {
             "breadcrumbs": "{{parentIndex}} > {{addessLabel}} 계정",
-            "delegated_to": "에 위임됨"
+            "delegated_to": "에 위임됨",
+            "secret_key": "Secret Key",
+            "reveal_key": "Click to reveal secret key.",
+            "hide_key": "Click to hide secret key.",
+            "warning": "Warning!",
+            "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
+            "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
         },
         "copyIcon": {
             "copied": "복사했습니다!"
@@ -173,10 +217,14 @@
             "delegate_settings": "베이커 설정",
             "current_delegate": "귀하는 현재 다음으로 위임하고 있습니다",
             "change_delegate": "베이커 변경",
-            "delegate_warning": "블록체인에서 확인될 때까지 베이커 설정이 표시되지 않습니다."
+            "delegate_warning": "블록체인에서 확인될 때까지 베이커 설정이 표시되지 않습니다.",
+            "add_delegation_contract": "Add Delegation Contract",
+            "add_delegation_tooltip_title": "What is a Delegation Contract?",
+            "add_delegation_tooltip_text": "You can delegate to multiple bakers using smart contracts. Your delegations will appear under ‘Delegation Contracts’ on the left."
         },
         "delegateConfirmationModal": {
             "new_address_label": "새로운 주소로 베이커를 변경하세요",
+            "address_label": "Baker Address",
             "delegate_warning": "위임 변경은 블록체인에서 변경이 확인될 때까지 나타나지 않습니다."
         },
         "changeDelegationLedgerConfirmModal": {
@@ -222,6 +270,8 @@
             },
             "errors": {
                 "send_address": "주소는 TZ1, TZ2, TZ3 또는 KT1만 시작할 수 있습니다.",
+                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
                 "delegate_address": "TZ1, TZ2 또는 TZ3 주소로만 위임할 수 있습니다.",
                 "length": "주소는 36자리여야 합니다.",
                 "special_chars": "주소에 특수 문자를 사용할 수 없습니다.",
@@ -266,7 +316,13 @@
                 "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "스마트 컨트랙트 작업이 실패했습니다.",
                 "success_invoke_operation": "컨트랙트 호출이 성공적으로 시작되었습니다.",
-                "success_contract_origination": "컨트랙트 배포를 성공적으로 시작했습니다."
+                "success_contract_origination": "컨트랙트 배포를 성공적으로 시작했습니다.",
+                "started_token_failed": "Started token transaction failed.",
+                "started_token_success": "Successfully started token transaction.",
+                "mint_operation_failed": "Mint operation failed.",
+                "mint_operation_success": "Successfully started mint token.",
+                "burn_operation_failed": "Burn operation failed.",
+                "burn_operation_success": "Successfully started burn token."
             }
         },
         "pdfReader": {
@@ -295,6 +351,7 @@
         "send": {
             "send_xtz": "XTZ 전송",
             "recipient_address": "수신자 주소",
+            "holder_address": "Holder Address",
             "burn_tooltip_title": "소각 비용이 왜 있는건가요?",
             "burn_tooltip_content": "입력한 수신자 주소의 잔액이 0입니다. 빈 관리자 주소(tz1, 2, 3)로 자금을 보내려면 1회에 대해 <1> 0.257 </1>XTZ 소각 요금이 필요합니다.",
             "fee_tooltip_title": "이 트랜잭션에 대한 수수료가 조금 더 높은 이유는 무엇입니까?",
@@ -302,7 +359,9 @@
             "warnings": {
                 "total_exceeds": "총 이용 가능한 금액을 초과합니다.",
                 "not_allowed": "관리자 주소는 아직 1 µtz 미만이어야 합니다."
-            }
+            },
+            "burn_notice": "Burn tokens to destroy tokens from a current holder and reduce total supply.",
+            "mint_notice": "Mint tokens to give brand new tokens to a recipient and increase total supply."
         },
         "sendConfirmationModal": {
             "send_confirmation": "확인 전송",
@@ -313,6 +372,10 @@
             "confirm_transaction": "거래 확인",
             "send_description": "곧 트랜잭션을 보냅니다. 기기에서 세부 정보를 상세히 검토하세요.",
             "confirm_description": "모든 세부 사항이 정확하다면, 기기에서 트랜잭션을 <1>확인하세요</1>."
+        },
+        "tokenLedgerConfirmModal": {
+            "confirm_token": "Confirm Token Contract",
+            "op_description": "You are about to {{op}} your Tokens. Please carefully review the details on your device."
         },
         "settingController": {
             "settings": "설정",
@@ -338,7 +401,6 @@
             "sent": "전송됨",
             "received": "수신됨",
             "this_address": "이 주소",
-            "your_manager_address": "<0>귀하의</0> 계정 1 관리자 주소",
             "invoke_function": "호출된 기능",
             "add_delegate": "기관 - 삭제된 주소",
             "deployment": "기관 - 스마트 컨트랙트",
@@ -353,6 +415,10 @@
         "comingSoon": {
             "coming_soon": "곧 준비됩니다",
             "working_hard": ""
+        },
+        "withdrawDeposit": {
+            "withdraw_warning": "To withdraw funds back to your manager account, {{managerAddress}}, please select a fee of at least 0.005 XTZ and ensure you have at least that amount in your manager account to cover the transaction.",
+            "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}."
         }
     },
     "containers": {
@@ -360,6 +426,7 @@
             "add_account": "계정 추가",
             "refer_pdf_title": "기금 모금 동안 작성한 PDF 문서를 참조하세요.",
             "secret_key_15": "15자리 비밀 키",
+            "restore_mnemonic": "12, 15, 18, 21 or 24 Word Secret Key",
             "fundraiser_password": "기금 모금 암호",
             "public_key_hash": "공개 키 해시",
             "fundraiser_email_address": "기금 모금 이메일 주소",
@@ -402,6 +469,8 @@
             "connect_ledger": "Ledger 연결",
             "dont_have_ledger_wallet": "Ledger Tezos 지갑 앱이 없나요?",
             "download_it_here": "여기에서 다운로드하세요.",
+            "need_device": "Need a Ledger device?",
+            "get_it_here": "Get it here",
             "connect_your_device": "<1> 장치에 연결하세요</1>,<3> 핀을 입력하고</3>, <5> Tezos 지갑 앱을 여세요</5>.",
             "connecting": "연결 중...",
             "selectedPath": "선택한 경로: "
