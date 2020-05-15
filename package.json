@@ -71,11 +71,13 @@
   },
   "build": {
     "protocols": [
-        {
-          "name": "tezori",
-          "schemes": [ "tezori" ]
-        }
-      ],
+      {
+        "name": "tezori",
+        "schemes": [
+          "tezori"
+        ]
+      }
+    ],
     "productName": "Tezori",
     "appId": "tech.cryptonomic.tezori",
     "files": [
@@ -211,6 +213,7 @@
     "connected-react-router": "^6.8.0",
     "electron-debug": "^3.0.1",
     "electron-store": "^5.1.1",
+    "electron-updater": "^4.3.1",
     "history": "^4.10.1",
     "i18next": "^19.4.1",
     "i18next-electron-language-detector": "0.0.10",

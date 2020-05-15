@@ -1,5 +1,6 @@
 const electron = require('electron');
 const os = require('os');
+const { autoUpdater } = require('electron-updater');
 const { ipcMain } = electron;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -65,6 +66,8 @@ app.on('open-url', (event, url) => {
 app.setAsDefaultProtocolClient('galleon');
 
 app.on('ready', async () => {
+    autoUpdater.checkForUpdatesAndNotify();
+
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
         await installExtensions();
     }
