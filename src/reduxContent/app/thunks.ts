@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { TezosConseilClient, TezosNodeReader, OperationKindType } from 'conseiljs';
-import { changeAccountAction, addNewVersionAction, showSignVerifyAction } from './actions';
+import { ipcRenderer } from 'electron';
+
+import { changeAccountAction, addNewVersionAction, showSignVerifyAction, setCustomProtocol } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
 import { getVersionFromApi } from '../../utils/general';
@@ -95,5 +97,12 @@ export function getNewVersionThunk() {
 export function showSignVeiryThunk() {
     return async dispatch => {
         dispatch(showSignVerifyAction());
+    };
+}
+
+export function setCustomProtocolThunk(customProtocol: string, shouldAdd: boolean) {
+    return async dispatch => {
+        ipcRenderer.send('custom-protocol', customProtocol, shouldAdd);
+        dispatch(setCustomProtocol(customProtocol));
     };
 }

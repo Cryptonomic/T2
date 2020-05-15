@@ -25,6 +25,21 @@ ipcMain.on('os-platform', event => {
     event.returnValue = os.platform();
 });
 
+ipcMain.on('custom-protocol', (event, customProtocol, shouldAdd) => {
+    if (!customProtocol) {
+        return;
+    }
+
+    if (shouldAdd) {
+        app.setAsDefaultProtocolClient(customProtocol);
+        event.returnValue = customProtocol;
+        return;
+    }
+
+    app.removeAsDefaultProtocolClient(customProtocol);
+    event.returnValue = customProtocol;
+});
+
 let mainWindow = null;
 
 if (process.env.NODE_ENV === 'production') {
@@ -61,8 +76,6 @@ app.on('open-url', (event, url) => {
     event.preventDefault();
     openCustomProtocol(url, mainWindow);
 });
-
-app.setAsDefaultProtocolClient('galleon');
 
 app.on('ready', async () => {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
