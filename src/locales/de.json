@@ -1,6 +1,8 @@
 {
     "general": {
         "verbs": {
+            "authenticate": "Authenticate",
+            "authentication": "Authentication",
             "send": "Senden",
             "copy_address": "Adresse kopieren",
             "show": "Zeigen",
@@ -20,7 +22,12 @@
             "proceed": "Fortfahren",
             "close": "Close",
             "withdraw": "Withdraw",
-            "deposit": "Deposit"
+            "deposit": "Deposit",
+            "mint": "Mint",
+            "burn": "Burn",
+            "sign": "Sign",
+            "verify": "Verify",
+            "copy": "Copy"
         },
         "nouns": {
             "amount": "Betrag",
@@ -32,6 +39,7 @@
             "account": "Konto",
             "label_account": "Konto",
             "label_address": "Adresse",
+            "signer_address": "Signer Address",
             "delegate_address": "Delegierte Adresse",
             "remaining_balance": "Verbleibende Summe",
             "gas": "Gas",
@@ -50,11 +58,30 @@
             "storage": "Storage",
             "burn": "Burn",
             "smart_contract": "Smart Contract",
-            "code": "Code"
+            "code": "Code",
+            "format": "Format",
+            "tokens": "Tokens",
+            "token_contract": "Token Contract",
+            "sign_n_verify": "Sign & Verify",
+            "platform": "Platform",
+            "network": "Network",
+            "message": "Message",
+            "signature": "Signature",
+            "ok": "Ok",
+            "council": "Council",
+            "stage": "Stage",
+            "phase": "Phase",
+            "supply": "Supply",
+            "paused": "Paused",
+            "proposal": "Proposal",
+            "evaluation": "evaluation",
+            "voting": "Voting",
+            "implementation": "Implementation"
         },
         "errors": {
             "no_hex_data": "Die angegebene Zeichenfolge sieht nicht wie Hex-Daten aus",
-            "no_ledger_detected": "Ledger getrennt"
+            "no_ledger_detected": "Ledger getrennt",
+            "ledger_error": "Error communicating with Ledger device"
         },
         "decimal_separator": ".",
         "back": "Zurück",
@@ -89,7 +116,16 @@
             "gas_tool_tip": "{{gas}} tz wird vom Netzwerk benötigt, um eine delegierte Adresse zu erstellen",
             "warning1": "Der Gesamtbetrag übersteigt die verfügbaren Mittel",
             "warning2": "Manager-Adressen dürfen (noch) nicht weniger als 1 μtz haben",
-            "add_delegate_title": "Fügen Sie einen Delegierten hinzu"
+            "add_delegate_title": "Fügen Sie einen Delegierten hinzu",
+            "deploy_delegation": "Deploy Delegation..."
+        },
+        "signVerifyModal": {
+            "not_revealed": "This account is not active yet on the blockchain so your signature cannot be verified independently. Please provide your public key to the verifier so they can manually check your signature.",
+            "enter_address_key": "Signer address or public key",
+            "sign_guidance": "Signing a message allows others to verify your ownership of this account using only this message, signature and your address/public key.",
+            "verify_guidance": "Enter the message, signature and address provided to you to verify the signature.",
+            "match": "Signature confirmed",
+            "no_match": "Invalid signature"
         },
         "interactModal": {
             "interact_contract": "Interagiere mit Contracts",
@@ -104,7 +140,8 @@
             "parameters": "Parameter",
             "view_scan": "Auf Mininax anschauen",
             "initial_storage": "Initial Storage",
-            "paste_micheline_code": "Füge deinen Smart Contract Micheline Code hinzu"
+            "paste_micheline_code": "Füge deinen Smart Contract Micheline Code hinzu",
+            "entry_point": "Entry Point"
         },
         "addNodeModal": {
             "error": "Das Protokoll des Knotens muss https sein",
@@ -121,7 +158,8 @@
         },
         "address": {
             "manager_address": "Manager Adresse",
-            "delegated_address": "Delegierte Adresse {{index}}"
+            "delegated_address": "Delegierte Adresse {{index}}",
+            "delegation_contract": "Delegation Contract {{index}}"
         },
         "addressBlock": {
             "descriptions": {
@@ -144,7 +182,13 @@
         },
         "balanceBanner": {
             "breadcrumbs": "Konto {{parentIndex}} > {{addressLabel}}",
-            "delegated_to": "Delegiert zu "
+            "delegated_to": "Delegiert zu ",
+            "secret_key": "Secret Key",
+            "reveal_key": "Click to reveal secret key.",
+            "hide_key": "Click to hide secret key.",
+            "warning": "Warning!",
+            "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
+            "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
         },
         "copyIcon": {
             "copied": "Kopiert!"
@@ -173,10 +217,14 @@
             "delegate_settings": "Delegierungs Einstellung",
             "current_delegate": "Sie delegieren momentan zu",
             "change_delegate": "Delegierung ändern",
-            "delegate_warning": "Ihre Delegierteneinstellungen werden erst angezeigt, wenn sie in der Blockchain bestätigt wurden."
+            "delegate_warning": "Ihre Delegierteneinstellungen werden erst angezeigt, wenn sie in der Blockchain bestätigt wurden.",
+            "add_delegation_contract": "Add Delegation Contract",
+            "add_delegation_tooltip_title": "What is a Delegation Contract?",
+            "add_delegation_tooltip_text": "You can delegate to multiple bakers using smart contracts. Your delegations will appear under ‘Delegation Contracts’ on the left."
         },
         "delegateConfirmationModal": {
             "new_address_label": "Delegierungsadresse in neue Adresse ändern",
+            "address_label": "Baker Address",
             "delegate_warning": "Ihre Delegierungs-Änderung wird nicht angezeigt, bis die Änderung in der Blockchain bestätigt wird."
         },
         "changeDelegationLedgerConfirmModal": {
@@ -222,6 +270,8 @@
             },
             "errors": {
                 "send_address": "Adressen können nur mit TZ1, TZ2, TZ3 or KT1 starten",
+                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
                 "delegate_address": "Sie können nur zu TZ1, TZ2 or TZ3 Adressen delegieren.",
                 "length": "Adressen müssen 36 Zeichen lang sein.",
                 "special_chars": "Adressen können keine Sonderzeichen enthalten.",
@@ -266,7 +316,13 @@
                 "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "Smart Contract Operation fehlgeschlagen",
                 "success_invoke_operation": "Der Smart Contract Aufruf wurde erfolgreich gestartet",
-                "success_contract_origination": "Die Smart Contract Bereitstellung wurde erfolgreich gestartet"
+                "success_contract_origination": "Die Smart Contract Bereitstellung wurde erfolgreich gestartet",
+                "started_token_failed": "Started token transaction failed.",
+                "started_token_success": "Successfully started token transaction.",
+                "mint_operation_failed": "Mint operation failed.",
+                "mint_operation_success": "Successfully started mint token.",
+                "burn_operation_failed": "Burn operation failed.",
+                "burn_operation_success": "Successfully started burn token."
             }
         },
         "pdfReader": {
@@ -295,6 +351,7 @@
         "send": {
             "send_xtz": "Sende XTZ",
             "recipient_address": "Empfänger Adresse",
+            "holder_address": "Holder Address",
             "burn_tooltip_title": "Warum gibt es eine burn Gebühr",
             "burn_tooltip_content": "Die von Ihnen eingegebene Empfängeradresse hat einen Nullsaldo. Das Senden von Geld an eine leere Manageradresse (tz1,2,3) benötigt eine einmalige <1> 0.257 </1>XTZ burn Gebühr.",
             "fee_tooltip_title": "Warum sind die Gebühren höher, für diese Transaktion?",
@@ -302,7 +359,9 @@
             "warnings": {
                 "total_exceeds": "Total übersteigt verfügbare Mittel",
                 "not_allowed": "Manager Adressen ist es nicht erlaubt, weniger als 1 µtz zu halten"
-            }
+            },
+            "burn_notice": "Burn tokens to destroy tokens from a current holder and reduce total supply.",
+            "mint_notice": "Mint tokens to give brand new tokens to a recipient and increase total supply."
         },
         "sendConfirmationModal": {
             "send_confirmation": "Sende Bestätigung",
@@ -313,6 +372,10 @@
             "confirm_transaction": "Bestätige Transaktion",
             "send_description": "Sie senden gerade eine Transaktion. Bitte überprüfen Sie sorgfältig die Details auf Ihrem Gerät.",
             "confirm_description": "Wenn alle Angaben korrekt sind, bestätigen Sie mit <1> die Transaktion auf Ihrem Gerät."
+        },
+        "tokenLedgerConfirmModal": {
+            "confirm_token": "Confirm Token Contract",
+            "op_description": "You are about to {{op}} your Tokens. Please carefully review the details on your device."
         },
         "settingController": {
             "settings": "EINSTELLUNGEN",
@@ -338,7 +401,6 @@
             "sent": "GESENDET",
             "received": "EMPFANGEN",
             "this_address": "diese Adresse",
-            "your_manager_address": "<0>Ihr</0> Konto 1 Manager Adresse",
             "invoke_function": "AUFRUF FUNKTION",
             "add_delegate": "ORIGINATION - DELEGATED ADDRESS",
             "deployment": "ORIGINATION - SMART CONTRACT",
@@ -353,6 +415,10 @@
         "comingSoon": {
             "coming_soon": "Demnächst!",
             "working_hard": ""
+        },
+        "withdrawDeposit": {
+            "withdraw_warning": "To withdraw funds back to your manager account, {{managerAddress}}, please select a fee of at least 0.005 XTZ and ensure you have at least that amount in your manager account to cover the transaction.",
+            "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}."
         }
     },
     "containers": {
@@ -360,6 +426,7 @@
             "add_account": "Konto hinzufügen",
             "refer_pdf_title": "Bitte beachten Sie das PDF-Dokument, das Sie während des Fundraiser erstellt haben.",
             "secret_key_15": "15 Wort Geheim Schlüssel",
+            "restore_mnemonic": "12, 15, 18, 21 or 24 Word Secret Key",
             "fundraiser_password": "Fundraiser Passwort",
             "public_key_hash": "Öffentlicher Schlüssel Hash",
             "fundraiser_email_address": "Fundraiser Email Adresse",
@@ -402,6 +469,8 @@
             "connect_ledger": "Verbinde mit Ledger",
             "dont_have_ledger_wallet": "Sie haben keine Ledger Tezos Wallet App?",
             "download_it_here": "Hier herunterladen.",
+            "need_device": "Need a Ledger device?",
+            "get_it_here": "Get it here",
             "connect_your_device": "Bitte<1> verbinden Sie Ihr Gerät mit dem PC</1>,<3> Geben Sie Ihren PIN ein</3>, und<5> öffnen Sie die Tezos Wallet App</5>.",
             "connecting": "Verbinde...",
             "selectedPath": "Ausgewählter Pfad: "
