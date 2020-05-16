@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import base64url from 'base64url';
+import { TezosWalletUtil, TezosLedgerWallet } from 'conseiljs';
 
+import { getSelectedKeyStore } from '../../utils/general';
+import { getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
 import CustomTextArea from '../../components/CustomTextArea';
 import CopyButton from '../../components/CopyButton';
@@ -27,34 +31,72 @@ interface Props {
 
 const Auth = (props: Props) => {
     const { t } = useTranslation();
-    const isLoading = useSelector<RootState, boolean>((state: RootState) => state.app.isLoading);
+    const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
+    const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
+    const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
     const values = useSelector<RootState, object>(state => state.modal.values, shallowEqual);
     const [message, setMessage] = useState('');
     const [result, setResult] = useState('');
     const [error, setError] = useState(false);
     const { open, onClose } = props;
     const isDisabled = isLoading || !message;
+    const { selectedPath, pathsList } = settings;
+    const derivationPath = isLedger ? getMainPath(pathsList, selectedPath) : '';
 
     const onAuth = async () => {
-        // TODO: onAuth
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
+
+        let signature: string;
+        if (isLedger) {
+            signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
+        } else {
+            signature = await TezosWalletUtil.signText(keyStore, message);
+        }
+
+        const req = values[activeModal]; // TODO: this should be an enum or constant, not a state lookup
+        try {
+            console.log(`base url "${req.c}"`);
+            console.log(`sending "${req.c}&sig=${base64url.encode(signature)}"`);
+            const response = await fetch(`${req.c}&sig=${base64url.encode(signature)}`);
+            console.log(`request sent`);
+            console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     useEffect(() => {
         const req = values[activeModal];
-        if (req && req.r) {
-            setMessage(req.r);
+        if (req && req.p) {
+            setMessage(req.p);
+
+            console.log(JSON.stringify(req));
         }
     }, []);
-
+    /*
+r: "Most Awesome dApp", // Requestor
+d: "The best and only dApp on Tezos", // Description
+u: "https://localhost:8080/", // Requestor URL
+p: req.session.words, // Prompt
+c: `https://localhost:8080/validate?sid=${req.session.id}`, // Callback URL
+t: req.param('address') // Target address
+*/
     return (
         <ModalWrapper open={open}>
             {open ? (
                 <ModalContainer>
                     <CloseIconWrapper onClick={() => onClose()} />
-                    <ModalTitle>{`dApp ${t('general.verbs.authenticate')}`}</ModalTitle>
+                    <ModalTitle>{t('components.AuthenticateModal.title')}</ModalTitle>
                     <Container>
                         <MainContainer>
+                            {/*
+                            r link-box (u)
+                            d
+
+                            p (non-editable)
+                            
+                            */}
                             <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} defaultValue={message} />
                         </MainContainer>
                         <ResultContainer>
