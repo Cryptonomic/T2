@@ -127,6 +127,9 @@
             "match": "Signature confirmed",
             "no_match": "Invalid signature"
         },
+        "AuthenticateModal": {
+            "title": "dApp Authentication Request"
+        },
         "interactModal": {
             "interact_contract": "与合同交互",
             "invoke_contract": "调用一个现有的合同",
