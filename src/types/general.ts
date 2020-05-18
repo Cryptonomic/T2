@@ -37,7 +37,7 @@ export interface Identity {
     balance: number;
     accounts: Account[];
     publicKey: string;
-    secretKey: string;
+    privateKey: string;
     operations: any;
     order: number;
     storeType: StoreType;

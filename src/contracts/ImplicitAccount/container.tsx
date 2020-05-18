@@ -98,7 +98,7 @@ function ActionPanel() {
 
     const { isLoading, selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
-    const { balance, activeTab, storeType, status, secretKey, delegate_value, transactions } = selectedAccount;
+    const { balance, activeTab, storeType, status, privateKey, delegate_value, transactions } = selectedAccount;
 
     function onChangeTab(newTab: string) {
         dispatch(updateActiveTabThunk(newTab));
@@ -157,7 +157,7 @@ function ActionPanel() {
                 storeType={storeType}
                 isReady={isReady(status, storeType)}
                 balance={balance || 0}
-                secretKey={secretKey}
+                secretKey={privateKey}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 delegatedAddress={delegate_value}
             />
