@@ -68,7 +68,7 @@
       "package.json"
     ],
     "linux": {
-      "target": "deb"
+      "target": "snap"
     },
     "win": {
       "target": "nsis",
