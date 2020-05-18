@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import base64url from 'base64url';
 import { TezosWalletUtil, TezosLedgerWallet } from 'conseiljs';
 
 import { getSelectedKeyStore } from '../../utils/general';
@@ -57,8 +56,8 @@ const Auth = (props: Props) => {
         const req = values[activeModal]; // TODO: this should be an enum or constant, not a state lookup
         try {
             console.log(`base url "${req.c}"`);
-            console.log(`sending "${req.c}&sig=${base64url.encode(signature)}"`);
-            const response = await fetch(`${req.c}&sig=${base64url.encode(signature)}`);
+            console.log(`sending "${req.c}&sig=${new Buffer(signature).toString('base64')}"`);
+            const response = await fetch(`${req.c}&sig=${new Buffer(signature).toString('base64')}`);
             console.log(`request sent`);
             console.log(response);
         } catch (error) {

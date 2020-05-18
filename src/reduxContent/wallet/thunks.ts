@@ -472,7 +472,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
     };
 }
 
-export function importPrivateKeyThunk(key) {
+export function importSecretKeyThunk(key) {
     return async (dispatch, state) => {
         const { walletLocation, walletFileName, walletPassword, identities } = state().wallet;
 

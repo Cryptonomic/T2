@@ -1,16 +1,15 @@
 import React from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { BigNumber } from 'bignumber.js';
 
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
-import BalanceBanner from '../../components/BalanceBanner';
 import PaginationList from '../../components/PaginationList';
 import { TRANSACTIONS, SEND } from '../../constants/TabConstants';
 import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 
+import BalanceBanner from '../components/BalanceBanner';
 import Transactions from '../components/TransactionContainer';
 import Send from '../components/Send';
 import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
@@ -36,11 +35,9 @@ const ActionPanel = () => {
             <BalanceBanner
                 isReady={true}
                 balance={selectedToken.balance}
-                privateKey={''}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
-                delegatedAddress={''}
                 displayName={displayName}
-                symbol={selectedToken.symbol}
+                token={selectedToken}
             />
 
             <TabList count={tabs.length}>
