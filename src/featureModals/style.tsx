@@ -1,5 +1,7 @@
 import styled from 'styled-components';
-import { Modal, Tabs, Tab } from '@material-ui/core';
+import Modal from '@material-ui/core/Modal';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import CloseIcon from '@material-ui/icons/Close';
 import Warning from '@material-ui/icons/Warning';
 

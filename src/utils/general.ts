@@ -52,10 +52,10 @@ export function getSelectedKeyStore(
     mainPath?: string
 ): KeyStore {
     const identity = findIdentity(identities, selectedParentHash);
-    const { publicKey, privateKey } = identity;
+    const { publicKey, secretKey } = identity;
     return {
         publicKey,
-        privateKey,
+        privateKey: secretKey,
         publicKeyHash: selectedAccountHash,
         seed: '',
         storeType: isLedger ? StoreType.Hardware : StoreType.Mnemonic,
