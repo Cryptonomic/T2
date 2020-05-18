@@ -17,7 +17,7 @@ const defaultAccount = {
     storeType: 0,
     status: '',
     script: '',
-    secretKey: '',
+    privateKey: '',
     delegate_value: '',
     storage: '',
     regularAddresses: [],
@@ -31,7 +31,7 @@ export const getAccountSelector = createSelector(
     (accountHash, parentHash, identities) => {
         const selectedIdentity = identities.find(identity => identity.publicKeyHash === parentHash);
         if (selectedIdentity) {
-            const { accounts, publicKeyHash, balance, secretKey } = selectedIdentity;
+            const { accounts, publicKeyHash, balance, privateKey } = selectedIdentity;
             const regularAddresses = [{ pkh: publicKeyHash, balance }];
 
             accounts.forEach(acc => {
@@ -53,7 +53,7 @@ export const getAccountSelector = createSelector(
             if (selectedAccount) {
                 return {
                     ...defaultAccount,
-                    secretKey,
+                    privateKey,
                     regularAddresses,
                     ...selectedAccount
                 };

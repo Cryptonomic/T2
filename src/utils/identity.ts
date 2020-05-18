@@ -14,7 +14,7 @@ export function createIdentity(identity: Identity): Identity {
         accounts: [],
         publicKeyHash: '',
         publicKey: '',
-        secretKey: '',
+        privateKey: '',
         operations: {},
         order: 0,
         storeType: StoreType.Fundraiser,
