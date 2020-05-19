@@ -128,7 +128,8 @@
             "no_match": "Invalid signature"
         },
         "AuthenticateModal": {
-            "title": "dApp Authentication Request"
+            "title": "dApp Authentication Request",
+            "signature_prompt": "Is requesting a signature of the following to confirm your identity"
         },
         "interactModal": {
             "interact_contract": "Interagiere mit Contracts",
