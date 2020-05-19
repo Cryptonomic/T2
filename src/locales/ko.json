@@ -127,6 +127,9 @@
             "match": "Signature confirmed",
             "no_match": "Invalid signature"
         },
+        "AuthenticateModal": {
+            "title": "dApp Authentication Request"
+        },
         "interactModal": {
             "interact_contract": "컨트랙트로 상호작용",
             "invoke_contract": "기존 컨트랙트 호출",
