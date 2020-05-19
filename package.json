@@ -73,7 +73,9 @@
     "protocols": [
       {
         "name": "tezori",
-        "schemes": [ "tezori" ]
+        "schemes": [
+          "tezori"
+        ]
       }
     ],
     "productName": "Tezori",
@@ -144,7 +146,6 @@
     "@types/electron-devtools-installer": "2.2.0",
     "@types/history": "4.7.5",
     "@types/jest": "25.2.2",
-    "@types/rc-tooltip": "3.7.3",
     "@types/react": "16.9.35",
     "@types/react-dom": "16.9.8",
     "@types/react-redux": "7.1.8",
@@ -213,15 +214,14 @@
     "history": "4.10.1",
     "i18next": "19.4.4",
     "i18next-electron-language-detector": "0.0.10",
-    "i18next-xhr-backend": "3.2.2",
-    "lodash": "4.17.15",
-    "moment": "2.25.3",
-    "polished": "3.5.1",
-    "rc-tooltip": "4.0.3",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "react-i18next": "11.4.0",
-    "react-number-format": "4.4.1",
+    "i18next-xhr-backend": "^3.2.2",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "polished": "^3.5.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-i18next": "^11.3.4",
+    "react-number-format": "^4.4.1",
     "react-pdf": "4.1.0",
     "react-redux": "7.2.0",
     "react-router": "5.2.0",

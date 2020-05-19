@@ -41,6 +41,6 @@ export const Icon = styled(TezosIcon)`
 
 export const CopyContent = styled.span`
     display: flex;
-    alignitems: center;
+    align-items: center;
     font-size: ${ms(0)};
 `;
