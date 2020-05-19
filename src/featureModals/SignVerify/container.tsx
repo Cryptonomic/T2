@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
 
 import Loader from '../../components/Loader';
 import Sign from './components/Sign';
 import Verify from './components/Verify';
+import TabPanel from '../../components/TabPanel';
 
 import { setModalActiveTab } from '../../reduxContent/modal/actions';
 
@@ -49,11 +49,12 @@ function SignVerifyModal(props: Props) {
                         <TabWrapper label={t('general.verbs.sign')} value="sign" />
                         <TabWrapper label={t('general.verbs.verify')} value="verify" />
                     </TabsWrapper>
-
-                    <SwipeableViews index={swipeIndex}>
+                    <TabPanel value={swipeIndex} index={0}>
                         <Sign />
+                    </TabPanel>
+                    <TabPanel value={swipeIndex} index={1}>
                         <Verify />
-                    </SwipeableViews>
+                    </TabPanel>
                     {isLoading && <Loader />}
                 </ModalContainer>
             ) : (
