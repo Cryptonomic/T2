@@ -3,10 +3,10 @@ import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { TezosWalletUtil, TezosLedgerWallet } from 'conseiljs';
 
-import { getSelectedKeyStore } from '../../utils/general';
+import { ms } from '../../styles/helpers';
+import { getSelectedKeyStore, openLink } from '../../utils/general';
 import { getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
-import CustomTextArea from '../../components/CustomTextArea';
 import CopyButton from '../../components/CopyButton';
 import { RootState } from '../../types/store';
 
@@ -20,7 +20,13 @@ import {
     ButtonContainer,
     ResultContainer,
     InvokeButton,
-    Result
+    Result,
+    LinkIcon,
+    LinkContainer,
+    ContentTitle,
+    ContentSubtitle,
+    Footer,
+    TitleContainer
 } from '../style';
 
 interface Props {
@@ -35,52 +41,81 @@ const Auth = (props: Props) => {
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
     const values = useSelector<RootState, object>(state => state.modal.values, shallowEqual);
-    const [message, setMessage] = useState('');
     const [result, setResult] = useState('');
     const [error, setError] = useState(false);
     const { open, onClose } = props;
-    const isDisabled = isLoading || !message;
     const { selectedPath, pathsList } = settings;
     const derivationPath = isLedger ? getMainPath(pathsList, selectedPath) : '';
+
+    const [requestor, setRequestor] = useState('');
+    const [requestorDescription, setRequestorDescription] = useState('');
+    const [requestorUrl, setRequestorUrl] = useState('');
+    const [prompt, setPrompt] = useState('');
+
+    const isDisabled = isLoading || !prompt;
 
     const onAuth = async () => {
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
 
         let signature: string;
         if (isLedger) {
-            signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
+            signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', prompt);
         } else {
-            signature = await TezosWalletUtil.signText(keyStore, message);
+            signature = await TezosWalletUtil.signText(keyStore, prompt);
         }
 
         const req = values[activeModal]; // TODO: this should be an enum or constant, not a state lookup
         try {
-            console.log(`base url "${req.c}"`);
-            console.log(`sending "${req.c}&sig=${new Buffer(signature).toString('base64')}"`);
+            setResult('Signature sent'); // TODO: localization
+            setError(false);
             const response = await fetch(`${req.c}&sig=${new Buffer(signature).toString('base64')}`);
-            console.log(`request sent`);
-            console.log(response);
+            if (!response.ok) {
+                throw new Error('Signature response rejected'); // TODO: localization
+            }
         } catch (error) {
+            setError(true);
+            setResult('Signature submission failed'); // TODO: localization
             console.error(error);
         }
     };
 
+    const onClick = (link: string) => {
+        openLink(link);
+    };
+
     useEffect(() => {
         const req = values[activeModal];
-        if (req && req.p) {
-            setMessage(req.p);
+        if (req) {
+            if (req.r) {
+                setRequestor(req.r);
+            }
+            if (req.d) {
+                setRequestorDescription(req.d);
+            }
+            if (req.u) {
+                setRequestorUrl(req.u);
+            }
+            if (req.p) {
+                let p = req.p.replace(/\n/g, '');
+                p = p.slice(0, Math.min(100, p.length));
+                setPrompt(p);
+            }
+            if (req.t && req.t !== selectedParentHash) {
+                setError(true);
+                setResult('Account address mismatch'); // TODO: localization
+            }
+            if (!req.t) {
+                setError(true);
+                setResult('Missing target address'); // TODO: localization
+            }
 
-            console.log(JSON.stringify(req));
+            if (!req.u) {
+                setError(true);
+                setResult('Missing dApp link'); // TODO: localization
+            }
         }
     }, []);
-    /*
-r: "Most Awesome dApp", // Requestor
-d: "The best and only dApp on Tezos", // Description
-u: "https://localhost:8080/", // Requestor URL
-p: req.session.words, // Prompt
-c: `https://localhost:8080/validate?sid=${req.session.id}`, // Callback URL
-t: req.param('address') // Target address
-*/
+
     return (
         <ModalWrapper open={open}>
             {open ? (
@@ -89,24 +124,28 @@ t: req.param('address') // Target address
                     <ModalTitle>{t('components.AuthenticateModal.title')}</ModalTitle>
                     <Container>
                         <MainContainer>
-                            {/*
-                            r link-box (u)
-                            d
-
-                            p (non-editable)
-                            
-                            */}
-                            <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} defaultValue={message} />
+                            <TitleContainer>
+                                <LinkContainer onClick={() => onClick(requestorUrl)} key={requestorUrl}>
+                                    <ContentTitle>
+                                        {requestor} <LinkIcon iconName="new-window" size={ms(0)} color="black" />
+                                    </ContentTitle>
+                                </LinkContainer>
+                                <ContentSubtitle>{requestorDescription}</ContentSubtitle>
+                            </TitleContainer>
+                            <div>{t('components.AuthenticateModal.signature_prompt')}</div>
+                            <div>{prompt}</div>
                         </MainContainer>
                         <ResultContainer>
                             <Result error={error}>{result}</Result>
                             {!error && result && <CopyButton text={result} title="" color="accent" />}
                         </ResultContainer>
-                        <ButtonContainer>
-                            <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onAuth}>
-                                {t('general.verbs.authenticate')}
-                            </InvokeButton>
-                        </ButtonContainer>
+                        <Footer>
+                            <ButtonContainer>
+                                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onAuth}>
+                                    {t('general.verbs.authenticate')}
+                                </InvokeButton>
+                            </ButtonContainer>
+                        </Footer>
                     </Container>
                     {isLoading && <Loader />}
                 </ModalContainer>
