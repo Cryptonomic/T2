@@ -71,11 +71,13 @@
   },
   "build": {
     "protocols": [
-        {
-          "name": "tezori",
-          "schemes": [ "tezori" ]
-        }
-      ],
+      {
+        "name": "tezori",
+        "schemes": [
+          "tezori"
+        ]
+      }
+    ],
     "productName": "Tezori",
     "appId": "tech.cryptonomic.tezori",
     "files": [
@@ -144,7 +146,6 @@
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/history": "^4.7.5",
     "@types/jest": "^24.9.1",
-    "@types/rc-tooltip": "^3.7.1",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
     "@types/react-redux": "^7.1.7",
@@ -219,7 +220,6 @@
     "moment": "^2.24.0",
     "polished": "^3.5.1",
     "qrcode": "^1.4.4",
-    "rc-tooltip": "^4.0.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-i18next": "^11.3.4",
