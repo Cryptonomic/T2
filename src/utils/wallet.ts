@@ -1,6 +1,6 @@
 import path from 'path';
 import { TezosFileWallet, TezosLedgerWallet, StoreType } from 'conseiljs';
-import { omit, pick, unionBy, cloneDeep } from 'lodash';
+import { omit, cloneDeep } from 'lodash';
 
 import { getLocalData, setLocalData } from './localData';
 import { createIdentity } from './identity';

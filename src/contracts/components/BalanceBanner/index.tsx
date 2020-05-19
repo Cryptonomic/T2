@@ -23,6 +23,7 @@ interface Props {
 }
 
 function BalanceBanner(props: Props) {
+    // TODO: rename to TokenBalanceBanner
     const { isReady, balance, publicKeyHash, displayName, token } = props;
 
     const { t } = useTranslation();

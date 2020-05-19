@@ -127,6 +127,9 @@
             "match": "Signature confirmed",
             "no_match": "Invalid signature"
         },
+        "AuthenticateModal": {
+            "title": "dApp Authentication Request"
+        },
         "interactModal": {
             "interact_contract": "Akıllı Sözleşme Operasyonları",
             "invoke_contract": "Varolan sözleşmeyi çalıştır",
