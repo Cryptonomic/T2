@@ -5,6 +5,7 @@ import Tab from '@material-ui/core/Tab';
 import CloseIcon from '@material-ui/icons/Close';
 import Warning from '@material-ui/icons/Warning';
 
+import TezosIcon from '../components/TezosIcon';
 import Button from '../components/Button';
 
 export const ModalWrapper = styled(Modal)`
@@ -72,12 +73,14 @@ export const Container = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding-bottom: 50px;
+    padding-bottom: 50px 50px 0px;
 `;
 
 export const MainContainer = styled.div`
     width: 100%;
-    padding: 40px 40px 30px 40px;
+    padding-top: 25px;
+    padding-left: 40px;
+    padding-right: 40px;
 `;
 
 export const ButtonContainer = styled.div`
@@ -116,4 +119,37 @@ export const InvokeButton = styled(Button)`
     height: 50px;
     margin-left: auto;
     padding: 0;
+`;
+
+export const LinkIcon = styled(TezosIcon)`
+    margin-left: 2px;
+`;
+
+export const LinkContainer = styled.span`
+    display: inline-block;
+    cursor: pointer;
+`;
+
+export const TitleContainer = styled.div`
+    font-weight: 300;
+    line-height: 34px;
+    color: ${({ theme: { colors } }) => colors.primary};
+    letter-spacing: 1px;
+    margin-bottom: 32px;
+`;
+
+export const ContentTitle = styled.div`
+    font-size: 24px;
+`;
+
+export const ContentSubtitle = styled.div`
+    font-size: 18px;
+`;
+
+export const Footer = styled.div`
+    background: ${({ theme: { colors } }) => colors.gray1}
+    margin: auto 0 0;
+    padding: 25px 0;
+    display: flex;
+    flex-direction: column
 `;
