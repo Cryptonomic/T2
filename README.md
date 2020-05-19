@@ -1,68 +1,62 @@
-# T2
-T, the next generation
+# Tezori
 
-## Customize Icon
-1. npm install -g electron-icon-maker
-2. electron-icon-maker --input=/absolute/path/file.png --output=./relative/path/to/folder
+A wallet for the Tezos blockchain based on [Conseil](https://github.com/Cryptonomic/Conseil) and [ConseilJS](https://github.com/Cryptonomic/ConseilJS).
 
-## Both processes have to be started simultaneously in different console tabs:
+This code was written for the community. Use it, hack it, fork it as you please!
 
-npm run start-renderer-dev
-npm run start-main-dev
-This will start the application with hot-reload so you can instantly start developing your application.
+[![Build Status](https://travis-ci.org/Cryptonomic/Tezori.svg?branch=master)](https://travis-ci.org/Cryptonomic/Tezori)
+[![Coverage Status](https://coveralls.io/repos/github/Cryptonomic/Tezori/badge.svg?branch=master)](https://coveralls.io/github/Cryptonomic/Tezori?branch=master)
 
-## You can also run do the following to start both in a single process:
+## Development
 
-npm run start-dev
+The wallet is built on [React](https://reactjs.org/) and [Electron](https://electronjs.org/) and uses [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate).
 
-## Packaging
-We use Electron builder to build and package the application. By default you can run the following to package for your current platform:
+Active development happens on the develop branch with periodic merges to master.
 
-npm run dist
-This will create a installer for your platform in the releases folder.
+Add the file `src/extraResources/walletSettings.json`:
 
-You can make builds for specific platforms (or multiple platforms) by using the options found here. E.g. building for all platforms (Windows, Mac, Linux):
+```json
+{
+  "selectedNode": "MyTezosNode",
+  "nodesList": [
+    {
+      "displayName": "MyTezosNode",
+      "platform": "TEZOS",
+      "network": "MyNetwork",
+      "tezosUrl": "https://mytezosnode.com",
+      "conseilUrl": "https://myconseilnode.com",
+      "apiKey": "anapikey"
+    }
+  ],
+  "selectedPath": "Default",
+  "pathsList": [
+    {
+      "label": "Default",
+      "derivation": "44'/1729'/0'/0'/0'"
+    }
+  ]
+}
+```
 
-npm run dist -- -mwl
+To install all dependencies:
 
-## Docker image, container run
-sudo make imageName="Your image name" run-container
+```bash
+npm i
+cd src
+npm i
+cd ..
+```
 
-## Docker container start/stop
-sudo make containerId="container ID" start-container(stop-container)
+To run during development:
 
-## Dive Docker container
-sudo make containerId="container ID" dive-container
+`npm run dev`
 
-## Start Jenkins server
-sudo make containerId="container ID" jenkins-start
+To package for deployment for the local target:
 
-## Copy assets/config folder into container source
-1. sudo make containerId="container ID" copy-assets
-2. sudo make containerId="container ID" copy-config
+`npm run package`
 
-## Install Wine32/64 to Ubuntu docker container to build Window version
-1. apt-get install wine64
-2. dpkg --add-architecture i386 && apt-get update && apt-get install wine32
+## Customize Logo
 
-## Build source in container from host machine or git
-1. sudo make containerId="container ID" build-local
-2. sudo make containerId="container ID" branch="branch name" build-git
+Change the `tezosLogo.svg` file in `resources/` folder.
 
-## Jenkins Install to Linux
-https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/
-
-## Execute Shell in Jenkins Build
-
-1. set +e
-2. chmod -R 777 /YOUR REPO
-3. cd /YOUR REPO
-4. git checkout -- .
-5. git checkout master
-6. git pull origin master
-7. npm install
-8. GH_TOKEN=(your github personal token) npm run dist -- -wl
-
-## Reference
-
-https://www.npmjs.com/package/electron-store
+Change the `logo` field in `src/config.json`.

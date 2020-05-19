@@ -1,17 +1,25 @@
 {
     "defaultSeverity": "error",
     "extends": [
-        "tslint-config-airbnb",
+        "tslint:recommended",
         "tslint-react",
         "tslint-config-prettier"
     ],
+    "linterOptions": {
+        "exclude": [
+            "node_modules/**",
+            "src/node_modules/**"
+        ]
+    },
     "jsRules": {},
     "rules": {
-        "max-line-length": [true, 120],
+        "max-line-length": [true, 160],
+        "ordered-imports": false,
+        "object-literal-sort-keys": false,
         "trailing-comma": false,
         "ter-indent": [
             true,
-            4,
+            2,
             {
                 "SwitchCase": 1
             }
@@ -20,7 +28,14 @@
         "jsx-alignment": true,
         "jsx-equals-spacing": [true, "never"],
         "jsx-no-string-ref": true,
-        "jsx-self-close": true
+        "jsx-self-close": true,
+        "import-name": [false],
+        "object-shorthand-properties-first": false,
+        "interface-name": false,
+        "jsx-no-lambda": false,
+        "no-console": false,
+        "member-access": false,
+        "no-var-requires": false
     },
     "rulesDirectory": []
 }
