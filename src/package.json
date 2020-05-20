@@ -1,13 +1,13 @@
 {
-    "name": "tezori",
-    "productName": "Tezori Preview",
+    "name": "galleon",
+    "productName": "Galleon Preview",
     "version": "1.1.3b",
-    "description": "An open-source wallet framework for the Tezos blockchain.",
+    "description": "A wallet for the Tezos blockchain.",
     "main": "./main.prod.js",
     "author": {
         "name": "Cryptonomic Inc",
         "email": "info@cryptonomic.tech",
-        "url": "https://github.com/cryptonomic/tezori"
+        "url": "https://github.com/cryptonomic/galleon"
     },
     "scripts": {
         "electron-rebuild": "node ../scripts/ElectronRebuild.js",
