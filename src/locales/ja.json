@@ -1,6 +1,8 @@
 {
     "general": {
         "verbs": {
+            "authenticate": "Authenticate",
+            "authentication": "Authentication",
             "send": "送信",
             "copy_address": "アドレスをコピー",
             "show": "表示",
@@ -20,7 +22,12 @@
             "proceed": "続行",
             "close": "Close",
             "withdraw": "Withdraw",
-            "deposit": "Deposit"
+            "deposit": "Deposit",
+            "mint": "Mint",
+            "burn": "Burn",
+            "sign": "Sign",
+            "verify": "Verify",
+            "copy": "Copy"
         },
         "nouns": {
             "amount": "金額",
@@ -32,6 +39,7 @@
             "account": "口座",
             "label_account": "口座",
             "label_address": "アドレス",
+            "signer_address": "Signer Address",
             "delegate_address": "ベーカーのアドレス",
             "remaining_balance": "残高",
             "gas": "Gas",
@@ -50,11 +58,30 @@
             "storage": "ストレージ",
             "burn": "バーン",
             "smart_contract": "スマートコントラクト",
-            "code": "コード"
+            "code": "コード",
+            "format": "Format",
+            "tokens": "Tokens",
+            "token_contract": "Token Contract",
+            "sign_n_verify": "Sign & Verify",
+            "platform": "Platform",
+            "network": "Network",
+            "message": "Message",
+            "signature": "Signature",
+            "ok": "Ok",
+            "council": "Council",
+            "stage": "Stage",
+            "phase": "Phase",
+            "supply": "Supply",
+            "paused": "Paused",
+            "proposal": "Proposal",
+            "evaluation": "evaluation",
+            "voting": "Voting",
+            "implementation": "Implementation"
         },
         "errors": {
             "no_hex_data": "入力したデータに何か問題があります",
-            "no_ledger_detected": "Ledgerは切断されました"
+            "no_ledger_detected": "Ledgerは切断されました",
+            "ledger_error": "Error communicating with Ledger device"
         },
         "decimal_separator": ".",
         "back": "戻る",
@@ -89,7 +116,20 @@
             "gas_tool_tip": "デリゲートされたアドレスを作成するために、{{gas}} tzにはネットワークが必要です。",
             "warning1": "合計が利用可能な資金を超えています",
             "warning2": "管理者アドレスは1µtz以下にすることはまだ許可されていません",
-            "add_delegate_title": "デリゲートを追加する"
+            "add_delegate_title": "デリゲートを追加する",
+            "deploy_delegation": "Deploy Delegation..."
+        },
+        "signVerifyModal": {
+            "not_revealed": "This account is not active yet on the blockchain so your signature cannot be verified independently. Please provide your public key to the verifier so they can manually check your signature.",
+            "enter_address_key": "Signer address or public key",
+            "sign_guidance": "Signing a message allows others to verify your ownership of this account using only this message, signature and your address/public key.",
+            "verify_guidance": "Enter the message, signature and address provided to you to verify the signature.",
+            "match": "Signature confirmed",
+            "no_match": "Invalid signature"
+        },
+        "AuthenticateModal": {
+            "title": "dApp Authentication Request",
+            "signature_prompt": "Is requesting a signature of the following to confirm your identity"
         },
         "interactModal": {
             "interact_contract": "コントラクトと相互作用",
@@ -104,7 +144,8 @@
             "parameters": "パラメーター",
             "view_scan": "Mininaxのビュー",
             "initial_storage": "初期ストレージ",
-            "paste_micheline_code": "スマートコントラクトMichelineコードにペースト"
+            "paste_micheline_code": "スマートコントラクトMichelineコードにペースト",
+            "entry_point": "Entry Point"
         },
         "addNodeModal": {
             "error": "Nodeのプロトコルはhttpsにしてください",
@@ -121,7 +162,8 @@
         },
         "address": {
             "manager_address": "管理者アドレス",
-            "delegated_address": "委任された住所 {{index}}"
+            "delegated_address": "委任された住所 {{index}}",
+            "delegation_contract": "Delegation Contract {{index}}"
         },
         "addressBlock": {
             "descriptions": {
@@ -144,7 +186,13 @@
         },
         "balanceBanner": {
             "breadcrumbs": "口座 {{parentIndex}} > {{addressLabel}}",
-            "delegated_to": "にデリゲートしました"
+            "delegated_to": "にデリゲートしました",
+            "secret_key": "Secret Key",
+            "reveal_key": "Click to reveal secret key.",
+            "hide_key": "Click to hide secret key.",
+            "warning": "Warning!",
+            "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
+            "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
         },
         "copyIcon": {
             "copied": "コピーしました！"
@@ -173,10 +221,14 @@
             "delegate_settings": "ベーカー設定",
             "current_delegate": "現在、デリゲートしているのは",
             "change_delegate": "ベーカーを変更",
-            "delegate_warning": "ブロックチェーンで確認されるまで、ベーカー設定は見えません。"
+            "delegate_warning": "ブロックチェーンで確認されるまで、ベーカー設定は見えません。",
+            "add_delegation_contract": "Add Delegation Contract",
+            "add_delegation_tooltip_title": "What is a Delegation Contract?",
+            "add_delegation_tooltip_text": "You can delegate to multiple bakers using smart contracts. Your delegations will appear under ‘Delegation Contracts’ on the left."
         },
         "delegateConfirmationModal": {
             "new_address_label": "新しいアドレスにベーカーを変更",
+            "address_label": "Baker Address",
             "delegate_warning": "変更がブロックチェーンで確認されるまで、デリゲーション変更は見えません。"
         },
         "changeDelegationLedgerConfirmModal": {
@@ -222,6 +274,8 @@
             },
             "errors": {
                 "send_address": "アドレスはTZ1、TZ2、TZ3またはKT1だけを始めることができます。",
+                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
                 "delegate_address": "TZ1、TZ2、TZ3アドレスにのみデリゲートすることができます。",
                 "length": "アドレスは36文字の長さにしてください。",
                 "special_chars": "アドレスに特殊文字を入れることはできません。",
@@ -266,7 +320,13 @@
                 "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "スマートコントラクト操作を失敗しました",
                 "success_invoke_operation": "コントラクト呼び出しをうまく開始しました。",
-                "success_contract_origination": "コントラクト展開をうまく開始しました。"
+                "success_contract_origination": "コントラクト展開をうまく開始しました。",
+                "started_token_failed": "Started token transaction failed.",
+                "started_token_success": "Successfully started token transaction.",
+                "mint_operation_failed": "Mint operation failed.",
+                "mint_operation_success": "Successfully started mint token.",
+                "burn_operation_failed": "Burn operation failed.",
+                "burn_operation_success": "Successfully started burn token."
             }
         },
         "pdfReader": {
@@ -295,6 +355,7 @@
         "send": {
             "send_xtz": "XTZを送る",
             "recipient_address": "受取人アドレス",
+            "holder_address": "Holder Address",
             "burn_tooltip_title": "バーン費用がかかる理由は？",
             "burn_tooltip_content": "入力した受取人アドレスには残高がありません。空のマネージャーアドレス(tz1,2,3)に資金を送るためには、一度限り<1> 0.257 </1>XTZ バーン費用が必要です。",
             "fee_tooltip_title": "この取引の費用が少し高い理由は？",
@@ -302,7 +363,9 @@
             "warnings": {
                 "total_exceeds": "合計が利用可能な資金を超えています",
                 "not_allowed": "管理者アドレスは1µtz以下にすることはまだ許可されていません"
-            }
+            },
+            "burn_notice": "Burn tokens to destroy tokens from a current holder and reduce total supply.",
+            "mint_notice": "Mint tokens to give brand new tokens to a recipient and increase total supply."
         },
         "sendConfirmationModal": {
             "send_confirmation": "確認を送信",
@@ -313,6 +376,10 @@
             "confirm_transaction": "取引を確認",
             "send_description": "取引を発信しようとしています。",
             "confirm_description": "すべての詳細が正しければ、デバイスの取引を<1>確認</1>してください。"
+        },
+        "tokenLedgerConfirmModal": {
+            "confirm_token": "Confirm Token Contract",
+            "op_description": "You are about to {{op}} your Tokens. Please carefully review the details on your device."
         },
         "settingController": {
             "settings": "設定",
@@ -338,7 +405,6 @@
             "sent": "送信しました",
             "received": "受信しました",
             "this_address": "このアドレス",
-            "your_manager_address": "<0>あなたの</0>アカウント 1 マネージャーアドレス",
             "invoke_function": "呼び出された機能",
             "add_delegate": "発信 - 委任されたアドレス",
             "deployment": "発信 - スマートコントラクト",
@@ -353,6 +419,10 @@
         "comingSoon": {
             "coming_soon": "準備中",
             "working_hard": ""
+        },
+        "withdrawDeposit": {
+            "withdraw_warning": "To withdraw funds back to your manager account, {{managerAddress}}, please select a fee of at least 0.005 XTZ and ensure you have at least that amount in your manager account to cover the transaction.",
+            "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}."
         }
     },
     "containers": {
@@ -360,6 +430,7 @@
             "add_account": "アカウントを追加",
             "refer_pdf_title": "fundraiserの間に作成したPDF文書を参考にしてください。",
             "secret_key_15": "15語のシークレットキー",
+            "restore_mnemonic": "12, 15, 18, 21 or 24 Word Secret Key",
             "fundraiser_password": "Fundraiser パスワード",
             "public_key_hash": "パブリックキーハッシュ",
             "fundraiser_email_address": "Fundraiser メールアドレス",
@@ -402,6 +473,8 @@
             "connect_ledger": "Connect with Ledgerと接続",
             "dont_have_ledger_wallet": "Ledger Tezos ウォレットアプリを持っていませんか？",
             "download_it_here": "ここからダウンロード",
+            "need_device": "Need a Ledger device?",
+            "get_it_here": "Get it here",
             "connect_your_device": "<1> デバイスを接続</1>して、<3>ピンを入力</3>、それから<5>Tezos Walletアプリを開きます</5>。",
             "connecting": "接続中...",
             "selectedPath": "選択したパス： "
