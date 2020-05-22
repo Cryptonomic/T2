@@ -99,7 +99,7 @@ const initialState = {
     fee: AVERAGEFEES.medium,
     isBurn: false,
     total: AVERAGEFEES.medium,
-    balance: 0
+    balance: 0,
 };
 
 function Send(props: Props) {
@@ -109,7 +109,7 @@ function Send(props: Props) {
     const [state, setState] = useState(() => {
         return {
             ...initialState,
-            balance: addressBalance
+            balance: addressBalance,
         };
     });
     const [password, setPassword] = useState('');
@@ -122,32 +122,34 @@ function Send(props: Props) {
     const { selectedNode, nodesList } = useSelector((rootState: RootState) => rootState.settings, shallowEqual);
 
     useEffect(() => {
-        setState(prevState => {
+        setState((prevState) => {
             return {
                 ...prevState,
                 fee: newFees.medium,
-                total: newFees.medium
+                total: newFees.medium,
             };
         });
     }, [isFeeLoaded]);
 
     function onUseMax() {
         const burnFee = isBurn ? 257000 : 0;
-        const max = addressBalance - fee - burnFee;
+        const max = addressBalance - fee - burnFee - 1;
         let newAmount = '0';
         let newTotal = fee;
         let newBalance = addressBalance - newTotal;
+
         if (max > 0) {
             newAmount = (max / utez).toFixed(6);
             newTotal = addressBalance;
-            newBalance = 0;
+            newBalance = 1;
         }
-        setState(prevState => {
+
+        setState((prevState) => {
             return {
                 ...prevState,
                 amount: newAmount,
                 total: newTotal,
-                balance: newBalance
+                balance: newBalance,
             };
         });
     }
@@ -165,13 +167,14 @@ function Send(props: Props) {
         const numAmount = parseFloat(newAmount) * utez;
         const newTotal = numAmount + fee + burnFee;
         const newBalance = addressBalance - newTotal;
-        setState(prevState => {
+
+        setState((prevState) => {
             return {
                 ...prevState,
                 toAddress: newAddress,
                 total: newTotal,
                 balance: newBalance,
-                isBurn: isDisplayedBurn
+                isBurn: isDisplayedBurn,
             };
         });
     }
@@ -182,12 +185,13 @@ function Send(props: Props) {
         const numAmount = parseFloat(commaReplacedAmount) * utez;
         const newTotal = numAmount + fee + burnFee;
         const newBalance = addressBalance - newTotal;
-        setState(prevState => {
+
+        setState((prevState) => {
             return {
                 ...prevState,
                 total: newTotal,
                 balance: newBalance,
-                amount: newAmount
+                amount: newAmount,
             };
         });
     }
@@ -198,12 +202,12 @@ function Send(props: Props) {
         const numAmount = parseFloat(newAmount) * utez;
         const newTotal = numAmount + newFee + burnFee;
         const newBalance = addressBalance - newTotal;
-        setState(prevState => {
+        setState((prevState) => {
             return {
                 ...prevState,
                 total: newTotal,
                 balance: newBalance,
-                fee: newFee
+                fee: newFee,
             };
         });
     }
@@ -229,13 +233,13 @@ function Send(props: Props) {
             return {
                 isIssue: true,
                 warningMessage: t('components.send.warnings.total_exceeds'),
-                balanceColor: 'error1'
+                balanceColor: 'error1',
             };
         }
         return {
             isIssue: false,
             warningMessage: '',
-            balanceColor: 'gray8'
+            balanceColor: 'gray8',
         };
     }
 
@@ -279,8 +283,8 @@ function Send(props: Props) {
                 address={selectedAccountHash}
                 operationType="send"
                 onChange={handleToAddressChange}
-                onIssue={err => setIsAddressIssue(err)}
-                onAddressType={type => setAddressType(type)}
+                onIssue={(err) => setIsAddressIssue(err)}
+                onAddressType={(type) => setAddressType(type)}
             />
             <AmountContainer>
                 <TezosNumericInput
@@ -290,7 +294,7 @@ function Send(props: Props) {
                     onChange={handleAmountChange}
                     errorText={error}
                 />
-                <UseMax onClick={() => onUseMax}>{t('general.verbs.use_max')}</UseMax>
+                <UseMax onClick={() => onUseMax()}>{t('general.verbs.use_max')}</UseMax>
             </AmountContainer>
             <FeesBurnContainer>
                 <FeeContainer>
@@ -341,7 +345,7 @@ function Send(props: Props) {
 
             {!isLedger ? (
                 <SendConfirmationModal
-                    onEnterPress={event => onEnterPress(event.key)}
+                    onEnterPress={(event) => onEnterPress(event.key)}
                     amount={amount}
                     fee={fee}
                     source={selectedAccountHash}
@@ -349,7 +353,7 @@ function Send(props: Props) {
                     address={toAddress}
                     open={open}
                     onClose={() => setOpen(false)}
-                    onPasswordChange={val => setPassword(val)}
+                    onPasswordChange={(val) => setPassword(val)}
                     onSend={() => onSend()}
                     isLoading={isLoading}
                     isBurn={isBurn}
