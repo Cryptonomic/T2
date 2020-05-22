@@ -401,6 +401,7 @@
             "public_key_reveal": "РАСКРЫТИЕ ПУБЛИЧНОГО КЛЮЧА",
             "activation": "АКТИВАЦИЯ",
             "updated_delegate": "Обновлённый Делегат",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "СОЗДАНИЕ",
             "sent": "ОТПРАВЛЕНО",
             "received": "ПОЛУЧЕНО",

@@ -401,6 +401,7 @@
             "public_key_reveal": "Revelação de Chave Pública",
             "activation": "Ativação",
             "updated_delegate": "Baker atualizado",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "Originação",
             "sent": "Enviado",
             "received": "Recebido",

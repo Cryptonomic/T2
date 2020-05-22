@@ -401,6 +401,7 @@
             "public_key_reveal": "ÖFFENTLICHEN SCHLÜSSEL AUFDECKEN",
             "activation": "AKTIVIERUNG",
             "updated_delegate": "AKTUALISIERTE DELEGIERUNG",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "ERSTELLUNG",
             "sent": "GESENDET",
             "received": "EMPFANGEN",
