@@ -401,6 +401,7 @@
             "public_key_reveal": "パブリックキーが現れます",
             "activation": "アクティブ化",
             "updated_delegate": "更新されたベーカー",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "発信",
             "sent": "送信しました",
             "received": "受信しました",

@@ -401,6 +401,7 @@
             "public_key_reveal": "公开密钥揭示",
             "activation": "激活",
             "updated_delegate": "已更新过的烘培者(Baker)",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "起始",
             "sent": "已发送",
             "received": "已收到",
