@@ -20,6 +20,7 @@ interface Props {
 }
 
 function InteractContractModal(props: Props) {
+    // TODO: move to featureModals
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState(0);
     const [enterCounts, setEnterCounts] = useState<number[]>([0, 0]);
