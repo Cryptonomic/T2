@@ -8,6 +8,7 @@ import { getSelectedKeyStore, openLink } from '../../utils/general';
 import { getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
 import CopyButton from '../../components/CopyButton';
+import Tooltip from '../../components/Tooltip';
 import { RootState } from '../../types/store';
 
 import {
@@ -26,7 +27,8 @@ import {
     ContentTitle,
     ContentSubtitle,
     Footer,
-    TitleContainer
+    TitleContainer,
+    TooltipContent,
 } from '../style';
 
 interface Props {
@@ -40,7 +42,7 @@ const Auth = (props: Props) => {
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
-    const values = useSelector<RootState, object>(state => state.modal.values, shallowEqual);
+    const values = useSelector<RootState, object>((state) => state.modal.values, shallowEqual);
     const [result, setResult] = useState('');
     const [error, setError] = useState(false);
     const { open, onClose } = props;
@@ -127,7 +129,10 @@ const Auth = (props: Props) => {
                             <TitleContainer>
                                 <LinkContainer onClick={() => onClick(requestorUrl)} key={requestorUrl}>
                                     <ContentTitle>
-                                        {requestor} <LinkIcon iconName="new-window" size={ms(0)} color="black" />
+                                        {requestor}
+                                        <Tooltip position="bottom" content={<TooltipContent>{`Open ${requestorUrl} in a browser`}</TooltipContent>}>
+                                            <LinkIcon iconName="new-window" size={ms(0)} color="black" />
+                                        </Tooltip>
                                     </ContentTitle>
                                 </LinkContainer>
                                 <ContentSubtitle>{requestorDescription}</ContentSubtitle>
