@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js';
 import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosNodeReader } from 'conseiljs';
 
 import * as status from '../constants/StatusTypes';
@@ -43,10 +44,8 @@ export function createTransaction(transaction: any): WalletTransaction {
 export function processNodeOperationGroup(group: any): WalletTransaction {
     const first = group.contents[0];
 
-    console.log(`processing ${group.hash}`);
-
     return {
-        amount: parseInt(first.amount, 10) || 0,
+        amount: new BigNumber(first.amount || 0).toNumber(),
         balance: 0,
         block_hash: '',
         block_level: -1,
