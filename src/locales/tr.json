@@ -401,6 +401,7 @@
             "public_key_reveal": "ANAHTAR KAYIT",
             "activation": "AKTİVASYON",
             "updated_delegate": "DELEGE DEĞİŞİMİ",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "DELEGE OLUŞTURMA",
             "sent": "GÖNDERİ",
             "received": "TAHSİLAT",

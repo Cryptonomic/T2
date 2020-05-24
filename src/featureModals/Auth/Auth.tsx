@@ -8,6 +8,7 @@ import { getSelectedKeyStore, openLink } from '../../utils/general';
 import { getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
 import CopyButton from '../../components/CopyButton';
+import Tooltip from '../../components/Tooltip';
 import { RootState } from '../../types/store';
 
 import {
@@ -26,7 +27,8 @@ import {
     ContentTitle,
     ContentSubtitle,
     Footer,
-    TitleContainer
+    TitleContainer,
+    TooltipContent,
 } from '../style';
 
 interface Props {
@@ -40,7 +42,7 @@ const Auth = (props: Props) => {
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
-    const values = useSelector<RootState, object>(state => state.modal.values, shallowEqual);
+    const values = useSelector<RootState, object>((state) => state.modal.values, shallowEqual);
     const [result, setResult] = useState('');
     const [error, setError] = useState(false);
     const { open, onClose } = props;
@@ -86,30 +88,30 @@ const Auth = (props: Props) => {
     useEffect(() => {
         const req = values[activeModal];
         if (req) {
-            if (req.r) {
-                setRequestor(req.r);
+            if (req.requestor) {
+                setRequestor(req.requestor);
             }
-            if (req.d) {
-                setRequestorDescription(req.d);
+            if (req.desc) {
+                setRequestorDescription(req.desc);
             }
-            if (req.u) {
-                setRequestorUrl(req.u);
+            if (req.requrl) {
+                setRequestorUrl(req.requrl);
             }
-            if (req.p) {
-                let p = req.p.replace(/\n/g, '');
+            if (req.prompt) {
+                let p = req.prompt.replace(/\n/g, '');
                 p = p.slice(0, Math.min(100, p.length));
                 setPrompt(p);
             }
-            if (req.t && req.t !== selectedParentHash) {
+            if (req.target && req.target !== selectedParentHash) {
                 setError(true);
                 setResult('Account address mismatch'); // TODO: localization
             }
-            if (!req.t) {
+            if (!req.target) {
                 setError(true);
                 setResult('Missing target address'); // TODO: localization
             }
 
-            if (!req.u) {
+            if (!req.requrl) {
                 setError(true);
                 setResult('Missing dApp link'); // TODO: localization
             }
@@ -127,7 +129,10 @@ const Auth = (props: Props) => {
                             <TitleContainer>
                                 <LinkContainer onClick={() => onClick(requestorUrl)} key={requestorUrl}>
                                     <ContentTitle>
-                                        {requestor} <LinkIcon iconName="new-window" size={ms(0)} color="black" />
+                                        {requestor}
+                                        <Tooltip position="bottom" content={<TooltipContent>{`Open ${requestorUrl} in a browser`}</TooltipContent>}>
+                                            <LinkIcon iconName="new-window" size={ms(0)} color="black" />
+                                        </Tooltip>
                                     </ContentTitle>
                                 </LinkContainer>
                                 <ContentSubtitle>{requestorDescription}</ContentSubtitle>

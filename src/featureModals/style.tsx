@@ -7,6 +7,7 @@ import Warning from '@material-ui/icons/Warning';
 
 import TezosIcon from '../components/TezosIcon';
 import Button from '../components/Button';
+import { ms } from '../styles/helpers';
 
 export const ModalWrapper = styled(Modal)`
     &&& {
@@ -102,8 +103,8 @@ export const ResultContainer = styled.div`
 `;
 
 export const Result = styled.div<any>`
-    flex: ${props => (!props.error ? 1 : '')};
-    width: ${props => (!props.error ? '90%' : '')};
+    flex: ${(props) => (!props.error ? 1 : '')};
+    width: ${(props) => (!props.error ? '90%' : '')};
     word-wrap: break-word;
 `;
 
@@ -119,13 +120,15 @@ export const InvokeButton = styled(Button)`
     height: 50px;
     margin-left: auto;
     padding: 0;
+    cursor: default;
 `;
 
 export const LinkIcon = styled(TezosIcon)`
     margin-left: 2px;
+    cursor: pointer;
 `;
 
-export const LinkContainer = styled.span`
+export const LinkContainer = styled.div`
     display: inline-block;
     cursor: pointer;
 `;
@@ -152,4 +155,11 @@ export const Footer = styled.div`
     padding: 25px 0;
     display: flex;
     flex-direction: column
+`;
+
+export const TooltipContent = styled.div`
+    color: ${({ theme: { colors } }) => colors.primary};
+    font-weight: 300;
+    font-size: ${ms(-1)};
+    max-width: ${ms(13)};
 `;

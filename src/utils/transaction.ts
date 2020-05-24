@@ -1,10 +1,11 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient } from 'conseiljs';
+import { BigNumber } from 'bignumber.js';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosNodeReader } from 'conseiljs';
 
 import * as status from '../constants/StatusTypes';
-import { Node, TokenTransaction, TokenKind } from '../types/general';
+import { Node, TokenTransaction, WalletTransaction } from '../types/general';
 import { TRANSACTION } from '../constants/TransactionTypes';
 
-export function createTransaction(transaction) {
+export function createTransaction(transaction: any): WalletTransaction {
     const newTransaction = { ...transaction };
 
     if (typeof newTransaction.balance === 'string') {
@@ -36,7 +37,30 @@ export function createTransaction(transaction) {
         source: null,
         storage_limit: null,
         timestamp: Date.now(),
-        ...newTransaction
+        ...newTransaction,
+    };
+}
+
+export function processNodeOperationGroup(group: any): WalletTransaction {
+    const first = group.contents[0];
+
+    return {
+        amount: new BigNumber(first.amount || 0).toNumber(),
+        balance: 0,
+        block_hash: '',
+        block_level: -1,
+        delegate_value: '',
+        destination: first.destination || '',
+        fee: parseInt(first.fee, 10),
+        gas_limit: parseInt(first.gas_limit, 10),
+        kind: first.kind,
+        operation_group_hash: group.hash,
+        operation_id: 'OPID',
+        pkh: first.pkh || '',
+        status: status.PENDING,
+        source: first.source || '',
+        storage_limit: parseInt(first.storage_limit, 10),
+        timestamp: new Date(),
     };
 }
 
@@ -50,7 +74,7 @@ const initTokenTransaction: TokenTransaction = {
     status: status.CREATED,
     source: '',
     timestamp: Date.now(),
-    parameters: ''
+    parameters: '',
 };
 
 export function createTokenTransaction(transaction): TokenTransaction {
@@ -67,7 +91,7 @@ export function createTokenTransaction(transaction): TokenTransaction {
     return { ...initTokenTransaction, ...newTransaction };
 }
 
-export async function getTransactions(accountHash, node: Node) {
+export async function getIndexedTransactions(accountHash, node: Node) {
     const { conseilUrl, apiKey, network } = node;
 
     let origin = ConseilQueryBuilder.blankQuery();
@@ -96,33 +120,36 @@ export async function getTransactions(accountHash, node: Node) {
     target = ConseilQueryBuilder.addOrdering(target, 'block_level', ConseilSortDirection.DESC);
     target = ConseilQueryBuilder.setLimit(target, 1_000);
 
-    return Promise.all([target, origin].map(q => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
-        .then(responses => {
+    return Promise.all([target, origin].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
+        .then((responses) => {
             return responses.reduce((result, r) => {
-                r.forEach(rr => result.push(rr));
+                r.forEach((rr) => result.push(rr));
                 return result;
             });
         })
-        .then(transactions => transactions.sort((a, b) => a.timestamp - b.timestamp));
+        .then((transactions) => transactions.sort((a, b) => a.timestamp - b.timestamp));
 }
 
-export function syncTransactionsWithState(remote: TokenTransaction[], local: TokenTransaction[]) {
-    const cleanRemote = remote.filter(e => e);
-    const cleanLocal = local.filter(e => e);
+export function syncTransactionsWithState(remote: any[], local: any[]) {
+    const cleanRemote = remote.filter((e) => e);
+    const cleanLocal = local.filter((e) => e).filter((t) => t.status.toLowerCase() !== 'pending' && t.status.toLowerCase() !== 'created');
 
-    const newTransactions = cleanLocal.filter(tr => !cleanRemote.find(syncTr => syncTr.operation_group_hash === tr.operation_group_hash));
+    const newTransactions = cleanLocal.filter((lt) => !cleanRemote.find((rt) => rt.operation_group_hash === lt.operation_group_hash));
 
     return [...remote, ...newTransactions].sort((a, b) => a.timestamp - b.timestamp);
 }
 
 export async function getSyncTransactions(accountHash: string, node: Node, stateTransactions: any[]) {
-    let newTransactions: any[] = await getTransactions(accountHash, node).catch(e => {
-        console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + accountHash);
-        console.error(e);
+    const indexedTransaction: any[] = await getIndexedTransactions(accountHash, node).catch((e) => {
+        console.error(`getIndexedTransactions(${accountHash}) failed`, e);
         return [];
     });
 
-    newTransactions = newTransactions.map(transaction => createTransaction({ ...transaction, status: status.READY }));
+    const pendingTransactions = await TezosNodeReader.getMempoolOperationsForAccount(node.tezosUrl, accountHash);
 
-    return syncTransactionsWithState(newTransactions, stateTransactions);
+    const transactions = indexedTransaction
+        .map((t) => createTransaction({ ...t, status: status.READY }))
+        .concat(pendingTransactions.map((g) => processNodeOperationGroup(g)));
+
+    return syncTransactionsWithState(transactions, stateTransactions);
 }

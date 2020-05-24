@@ -401,6 +401,7 @@
             "public_key_reveal": "공개 키 표시",
             "activation": "활성화",
             "updated_delegate": "업데이트된 베이커",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "개시",
             "sent": "전송됨",
             "received": "수신됨",
