@@ -10,7 +10,7 @@ import {
     StoreType,
     Tzip7ReferenceTokenHelper,
     StakerDAOTokenHelper,
-    TzbtcTokenHelper
+    TzbtcTokenHelper,
 } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
@@ -39,7 +39,7 @@ import {
     updateFetchedTimeAction,
     setLedgerAction,
     setIsLedgerConnectingAction,
-    changeAccountAction
+    changeAccountAction,
 } from '../app/actions';
 
 import { getMainNode, getMainPath } from '../../utils/settings';
@@ -56,7 +56,7 @@ const { sendIdentityActivationOperation } = TezosNodeWriter;
 let currentAccountRefreshInterval: any = null;
 
 export function goHomeAndClearState() {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(logoutAction());
         clearAutomaticAccountRefresh();
         dispatch(push('/'));
@@ -64,7 +64,7 @@ export function goHomeAndClearState() {
 }
 
 export function automaticAccountRefresh() {
-    return dispatch => {
+    return (dispatch) => {
         if (currentAccountRefreshInterval) {
             clearAutomaticAccountRefresh();
         }
@@ -131,7 +131,7 @@ export function syncAccountThunk(selectedAccountHash, selectedParentHash) {
 
         if (accountIndex > -1) {
             localAccount = { ...identity.accounts[accountIndex] };
-            syncAccount = await getSyncAccount(localAccount, mainNode, selectedAccountHash, selectedAccountHash).catch(e => {
+            syncAccount = await getSyncAccount(localAccount, mainNode, selectedAccountHash, selectedAccountHash).catch((e) => {
                 console.log(`-debug: Error in: syncAccount for:${identity.publicKeyHash}`);
                 console.error(e);
                 return syncAccount;
@@ -153,7 +153,7 @@ export function syncIdentityThunk(publicKeyHash) {
         const { identities } = state().wallet;
         const stateIdentity = findIdentity(identities, publicKeyHash);
 
-        const syncIdentity = await getSyncIdentity(stateIdentity, mainNode, selectedAccountHash).catch(e => {
+        const syncIdentity = await getSyncIdentity(stateIdentity, mainNode, selectedAccountHash).catch((e) => {
             console.log(`-debug: Error in: syncIdentity for:${publicKeyHash}`);
             console.error(e);
             return stateIdentity;
@@ -228,9 +228,9 @@ export function syncWalletThunk() {
 
         const { identities } = state().wallet;
         const syncIdentities: any[] = await Promise.all(
-            (identities || []).map(async identity => {
+            (identities || []).map(async (identity) => {
                 const { publicKeyHash } = identity;
-                const syncIdentity = await getSyncIdentity(identity, mainNode, selectedAccountHash).catch(e => {
+                const syncIdentity = await getSyncIdentity(identity, mainNode, selectedAccountHash).catch((e) => {
                     console.log(`-debug: Error in: syncIdentity for: ${publicKeyHash}`);
                     console.error(e);
                     return identity;
@@ -240,7 +240,7 @@ export function syncWalletThunk() {
         );
 
         const newTokens = await Promise.all(
-            tokens.map(async token => {
+            tokens.map(async (token) => {
                 if (token.kind === TokenKind.tzip7 || token.kind === TokenKind.usdtez) {
                     try {
                         const validCode = await Tzip7ReferenceTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
@@ -342,7 +342,7 @@ export function syncWalletThunk() {
 }
 
 export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHash, addressType) {
-    return async dispatch => {
+    return async (dispatch) => {
         try {
             dispatch(setWalletIsSyncingAction(true));
             if (addressType === AddressType.Token || addressType === AddressType.STKR || addressType === AddressType.TzBTC) {
@@ -396,7 +396,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     if (!account) {
                         const keyStore = getSelectedKeyStore([identity], identity.publicKeyHash, identity.publicKeyHash, false);
                         const newKeyStore = { ...keyStore, storeType: StoreType.Fundraiser };
-                        activating = await sendIdentityActivationOperation(tezosUrl, newKeyStore, activationCode).catch(err => {
+                        activating = await sendIdentityActivationOperation(tezosUrl, newKeyStore, activationCode).catch((err) => {
                             const error = err;
                             error.name = err.message;
                             throw error;
@@ -405,7 +405,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                         const operationId = clearOperationId(activating.operationGroupID);
                         dispatch(createMessageAction('components.messageBar.messages.success_account_activation', false, operationId));
                         identity.operations = {
-                            [CREATED]: operationId
+                            [CREATED]: operationId,
                         };
                     }
                     break;
@@ -414,7 +414,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     identity = await unlockIdentityWithMnemonic(seed, passPhrase);
                     const storeTypesMap = {
                         0: StoreType.Mnemonic,
-                        1: StoreType.Fundraiser
+                        1: StoreType.Fundraiser,
                     };
                     identity.storeType = storeTypesMap[identity.storeType];
                     const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(
@@ -443,7 +443,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                                 kind: ACTIVATION,
                                 timestamp: Date.now(),
                                 operation_group_hash: identity.operations.Created,
-                                amount: activating.results.contents[0].metadata.balance_updates[0].change
+                                amount: activating.results.contents[0].metadata.balance_updates[0].change,
                             })
                         );
                     }
@@ -514,7 +514,6 @@ export function importSecretKeyThunk(key) {
     };
 }
 
-// todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
 export function loginThunk(loginType, walletLocation, walletFileName, password) {
     return async (dispatch, state) => {
         const completeWalletPath = path.join(walletLocation, walletFileName);
@@ -529,7 +528,7 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
                 identities = wallet.identities.map((identity, index) => {
                     return createIdentity({
                         ...identity,
-                        order: index + 1
+                        order: index + 1,
                     });
                 });
             } else if (loginType === IMPORT) {
@@ -556,7 +555,6 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
     };
 }
 
-// todo: 3 on create account success add that account to file - incase someone closed wallet before ready was finish.
 export function connectLedgerThunk() {
     return async (dispatch, state) => {
         const { selectedPath, pathsList } = state().settings;

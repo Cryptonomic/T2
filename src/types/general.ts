@@ -55,7 +55,7 @@ export enum AddressType {
     Token,
     None,
     STKR,
-    TzBTC
+    TzBTC,
 }
 
 export interface RegularAddress {
@@ -67,6 +67,25 @@ export interface AverageFees {
     low: number;
     medium: number;
     high: number;
+}
+
+export interface WalletTransaction {
+    amount?: number;
+    balance?: number;
+    block_hash: string;
+    block_level: number;
+    delegate_value?: string;
+    destination?: string;
+    fee?: number;
+    gas_limit: number;
+    kind: string;
+    operation_group_hash: string;
+    operation_id: string;
+    pkh?: string;
+    status: string;
+    source?: string;
+    storage_limit: number;
+    timestamp: Date;
 }
 
 export interface TokenTransaction {
@@ -87,7 +106,7 @@ export enum TokenKind {
     tzip7 = 'tzip7',
     stkr = 'stkr',
     usdtez = 'usdtez',
-    tzbtc = 'tzbtc'
+    tzbtc = 'tzbtc',
 }
 
 export interface Token {

@@ -88,30 +88,30 @@ const Auth = (props: Props) => {
     useEffect(() => {
         const req = values[activeModal];
         if (req) {
-            if (req.r) {
-                setRequestor(req.r);
+            if (req.requestor) {
+                setRequestor(req.requestor);
             }
-            if (req.d) {
-                setRequestorDescription(req.d);
+            if (req.desc) {
+                setRequestorDescription(req.desc);
             }
-            if (req.u) {
-                setRequestorUrl(req.u);
+            if (req.requrl) {
+                setRequestorUrl(req.requrl);
             }
-            if (req.p) {
-                let p = req.p.replace(/\n/g, '');
+            if (req.prompt) {
+                let p = req.prompt.replace(/\n/g, '');
                 p = p.slice(0, Math.min(100, p.length));
                 setPrompt(p);
             }
-            if (req.t && req.t !== selectedParentHash) {
+            if (req.target && req.target !== selectedParentHash) {
                 setError(true);
                 setResult('Account address mismatch'); // TODO: localization
             }
-            if (!req.t) {
+            if (!req.target) {
                 setError(true);
                 setResult('Missing target address'); // TODO: localization
             }
 
-            if (!req.u) {
+            if (!req.requrl) {
                 setError(true);
                 setResult('Missing dApp link'); // TODO: localization
             }
