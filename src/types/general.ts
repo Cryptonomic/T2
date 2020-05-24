@@ -28,7 +28,7 @@ export interface Account {
     transactions: any[];
     activeTab?: string;
     status?: string;
-    operations: any; // todo type
+    operations: any; // TODO: type
     order: number;
 }
 
@@ -43,7 +43,7 @@ export interface Identity {
     storeType: StoreType;
     activeTab: string;
     status: string;
-    transactions: any[]; // todo transaction type
+    transactions: any[]; // TODO: transaction type
     delegate_value: string;
     derivationPath?: string;
 }
