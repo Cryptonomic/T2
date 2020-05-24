@@ -77,11 +77,6 @@ export async function getSyncAccount(account: Account, node: Node, accountHash: 
         return account;
     });
 
-    console.log(`account ${account.account_id}`);
-    console.log(`transactions(${account.transactions.length}): ${account.transactions.map((t) => JSON.stringify(t))}`);
-    account.transactions = account.transactions.filter((t) => t.status.toLowerCase() !== 'pending' && t.status.toLowerCase() !== 'created');
-    console.log(`transactions after ${account.transactions.length}`);
-
     if (accountHash === selectedAccountHash) {
         account.transactions = await getSyncTransactions(accountHash, node, account.transactions);
     }
