@@ -33,6 +33,4 @@
 
 ## 1.0.x
 
-### New Features
-
-### Fixes
+There were several internal test releases to validate the Typescript migration.
