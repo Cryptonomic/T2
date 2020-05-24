@@ -91,7 +91,7 @@ export function createTokenTransaction(transaction): TokenTransaction {
     return { ...initTokenTransaction, ...newTransaction };
 }
 
-export async function getTransactions(accountHash, node: Node) {
+export async function getIndexedTransactions(accountHash, node: Node) {
     const { conseilUrl, apiKey, network } = node;
 
     let origin = ConseilQueryBuilder.blankQuery();
@@ -132,17 +132,16 @@ export async function getTransactions(accountHash, node: Node) {
 
 export function syncTransactionsWithState(remote: any[], local: any[]) {
     const cleanRemote = remote.filter((e) => e);
-    const cleanLocal = local.filter((e) => e);
+    const cleanLocal = local.filter((e) => e).filter((t) => t.status.toLowerCase() !== 'pending' && t.status.toLowerCase() !== 'created');
 
-    const newTransactions = cleanLocal.filter((tr) => !cleanRemote.find((syncTr) => syncTr.operation_group_hash === tr.operation_group_hash));
+    const newTransactions = cleanLocal.filter((lt) => !cleanRemote.find((rt) => rt.operation_group_hash === lt.operation_group_hash));
 
     return [...remote, ...newTransactions].sort((a, b) => a.timestamp - b.timestamp);
 }
 
 export async function getSyncTransactions(accountHash: string, node: Node, stateTransactions: any[]) {
-    const indexedTransaction: any[] = await getTransactions(accountHash, node).catch((e) => {
-        console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + accountHash);
-        console.error(e);
+    const indexedTransaction: any[] = await getIndexedTransactions(accountHash, node).catch((e) => {
+        console.error(`getIndexedTransactions(${accountHash}) failed`, e);
         return [];
     });
 
