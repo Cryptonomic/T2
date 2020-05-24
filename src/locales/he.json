@@ -401,6 +401,7 @@
             "public_key_reveal": "PUBLIC KEY REVEAL",
             "activation": "ACTIVATION",
             "updated_delegate": "UPDATED DELEGATE",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "ORIGINATION",
             "sent": "Sent",
             "received": "Received",

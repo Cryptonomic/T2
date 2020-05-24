@@ -72,8 +72,7 @@ function BalanceBanner(props: Props) {
                 </AddressInfo>
                 <AddressInfo>
                     {token.details && token.details.paused !== true && 'Token is active.'}{' '}
-                    {token.details && token.details.supply && 'Total supply is ' + formatAmount(token.details.supply)}
-                    {'.'}
+                    {token.details && token.details.supply && 'Total supply is ' + formatAmount(token.details.supply) + '.'}
                 </AddressInfo>
             </BottomRow>
         </Container>
@@ -82,7 +81,7 @@ function BalanceBanner(props: Props) {
 
 BalanceBanner.defaultProps = {
     parentIndex: 0,
-    isWalletSyncing: false
+    isWalletSyncing: false,
 };
 
 export default BalanceBanner;

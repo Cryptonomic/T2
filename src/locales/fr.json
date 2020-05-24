@@ -401,6 +401,7 @@
             "public_key_reveal": "CLE PUBLIC REVELEE",
             "activation": "ACTIVATION",
             "updated_delegate": "DELEGUE CHANGE",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "ORIGINATION",
             "sent": "ENVOYE",
             "received": "RECU",
