@@ -5,8 +5,8 @@ import { Node } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
 
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[]) {
-    let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch(e => {
-        console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
+    let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
+        console.log('-debug: Error in: getSyncAccount -> getTokenTransactions for:' + tokenAddress);
         console.error(e);
         return [];
     });
@@ -14,7 +14,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
     const transferPattern = /Pair"([1-9A-Za-z^OIl]{36})"\(Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)\)/;
     const mintPattern = /Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)/;
 
-    newTransactions = newTransactions.map(transaction => {
+    newTransactions = newTransactions.map((transaction) => {
         const params = transaction.parameters.replace(/\s/g, '');
         if (transferPattern.test(params)) {
             try {
@@ -25,7 +25,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                     status: transaction.status !== 'applied' ? status.FAILED : status.READY,
                     amount: Number(parts[3]),
                     source: parts[1],
-                    destination: parts[2]
+                    destination: parts[2],
                 });
             } catch (e) {
                 /* */
@@ -40,7 +40,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                     amount: Number(parts[2]),
                     source: managerAddress,
                     destination: tokenAddress, // TODO: target address of mint operation parts[1]
-                    entryPoint: 'mint'
+                    entryPoint: 'mint',
                 });
             } catch (e) {
                 /* */
@@ -99,19 +99,19 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
     indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
     indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
 
-    return Promise.all([direct, indirect].map(q => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
-        .then(responses =>
+    return Promise.all([direct, indirect].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
+        .then((responses) =>
             responses.reduce((result, r) => {
-                r.forEach(rr => result.push(rr));
+                r.forEach((rr) => result.push(rr));
                 return result;
             })
         )
-        .then(transactions => {
+        .then((transactions) => {
             return transactions
-                .filter(o => o !== undefined)
-                .filter((obj, pos, arr) => arr.map(o => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
+                .filter((o) => o !== undefined)
+                .filter((obj, pos, arr) => arr.map((o) => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
         })
-        .then(transactions => {
+        .then((transactions) => {
             return transactions.sort((a, b) => a.timestamp - b.timestamp);
         });
 }
