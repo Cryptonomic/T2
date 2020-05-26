@@ -462,7 +462,7 @@
             "back_to_login": "חזרה להתחברות"
         },
         "loginHome": {
-            "description": "אנו מכירים בכך שקראתי וקיבלתי את <1>תנאי השירות</1> ואת<2>מדיניות הפרטיות</2>",
+            "description": "אנו מכירים בכך שקראתי וקיבלתי את <1>תנאי השירות</1> ואת <3>מדיניות הפרטיות</3>",
             "create_new_wallet_btn": "צרו ארנק חדש",
             "open_exisiting_wallet_btn": "פתחו ארנק קיים",
             "want_to_import_fundraiser_paper_wallet": "רוצה לייבא ארנק נייר מהגיוס?",
