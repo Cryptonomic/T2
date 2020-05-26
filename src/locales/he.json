@@ -52,7 +52,7 @@
             "source": "מקור",
             "destination": "יעד",
             "manager": "מנהל",
-            "delegate": "נציג",
+            "delegate": "האצלה",
             "ledger_name": "Ledger Nano S",
             "derivation_path": "מסלול גזירה",
             "storage": "אחסון",
@@ -93,7 +93,7 @@
     },
     "components": {
         "accountStatus": {
-            "creating_ccount": "יוצר משתמש",
+            "creating_ccount": "יוצר חשבון",
             "activation_operation_id": "מזהה פעולת הפעלה",
             "origination_operation_id": "מזהה פעולת הקמה",
             "public_key_reveal_operation_id": "מזהה פעולת חשיפת מפתח פומבי",
@@ -122,7 +122,7 @@
         "signVerifyModal": {
             "not_revealed": "החשבון הזה עדיין לא הופעל בבלוקצ'יין, לכן לא ניתן לוודא את החתימה באופן עצמאי. ספקו את המפתח הפומבי שלכם למוודא על מנת שיוכל לאשר ידנית.",
             "enter_address_key": "כתובת חותם או מפתח ציבורי",
-            "sign_guidance": "חתימת הודעה מאפשרת לאחרים לאשר בעלות על משתמש זה בעזרת שימוש בהודעה זו, חתימה ומפתח ציבורי בלבד.",
+            "sign_guidance": "חתימת הודעה מאפשרת לאחרים לאשר בעלות על חשבון זה בעזרת שימוש בהודעה זו, חתימה ומפתח ציבורי בלבד.",
             "verify_guidance": "הכנס את ההודעה, חתימה והכתובת שסופקה לך על מנת לאשר את החתימה.",
             "match": "חתימה מאושרת",
             "no_match": "חתימה שגויה"
@@ -161,38 +161,38 @@
             "path_label": "תוית המסלול"
         },
         "address": {
-            "manager_address": "מנהל הכתובת",
+            "manager_address": "כתובת המנהל",
             "delegated_address": "כתובת מואצלת",
             "delegation_contract": "חוזה האצלה"
         },
         "addressBlock": {
             "descriptions": {
-                "description1": "קיים הבדל בין האצלה של TEZ לשליחה של TEZ. רק זכויות אפיה מועברות כאשר מבצעים האצלה. הנמען של ההאצלה אינו יכול להשתמש ב TEZ שלך.",
+                "description1": "קיים הבדל בין האצלה של TEZ לשליחה של TEZ. רק זכויות אפיה מועברות כאשרבוחרים נציג. הנציג אינו יכול להשתמש ב TEZ שלך.",
                 "description2": "ישנה עמלה על הגדרת נציג.",
                 "description3": "אחרי 7 סייקלים (~20 ימים) הtez שלכם מתחילים לתרום לאפייה.",
                 "description4": "תגמולי האצלה תלויים בהסכם עם הנציג"
             },
-            "account_title": "משתמש {{index}}",
-            "not_ready_tooltip": "החשבון לא מוכן/ערוך/זמין לבצע האצלה",
+            "account_title": "חשבון {{index}}",
+            "not_ready_tooltip": "החשבון לא מוכן לבצע האצלה",
             "delegation_tips": "עצות האצלה",
-            "not_ready_interact_tooltip": "המשתמש שלך אינו מוכן ליצירת קשר עם חוזים מכיוון שעדיין אין בו כספים."
+            "not_ready_interact_tooltip": "החשבון שלך אינו מוכן ליצירת קשר עם חוזים מכיוון שעדיין אין בו כספים."
         },
         "addressStatus": {
-            "your_account": "המשתמש שלך",
+            "your_account": "החשבון שלך",
             "new_address": "כתובת חדשה",
             "retrieving_title": "מקבל {{typeText}}...",
             "preparing_title": "מכין {{typeText}}...",
             "deploying_title": "צור חוזה חדש..."
         },
         "balanceBanner": {
-            "breadcrumbs": "משתמש {{parentIndex}} > {{addressLabel}}",
+            "breadcrumbs": "חשבון {{parentIndex}} > {{addressLabel}}",
             "delegated_to": "הואצל ל",
             "secret_key": "מזהה סודי",
             "reveal_key": "לחצו לחשיפת מזהה סודי.",
             "hide_key": "לחצו להסתרת מזהה סודי.",
             "warning": "אזהרה!",
             "do_not_store": "אל תאחסנו את המזהה הסודי במחשב שלכם, כתבו אותו על דף ושמרו במקום בטוח.",
-            "tooltip_content": "כתובת המנהל היא הכתובת הקבועה של המשתמש שלך והיא משתמש לשליחה וקבלה של טזוס."
+            "tooltip_content": "כתובת המנהל היא הכתובת הראשית של החשבון שלך והיא משמשת לשליחה וקבלה של טזוס."
         },
         "copyIcon": {
             "copied": "הועתק!"
@@ -205,7 +205,7 @@
             },
             "generate_other_seed": "יצירת Seed חדש",
             "copy_seed": "העתק Seed",
-            "create_account": "יצירת משתמש",
+            "create_account": "יצירת חשבון",
             "seed_backup": "הSeed שלכם גובה בהצלחה",
             "back_to_seed": "חזרה לSeed",
             "first_word": "מילה ראשונה",
@@ -229,7 +229,7 @@
         "delegateConfirmationModal": {
             "new_address_label": "שנה כתובת אופה",
             "address_label": "כתובת אופה",
-            "delegate_warning": "יקח קרוב ל 5 שבועות (12 סבבים) לקבל, תגמולי האצלה מהאופה שלך."
+            "delegate_warning": "יקח קרוב ל 5 שבועות (12 סבבים) לקבל את התגמולים שלך מהמאפייה."
         },
         "changeDelegationLedgerConfirmModal": {
             "change_delegate_title": "אשר שינוי נציג.",
@@ -463,7 +463,7 @@
         },
         "loginHome": {
             "description": "אנו מכירים בכך שקראתי וקיבלתי את <1>תנאי השירות</1> ואת<2>מדיניות הפרטיות</2>",
-            "create_new_wallet_btn": "צרו ארנק קיים",
+            "create_new_wallet_btn": "צרו ארנק חדש",
             "open_exisiting_wallet_btn": "פתחו ארנק קיים",
             "want_to_import_fundraiser_paper_wallet": "רוצה לייבא ארנק נייר מהגיוס?",
             "create_named_wallet": "<0>צור ארנק</0> קודם.",
@@ -492,8 +492,8 @@
             "add_another_word": "הוסיפו מילה או שתיים.",
             "you_almost_there": "כמעט...",
             "you_got_it": "מעולה!",
-            "password_dont_match": "הסיסמאות לא מתאימות!",
-            "password_match": "הסיסמאות מתאימות!"
+            "password_dont_match": "הסיסמאות לא תואמות!",
+            "password_match": "הסיסמאות תואמות!"
         },
         "loginImport": {
             "open_wallet_label": "פתחו ארנק קיים",
