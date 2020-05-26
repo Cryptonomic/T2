@@ -10,5 +10,6 @@ export default {
     ko: '한국어',
     'pt-BR': 'Português (Brasil)',
     ru: 'Русский',
-    tr: 'Türkçe'
+    tr: 'Türkçe',
+    he: 'עברית',
 };
