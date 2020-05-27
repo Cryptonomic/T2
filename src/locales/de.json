@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "Anstehend...",
+            "pending_blocks": "Anstehend, expires in {{ttl}} blocks",
             "burn": "Verbrannt",
             "public_key_reveal": "ÖFFENTLICHEN SCHLÜSSEL AUFDECKEN",
             "activation": "AKTIVIERUNG",

@@ -10,7 +10,7 @@ import TezosAmount from '../../../../components/TezosAmount';
 import TezosIcon from '../../../../components/TezosIcon';
 import { openBlockExplorerForOperation } from '../../../../utils/general';
 import * as types from '../../../../constants/TransactionTypes';
-import { READY } from '../../../../constants/StatusTypes';
+import { READY, PENDING } from '../../../../constants/StatusTypes';
 import {
     REG_TX_GAS_CONSUMPTION,
     REG_TX_GAS_CONSUMPTION_ATHENS,
@@ -268,12 +268,21 @@ function Transaction(props: Props) {
     const address = getAddress(transaction, selectedAccountHash, selectedParentHash, t);
     const origination = transaction.kind === 'origination' && selectedAccountHash !== selectedParentHash;
     const activation = transaction.kind === 'activation' && selectedAccountHash === selectedParentHash;
+
+    let transactionTimestamp: string;
+    console.log(`rendering ${JSON.stringify(transaction)}`);
+    if (transaction.status === READY || origination || activation) {
+        transactionTimestamp = timeFormatter(transaction.timestamp);
+    } else if (transaction.status === PENDING && transaction.ttl) {
+        transactionTimestamp = t('components.transaction.pending_blocks', { ttl: transaction.ttl });
+    } else {
+        transactionTimestamp = t('components.transaction.pending');
+    }
+
     return (
         <TransactionContainer>
             <Header>
-                <TransactionDate>
-                    {transaction.status === READY || origination || activation ? timeFormatter(transaction.timestamp) : t('components.transaction.pending')}
-                </TransactionDate>
+                <TransactionDate>{transactionTimestamp}</TransactionDate>
                 <AmountContainer color={color}>
                     {sign}
                     <TezosAmount color={color} size={ms(-1)} amount={amount} format={6} />

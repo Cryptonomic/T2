@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "En cours…",
+            "pending_blocks": "En cours, expires in {{ttl}} blocks",
             "burn": "Burn",
             "public_key_reveal": "CLE PUBLIC REVELEE",
             "activation": "ACTIVATION",

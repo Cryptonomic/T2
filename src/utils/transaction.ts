@@ -25,7 +25,7 @@ export function createTransaction(transaction: any): WalletTransaction {
         balance: null,
         block_hash: null,
         block_level: null,
-        delegate_value: null,
+        delegate: null,
         destination: null,
         fee: null,
         gas_limit: null,
@@ -41,7 +41,7 @@ export function createTransaction(transaction: any): WalletTransaction {
     };
 }
 
-export function processNodeOperationGroup(group: any): WalletTransaction {
+export function processNodeOperationGroup(group: any, ttl: number = 0): WalletTransaction {
     const first = group.contents[0];
 
     return {
@@ -49,7 +49,7 @@ export function processNodeOperationGroup(group: any): WalletTransaction {
         balance: 0,
         block_hash: '',
         block_level: -1,
-        delegate_value: '',
+        delegate: first.delegate || '',
         destination: first.destination || '',
         fee: parseInt(first.fee, 10),
         gas_limit: parseInt(first.gas_limit, 10),
@@ -61,6 +61,7 @@ export function processNodeOperationGroup(group: any): WalletTransaction {
         source: first.source || '',
         storage_limit: parseInt(first.storage_limit, 10),
         timestamp: new Date(),
+        ttl,
     };
 }
 
@@ -131,12 +132,13 @@ export async function getIndexedTransactions(accountHash, node: Node) {
 }
 
 export function syncTransactionsWithState(remote: any[], local: any[]) {
+    // TODO: type
     const cleanRemote = remote.filter((e) => e);
-    const cleanLocal = local.filter((e) => e).filter((t) => t.status.toLowerCase() !== 'pending' && t.status.toLowerCase() !== 'created');
+    const cleanLocal = local.filter((e) => e).filter((t) => t.status && t.status.toLowerCase() !== 'pending' && t.status.toLowerCase() !== 'created');
 
     const newTransactions = cleanLocal.filter((lt) => !cleanRemote.find((rt) => rt.operation_group_hash === lt.operation_group_hash));
 
-    return [...remote, ...newTransactions].sort((a, b) => a.timestamp - b.timestamp);
+    return [...cleanRemote, ...newTransactions].sort((a, b) => a.timestamp - b.timestamp);
 }
 
 export async function getSyncTransactions(accountHash: string, node: Node, stateTransactions: any[]) {
@@ -145,11 +147,12 @@ export async function getSyncTransactions(accountHash: string, node: Node, state
         return [];
     });
 
-    const pendingTransactions = await TezosNodeReader.getMempoolOperationsForAccount(node.tezosUrl, accountHash);
+    const pendingGroups: any[] = await TezosNodeReader.getMempoolOperationsForAccount(node.tezosUrl, accountHash);
+    const pendingTransactions = await Promise.all(
+        pendingGroups.map(async (g) => processNodeOperationGroup(g, await TezosNodeReader.estimateBranchTimeout(node.tezosUrl, g.branch)))
+    );
 
-    const transactions = indexedTransaction
-        .map((t) => createTransaction({ ...t, status: status.READY }))
-        .concat(pendingTransactions.map((g) => processNodeOperationGroup(g)));
+    const transactions = indexedTransaction.map((t) => createTransaction({ ...t, status: status.READY })).concat(pendingTransactions);
 
     return syncTransactionsWithState(transactions, stateTransactions);
 }

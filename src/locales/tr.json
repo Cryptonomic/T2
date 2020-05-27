@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "Onay Bekliyor...",
+            "pending_blocks": "Pending, expires in {{ttl}} blocks",
             "burn": "Gaz",
             "public_key_reveal": "ANAHTAR KAYIT",
             "activation": "AKTİVASYON",
