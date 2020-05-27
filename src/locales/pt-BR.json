@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "Pendente…",
+            "pending_blocks": "Pendente, expires in {{ttl}} blocks",
             "burn": "Queimar",
             "public_key_reveal": "Revelação de Chave Pública",
             "activation": "Ativação",

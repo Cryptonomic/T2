@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "В ожидании...",
+            "pending_blocks": "В ожидании, expires in {{ttl}} blocks",
             "burn": "Бёрн",
             "public_key_reveal": "РАСКРЫТИЕ ПУБЛИЧНОГО КЛЮЧА",
             "activation": "АКТИВАЦИЯ",

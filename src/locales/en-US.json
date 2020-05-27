@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "Pending...",
+            "pending_blocks": "Pending, expires in {{ttl}} blocks",
             "burn": "Burn",
             "public_key_reveal": "PUBLIC KEY REVEAL",
             "activation": "ACTIVATION",
