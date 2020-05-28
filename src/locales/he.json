@@ -1,7 +1,7 @@
 {
     "general": {
         "verbs": {
-            "authenticate": "לאמת",
+            "authenticate": "אמת",
             "authentication": "אימות",
             "send": "שלח",
             "copy_address": "העתק כתובת",
@@ -11,7 +11,7 @@
             "import": "ייבא",
             "open": "פתח",
             "save": "שמור",
-            "delegate": "נציג",
+            "delegate": "האצל",
             "restore": "שחזר",
             "confirm": "אשר",
             "receive": "קבל",
@@ -20,7 +20,7 @@
             "deploy": "פרוס",
             "cancel": "ביטול",
             "proceed": "המשך",
-            "close": "לסגור",
+            "close": "סגור",
             "withdraw": "משיכה",
             "deposit": "הפקדה",
             "mint": "ליצור",
@@ -31,16 +31,16 @@
         },
         "nouns": {
             "amount": "סכום",
-            "wallet_password": "סיסמא של הארנק",
-            "total": "סך הכל",
+            "wallet_password": "סיסמת הארנק",
+            "total": "סכום כולל",
             "fee": "עמלה",
             "accounts": "חשבונות",
             "address": "כתובת",
             "account": "חשבון",
             "label_account": "חשבון",
             "label_address": "כתובת",
-            "signer_address": "חתימת הכתובת",
-            "delegate_address": "כתובת נציג",
+            "signer_address": "כתובת החותם",
+            "delegate_address": "כתובת הנציג",
             "remaining_balance": "יתרה שנותרה",
             "gas": "דלק",
             "details": "פרטים",
@@ -56,7 +56,7 @@
             "ledger_name": "Ledger Nano S",
             "derivation_path": "מסלול גזירה",
             "storage": "אחסון",
-            "burn": "שרוף",
+            "burn": "שריפה",
             "smart_contract": "חוזה חכם",
             "code": "קוד",
             "format": "פורמט",
@@ -97,18 +97,14 @@
             "activation_operation_id": "מזהה פעולת הפעלה",
             "origination_operation_id": "מזהה פעולת הקמה",
             "public_key_reveal_operation_id": "מזהה פעולת חשיפת מפתח פומבי",
-            "titles": {
-                "pending": "מכין את {{typeText}}...",
-                "ready": "החשבון שלך מוכן לקבלת העברות!",
-                "retrieving": "מקבל את {{typeText}}..."
-            },
+            "titles": { "pending": "מכין את {{typeText}}...", "ready": "החשבון שלך מוכן לקבלת העברות!", "retrieving": "מקבל את {{typeText}}..." },
             "descriptions": {
                 "mnemonic_first_transaction": "ההעברה הראשונה שלך תועבר לכתובת החדשה שלך בבלוקצ'יין. התהליך עשוי לקחת זמן עד שתהיה מוכן לשלוח ולהאציל",
-                "first_transaction_confirmation": "קיבלנו את ההעברה הראשונה שלך בסך {{formattedAmount}}טז! אנחנו מכינים את החשבון שלך, זה עלול לקחת מספר רגעים."
+                "first_transaction_confirmation": "קיבלנו את ההעברה הראשונה שלך בסך {{formattedAmount}} tez! אנחנו מכינים את החשבון שלך, זה עלול לקחת מספר רגעים."
             }
         },
         "actionPanel": {
-            "description": "התהליך מאוד פשוט. התחילו<1> לשלוח</1> ו<3>לקבל</3> טז מהכתובת הזו.",
+            "description": "התהליך מאוד פשוט. התחילו<1> לשלוח</1> ו<3>לקבל</3> tez מהכתובת הזו.",
             "empty-title": "לא ביצעת עסקאות עד עכשיו",
             "invoke_manager": "נהל האצלה"
         },
@@ -121,60 +117,46 @@
         },
         "signVerifyModal": {
             "not_revealed": "החשבון הזה עדיין לא הופעל בבלוקצ'יין, לכן לא ניתן לוודא את החתימה באופן עצמאי. ספקו את המפתח הפומבי שלכם למוודא על מנת שיוכל לאשר ידנית.",
-            "enter_address_key": "כתובת חותם או מפתח ציבורי",
-            "sign_guidance": "חתימת הודעה מאפשרת לאחרים לאשר בעלות על חשבון זה בעזרת שימוש בהודעה זו, חתימה ומפתח ציבורי בלבד.",
+            "enter_address_key": "כתובת חותם או מפתח פומבי",
+            "sign_guidance": "חתימת הודעה מאפשרת לאחרים לאשר בעלות על חשבון זה בעזרת שימוש בהודעה זו, חתימה ומפתח פומבי בלבד.",
             "verify_guidance": "הכנס את ההודעה, חתימה והכתובת שסופקה לך על מנת לאשר את החתימה.",
             "match": "חתימה מאושרת",
             "no_match": "חתימה שגויה"
         },
-        "AuthenticateModal": {
-            "title": "dApp נדרש אישור",
-            "signature_prompt": "מבקש חתימה של הבא כדי לאשר את הזהות שלכם"
-        },
+        "AuthenticateModal": { "title": "אימות dApp נדרש", "signature_prompt": "מבקש חתימה של הבא כדי לאשר את הזהות שלכם" },
         "interactModal": {
             "interact_contract": "צור קשר עם חוזה",
-            "invoke_contract": "עורר חוזה קיים",
+            "invoke_contract": "הפעל חוזה קיים",
             "deploy_contract": "צור חוזה חדש",
             "title": "צור קשר עם חוזה חכם",
             "smart_address": "כתובת של איש קשר",
-            "invoke_from": "עורר מתוך",
-            "deploy_from": "משוך מתוך",
-            "storage_limit": "מכסת מקום",
-            "gas_limit": "Gas מכסת",
+            "invoke_from": "הפעל מתוך",
+            "deploy_from": "הפעל מתוך",
+            "storage_limit": "מגבלת אחסון",
+            "gas_limit": "מגבלת Gas",
             "parameters": "פרמטרים",
             "view_scan": "צפה ב Mininax",
-            "initial_storage": "מכסה מינימלית",
-            "paste_micheline_code": "הדביקו את קוד החוזה החכם {{format}}",
+            "initial_storage": "אחסון ראשוני",
+            "paste_micheline_code": "הדביקו את קוד החוזה החכם ({{format}})",
             "entry_point": "נקודת כניסה"
         },
         "addNodeModal": {
             "error": "פרוטוקול הצומת חייב להיות HTTPS",
-            "title": "צור צומת מותאמת אישית",
-            "labels": {
-                "node_name": "שם הצומת",
-                "api_key": "API מזהה"
-            }
+            "title": "יצירת צומת מותאמת אישית",
+            "labels": { "node_name": "שם הצומת", "api_key": "מפתח API" }
         },
-        "addPathModal": {
-            "error": "מסלול הגזירה חייב להתחיל ב44'/1729'/",
-            "title": "הגדר את ה{{title}} המותאם אישית",
-            "path_label": "תוית המסלול"
-        },
-        "address": {
-            "manager_address": "כתובת המנהל",
-            "delegated_address": "כתובת מואצלת",
-            "delegation_contract": "חוזה האצלה"
-        },
+        "addPathModal": { "error": "מסלול הגזירה חייב להתחיל ב44'/1729'/", "title": "הגדר את ה{{title}} המותאם אישית", "path_label": "תוית המסלול" },
+        "address": { "manager_address": "כתובת המנהל", "delegated_address": "כתובת מואצלת", "delegation_contract": "חוזה האצלה" },
         "addressBlock": {
             "descriptions": {
-                "description1": "קיים הבדל בין האצלה של TEZ לשליחה של TEZ. רק זכויות אפיה מועברות כאשרבוחרים נציג. הנציג אינו יכול להשתמש ב TEZ שלך.",
-                "description2": "ישנה עמלה על הגדרת נציג.",
+                "description1": "קיים הבדל בין האצלה של TEZ לשליחה של TEZ. רק זכויות אפיה מועברות כאשר בוחרים נציג. הנציג אינו יכול להשתמש ב TEZ שלך.",
+                "description2": "ישנה עמלה על בחירת נציג.",
                 "description3": "אחרי 7 סייקלים (~20 ימים) הtez שלכם מתחילים לתרום לאפייה.",
                 "description4": "תגמולי האצלה תלויים בהסכם עם הנציג"
             },
             "account_title": "חשבון {{index}}",
             "not_ready_tooltip": "החשבון לא מוכן לבצע האצלה",
-            "delegation_tips": "עצות האצלה",
+            "delegation_tips": "טיפים להאצלה",
             "not_ready_interact_tooltip": "החשבון שלך אינו מוכן ליצירת קשר עם חוזים מכיוון שעדיין אין בו כספים."
         },
         "addressStatus": {
@@ -182,21 +164,19 @@
             "new_address": "כתובת חדשה",
             "retrieving_title": "מקבל {{typeText}}...",
             "preparing_title": "מכין {{typeText}}...",
-            "deploying_title": "צור חוזה חדש..."
+            "deploying_title": "פורס חוזה חדש..."
         },
         "balanceBanner": {
             "breadcrumbs": "חשבון {{parentIndex}} > {{addressLabel}}",
             "delegated_to": "הואצל ל",
-            "secret_key": "מזהה סודי",
-            "reveal_key": "לחצו לחשיפת מזהה סודי.",
-            "hide_key": "לחצו להסתרת מזהה סודי.",
+            "secret_key": "מפתח סודי",
+            "reveal_key": "לחצו לחשיפת מפתח סודי.",
+            "hide_key": "לחצו להסתרת מפתח סודי.",
             "warning": "אזהרה!",
-            "do_not_store": "אל תאחסנו את המזהה הסודי במחשב שלכם, כתבו אותו על דף ושמרו במקום בטוח.",
+            "do_not_store": "אל תאחסנו את המפתח הסודי במחשב שלכם, כתבו אותו על דף ושמרו במקום בטוח.",
             "tooltip_content": "כתובת המנהל היא הכתובת הראשית של החשבון שלך והיא משמשת לשליחה וקבלה של טזוס."
         },
-        "copyIcon": {
-            "copied": "הועתק!"
-        },
+        "copyIcon": { "copied": "הועתק!" },
         "createAccountSlide": {
             "descriptions": {
                 "description1": "רשום את הSeed שלך על פיסת נייר ושמור במקום בטוח. תצטרך אותו על מנת לשחזר את חשבונך.",
@@ -211,48 +191,45 @@
             "first_word": "מילה ראשונה",
             "second_word": "מילה שנייה",
             "third_word": "מילה שלישית",
-            "nth_word": "{{index}} מילה מספר",
-            "errors": {
-                "invalid_word": "מילה שגויה, בדקו שנית!",
-                "typo_error": "טעות הקלדה! בדקו שנית"
-            }
+            "nth_word": "מילה {{index}}",
+            "errors": { "invalid_word": "מילה שגויה, בדקו שנית!", "typo_error": "טעות הקלדה, בדקו שנית!" }
         },
         "delegate": {
             "delegate_settings": "הגדרות נציג",
             "current_delegate": "מתבצעת האצלה ל",
-            "change_delegate": "שנה נציג",
+            "change_delegate": "שינוי נציג",
             "delegate_warning": "הגדרות הנציג לא יאושרו עד שלא יופיעו בבלוקצ'יין",
-            "add_delegation_contract": "הוסף חוזה האצלה",
+            "add_delegation_contract": "הוספת חוזה האצלה",
             "add_delegation_tooltip_title": "מהו חוזה האצלה?",
             "add_delegation_tooltip_text": "ניתן להאציל לאופים מרובים על ידי שימוש בחוזים חכמים. ההאצלות יופיעו תחת \"חוזי האצלה\" בצד שמאל."
         },
         "delegateConfirmationModal": {
-            "new_address_label": "שנה כתובת אופה",
+            "new_address_label": "שינוי כתובת אופה",
             "address_label": "כתובת אופה",
             "delegate_warning": "יקח קרוב ל 5 שבועות (12 סבבים) לקבל את התגמולים שלך מהמאפייה."
         },
         "changeDelegationLedgerConfirmModal": {
-            "change_delegate_title": "אשר שינוי נציג.",
-            "change_description": "עומדת להתבצע שליחת פעולת האצלה לצורך שינוי נציג. אנא עיין בזהירות בפרטי ההעברה במכשירך."
+            "change_delegate_title": "אישור שינוי נציג.",
+            "change_description": "עומדת להתבצע שליחת פעולת האצלה לצורך שינוי נציג. אנא עיינו בזהירות בפרטי ההעברה במכשירך."
         },
         "delegationLedgerConfirmationModal": {
-            "confirm_delegate_title": "אשר הוספת נציג לחשבון 1",
+            "confirm_delegate_title": "אישור הוספת נציג לחשבון 1",
             "add_description": "עומדת להתבצע שליחה של פעולת הקמה להוספת נציג. אנא עיין בזהירות בפרטי ההעברה במכשירך.",
             "confirm_description": "אם כל הפרטים נכונים אנא<1> אשרו </1> את ההקמה במכשירכם."
         },
         "invokeLedgerConfirmationModal": {
             "confirm_invoke_title": "אשרו הפעלת חוזה חכם",
-            "invoke_description": "אתם עומדים לעורר פונקציה בחוזה החכם. בבקשה תוודאו את הפרטים במכשירכם.",
-            "invoke_alt_description_1": "פעולה לא מאושרת, חתימה לא מזוהה?",
+            "invoke_description": "אתם עומדים להפעיל פונקציה בחוזה החכם. בבקשה תוודאו את הפרטים במכשירכם.",
+            "invoke_alt_description_1": "פעולה לא מזוהה, חתימה לא מאומתת?",
             "invoke_alt_description_2": "שימו לב כי מכשירי Ledger Nano S עדיין אינם מסוגלים לנתח פרמטרים. צפוי שתראה את ההודעה לעיל במקום פרטי הפעולה.",
             "invoke_confirm": "אם כל הפרטים נכונים אנא<1> אשרו </1> זאת במכשירכם.",
-            "invoke_alt_confirm": "אנא <1> אשרו </1> זאת במכשירכם על מנת למנוע סיכונים."
+            "invoke_alt_confirm": "אנא <1> אשרו </1> את ההפעלה במכשירכם על אחריותכם בלבד."
         },
         "deployLedgerConfirmationModal": {
-            "confirm_deploy_title": "אישור העלאת חוזה חכם",
+            "confirm_deploy_title": "אישור פריסת חוזה חכם",
             "deploy_description_1": "פעולה לא מאושרת, חתימה לא מזוהה?",
             "deploy_description_2": "שימו לב כי מכשירי Ledger Nano S עדיין אינם מסוגלים לנתח סקריפטים או פרמטרים. צפוי שתראה את ההודעה לעיל במקום פרטי הפעולה.",
-            "deploy_confirm": "אנא <1> אשרו </1> את הפריסה במכשירכם באחריותכם בלבד."
+            "deploy_confirm": "אנא <1> אשרו </1> את הפריסה במכשירכם על אחריותכם בלבד."
         },
         "fees": {
             "low_fee": "עמלה נמוכה",
@@ -266,7 +243,7 @@
             "minimum_fee_error": "העמלה המותאמת אישית נמוכה מעמלת טזוס המינימלית."
         },
         "inputAddress": {
-            "setting_delegate": "מגדיר נציג",
+            "setting_delegate": "בחירת נציג",
             "contents": {
                 "content1": "תמיד ניתן לשנות את הנציג מאוחר יותר.",
                 "content2": "שינוי נציג כרוך בעמלה.",
@@ -281,42 +258,39 @@
                 "special_chars": "כתובות אינן יכולות להכיל תווים מיוחדים.",
                 "send_funds": "לא ניתן לשלוח כספים לעצמך.",
                 "invoke_address": "חוזים חכמים יכולים להתחיל רק ב KT1",
-                "not_exist": "כתובת זו לא קיימת בבלוקצ’יין או שהמאזן שלה הוא 0.",
+                "not_exist": "כתובת זו לא קיימת בבלוקצ’יין או שהיתרה שלה אפסית.",
                 "not_smartcontract": "זוהי כתובת האצלה ולא חוזה חכם. אנא השתמשו בכרטיסיית \"שלח\" על מנת להעביר כספים.",
                 "use_interact": "זוהי כתובת של חוזה חכם. אנא צרו אינטראקציה דרך כפתור החוזים להעברת כספים."
             }
         },
-        "languageSelectModal": {
-            "choose_language": "בחירת שפה",
-            "language_selection_description": "תמיד ניתן לשנות את השפה בהגדרות."
-        },
+        "languageSelectModal": { "choose_language": "בחירת שפה", "language_selection_description": "תמיד ניתן לשנות את השפה בהגדרות." },
         "messageBar": {
             "operation_id": "מזהה הפעולה",
             "view_block_explorer": "צפה ב Mininax",
             "messages": {
-                "amount_not_valid": "סכום לא תקף.",
+                "amount_not_valid": "סכום לא תקין.",
                 "address_begin": "כתובת חייבת להתחיל ב tz1 או KT1.",
                 "must_upload": "חייב להעלות ארנק.",
-                "err_not_valid": "[ERR] פרמטרים לא תקפים.",
+                "err_not_valid": "[ERR] פרמטרים לא תקינים.",
                 "amount_small": "הסכום קטן מדי.",
-                "amount_not_empty": "הסכום חייב להיות ריק.",
-                "pass_not_empty": "סיסמה אינו יכול להיות ריק",
-                "address_not_empty": "אסור שהכתובת תהיה ריקה.",
+                "amount_not_empty": "חובה לספק סכום.",
+                "pass_not_empty": "חובה לספק סיסמה.",
+                "address_not_empty": "חובה לספק כתובת.",
                 "address_length_36": "הכתובת חייבת להיות בדיוק 36 תווים.",
-                "pass_length_8": "סיסמה צריכה להיות בת לפחות 8 תווים",
+                "pass_length_8": "סיסמה חייבת להיות בת לפחות 8 תווים",
                 "incorrect_password": "סיסמה לא נכונה",
                 "origination_operation_failed": "פעולת הקמה נכשלה",
                 "delegation_operation_failed": "פעולת האצלה נכשלה",
                 "send_operation_failed": "פעולת השליחה נכשלה",
-                "success_address_origination": "הקמת כתובת התחילה בהצלחה",
+                "success_address_origination": "הקמת כתובת התחילה בהצלחה.",
                 "success_delegation_update": "עדכון האצלה החלה בהצלחה.",
-                "cant_sent_yourself": "לא ניתן לשלוח כספים לעצמך.",
+                "cant_sent_yourself": "אינך יכול לשלוח כספים לעצמך.",
                 "success_account_activation": "הפעלת החשבון התחילה בהצלחה.",
-                "identity_exist": "זהות קיימת כבר",
+                "identity_exist": "הזהות קיימת כבר",
                 "success_sent": "בוצע בהצלחה! שלחת {{localeParam}} tz.",
                 "invalid_wallet_password": "ארנק / סיסמה שגויים.",
                 "account_not_exist": "החשבון אינו קיים.",
-                "ledger_not_connect": "חיבור נדחה על ידי Ledger.",
+                "ledger_not_connect": "החיבור נדחה על ידי Ledger.",
                 "ledger_linux_error": "אם יש בעיות חיבור למכשיר הLedger, אנא פנה ל<1>צעדים אלו</1> <2></2>",
                 "invoke_operation_failed": "פעולת חוזה חכם נכשלה",
                 "success_invoke_operation": "הפעלת חוזה התחילה בהצלחה.",
@@ -329,9 +303,7 @@
                 "burn_operation_success": "שריפת אסימון התחילה בהצלחה."
             }
         },
-        "pdfReader": {
-            "loading": "טוען ..."
-        },
+        "pdfReader": { "loading": "טוען ..." },
         "restoreBackup": {
             "restore_from": "שחזר מ",
             "seed_encrypted_label": "ה Seed מוצפן ע\"י סיסמה",
@@ -340,15 +312,12 @@
             "seed_phrase": "Seed",
             "private_key": "מפתח פרטי",
             "secret_key_15": "מנומוני בן 15 - 24 מילים",
-            "errors": {
-                "invalid_length": "Seed מכיל 12, 15, 18, 21 או 24 מילים.",
-                "invalid_words": "נמצאו מילים לא תקינות. אנא בדקו שוב."
-            }
+            "errors": { "invalid_length": "ה Seed מכיל 12, 15, 18, 21 או 24 מילים.", "invalid_words": "נמצאו מילים לא תקינות. אנא בדקו שוב." }
         },
         "securityNoticeModal": {
             "security_notice": "הודעת אבטחה",
             "learn_more": "למדו עוד",
-            "understand_check": "אני מבינים שהפעולה הזו עלולה לגרום לאובדן כספים",
+            "understand_check": "אנו מבינים שהפעולה הזו עלולה לגרום לאובדן כספים",
             "dont_message": "אל תציגו את ההודעה הזו שוב (לא מומלץ)",
             "notice_content": "נראה שאינכם מריצים צומת Tezos מקומית. זה לגמרי בסדר להשתמש בצומת מאוחסנת, אך אם הצומת נפרץ, אתם עלולים לאבד את הכספים שלכם."
         },
@@ -358,13 +327,10 @@
             "holder_address": "כתובת מחזיק",
             "burn_tooltip_title": "למה יש עמלת שריפה?",
             "burn_tooltip_content": "לכתובת הנמען שהכנסתם יש מאזן אפסי. שליחת כספים לכתובת ניהול (tz1,2,3) דורשת תוספת חד-פעמית של <1> 0.257 </1>XTZ עמלת שריפה.",
-            "fee_tooltip_title": "למה עמלות קצת יותר גבוהות לעסקה זו?",
+            "fee_tooltip_title": "למה העמלות קצת יותר גבוהות לעסקה זו?",
             "fee_tooltip_content": "הכתובת הזו אינה גלויה בבלוקצ'יין. הוספנו <1> 0.001300 XTZ </1> לעמלה הרגילה כדי לגלות את המפתח הפומבי",
-            "warnings": {
-                "total_exceeds": "הסכום חורג מהכספים הזמינים",
-                "not_allowed": "כתובות ניהול לא יכולות להחזיק פחות מ 1 µtz"
-            },
-            "burn_notice": "שריפת אסימונים כדי להרוס אסימונים קיימים ממחזיק נוכחי ולהקטין את סך ההאספקה",
+            "warnings": { "total_exceeds": "הסכום חורג מהכספים הזמינים", "not_allowed": "כתובות ניהול לא יכולות להחזיק פחות מ 1 µtz" },
+            "burn_notice": "שרפו אסימונים כדי להרוס אסימונים קיימים ממחזיק נוכחי ולהקטין את סך ההאספקה",
             "mint_notice": "מטבעו אסימונים כדי לתת אסימונים חדשים לנמען ולהגדיל את סך האספקה"
         },
         "sendConfirmationModal": {
@@ -381,20 +347,14 @@
             "confirm_token": "אישור חוזה אסימון",
             "op_description": "אתם עומדים ל {{op}} האסימונים שלכם. אנא בדקו בקפידה את הפרטים במכשיר שלכם."
         },
-        "settingController": {
-            "settings": "הגדרות",
-            "logout": "התנתקות",
-            "help": "עזרה"
-        },
+        "settingController": { "settings": "הגדרות", "logout": "התנתקות", "help": "עזרה" },
         "termsModal": {
             "hi_there": "שלום!",
             "welcome_to": "ברוכים הבאים ל{{name}}",
             "i_agree": "אני מסכים",
             "description": "לפני שאנחנו מתחילים, בבקשה קראו את <1>תנאי השימוש</1> ואת <3>מדיניות הפרטיות</3>"
         },
-        "tooltips": {
-            "manager_tooltips_description": "כתובת הניהול היא הכתובת הראשית של החשבון שלכם ויכולה לשמש לשליחת וקבלת טז."
-        },
+        "tooltips": { "manager_tooltips_description": "כתובת הניהול היא הכתובת הראשית של החשבון שלכם ויכולה לשמש לשליחת וקבלת טז." },
         "transaction": {
             "pending": "ממתין...",
             "burn": "שריפה",
@@ -411,16 +371,9 @@
             "deployment": "הקמה - חוזה חכם",
             "invoked": "הופעל"
         },
-        "update": {
-            "last_updated": "עודכן לאחרונה ב {{date}}"
-        },
-        "versionStatus": {
-            "version_update": "אתם משתמשים בגרסא ישנה של Tezori, שיכולה להיות לא פעילה במלואה. אנא הורידו גרסא {{version}} ב"
-        },
-        "comingSoon": {
-            "coming_soon": "בקרוב!",
-            "working_hard": "אנחנו עובדים קשה על הדף הזה."
-        },
+        "update": { "last_updated": "עודכן לאחרונה ב {{date}}" },
+        "versionStatus": { "version_update": "אתם משתמשים בגרסא ישנה של Tezori, שיכולה להיות לא פעילה במלואה. אנא הורידו גרסא {{version}} ב" },
+        "comingSoon": { "coming_soon": "בקרוב!", "working_hard": "אנחנו עובדים קשה על הדף הזה." },
         "withdrawDeposit": {
             "withdraw_warning": "כדי למשוך כספים חזרה לחשבון הניהול שלכם, {{managerAddress}}, אנא בחרו עמלה של לפחות XTZ 0.005 וודאו שיש לפחות את הסכום הזה בחשבון הניהול שלכם כדי לכסות את ההעברה.",
             "deposit_warning": "העבירו יתרו מחשבון הניהול ב{{managerAddress}}."
@@ -439,16 +392,13 @@
             "tooltips": {
                 "password_tooltip": "זו הסיסמא שבה השתמשתם כשיצרת ארנק נייר להשתתפות בגיוס",
                 "email_tooltip": "זוהי כתובת ה Email שהשתמשתם בה כשיצרת ארנק נייר להשתתפות בגיוס",
-                "activation_code_tooltip": "זה קוד ההפעלה שקיבלתם בסוף תהליך הKYC/AML. קוד הפעלה מתאים למפתח פומבי והוא דרוש אם השתתפתם בגיוס. תוכלו לסיים את התהליך ב<1>verification.tezos.com</1> אם לא עשיתם זאת עדיין",
+                "activation_code_tooltip": "זה קוד ההפעלה שקיבלתם בסוף תהליך ה KYC/AML. קוד הפעלה מתאים למפתח פומבי והוא דרוש אם השתתפתם בגיוס. תוכלו לסיים את התהליך ב<1>verification.tezos.com</1> אם לא עשיתם זאת עדיין",
                 "public_key_hash_tooltip": "זה המפתח הפומבי שסופק בארנק הנייר"
             },
             "import_fundraiser": "יבוא ארנק גיוס",
             "create_new_account": "יצירת חשבון חדש",
             "restore_backup": "שחזור מגיבוי",
-            "errors": {
-                "invalid_length": "ביטויי מקור מכילים 12, 15, 18, 21 או 24 מילים.",
-                "invalid_words": "נמצאו מילים לא תקינות. אנא בדקו שוב."
-            }
+            "errors": { "invalid_length": "ה Seed מכיל 12, 15, 18, 21 או 24 מילים.", "invalid_words": "נמצאו מילים לא תקינות. אנא בדקו שוב." }
         },
         "homeSettings": {
             "back_to_wallet": "חזרה לארנק",
@@ -462,11 +412,11 @@
             "back_to_login": "חזרה להתחברות"
         },
         "loginHome": {
-            "description": "אנו מכירים בכך שקראתי וקיבלתי את <1>תנאי השירות</1> ואת <3>מדיניות הפרטיות</3>",
+            "description": "אנו מכירים בכך שקראנו וקיבלנו את <1>תנאי השירות</1> ואת <3>מדיניות הפרטיות</3>",
             "create_new_wallet_btn": "צרו ארנק חדש",
             "open_exisiting_wallet_btn": "פתחו ארנק קיים",
-            "want_to_import_fundraiser_paper_wallet": "רוצה לייבא ארנק נייר מהגיוס?",
-            "create_named_wallet": "<0>צור ארנק</0> קודם.",
+            "want_to_import_fundraiser_paper_wallet": "רוצים לייבא ארנק נייר מהגיוס?",
+            "create_named_wallet": "<0>צרו ארנק</0> קודם.",
             "tagline": "ארנק קהילתי לTezos",
             "app_name": "{{name}}",
             "keystore_wallet": "ארנק Keystore",
@@ -488,17 +438,14 @@
             "create_wallet_title": "יצירת ארנק חדש",
             "create_wallet_description": "הגדרות הארנק ישמרו במחשב שלך. הן יוצפנו עם סיסמא שתבחר/י",
             "crack_time_description": "ייקח <span>{{time}}</span> לפצח את הסיסמא!",
-            "password_not_strong": "הסיסמא שלך לא חזקה מספיק",
+            "password_not_strong": "הסיסמה שלך לא חזקה מספיק",
             "add_another_word": "הוסיפו מילה או שתיים.",
             "you_almost_there": "כמעט...",
             "you_got_it": "מעולה!",
             "password_dont_match": "הסיסמאות לא תואמות!",
             "password_match": "הסיסמאות תואמות!"
         },
-        "loginImport": {
-            "open_wallet_label": "פתחו ארנק קיים",
-            "select_file_btn": "בחרו קובץ ארנק"
-        },
+        "loginImport": { "open_wallet_label": "פתחו ארנק קיים", "select_file_btn": "בחרו קובץ ארנק" },
         "walletNodesRequired": {
             "configuration_missing": "הגדרות הצומת לא נמצאו",
             "close_wallet_description": "אנא סגרו את הארנק, ערכו את 'extraResources/walletSettings.json' ופתחו את הארנק מחדש",
