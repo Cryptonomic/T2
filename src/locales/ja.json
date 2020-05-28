@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "保留中…",
+            "pending_blocks": "Pending, expires in {{ttl}} blocks",
             "burn": "バーン",
             "public_key_reveal": "パブリックキーが現れます",
             "activation": "アクティブ化",

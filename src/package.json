@@ -16,7 +16,7 @@
     "license": "GPL-3.0-only",
     "dependencies": {
         "@ledgerhq/hw-transport-node-hid": "5.13.0",
-        "conseiljs": "0.4.3-beta.0"
+        "conseiljs": "0.4.3-beta.1"
     },
     "engines": {
         "node": "12.16.1",

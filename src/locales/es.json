@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "Pendiente",
+            "pending_blocks": "Pendiente, expires in {{ttl}} blocks",
             "burn": "Quemar",
             "public_key_reveal": "Revelar clave pública",
             "activation": "Activación",

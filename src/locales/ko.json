@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "대기 중 ...",
+            "pending_blocks": "Pending, expires in {{ttl}} blocks",
             "burn": "소각",
             "public_key_reveal": "공개 키 표시",
             "activation": "활성화",

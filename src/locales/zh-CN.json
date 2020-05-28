@@ -397,6 +397,7 @@
         },
         "transaction": {
             "pending": "待定的...",
+            "pending_blocks": "Pending, expires in {{ttl}} blocks",
             "burn": "烧毁",
             "public_key_reveal": "公开密钥揭示",
             "activation": "激活",

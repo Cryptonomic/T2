@@ -74,7 +74,7 @@ export interface WalletTransaction {
     balance?: number;
     block_hash: string;
     block_level: number;
-    delegate_value?: string;
+    delegate?: string;
     destination?: string;
     fee?: number;
     gas_limit: number;
@@ -86,6 +86,7 @@ export interface WalletTransaction {
     source?: string;
     storage_limit: number;
     timestamp: Date;
+    ttl?: number;
 }
 
 export interface TokenTransaction {
