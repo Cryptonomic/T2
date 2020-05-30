@@ -270,13 +270,13 @@
             "contents": {
                 "content1": "Después vas a poder cambiar el baker",
                 "content2": "Hay un cargo por cambiar el baker",
-                "content3": "Sólo puedes delegar a una Dirección Administradora. Las direcciones administradoras siempre empiezan con TZ1, TZ2 o TZ3."
+                "content3": "Sólo puedes delegar a una Dirección Administradora. Las direcciones administradoras siempre empiezan con tz1, tz2 o tz3."
             },
             "errors": {
-                "send_address": "Las direcciones sólo pueden empezar con TZ1, TZ2, TZ3 o KT1",
-                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "send_address": "Las direcciones sólo pueden empezar con tz1, tz2, tz3 o KT1",
+                "send_babylon": "You can only send to tz1, tz2 or tz3 addresses.",
                 "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
-                "delegate_address": "Sólo puedes delegar a direcciones TZ1, TZ2 o TZ3",
+                "delegate_address": "Sólo puedes delegar a direcciones tz1, tz2 o tz3",
                 "length": "Las direcciones deben tener 36 caracteres",
                 "special_chars": "Las direcciones no deben contener caracteres especiales",
                 "send_funds": "No te puedes enviar fondos a ti mismo",
