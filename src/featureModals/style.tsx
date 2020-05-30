@@ -150,7 +150,7 @@ export const ContentSubtitle = styled.div`
 `;
 
 export const Footer = styled.div`
-    background: ${({ theme: { colors } }) => colors.gray1}
+    background: ${({ theme: { colors } }) => colors.gray7}
     margin: auto 0 0;
     padding: 25px 0;
     display: flex;
@@ -162,4 +162,33 @@ export const TooltipContent = styled.div`
     font-weight: 300;
     font-size: ${ms(-1)};
     max-width: ${ms(13)};
+`;
+
+export const MessageContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 60px;
+    width: 100%;
+    padding: 40px 40px 0px 40px;
+    color: #4e71ab;
+    font-weight: 300;
+`;
+
+export const InfoContainer = styled.div`
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    height: 60px;
+    width: 100%;
+`;
+
+export const InfoIcon = styled(TezosIcon)`
+    font-size: ${ms(2)};
+    padding: 1px 7px 0px 0px;
+`;
+
+export const SuccessIcon = styled(TezosIcon)`
+    font-size: ${ms(1)};
+    margin-right: 5px;
 `;

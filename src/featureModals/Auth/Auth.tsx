@@ -7,7 +7,6 @@ import { ms } from '../../styles/helpers';
 import { getSelectedKeyStore, openLink } from '../../utils/general';
 import { getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
-import CopyButton from '../../components/CopyButton';
 import Tooltip from '../../components/Tooltip';
 import { RootState } from '../../types/store';
 
@@ -70,7 +69,7 @@ const Auth = (props: Props) => {
         try {
             setResult('Signature sent'); // TODO: localization
             setError(false);
-            const response = await fetch(`${req.c}&sig=${new Buffer(signature).toString('base64')}`);
+            const response = await fetch(`${req.callback}&sig=${new Buffer(signature).toString('base64')}`);
             if (!response.ok) {
                 throw new Error('Signature response rejected'); // TODO: localization
             }
@@ -142,7 +141,6 @@ const Auth = (props: Props) => {
                         </MainContainer>
                         <ResultContainer>
                             <Result error={error}>{result}</Result>
-                            {!error && result && <CopyButton text={result} title="" color="accent" />}
                         </ResultContainer>
                         <Footer>
                             <ButtonContainer>
