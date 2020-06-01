@@ -12,6 +12,7 @@ import { setLocalData, getLocalData, resetLocalData } from '../../utils/localDat
 import { changeLocaleThunk } from '../Settings/duck/thunk';
 import { connectLedgerThunk } from '../../reduxContent/wallet/thunks';
 import { getSelectedPath } from '../../reduxContent/settings/selectors';
+import { ledgerAppUrl } from '../../config.json';
 
 import {
     SectionContainer,
@@ -89,15 +90,6 @@ function LoginHome(props: Props) {
         await dispatch(connectLedgerThunk());
     }
 
-    function onDownload() {
-        const url = 'https://github.com/Cryptonomic/Tezori';
-        openLink(url);
-    }
-
-    function onOrderDevice() {
-        openLink(ledgerReferral);
-    }
-
     function openTermsService() {
         goTo('conditions/termsOfService');
     }
@@ -110,7 +102,7 @@ function LoginHome(props: Props) {
         <SectionContainer>
             <DefaultContainer>
                 <NameSection>
-                    <AppName>{name}</AppName>
+                    <AppName>{t('containers.loginHome.app_name', { name })}</AppName>
                 </NameSection>
                 <Section>
                     <CardContainer>
@@ -139,13 +131,13 @@ function LoginHome(props: Props) {
                         <Tip>
                             <div>{t('containers.loginHome.dont_have_ledger_wallet')}</div>
                             <div>
-                                <Link onClick={() => onDownload()}>{t('containers.loginHome.download_it_here')}</Link>
+                                <Link onClick={() => openLink(ledgerAppUrl)}>{t('containers.loginHome.download_it_here')}</Link>
                             </div>
                         </Tip>
                         <Tip>
                             <div>
                                 {t('containers.loginHome.need_device')}&nbsp;
-                                <Link onClick={() => onOrderDevice()}>{t('containers.loginHome.get_it_here')}</Link>
+                                <Link onClick={() => openLink(ledgerReferral)}>{t('containers.loginHome.get_it_here')}</Link>
                             </div>
                         </Tip>
                     </CardContainer>
@@ -160,11 +152,10 @@ function LoginHome(props: Props) {
                         </CreateWalletButton>
                         <Linebar />
                         <Tip>
-                            <div>{t('containers.loginHome.want_to_import_fundraiser_paper_wallet')}</div>
                             <div>
-                                <Trans i18nKey="containers.loginHome.create_named_wallet" values={{ name }}>
-                                    wallet?
-                                    <Link onClick={() => goTo('create')}>Create a {name} wallet</Link> first.
+                                {t('containers.loginHome.want_to_import_fundraiser_paper_wallet')}
+                                <Trans i18nKey="containers.loginHome.create_named_wallet">
+                                    <Link onClick={() => goTo('create')}>Create a wallet</Link> first.
                                 </Trans>
                             </div>
                         </Tip>

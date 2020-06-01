@@ -263,6 +263,7 @@
                 "invalid_wallet_password": "Combinaison wallet/mot de passe invalide.",
                 "account_not_exist": "Le compte n`existe pas.",
                 "ledger_not_connect": "Connexion refusée par le Ledger.",
+                "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "L'opération de Contrat Intelligent a échoué",
                 "success_invoke_operation": "L’invocation du contrat a commencé avec succès.",
                 "success_contract_origination": "Le déploiement du contrat a commencé avec succès."
@@ -315,7 +316,8 @@
         },
         "settingController": {
             "settings": "PARAMETRES",
-            "logout": "FIN DE SESSION"
+            "logout": "FIN DE SESSION",
+            "help": "HELP"
         },
         "termsModal": {
             "hi_there": "Salut !",
@@ -392,9 +394,9 @@
             "create_new_wallet_btn": "Créer un nouveau wallet",
             "open_exisiting_wallet_btn": "Ouvrir un wallet existant",
             "want_to_import_fundraiser_paper_wallet": "Vous voulez importez votre papier de levée de fonds",
-            "create_named_wallet": "wallet? <1><0>Créer un <1>{{name}}</1> wallet</0></1> en premier.",
+            "create_named_wallet": " <0>Créer un wallet</0> en premier.",
             "tagline": "Un wallet communautaire pour Tezos",
-            "app_name": "Tezori",
+            "app_name": "{{name}}",
             "keystore_wallet": "Keystore Wallet",
             "ledger_wallet": "Ledger Wallet",
             "connect_ledger": "Se connecter au Ledger",

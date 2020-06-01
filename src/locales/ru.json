@@ -259,6 +259,7 @@
                 "invalid_wallet_password": "Неверная комбинация кошелька/пароля.",
                 "account_not_exist": "Аккаунт не существует.",
                 "ledger_not_connect": "Ledger отказал в соединении.",
+                "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "Операция Смарт Контракта не удалась",
                 "success_invoke_operation": "Операция по призванию контракта началась успешно.",
                 "success_contract_origination": "Операция по развёртке контракта началась успешно."
@@ -311,7 +312,8 @@
         },
         "settingController": {
             "settings": "НАСТРОЙКИ",
-            "logout": "ВЫЙТИ"
+            "logout": "ВЫЙТИ",
+            "help": "HELP"
         },
         "termsModal": {
             "hi_there": "Привет!",
@@ -342,7 +344,7 @@
             "last_updated": "Последнее обновление {{date}}"
         },
         "versionStatus": {
-            "version_update": "Вы пользуетесь старой версией Tezori, которая может функционировать неполностью. Пожалуйста установите самую последнюю версию кошелька v{{version}} "
+            "version_update": "Вы пользуетесь старой версией Galleon, которая может функционировать неполностью. Пожалуйста установите самую последнюю версию кошелька v{{version}} "
         },
         "comingSoon": {
             "coming_soon": "Ожидается Скоро",
@@ -388,13 +390,13 @@
             "create_new_wallet_btn": "Создать Новый Кошелёк",
             "open_exisiting_wallet_btn": "Открыть Существующий Кошелёк",
             "want_to_import_fundraiser_paper_wallet": "Хотите импортировать вашего бумажного кошелька Фандрейзера?",
-            "create_named_wallet": "кошелёк? <1><0>Создайте <1>{{name}}</1> кошелёк </0></1>сначала.",
+            "create_named_wallet": " <0>Создайте кошелёк</0> сначала.",
             "tagline": "Коммьюнити кошелёк для Tezos",
-            "app_name": "Tezori",
+            "app_name": "{{name}}",
             "keystore_wallet": "Keystore Кошелёк ",
             "ledger_wallet": "Ledger Кошелёк",
             "connect_ledger": "Подсоединить к Ledger",
-            "dont_have_ledger_wallet": "Не имеете приложение НLedger Tezos кошелька?",
+            "dont_have_ledger_wallet": "Не имеете приложение Ledger Tezos кошелька?",
             "download_it_here": "Скачать его здесь.",
             "connect_your_device": "Пожалуйста<1> подсоедините ваше устройство</1>,<3> вставьте пин-номер</3>, и<5> откройте приложение Tezos Кошелёк </5>.",
             "connecting": "Соединяем...",

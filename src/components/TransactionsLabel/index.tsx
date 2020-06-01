@@ -24,7 +24,7 @@ const TransactionsDate = styled.div`
 `;
 
 interface Props {
-    date: Date;
+    date: Date | string;
     skipFormat?: boolean;
 }
 

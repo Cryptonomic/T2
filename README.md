@@ -9,7 +9,7 @@ This code was written for the community. Use it, hack it, fork it as you please!
 
 ## Development
 
-The wallet is built on [React](https://reactjs.org/) and [Electron](https://electronjs.org/) and uses [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate)
+The wallet is built on [React](https://reactjs.org/) and [Electron](https://electronjs.org/) and uses [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate).
 
 Active development happens on the develop branch with periodic merges to master.
 
@@ -36,29 +36,27 @@ Add the file `src/extraResources/walletSettings.json`:
     }
   ]
 }
-
 ```
 
 To install all dependencies:
 
-`npm i`
-
-`cd src`
-
-`npm i`
-
-`cd ..`
+```bash
+npm i
+cd src
+npm i
+cd ..
+```
 
 To run during development:
 
 `npm run dev`
 
-To package for deployment:
+To package for deployment for the local target:
 
-`npm run package-all`
+`npm run package`
 
 ## Customize Logo
 
 Change the `tezosLogo.svg` file in `resources/` folder.
 
-Chnage the `logo` field in `src/config.json`.
+Change the `logo` field in `src/config.json`.
