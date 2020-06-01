@@ -1,6 +1,6 @@
 {
   "name": "tezori",
-  "version": "1.0.10",
+  "version": "1.1.2",
   "description": "An open-source wallet framework for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
@@ -71,11 +71,11 @@
   },
   "build": {
     "protocols": [
-        {
-          "name": "tezori",
-          "schemes": [ "tezori" ]
-        }
-      ],
+      {
+        "name": "tezori",
+        "schemes": [ "tezori" ]
+      }
+    ],
     "productName": "Tezori",
     "appId": "tech.cryptonomic.tezori",
     "files": [
@@ -174,7 +174,7 @@
     "jest": "^24.9.0",
     "lint-staged": "^9.5.0",
     "mini-css-extract-plugin": "^0.8.2",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "opencollective-postinstall": "^2.0.2",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "prettier": "^1.19.1",
@@ -198,7 +198,7 @@
     "webpack": "^4.42.1",
     "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3",
+    "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
