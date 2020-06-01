@@ -18,16 +18,16 @@ export function createAccount(account: Account): Account {
         activeTab: account.activeTab || TRANSACTIONS,
         status: account.status || status.CREATED,
         operations: account.operations || {},
-        order: account.order || 0
+        order: account.order || 0,
     };
 }
 
 export function findAccount(identity: Identity, accountId: string): Account | undefined {
-    return identity && (identity.accounts || []).find(account => account.account_id === accountId);
+    return identity && (identity.accounts || []).find((account) => account.account_id === accountId);
 }
 
 export function findAccountIndex(identity: Identity, accountId: string): number {
-    return identity && (identity.accounts || []).findIndex(account => account.account_id === accountId);
+    return identity && (identity.accounts || []).findIndex((account) => account.account_id === accountId);
 }
 
 // export function createSelectedAccount({ balance = 0, transactions = [] } = {}) {
@@ -59,7 +59,7 @@ export async function getAccountsForIdentity(node: Node, pkh: string) {
             accountQuery,
             'account_id',
             ConseilOperator.IN,
-            originations.map(o => o.originated_contracts),
+            originations.map((o) => o.originated_contracts),
             false
         );
     }
@@ -71,7 +71,7 @@ export async function getAccountsForIdentity(node: Node, pkh: string) {
 }
 
 export async function getSyncAccount(account: Account, node: Node, accountHash: string, selectedAccountHash: string) {
-    account = await activateAndUpdateAccount(account, node).catch(e => {
+    account = await activateAndUpdateAccount(account, node).catch((e) => {
         console.log(`-debug: Error in: getSyncAccount for: ${accountHash}`);
         console.error(e);
         return account;
@@ -87,7 +87,7 @@ export function syncAccountWithState(syncAccount, stateAccount) {
     return {
         ...syncAccount,
         activeTab: stateAccount.activeTab,
-        transactions: syncTransactionsWithState(syncAccount.transactions, stateAccount.transactions)
+        transactions: syncTransactionsWithState(syncAccount.transactions, stateAccount.transactions),
     };
 }
 
@@ -100,6 +100,7 @@ export function getAddressType(address: string, script: string | undefined): Add
         const k = Buffer.from(blakejs.blake2s(script.toString(), null, 16)).toString('hex');
 
         if (k === '023fc21b332d338212185c817801f288') {
+            // TODO: use const from BabylonDelegationHelper
             return AddressType.Delegated;
         }
 
@@ -110,9 +111,9 @@ export function getAddressType(address: string, script: string | undefined): Add
 }
 
 export function combineAccounts(accounts1: Account[], accounts2: Account[]): Account[] {
-    const noneAccounts2in1 = accounts2.filter(acc => !accounts1.find(acc2 => acc2.account_id === acc.account_id));
-    const newAccounts = accounts1.map(acc => {
-        const existAccount = accounts2.find(acc2 => acc2.account_id === acc.account_id);
+    const noneAccounts2in1 = accounts2.filter((acc) => !accounts1.find((acc2) => acc2.account_id === acc.account_id));
+    const newAccounts = accounts1.map((acc) => {
+        const existAccount = accounts2.find((acc2) => acc2.account_id === acc.account_id);
         if (!existAccount) {
             return { ...acc };
         }

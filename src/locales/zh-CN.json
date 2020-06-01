@@ -1,6 +1,8 @@
 {
     "general": {
         "verbs": {
+            "authenticate": "Authenticate",
+            "authentication": "Authentication",
             "send": "发送",
             "copy_address": "复制地址",
             "show": "显示",
@@ -20,7 +22,12 @@
             "proceed": "继续",
             "close": "Close",
             "withdraw": "Withdraw",
-            "deposit": "Deposit"
+            "deposit": "Deposit",
+            "mint": "Mint",
+            "burn": "Burn",
+            "sign": "Sign",
+            "verify": "Verify",
+            "copy": "Copy"
         },
         "nouns": {
             "amount": "数额",
@@ -32,6 +39,7 @@
             "account": "账户",
             "label_account": "账户",
             "label_address": "地址",
+            "signer_address": "Signer Address",
             "delegate_address": "烘培者(Baker)的地址",
             "remaining_balance": "余额",
             "gas": "Gas",
@@ -50,11 +58,30 @@
             "storage": "存储",
             "burn": "燃烧",
             "smart_contract": "智能合同",
-            "code": "代码"
+            "code": "代码",
+            "format": "Format",
+            "tokens": "Tokens",
+            "token_contract": "Token Contract",
+            "sign_n_verify": "Sign & Verify",
+            "platform": "Platform",
+            "network": "Network",
+            "message": "Message",
+            "signature": "Signature",
+            "ok": "Ok",
+            "council": "Council",
+            "stage": "Stage",
+            "phase": "Phase",
+            "supply": "Supply",
+            "paused": "Paused",
+            "proposal": "Proposal",
+            "evaluation": "evaluation",
+            "voting": "Voting",
+            "implementation": "Implementation"
         },
         "errors": {
             "no_hex_data": "您输入的数据有问题",
-            "no_ledger_detected": "Ledger 连接断开了"
+            "no_ledger_detected": "Ledger 连接断开了",
+            "ledger_error": "Error communicating with Ledger device"
         },
         "decimal_separator": ".",
         "back": "返回",
@@ -89,7 +116,20 @@
             "gas_tool_tip": "网络需要{{gas}} tz来创建一个被委托的地址",
             "warning1": "总额超过可获得的资金",
             "warning2": "管理者地址还不被允许有少于1 µtz",
-            "add_delegate_title": "添加一个委托者"
+            "add_delegate_title": "添加一个委托者",
+            "deploy_delegation": "Deploy Delegation..."
+        },
+        "signVerifyModal": {
+            "not_revealed": "This account is not active yet on the blockchain so your signature cannot be verified independently. Please provide your public key to the verifier so they can manually check your signature.",
+            "enter_address_key": "Signer address or public key",
+            "sign_guidance": "Signing a message allows others to verify your ownership of this account using only this message, signature and your address/public key.",
+            "verify_guidance": "Enter the message, signature and address provided to you to verify the signature.",
+            "match": "Signature confirmed",
+            "no_match": "Invalid signature"
+        },
+        "AuthenticateModal": {
+            "title": "dApp Authentication Request",
+            "signature_prompt": "Is requesting a signature of the following to confirm your identity"
         },
         "interactModal": {
             "interact_contract": "与合同交互",
@@ -104,7 +144,8 @@
             "parameters": "参数",
             "view_scan": "在Mininax上查看",
             "initial_storage": "初始存储",
-            "paste_micheline_code": "把Micheline代码粘贴进你的智能合同里"
+            "paste_micheline_code": "把Micheline代码粘贴进你的智能合同里",
+            "entry_point": "Entry Point"
         },
         "addNodeModal": {
             "error": "Node的协议必须是https",
@@ -121,7 +162,8 @@
         },
         "address": {
             "manager_address": "管理者地址",
-            "delegated_address": "被委托地址{{index}}"
+            "delegated_address": "被委托地址{{index}}",
+            "delegation_contract": "Delegation Contract {{index}}"
         },
         "addressBlock": {
             "descriptions": {
@@ -144,7 +186,13 @@
         },
         "balanceBanner": {
             "breadcrumbs": "账户{{parentIndex}} > {{addressLabel}}",
-            "delegated_to": "委托给了"
+            "delegated_to": "委托给了",
+            "secret_key": "Secret Key",
+            "reveal_key": "Click to reveal secret key.",
+            "hide_key": "Click to hide secret key.",
+            "warning": "Warning!",
+            "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
+            "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
         },
         "copyIcon": {
             "copied": "已复制！"
@@ -173,10 +221,14 @@
             "delegate_settings": "烘培者(Baker)设置",
             "current_delegate": "你现在正委托给",
             "change_delegate": "更改烘培者(Baker)",
-            "delegate_warning": "你的烘培者(Baker)设置将不会在区块链上确认前显示。"
+            "delegate_warning": "你的烘培者(Baker)设置将不会在区块链上确认前显示。",
+            "add_delegation_contract": "Add Delegation Contract",
+            "add_delegation_tooltip_title": "What is a Delegation Contract?",
+            "add_delegation_tooltip_text": "You can delegate to multiple bakers using smart contracts. Your delegations will appear under ‘Delegation Contracts’ on the left."
         },
         "delegateConfirmationModal": {
             "new_address_label": "更改烘培者(Baker)到新地址",
+            "address_label": "Baker Address",
             "delegate_warning": "你的委托更改将不会在此更改在区块链上确认前显示。"
         },
         "changeDelegationLedgerConfirmModal": {
@@ -218,11 +270,13 @@
             "contents": {
                 "content1": "你总是可以在一段时间后更改烘培者(Baker)。",
                 "content2": "更改烘培者(baker)是需要费用的。",
-                "content3": "你只能委托给管理者地址。管理者地址总是由TZ1, TZ2或者TZ3开头。"
+                "content3": "你只能委托给管理者地址。管理者地址总是由tz1, tz2或者tz3开头。"
             },
             "errors": {
-                "send_address": "地址只能由TZ1, TZ2, TZ3或者KT1开头",
-                "delegate_address": "你只能委托给TZ1, TZ2或者TZ3地址。",
+                "send_address": "地址只能由tz1, tz2, tz3或者KT1开头",
+                "send_babylon": "You can only send to tz1, tz2 or tz3 addresses.",
+                "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
+                "delegate_address": "你只能委托给tz1, tz2或者tz3地址。",
                 "length": "地址必须是36个字符长度。",
                 "special_chars": "地址不能含有特殊字符。",
                 "send_funds": "你不能发送资金给你自己。",
@@ -266,7 +320,13 @@
                 "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "智能合同操作失败了",
                 "success_invoke_operation": "成功地开始了合同调用。",
-                "success_contract_origination": "成功地开始了合同部署。"
+                "success_contract_origination": "成功地开始了合同部署。",
+                "started_token_failed": "Started token transaction failed.",
+                "started_token_success": "Successfully started token transaction.",
+                "mint_operation_failed": "Mint operation failed.",
+                "mint_operation_success": "Successfully started mint token.",
+                "burn_operation_failed": "Burn operation failed.",
+                "burn_operation_success": "Successfully started burn token."
             }
         },
         "pdfReader": {
@@ -295,6 +355,7 @@
         "send": {
             "send_xtz": "发送XTZ",
             "recipient_address": "接收人地址",
+            "holder_address": "Holder Address",
             "burn_tooltip_title": "为什么有消耗费？",
             "burn_tooltip_content": "你输入的接收人地址的余额为零。发送资金到一个空的管理者地址(tz1,2,3)需要一次性的<1> 0.257 </1>XTZ消耗费。",
             "fee_tooltip_title": "为什么这笔交易的费用要高一些？",
@@ -302,7 +363,9 @@
             "warnings": {
                 "total_exceeds": "总额超过可获得的资金",
                 "not_allowed": "管理者地址还不被允许有少于1 µtz"
-            }
+            },
+            "burn_notice": "Burn tokens to destroy tokens from a current holder and reduce total supply.",
+            "mint_notice": "Mint tokens to give brand new tokens to a recipient and increase total supply."
         },
         "sendConfirmationModal": {
             "send_confirmation": "发送确认",
@@ -313,6 +376,10 @@
             "confirm_transaction": "确认交易",
             "send_description": "你即将要发送出一笔交易。请认真复查在你设备上的细节。",
             "confirm_description": "如果所有的细节都是正确的，请<1> 确认 </1>在你设备上的这笔交易。"
+        },
+        "tokenLedgerConfirmModal": {
+            "confirm_token": "Confirm Token Contract",
+            "op_description": "You are about to {{op}} your Tokens. Please carefully review the details on your device."
         },
         "settingController": {
             "settings": "设置",
@@ -330,15 +397,16 @@
         },
         "transaction": {
             "pending": "待定的...",
+            "pending_blocks": "Pending, expires in {{ttl}} blocks",
             "burn": "烧毁",
             "public_key_reveal": "公开密钥揭示",
             "activation": "激活",
             "updated_delegate": "已更新过的烘培者(Baker)",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "起始",
             "sent": "已发送",
             "received": "已收到",
             "this_address": "这个地址",
-            "your_manager_address": "<0>你的</0>账户1管理者地址",
             "invoke_function": "被调用的函数",
             "add_delegate": "合同初创 – 委托的地址",
             "deployment": "合同初创 – 智能合同",
@@ -353,6 +421,10 @@
         "comingSoon": {
             "coming_soon": "即将上线",
             "working_hard": ""
+        },
+        "withdrawDeposit": {
+            "withdraw_warning": "To withdraw funds back to your manager account, {{managerAddress}}, please select a fee of at least 0.005 XTZ and ensure you have at least that amount in your manager account to cover the transaction.",
+            "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}."
         }
     },
     "containers": {
@@ -360,6 +432,7 @@
             "add_account": "添加一个账户",
             "refer_pdf_title": "请参考在资金筹集活动期间你创建的PDf文件。",
             "secret_key_15": "15个单词秘密密钥",
+            "restore_mnemonic": "12, 15, 18, 21 or 24 Word Secret Key",
             "fundraiser_password": "资金筹集活动密码",
             "public_key_hash": "公开密钥哈希",
             "fundraiser_email_address": "资金筹集活动电子邮件地址",
@@ -402,6 +475,8 @@
             "connect_ledger": "与 Ledger 连接",
             "dont_have_ledger_wallet": "没有 Ledger Tezos 钱包应用吗？",
             "download_it_here": "在这里下载。",
+            "need_device": "Need a Ledger device?",
+            "get_it_here": "Get it here",
             "connect_your_device": "请<1> 连接你的设备</1>，<3> 输入你的密码</3>， 并且<5> 打开 Tezos 钱包应用</5>。",
             "connecting": "正在连接。。。",
             "selectedPath": "选中的路径："

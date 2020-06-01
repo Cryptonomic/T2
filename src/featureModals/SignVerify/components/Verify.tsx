@@ -10,7 +10,7 @@ import { RootState } from '../../../types/store';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { publicKeyThunk } from '../thunks';
 
-import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon, MessageContainer, InfoIcon, SuccessIcon, Footer } from './style';
+import { Container, MainContainer, ButtonContainer, InvokeButton, Result, WarningIcon, MessageContainer, InfoIcon, SuccessIcon, Footer } from '../../style';
 
 const Verify = () => {
     const { t } = useTranslation();
@@ -68,15 +68,15 @@ const Verify = () => {
                 {t('components.signVerifyModal.verify_guidance')}
             </MessageContainer>
             <MainContainer>
-                <CustomTextArea label={t('general.nouns.message')} onChange={val => setMessage(val)} />
-                <TextField label={t('general.nouns.signature')} onChange={val => setSignature(val)} />
+                <CustomTextArea label={t('general.nouns.message')} onChange={(val) => setMessage(val)} />
+                <TextField label={t('general.nouns.signature')} onChange={(val) => setSignature(val)} />
 
                 <InputAddress
                     label={t('components.signVerifyModal.enter_address_key')}
                     operationType="tz1"
                     tooltip={false}
-                    onChange={val => setAddress(val)}
-                    onIssue={val => setIsAddressIssue(val)}
+                    onChange={(val) => setAddress(val)}
+                    onIssue={(val) => setIsAddressIssue(val)}
                 />
             </MainContainer>
             <Footer>

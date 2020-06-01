@@ -53,6 +53,7 @@ export function getSelectedKeyStore(
 ): KeyStore {
     const identity = findIdentity(identities, selectedParentHash);
     const { publicKey, privateKey } = identity;
+
     return {
         publicKey,
         privateKey,
