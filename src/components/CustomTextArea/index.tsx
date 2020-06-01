@@ -90,10 +90,11 @@ interface Props {
   errorText?: string | React.ReactNode;
   onChange: (val: string) => void;
   classes: any;
+  defaultValue?: string;
 }
 
 const CustomTextArea = (props: Props) => {
-  const { label, onChange, errorText, classes, ...other } = props;
+  const { label, onChange, defaultValue, errorText, classes, ...other } = props;
   return (
     <FormControlWrapper>
       <LabelWrapper htmlFor="micheline-input">{label}</LabelWrapper>
@@ -104,6 +105,7 @@ const CustomTextArea = (props: Props) => {
         multiline={true}
         rows={5}
         rowsMax={5}
+        defaultValue={defaultValue}
         {...other}
       />
       <ErrorWrapper>{errorText}</ErrorWrapper>

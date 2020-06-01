@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import CloseIcon from '@material-ui/icons/Close';
 
 import styled from 'styled-components';
@@ -32,7 +32,7 @@ const BroadIcon = styled(TezosIcon)`
     margin-left: 2px;
 `;
 
-const MessageHeader = styled.div<{ isWrap: boolean }>`
+const MessageHeader = styled.div<{ isWrap?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,10 +57,22 @@ const LinkContainer = styled.div`
     cursor: pointer;
 `;
 
+const CustomLinkContainer = styled.div`
+    margin-left: 7px;
+    cursor: pointer;
+`;
+
+const CustomLinkTitle = styled.div`
+    display: inline-block;
+    font-size: 12px;
+    text-decoration: underline;
+`;
+
 const LinkTitle = styled.div`
     font-size: 12px;
     text-decoration: underline;
 `;
+
 const HashValue = styled.div`
     font-size: 12px;
     margin-left: 5px;
@@ -82,13 +94,39 @@ interface Props {
     realHash: string;
     isError: boolean;
     localeParam: number;
-    openLink: () => void;
+    openLink: (link?: string) => void;
     onClose: () => void;
 }
 
 const MessageContent = (props: Props) => {
     const { content, realHash, hash, openLink, onClose, isError, localeParam } = props;
     const { t } = useTranslation();
+
+    if (content === 'components.messageBar.messages.ledger_linux_error') {
+        // TODO
+        return (
+            <MessageContainer isError={isError}>
+                <StyledCloseIcon onClick={() => onClose()} />
+                <CustomLinkContainer onClick={() => openLink(realHash)}>
+                    <Trans i18nKey="components.messageBar.messages.ledger_linux_error">
+                        If you're having trouble connecting to a Ledger device, please see
+                        <CustomLinkTitle>these steps</CustomLinkTitle>
+                        <BroadIcon iconName="new-window" size={ms(0)} color="white" />
+                    </Trans>
+                </CustomLinkContainer>
+            </MessageContainer>
+        );
+    }
+
+    if (content === 'components.messageBar.messages.ledger_not_connect') {
+        // TODO
+        return (
+            <MessageContainer isError={isError}>
+                <StyledCloseIcon onClick={() => onClose()} />
+                <MessageHeader>{t(content, { localeParam })}</MessageHeader>
+            </MessageContainer>
+        );
+    }
 
     return (
         <MessageContainer isError={isError}>

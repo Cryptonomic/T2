@@ -111,8 +111,12 @@ export function openLink(link) {
     shell.openExternal(link);
 }
 
-export function openLinkToBlockExplorer(operation: string, network: string = 'mainnet') {
-    openLink(`${blockExplorerHost}/${network}/operations/${operation}`);
+export function openBlockExplorerForOperation(operation: string, network: string = 'mainnet') {
+    shell.openExternal(`${blockExplorerHost}/${network}/operations/${operation}`);
+}
+
+export function openBlockExplorerForAccount(account: string, network: string = 'mainnet') {
+    shell.openExternal(`${blockExplorerHost}/${network}/accounts/${account}`);
 }
 
 export function clearOperationId(operationId) {
