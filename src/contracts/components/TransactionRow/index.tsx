@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ms } from '../../../styles/helpers';
 import TezosAddress from '../../../components/TezosAddress';
 import AmountView from '../../../components/AmountView';
-import { openLinkToBlockExplorer } from '../../../utils/general';
+import { openBlockExplorerForOperation } from '../../../utils/general';
 import { READY } from '../../../constants/StatusTypes';
 import { RootState, SettingsState } from '../../../types/store';
 import { getMainNode } from '../../../utils/settings';
@@ -23,7 +23,7 @@ interface Props {
 const openLink = (element, nodesList: Node[], selectedNode: string) => {
     const currentNode = getMainNode(nodesList, selectedNode);
 
-    return openLinkToBlockExplorer(element, currentNode.network);
+    return openBlockExplorerForOperation(element, currentNode.network);
 };
 
 const timeFormatter = timestamp => {

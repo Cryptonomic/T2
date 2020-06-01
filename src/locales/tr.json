@@ -263,6 +263,7 @@
                 "invalid_wallet_password": "Hatalı cüzdan/şifre kombinasyonu.",
                 "account_not_exist": "Bu hesap bulunamıyor.",
                 "ledger_not_connect": "Ledger bağlantıyı reddetti.",
+                "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "Akıllı Sözleşme operasyonu başarısız.",
                 "success_invoke_operation": "Akıllı Sözleşme çalıştırma operasyonu başarılı.",
                 "success_contract_origination": "Akıllı Sözleşme oluşturma operasyonu başarılı."
@@ -315,7 +316,8 @@
         },
         "settingController": {
             "settings": "AYARLAR",
-            "logout": "ÇIKIŞ"
+            "logout": "ÇIKIŞ",
+            "help": "HELP"
         },
         "termsModal": {
             "hi_there": "Merhaba!",
@@ -391,10 +393,10 @@
             "description": "<1> Kullanım Şartları </1>ve<3> Gizlilik Politikasını</3> okudum ve kabul ediyorum.",
             "create_new_wallet_btn": "Yeni Cüzdan Oluştur",
             "open_exisiting_wallet_btn": "Varolan Cüzdan'ı Aç",
-            "want_to_import_fundraiser_paper_wallet": "Proje Destek zamanı oluşturulan kağıt",
-            "create_named_wallet": "cüzdana mı erişmek istiyorsun? Öncelikle <1><0>yeni bir <1>{{name}}</1> cüzdanı oluştur</0></1>.",
+            "want_to_import_fundraiser_paper_wallet": "Proje Destek zamanı oluşturulan kağıt cüzdana mı erişmek istiyorsun?",
+            "create_named_wallet": " Öncelikle <0>yeni bir cüzdanı oluştur</0>.",
             "tagline": "Tezos ailesi için bir cüzdan",
-            "app_name": "Tezori",
+            "app_name": "{{name}}",
             "keystore_wallet": "Anahtar Dosyalı Cüzdan",
             "ledger_wallet": "Ledger Cüzdan",
             "connect_ledger": "Ledger ile Bağlan",

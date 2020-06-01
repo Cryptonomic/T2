@@ -39,16 +39,17 @@ const AmountView = (props: Props) => {
 
     function getRealValue() {
         return {
-            strBalance: formatAmount(),
-            view: `${precision > round ? '~' : ''}${formatAmount()}`
+            fullAmount: formatAmount(true),
+            truncatedAmount: `${precision > round ? '~' : ''}${formatAmount(false)}`
         };
     }
 
-    function formatAmount(): string {
+    function formatAmount(truncateAmount): string {
+        const digits = truncateAmount ? precision : round;
         return new BigNumber(amount)
             .dividedBy(10 ** scale)
             .toNumber()
-            .toFixed(round);
+            .toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits });
     }
 
     function getIcon() {
@@ -63,18 +64,18 @@ const AmountView = (props: Props) => {
         return null;
     }
 
-    const { strBalance, view } = getRealValue();
+    const { fullAmount, truncatedAmount } = getRealValue();
 
     return showTooltip ? ( // TODO: there is probably a react-ey way of doing this
-        <Tooltip position="bottom" content={<Content formattedAmount={strBalance} />}>
+        <Tooltip position="bottom" content={<Content formattedAmount={fullAmount} />}>
             <Amount color={color} size={size} weight={weight} style={SelectableText}>
-                {view}
+                {truncatedAmount}
                 {getIcon()}
             </Amount>
         </Tooltip>
     ) : (
         <Amount color={color} size={size} weight={weight} style={SelectableText}>
-            {view}
+            {truncatedAmount}
             {getIcon()}
         </Amount>
     );

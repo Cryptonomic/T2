@@ -5,7 +5,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import MessageContent from './MessageContent';
 
 import { clearMessageAction } from '../../reduxContent/message/actions';
-import { openLinkToBlockExplorer } from '../../utils/general';
+import { openBlockExplorerForOperation, openLink } from '../../utils/general';
 import { RootState, MessageState } from '../../types/store';
 import { getMainNode } from '../../utils/settings';
 
@@ -33,11 +33,17 @@ function MessageBar() {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
 
-    function openLink() {
+    function openLinkHandler(link) {
+        if (link) {
+            openLink(link);
+            onClose();
+            return;
+        }
+
         const { selectedNode, nodesList } = settings;
         const currentNode = getMainNode(nodesList, selectedNode);
 
-        openLinkToBlockExplorer(hash, currentNode.network);
+        openBlockExplorerForOperation(hash, currentNode.network);
         onClose();
     }
 
@@ -71,7 +77,7 @@ function MessageBar() {
                     content={text}
                     hash={formatHash()}
                     realHash={hash}
-                    openLink={() => openLink()}
+                    openLink={(link?: string) => openLinkHandler(link)}
                     onClose={() => onClose()}
                     isError={isError}
                     localeParam={localeParam}
