@@ -20,7 +20,7 @@ import { OPERATIONFEE } from '../../constants/FeeValue';
 import { RegularAddress, AverageFees } from '../../types/general';
 import { RootState } from '../../types/store';
 
-// import { openLinkToBlockExplorer } from '../../utils/general';
+// import { openBlockExplorerForOperation } from '../../utils/general';
 
 import {
     MainContainer,
@@ -110,7 +110,7 @@ function DeployContract(props: Props) {
     }
 
     // function openLink (element) {
-    //   openLinkToBlockExplorer(element);
+    //   openBlockExplorerForOperation(element);
     // }
 
     async function onDeployOperation() {

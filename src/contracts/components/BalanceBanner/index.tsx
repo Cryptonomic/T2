@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
 
 import TezosAddress from '../../../components/TezosAddress';
-import TezosAmount from '../../../components/TezosAmount';
+import AmountView from '../../../components/AmountView';
 import Update from '../../../components/Update';
 import { ms } from '../../../styles/helpers';
 import { syncWalletThunk } from '../../../reduxContent/wallet/thunks';
@@ -38,7 +38,14 @@ function BalanceBanner(props: Props) {
     function onSyncWallet() {
         dispatch(syncWalletThunk());
     }
-    console.log(JSON.stringify(token.details));
+
+    function formatAmount(amount): string {
+        return new BigNumber(amount)
+            .dividedBy(10 ** (token.scale || 0))
+            .toNumber()
+            .toLocaleString(undefined, { minimumFractionDigits: token.round, maximumFractionDigits: token.precision });
+    }
+
     return (
         <Container>
             <TopRow isReady={isReady}>
@@ -50,13 +57,22 @@ function BalanceBanner(props: Props) {
                 <AddressInfo>
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} />
                     <Gap />
-                    <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={token.symbol} showTooltip={true} />
+                    <AmountView
+                        color="white"
+                        size={ms(4.5)}
+                        amount={balance}
+                        weight="light"
+                        symbol={token.symbol}
+                        showTooltip={true}
+                        scale={token.scale}
+                        precision={token.precision}
+                        round={token.round}
+                    />
                 </AddressInfo>
                 <AddressInfo>
                     {token.details && token.details.paused !== true && 'Token is active.'}{' '}
-                    {token.details &&
-                        token.details.supply &&
-                        'Total supply is ' + new BigNumber(token.details.supply).dividedBy(10 ** (token.scale || 0)).toNumber()}
+                    {token.details && token.details.supply && 'Total supply is ' + formatAmount(token.details.supply)}
+                    {'.'}
                 </AddressInfo>
             </BottomRow>
         </Container>
