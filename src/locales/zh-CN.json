@@ -270,13 +270,13 @@
             "contents": {
                 "content1": "你总是可以在一段时间后更改烘培者(Baker)。",
                 "content2": "更改烘培者(baker)是需要费用的。",
-                "content3": "你只能委托给管理者地址。管理者地址总是由TZ1, TZ2或者TZ3开头。"
+                "content3": "你只能委托给管理者地址。管理者地址总是由tz1, tz2或者tz3开头。"
             },
             "errors": {
-                "send_address": "地址只能由TZ1, TZ2, TZ3或者KT1开头",
-                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "send_address": "地址只能由tz1, tz2, tz3或者KT1开头",
+                "send_babylon": "You can only send to tz1, tz2 or tz3 addresses.",
                 "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
-                "delegate_address": "你只能委托给TZ1, TZ2或者TZ3地址。",
+                "delegate_address": "你只能委托给tz1, tz2或者tz3地址。",
                 "length": "地址必须是36个字符长度。",
                 "special_chars": "地址不能含有特殊字符。",
                 "send_funds": "你不能发送资金给你自己。",

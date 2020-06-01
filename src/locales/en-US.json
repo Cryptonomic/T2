@@ -129,7 +129,7 @@
         },
         "AuthenticateModal": {
             "title": "dApp Authentication Request",
-            "signature_prompt": "Is requesting a signature of the following to confirm your identity"
+            "signature_prompt": "Authenticate by signing the words below to confirm your control of the private key associated with this account"
         },
         "interactModal": {
             "interact_contract": "Interact with Contracts",
@@ -270,13 +270,13 @@
             "contents": {
                 "content1": "You can always change the delegate at a later time.",
                 "content2": "There is a fee for changing the delegate.",
-                "content3": "You can only delegate to the Manager Address. Manager Addresses always starts with TZ1, TZ2 or TZ3."
+                "content3": "You can only delegate to the Manager Address. Manager Addresses always starts with tz1, tz2 or tz3."
             },
             "errors": {
-                "send_address": "Addresses can only start TZ1, TZ2, TZ3 or KT1",
-                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "send_address": "Addresses can only start tz1, tz2, tz3 or KT1",
+                "send_babylon": "You can only send to tz1, tz2 or tz3 addresses.",
                 "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
-                "delegate_address": "You can only delegate to TZ1, TZ2 or TZ3 addresses.",
+                "delegate_address": "You can only delegate to tz1, tz2 or tz3 addresses.",
                 "length": "Addresses must be 36 characters long.",
                 "special_chars": "Addresses cannot contain any special characters.",
                 "send_funds": "You cannot send funds to yourself.",

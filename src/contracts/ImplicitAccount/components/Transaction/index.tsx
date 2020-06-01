@@ -270,7 +270,6 @@ function Transaction(props: Props) {
     const activation = transaction.kind === 'activation' && selectedAccountHash === selectedParentHash;
 
     let transactionTimestamp: string;
-    console.log(`rendering ${JSON.stringify(transaction)}`);
     if (transaction.status === READY || origination || activation) {
         transactionTimestamp = timeFormatter(transaction.timestamp);
     } else if (transaction.status === PENDING && transaction.ttl) {

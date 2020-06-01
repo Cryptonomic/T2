@@ -270,13 +270,13 @@
             "contents": {
                 "content1": "Vous pouvez toujours changer de délégué plus tard.",
                 "content2": "Il y a une commission pour changer de délégué.",
-                "content3": "Vous pouvez seulement déléguer à l`Adresse de management. Les Adresses de management commencent toujours par TZ1, TZ2 or TZ3."
+                "content3": "Vous pouvez seulement déléguer à l`Adresse de management. Les Adresses de management commencent toujours par tz1, zt2 ou tz3."
             },
             "errors": {
-                "send_address": "Les Adresses ne peuvent que commencer par TZ1, TZ2, TZ3 ou KT1",
-                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "send_address": "Les Adresses ne peuvent que commencer par tz1, tz2, tz3 ou KT1",
+                "send_babylon": "You can only send to tz1, tz2 or tz3 addresses.",
                 "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
-                "delegate_address": "Vous pouvez seulement déléguer à des adresses TZ1, TZ2 or TZ3.",
+                "delegate_address": "Vous pouvez seulement déléguer à des adresses tz1, tz2 or tz3.",
                 "length": "Les Adresses doivent comporter 36 caractères.",
                 "special_chars": "Les Adresses ne peuvent pas comporter de caractères spéciaux.",
                 "send_funds": "Vous ne pouvez pas envoyer de fonds à vous-mêmes.",

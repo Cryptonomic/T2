@@ -270,13 +270,13 @@
             "contents": {
                 "content1": "Далее у вас будет возможность изменить делегата в любое время.",
                 "content2": "Взымается дополнительная плата за смену делегата.",
-                "content3": "Вы можете делегировать только Менеджер Адресу. Менеджер Адреса всегда начинаются только с TZ1, TZ2 или TZ3."
+                "content3": "Вы можете делегировать только Менеджер Адресу. Менеджер Адреса всегда начинаются только с tz1, tz2 или tz3."
             },
             "errors": {
-                "send_address": "Адреса всегда начинаются только с TZ1, TZ2, TZ3 или KT1",
-                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "send_address": "Адреса всегда начинаются только с tz1, tz2, tz3 или KT1",
+                "send_babylon": "You can only send to tz1, tz2 or tz3 addresses.",
                 "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
-                "delegate_address": "Вы можете делегировать только TZ1, TZ2 или TZ3 адресам.",
+                "delegate_address": "Вы можете делегировать только tz1, tz2 или tz3 адресам.",
                 "length": "Адреса должны состоять из 36 символов.",
                 "special_chars": "Синтаксис адресов не может включать в себя знаки пунктуации и символы.",
                 "send_funds": "Вы не можете послать средства самому себе.",

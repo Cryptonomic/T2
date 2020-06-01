@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 import { TezosWalletUtil, TezosLedgerWallet } from 'conseiljs';
 
 import { ms } from '../../styles/helpers';
 import { getSelectedKeyStore, openLink } from '../../utils/general';
 import { getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
-import CopyButton from '../../components/CopyButton';
 import Tooltip from '../../components/Tooltip';
 import { RootState } from '../../types/store';
 
@@ -30,6 +30,17 @@ import {
     TitleContainer,
     TooltipContent,
 } from '../style';
+
+export const PromptContainer = styled.div`
+    align-items: center;
+    color: #979797;
+    display: flex;
+    font-size: 24px;
+    justify-content: center;
+    height: 80px;
+    margin-top: 30px;
+    width: 100%;
+`;
 
 interface Props {
     open: boolean;
@@ -70,7 +81,7 @@ const Auth = (props: Props) => {
         try {
             setResult('Signature sent'); // TODO: localization
             setError(false);
-            const response = await fetch(`${req.c}&sig=${new Buffer(signature).toString('base64')}`);
+            const response = await fetch(`${req.callback}&sig=${new Buffer(signature).toString('base64')}`);
             if (!response.ok) {
                 throw new Error('Signature response rejected'); // TODO: localization
             }
@@ -91,21 +102,26 @@ const Auth = (props: Props) => {
             if (req.requestor) {
                 setRequestor(req.requestor);
             }
+
             if (req.desc) {
                 setRequestorDescription(req.desc);
             }
+
             if (req.requrl) {
                 setRequestorUrl(req.requrl);
             }
+
             if (req.prompt) {
                 let p = req.prompt.replace(/\n/g, '');
                 p = p.slice(0, Math.min(100, p.length));
                 setPrompt(p);
             }
+
             if (req.target && req.target !== selectedParentHash) {
                 setError(true);
                 setResult('Account address mismatch'); // TODO: localization
             }
+
             if (!req.target) {
                 setError(true);
                 setResult('Missing target address'); // TODO: localization
@@ -138,11 +154,10 @@ const Auth = (props: Props) => {
                                 <ContentSubtitle>{requestorDescription}</ContentSubtitle>
                             </TitleContainer>
                             <div>{t('components.AuthenticateModal.signature_prompt')}</div>
-                            <div>{prompt}</div>
+                            <PromptContainer>{prompt}</PromptContainer>
                         </MainContainer>
                         <ResultContainer>
                             <Result error={error}>{result}</Result>
-                            {!error && result && <CopyButton text={result} title="" color="accent" />}
                         </ResultContainer>
                         <Footer>
                             <ButtonContainer>

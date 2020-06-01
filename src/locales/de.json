@@ -270,13 +270,13 @@
             "contents": {
                 "content1": "Sie können jederzeit den Delegierten ändern",
                 "content2": "Es kostet eine Gebühr, den Delegierten zu ändern",
-                "content3": "Sie können nur zu einer Manager Adresse delegieren. Eine Manager Adresse beginnt immer mit TZ1, TZ2 oder TZ3."
+                "content3": "Sie können nur zu einer Manager Adresse delegieren. Eine Manager Adresse beginnt immer mit tz1, tz2 oder tz3."
             },
             "errors": {
-                "send_address": "Adressen können nur mit TZ1, TZ2, TZ3 or KT1 starten",
-                "send_babylon": "You can only send to TZ1, TZ2 or TZ3 addresses.",
+                "send_address": "Adressen können nur mit tz1, tz2, tz3 or KT1 starten",
+                "send_babylon": "You can only send to tz1, tz2 or tz3 addresses.",
                 "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
-                "delegate_address": "Sie können nur zu TZ1, TZ2 or TZ3 Adressen delegieren.",
+                "delegate_address": "Sie können nur zu tz1, tz2 or tz3 Adressen delegieren.",
                 "length": "Adressen müssen 36 Zeichen lang sein.",
                 "special_chars": "Adressen können keine Sonderzeichen enthalten.",
                 "send_funds": "Sie können sich nichts selbst schicken.",
