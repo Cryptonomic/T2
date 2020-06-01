@@ -150,11 +150,11 @@ export const ContentSubtitle = styled.div`
 `;
 
 export const Footer = styled.div`
-    background: ${({ theme: { colors } }) => colors.gray7}
+    background: ${({ theme: { colors } }) => colors.gray2};
     margin: auto 0 0;
     padding: 25px 0;
     display: flex;
-    flex-direction: column
+    flex-direction: column;
 `;
 
 export const TooltipContent = styled.div`
