@@ -38,7 +38,7 @@ import {
     AddDelegationTooltipTitle,
     AddDelegationTooltipText,
     AddDelegationTooltipIcon,
-    NoFundTooltip
+    NoFundTooltip,
 } from './style';
 
 interface Props {
@@ -63,8 +63,8 @@ function Delegate(props: Props) {
         setFee(newFees.medium);
     }, [isFeeLoaded]);
 
-    const isDisabled = !isReady || isLoading || isAddressIssue || !newAddress || (!passPhrase && !isLedger);
-    const isManagerReady = identities.find(i => i.publicKeyHash === selectedAccountHash)?.status === READY;
+    const isDisabled = !isReady || isLoading || isAddressIssue || newAddress === selectedAccountHash || (!passPhrase && !isLedger);
+    const isManagerReady = identities.find((i) => i.publicKeyHash === selectedAccountHash)?.status === READY;
 
     async function onDelegate() {
         dispatch(setIsLoadingAction(true));
@@ -99,14 +99,14 @@ function Delegate(props: Props) {
     };
 
     return (
-        <Container onKeyDown={event => onEnterPress(event.key)}>
+        <Container onKeyDown={(event) => onEnterPress(event.key)}>
             <AmountContainer>
                 <InputAddress
                     label={t(`components.delegateConfirmationModal.${!isRevealed ? 'address_label' : 'new_address_label'}`)}
                     operationType="delegate"
                     tooltip={false}
-                    onChange={val => setAddress(val)}
-                    onIssue={val => setIsAddressIssue(val)}
+                    onChange={(val) => setAddress(val)}
+                    onIssue={(val) => setIsAddressIssue(val)}
                 />
             </AmountContainer>
             <FeeContainer>
@@ -116,7 +116,7 @@ function Delegate(props: Props) {
                     high={newFees.high}
                     fee={fee}
                     miniFee={miniFee}
-                    onChange={val => setFee(val)}
+                    onChange={(val) => setFee(val)}
                     tooltip={
                         !isRevealed && (
                             <Tooltip position="bottom" content={renderFeeToolTip}>
@@ -139,7 +139,7 @@ function Delegate(props: Props) {
                     <PasswordInput
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
-                        onChange={val => setPassPhrase(val)}
+                        onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
@@ -151,12 +151,7 @@ function Delegate(props: Props) {
                 {isManagerReady ? (
                     <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, 'delegate_contract'))} />
                 ) : (
-                    <Tooltip
-                        position="top"
-                        offset={[-7.5, 0]}
-                        boxShadow={true}
-                        content={<NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>}
-                    >
+                    <Tooltip position="top" content={<NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>}>
                         <IconButton size="small" color="primary">
                             <AddCircleWrapper active={0} />
                         </IconButton>
@@ -165,8 +160,6 @@ function Delegate(props: Props) {
                 <BoldSpan onClick={() => dispatch(setModalOpen(true, 'delegate_contract'))}>{t('components.delegate.add_delegation_contract')}</BoldSpan>
                 <Tooltip
                     position="top"
-                    offset={[-7.5, 0]}
-                    boxShadow={true}
                     content={
                         <>
                             <AddDelegationTooltipTitle>{t('components.delegate.add_delegation_tooltip_title')}</AddDelegationTooltipTitle>

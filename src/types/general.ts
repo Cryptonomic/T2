@@ -28,7 +28,7 @@ export interface Account {
     transactions: any[];
     activeTab?: string;
     status?: string;
-    operations: any; // todo type
+    operations: any; // TODO: type
     order: number;
 }
 
@@ -43,7 +43,7 @@ export interface Identity {
     storeType: StoreType;
     activeTab: string;
     status: string;
-    transactions: any[]; // todo transaction type
+    transactions: any[]; // TODO: transaction type
     delegate_value: string;
     derivationPath?: string;
 }
@@ -55,7 +55,7 @@ export enum AddressType {
     Token,
     None,
     STKR,
-    TzBTC
+    TzBTC,
 }
 
 export interface RegularAddress {
@@ -67,6 +67,26 @@ export interface AverageFees {
     low: number;
     medium: number;
     high: number;
+}
+
+export interface WalletTransaction {
+    amount?: number;
+    balance?: number;
+    block_hash: string;
+    block_level: number;
+    delegate?: string;
+    destination?: string;
+    fee?: number;
+    gas_limit: number;
+    kind: string;
+    operation_group_hash: string;
+    operation_id: string;
+    pkh?: string;
+    status: string;
+    source?: string;
+    storage_limit: number;
+    timestamp: Date;
+    ttl?: number;
 }
 
 export interface TokenTransaction {
@@ -87,7 +107,7 @@ export enum TokenKind {
     tzip7 = 'tzip7',
     stkr = 'stkr',
     usdtez = 'usdtez',
-    tzbtc = 'tzbtc'
+    tzbtc = 'tzbtc',
 }
 
 export interface Token {
