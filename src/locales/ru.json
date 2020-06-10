@@ -1,6 +1,8 @@
 {
     "general": {
         "verbs": {
+            "authenticate": "Authenticate",
+            "authentication": "Authentication",
             "send": "Отправить",
             "copy_address": "Скопировать Адрес",
             "show": "Показать",
@@ -17,7 +19,15 @@
             "invoke": "Призвать",
             "deploy": "Запускать",
             "cancel": "Отменить",
-            "proceed": "Продолжить"
+            "proceed": "Продолжить",
+            "close": "Close",
+            "withdraw": "Withdraw",
+            "deposit": "Deposit",
+            "mint": "Mint",
+            "burn": "Burn",
+            "sign": "Sign",
+            "verify": "Verify",
+            "copy": "Copy"
         },
         "nouns": {
             "amount": "Сумма",
@@ -29,6 +39,7 @@
             "account": "Кошелёк",
             "label_account": "Имя Аккаунта",
             "label_address": "Адрес Аккаунта",
+            "signer_address": "Signer Address",
             "delegate_address": "Адрес для Делегирования",
             "remaining_balance": "Осталось в кошельке",
             "gas": "Gas",
@@ -47,11 +58,30 @@
             "storage": "Место Хранения",
             "burn": "Burn",
             "smart_contract": "Смарт Контракт",
-            "code": "Код"
+            "code": "Код",
+            "format": "Format",
+            "tokens": "Tokens",
+            "token_contract": "Token Contract",
+            "sign_n_verify": "Sign & Verify",
+            "platform": "Platform",
+            "network": "Network",
+            "message": "Message",
+            "signature": "Signature",
+            "ok": "Ok",
+            "council": "Council",
+            "stage": "Stage",
+            "phase": "Phase",
+            "supply": "Supply",
+            "paused": "Paused",
+            "proposal": "Proposal",
+            "evaluation": "evaluation",
+            "voting": "Voting",
+            "implementation": "Implementation"
         },
         "errors": {
             "no_hex_data": "Введённая строка не является hex данными",
-            "no_ledger_detected": "Ledger отсоединён"
+            "no_ledger_detected": "Ledger отсоединён",
+            "ledger_error": "Error communicating with Ledger device"
         },
         "decimal_separator": "десятичный разделительный знак .",
         "back": "Назад",
@@ -79,13 +109,27 @@
         },
         "actionPanel": {
             "description": "Что-то здесь очень пусто. Начните <1> отправлять</1> и<3> получать</3> tez на этот адрес.",
-            "empty-title": "Вы ещё не сделали никаких транзакций"
+            "empty-title": "Вы ещё не сделали никаких транзакций",
+            "invoke_manager": "Manage Delegation"
         },
         "addDelegateModal": {
             "gas_tool_tip": "Системе понадобится {{gas}} tz чтобы создать адрес делегата",
             "warning1": "сумма превосходит баланс в наличии",
             "warning2": "Менеджер Аккаунты в суммарном балансе не могут иметь меньше, чем  1 µtz",
-            "add_delegate_title": "Добавить Делегата"
+            "add_delegate_title": "Добавить Делегата",
+            "deploy_delegation": "Deploy Delegation..."
+        },
+        "signVerifyModal": {
+            "not_revealed": "This account is not active yet on the blockchain so your signature cannot be verified independently. Please provide your public key to the verifier so they can manually check your signature.",
+            "enter_address_key": "Signer address or public key",
+            "sign_guidance": "Signing a message allows others to verify your ownership of this account using only this message, signature and your address/public key.",
+            "verify_guidance": "Enter the message, signature and address provided to you to verify the signature.",
+            "match": "Signature confirmed",
+            "no_match": "Invalid signature"
+        },
+        "AuthenticateModal": {
+            "title": "dApp Authentication Request",
+            "signature_prompt": "Is requesting a signature of the following to confirm your identity"
         },
         "interactModal": {
             "interact_contract": "Взаимодействовать с Контрактами ",
@@ -100,7 +144,8 @@
             "parameters": "Параметры",
             "view_scan": "Посмотреть на Mininax",
             "initial_storage": "Изначальное хранилище",
-            "paste_micheline_code": "Вставить Micheline код в ваш смарт контракт"
+            "paste_micheline_code": "Вставить Micheline код в ваш смарт контракт",
+            "entry_point": "Entry Point"
         },
         "addNodeModal": {
             "error": "Протокол ноды  должен быть https",
@@ -117,7 +162,8 @@
         },
         "address": {
             "manager_address": " Менеджер Адрес",
-            "delegated_address": "Делегационный Адрес {{index}}"
+            "delegated_address": "Делегационный Адрес {{index}}",
+            "delegation_contract": "Delegation Contract {{index}}"
         },
         "addressBlock": {
             "descriptions": {
@@ -140,7 +186,13 @@
         },
         "balanceBanner": {
             "breadcrumbs": "Аккаунт {{parentIndex}} > {{addressLabel}}",
-            "delegated_to": "Делегирован кому"
+            "delegated_to": "Делегирован кому",
+            "secret_key": "Secret Key",
+            "reveal_key": "Click to reveal secret key.",
+            "hide_key": "Click to hide secret key.",
+            "warning": "Warning!",
+            "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
+            "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
         },
         "copyIcon": {
             "copied": "Скопировано!"
@@ -169,10 +221,14 @@
             "delegate_settings": "Настройки Делегата",
             "current_delegate": "В данный момент вы делегируете",
             "change_delegate": "Изменить Делегата",
-            "delegate_warning": "настройки вашего делегата не появятся в кошельке до тех пор, пока не подтвердятся в блокчейне."
+            "delegate_warning": "настройки вашего делегата не появятся в кошельке до тех пор, пока не подтвердятся в блокчейне.",
+            "add_delegation_contract": "Add Delegation Contract",
+            "add_delegation_tooltip_title": "What is a Delegation Contract?",
+            "add_delegation_tooltip_text": "You can delegate to multiple bakers using smart contracts. Your delegations will appear under ‘Delegation Contracts’ on the left."
         },
         "delegateConfirmationModal": {
             "new_address_label": "Изменить Адрес Делегата на Новый",
+            "address_label": "Baker Address",
             "delegate_warning": "Ваши изменения  адреса делегата не появятся в кошельке до тех пор, пока не подтвердятся в блокчейне."
         },
         "changeDelegationLedgerConfirmModal": {
@@ -214,11 +270,13 @@
             "contents": {
                 "content1": "Далее у вас будет возможность изменить делегата в любое время.",
                 "content2": "Взымается дополнительная плата за смену делегата.",
-                "content3": "Вы можете делегировать только Менеджер Адресу. Менеджер Адреса всегда начинаются только с TZ1, TZ2 или TZ3."
+                "content3": "Вы можете делегировать только Менеджер Адресу. Менеджер Адреса всегда начинаются только с tz1, tz2 или tz3."
             },
             "errors": {
-                "send_address": "Адреса всегда начинаются только с TZ1, TZ2, TZ3 или KT1",
-                "delegate_address": "Вы можете делегировать только TZ1, TZ2 или TZ3 адресам.",
+                "send_address": "Адреса всегда начинаются только с tz1, tz2, tz3 или KT1",
+                "send_babylon": "You can only send to tz1, tz2 or tz3 addresses.",
+                "verify_tz1": "Only tz1 (ed25519) address signatures can be validated at this time.",
+                "delegate_address": "Вы можете делегировать только tz1, tz2 или tz3 адресам.",
                 "length": "Адреса должны состоять из 36 символов.",
                 "special_chars": "Синтаксис адресов не может включать в себя знаки пунктуации и символы.",
                 "send_funds": "Вы не можете послать средства самому себе.",
@@ -262,7 +320,13 @@
                 "ledger_linux_error": "If you're having trouble connecting to a Ledger device, please see <1>these steps</1> <2></2>",
                 "invoke_operation_failed": "Операция Смарт Контракта не удалась",
                 "success_invoke_operation": "Операция по призванию контракта началась успешно.",
-                "success_contract_origination": "Операция по развёртке контракта началась успешно."
+                "success_contract_origination": "Операция по развёртке контракта началась успешно.",
+                "started_token_failed": "Started token transaction failed.",
+                "started_token_success": "Successfully started token transaction.",
+                "mint_operation_failed": "Mint operation failed.",
+                "mint_operation_success": "Successfully started mint token.",
+                "burn_operation_failed": "Burn operation failed.",
+                "burn_operation_success": "Successfully started burn token."
             }
         },
         "pdfReader": {
@@ -291,6 +355,7 @@
         "send": {
             "send_xtz": "Послать XTZ",
             "recipient_address": "Адрес Получателя",
+            "holder_address": "Holder Address",
             "burn_tooltip_title": "Почему взымается бёрн комиссия?",
             "burn_tooltip_content": "Введённый адрес получателя имеет нулевой баланс. Трансфер средств на нулевой Менеджер Адрес (tz1,2,3) требует одиночной<1> 0.257 </1>XTZ бёрн комиссии.",
             "fee_tooltip_title": "Почему комиссия немного завышена для этой транзакции?",
@@ -298,7 +363,9 @@
             "warnings": {
                 "total_exceeds": "Сумма превышает средства в наличии",
                 "not_allowed": "Менеджер Аккаунты в суммарном балансе не могут иметь меньше, чем 1 µtz"
-            }
+            },
+            "burn_notice": "Burn tokens to destroy tokens from a current holder and reduce total supply.",
+            "mint_notice": "Mint tokens to give brand new tokens to a recipient and increase total supply."
         },
         "sendConfirmationModal": {
             "send_confirmation": "Подтверждение Отправки",
@@ -309,6 +376,10 @@
             "confirm_transaction": "Подтвердить Транзакцию",
             "send_description": "Вы собираетесь совершить операцию по отправке средств. Пожалуйста, внимательно проверьте все детали на вашем устройстве.",
             "confirm_description": "Если все детали корректны, пожалуйста<1> подтвердите </1>транзакцию на вашем устройстве."
+        },
+        "tokenLedgerConfirmModal": {
+            "confirm_token": "Confirm Token Contract",
+            "op_description": "You are about to {{op}} your Tokens. Please carefully review the details on your device."
         },
         "settingController": {
             "settings": "НАСТРОЙКИ",
@@ -326,15 +397,16 @@
         },
         "transaction": {
             "pending": "В ожидании...",
+            "pending_blocks": "В ожидании, expires in {{ttl}} blocks",
             "burn": "Бёрн",
             "public_key_reveal": "РАСКРЫТИЕ ПУБЛИЧНОГО КЛЮЧА",
             "activation": "АКТИВАЦИЯ",
             "updated_delegate": "Обновлённый Делегат",
+            "canceled_delegation": "Canceled Delegation",
             "origination": "СОЗДАНИЕ",
             "sent": "ОТПРАВЛЕНО",
             "received": "ПОЛУЧЕНО",
             "this_address": "этого адреса",
-            "your_manager_address": "<0>ваш</0> Менеджер Адрес Аккаунта",
             "invoke_function": "ФУНКЦИЯ ПРИЗВАН",
             "add_delegate": "СОЗДАНИЕ - ДЕЛЕГАЦИОННЫЙ АДРЕС",
             "deployment": "СОЗДАНИЕ - СМАРТ КОНТРАКТ",
@@ -349,6 +421,10 @@
         "comingSoon": {
             "coming_soon": "Ожидается Скоро",
             "working_hard": "Мы очень сильно работает над этой страницей."
+        },
+        "withdrawDeposit": {
+            "withdraw_warning": "To withdraw funds back to your manager account, {{managerAddress}}, please select a fee of at least 0.005 XTZ and ensure you have at least that amount in your manager account to cover the transaction.",
+            "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}."
         }
     },
     "containers": {
@@ -356,6 +432,7 @@
             "add_account": "Добавить Аккаунт",
             "refer_pdf_title": "Пожалуйста ссылайтесь на  to the PDF документ, созданный во время Фандрейзера.",
             "secret_key_15": "Секретный ключ из 15 слов",
+            "restore_mnemonic": "12, 15, 18, 21 or 24 Word Secret Key",
             "fundraiser_password": "Пароль Фандрейзера",
             "public_key_hash": "Хеш публичного ключа",
             "fundraiser_email_address": "Адрес Электронной Почты Фандрейзера",
@@ -398,6 +475,8 @@
             "connect_ledger": "Подсоединить к Ledger",
             "dont_have_ledger_wallet": "Не имеете приложение Ledger Tezos кошелька?",
             "download_it_here": "Скачать его здесь.",
+            "need_device": "Need a Ledger device?",
+            "get_it_here": "Get it here",
             "connect_your_device": "Пожалуйста<1> подсоедините ваше устройство</1>,<3> вставьте пин-номер</3>, и<5> откройте приложение Tezos Кошелёк </5>.",
             "connecting": "Соединяем...",
             "selectedPath": "Выбранный Путь: "
