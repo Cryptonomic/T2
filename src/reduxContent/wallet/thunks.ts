@@ -2,16 +2,8 @@ import path from 'path';
 import { ipcRenderer } from 'electron';
 import { push } from 'react-router-redux';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-import {
-    TezosFileWallet,
-    TezosWalletUtil,
-    TezosConseilClient,
-    TezosNodeWriter,
-    StoreType,
-    Tzip7ReferenceTokenHelper,
-    StakerDAOTokenHelper,
-    TzbtcTokenHelper,
-} from 'conseiljs';
+import { TezosConseilClient, TezosNodeWriter, KeyStoreType, Tzip7ReferenceTokenHelper, StakerDAOTokenHelper, TzbtcTokenHelper } from 'conseiljs';
+import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
@@ -43,14 +35,14 @@ import {
 } from '../app/actions';
 
 import { getMainNode, getMainPath } from '../../utils/settings';
+import { createWallet } from '../../utils/wallet';
 import { ACTIVATION } from '../../constants/TransactionTypes';
 import { Identity, Token, AddressType } from '../../types/general';
 
 import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
 import * as tzip7Util from '../../contracts/TokenContract/util';
 
-const { unlockFundraiserIdentity, unlockIdentityWithMnemonic, restoreIdentityWithSecretKey } = TezosWalletUtil;
-const { createWallet } = TezosFileWallet;
+const { restoreIdentityFromFundraiser, restoreIdentityFromMnemonic, restoreIdentityFromSecretKey } = KeyStoreUtils;
 
 const { sendIdentityActivationOperation } = TezosNodeWriter;
 let currentAccountRefreshInterval: any = null;
@@ -384,18 +376,18 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
             let activating;
             switch (activeTab) {
                 case GENERATE_MNEMONIC:
-                    identity = await unlockIdentityWithMnemonic(seed, '');
-                    identity.storeType = StoreType.Mnemonic;
+                    identity = await restoreIdentityFromMnemonic(seed, '');
+                    identity.storeType = KeyStoreType.Mnemonic;
                     break;
                 case FUNDRAISER: {
-                    identity = await unlockFundraiserIdentity(seed, username.trim(), passPhrase.trim(), pkh.trim());
-                    identity.storeType = StoreType.Fundraiser;
+                    identity = await restoreIdentityFromFundraiser(seed, username.trim(), passPhrase.trim(), pkh.trim());
+                    identity.storeType = KeyStoreType.Fundraiser;
                     const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(
                         () => false
                     );
                     if (!account) {
                         const keyStore = getSelectedKeyStore([identity], identity.publicKeyHash, identity.publicKeyHash, false);
-                        const newKeyStore = { ...keyStore, storeType: StoreType.Fundraiser };
+                        const newKeyStore = { ...keyStore, storeType: KeyStoreType.Fundraiser };
                         activating = await sendIdentityActivationOperation(tezosUrl, newKeyStore, activationCode).catch((err) => {
                             const error = err;
                             error.name = err.message;
@@ -411,10 +403,10 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     break;
                 }
                 case RESTORE: {
-                    identity = await unlockIdentityWithMnemonic(seed, passPhrase);
+                    identity = await restoreIdentityFromMnemonic(seed, passPhrase);
                     const storeTypesMap = {
-                        0: StoreType.Mnemonic,
-                        1: StoreType.Fundraiser,
+                        0: KeyStoreType.Mnemonic,
+                        1: KeyStoreType.Fundraiser,
                     };
                     identity.storeType = storeTypesMap[identity.storeType];
                     const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(
@@ -480,8 +472,8 @@ export function importSecretKeyThunk(key) {
         dispatch(setIsLoadingAction(true));
         try {
             let identity: any = null;
-            identity = await restoreIdentityWithSecretKey(key);
-            identity.storeType = StoreType.Mnemonic;
+            identity = await restoreIdentityFromSecretKey(key);
+            identity.storeType = KeyStoreType.Mnemonic;
 
             if (identity) {
                 const { publicKeyHash } = identity;

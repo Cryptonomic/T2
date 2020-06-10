@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { TezosWalletUtil, TezosLedgerWallet } from 'conseiljs';
+import { LedgerSigner } from 'conseiljs-ledgersigner';
+import { SoftSigner } from 'conseiljs-softsigner';
 
 import TextField from '../../../components/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -56,9 +57,9 @@ const Sign = () => {
 
         let signature: string;
         if (isLedger) {
-            signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
+            signature = await LedgerSigner.signText(message);
         } else {
-            signature = await TezosWalletUtil.signText(keyStore, message);
+            signature = await SoftSigner.signText(message);
         }
 
         setError(false);

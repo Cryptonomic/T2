@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { TezosParameterFormat, OperationKindType } from 'conseiljs';
+import { OperationKindType } from 'conseiljs';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '../TextField';
 import TezosNumericInput from '../TezosNumericInput';
@@ -23,9 +23,7 @@ import { originateContractThunk } from '../../reduxContent/originate/thunks';
 import { useFetchFees } from '../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../reduxContent/app/actions';
 
-import { OPERATIONFEE, REVEALOPERATIONFEE, AVERAGEFEES } from '../../constants/FeeValue';
-import { RootState, AppState } from '../../types/store';
-import { AverageFees } from '../../types/general';
+import { RootState } from '../../types/store';
 
 const InputAddressContainer = styled.div`
     padding: 0 76px;

@@ -1,5 +1,6 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilDataClient, ConseilSortDirection } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator, ConseilDataClient } from 'conseiljs';
 import * as blakejs from 'blakejs';
+
 import * as status from '../constants/StatusTypes';
 import { TRANSACTIONS } from '../constants/TabConstants';
 import { getSyncTransactions, syncTransactionsWithState } from './transaction';
@@ -29,10 +30,6 @@ export function findAccount(identity: Identity, accountId: string): Account | un
 export function findAccountIndex(identity: Identity, accountId: string): number {
     return identity && (identity.accounts || []).findIndex((account) => account.account_id === accountId);
 }
-
-// export function createSelectedAccount({ balance = 0, transactions = [] } = {}) {
-//   return { balance, transactions };
-// }
 
 export async function getAccountsForIdentity(node: Node, pkh: string) {
     const { conseilUrl, apiKey, network, platform } = node;
