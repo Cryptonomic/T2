@@ -1,15 +1,15 @@
 {
     "name": "Tezori",
-    "version": "1.0.10b",
+    "version": "1.1.3b",
     "blockExplorerHost": "https://mininax.io",
     "logo": "tezosLogo.png",
-    "logoLink": "https://github.com/Cryptonomic/Tezori",
-    "termsService": "https://github.com/Cryptonomic/Tezori",
-    "privacyPolicy": "https://github.com/Cryptonomic/Tezori",
+    "logoLink": "https://github.com/Cryptonomic/T2",
+    "termsService": "https://github.com/Cryptonomic/T2",
+    "privacyPolicy": "https://github.com/Cryptonomic/T2",
     "tagline": "containers.loginHome.tagline",
     "LocalVersionIndex": "20",
-    "helpUrl": "https://github.com/Cryptonomic/Tezori",
+    "helpUrl": "https://github.com/Cryptonomic/T2",
     "ledgerAppUrl": "https://support.ledger.com/hc/en-us/articles/360016057774-Tezos-XTZ-",
     "ledgerReferral": "",
-    "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/develop/version.json"
+    "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/master/version.json"
 }

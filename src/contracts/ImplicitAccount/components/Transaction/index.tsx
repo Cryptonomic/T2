@@ -3,18 +3,19 @@ import { useSelector, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+
 import { ms } from '../../../../styles/helpers';
 import TezosAddress from '../../../../components/TezosAddress';
 import TezosAmount from '../../../../components/TezosAmount';
 import TezosIcon from '../../../../components/TezosIcon';
 import { openBlockExplorerForOperation } from '../../../../utils/general';
 import * as types from '../../../../constants/TransactionTypes';
-import { READY } from '../../../../constants/StatusTypes';
+import { READY, PENDING } from '../../../../constants/StatusTypes';
 import {
     REG_TX_GAS_CONSUMPTION,
     REG_TX_GAS_CONSUMPTION_ATHENS,
     REG_TX_GAS_CONSUMPTION_BABYLON,
-    EMPTY_OUT_TX_GAS_CONSUMPTION
+    EMPTY_OUT_TX_GAS_CONSUMPTION,
 } from '../../../../constants/ConsumedGasValue';
 import { RootState, SettingsState } from '../../../../types/store';
 import { getMainNode } from '../../../../utils/settings';
@@ -95,7 +96,7 @@ const openLink = (element, nodesList: Node[], selectedNode: string) => {
     return openBlockExplorerForOperation(element, currentNode.network);
 };
 
-const timeFormatter = timestamp => {
+const timeFormatter = (timestamp) => {
     const time = new Date(timestamp);
     return moment(time).format('LT');
 };
@@ -114,7 +115,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                 state: t('components.transaction.public_key_reveal'),
                 isFee: false,
                 color: 'gray8',
-                sign: ''
+                sign: '',
             };
         }
         case types.ACTIVATION: {
@@ -124,17 +125,28 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                 state: t('components.transaction.activation'),
                 isFee: false,
                 color: 'gray8',
-                sign: ''
+                sign: '',
             };
         }
         case types.DELEGATION: {
+            if (!transaction.delegate || transaction.delegate.length === 0) {
+                return {
+                    icon: 'change',
+                    preposition: '',
+                    state: t('components.transaction.canceled_delegation'),
+                    isFee: true,
+                    color: 'gray8',
+                    sign: '',
+                };
+            }
+
             return {
                 icon: 'change',
                 preposition: t('general.to'),
                 state: t('components.transaction.updated_delegate'),
                 isFee: true,
                 color: 'gray8',
-                sign: ''
+                sign: '',
             };
         }
         case types.ORIGINATION: {
@@ -145,7 +157,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                 isFee,
                 color: isAmount ? 'error1' : 'gray8',
                 sign: isAmount ? '-' : '',
-                isBurn: true
+                isBurn: true,
             };
         }
         default: {
@@ -163,7 +175,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     state: t('components.transaction.sent'),
                     isFee,
                     color: isAmount ? 'error1' : 'gray8',
-                    sign: isAmount ? '-' : ''
+                    sign: isAmount ? '-' : '',
                 };
             } else if (isSameLocation && !isFlag) {
                 return {
@@ -172,7 +184,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     state: t('components.transaction.invoke_function'),
                     isFee: true,
                     color: isAmount ? 'error1' : 'gray8',
-                    sign: isAmount ? '-' : ''
+                    sign: isAmount ? '-' : '',
                 };
             } else if (!isSameLocation && isFlag) {
                 return {
@@ -181,7 +193,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     state: t('components.transaction.received'),
                     isFee: false,
                     color: isAmount ? 'check' : 'gray8',
-                    sign: isAmount ? '+' : ''
+                    sign: isAmount ? '+' : '',
                 };
             } else {
                 return {
@@ -190,7 +202,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     state: t('components.transaction.invoked'),
                     isFee,
                     color: isAmount ? 'check' : 'gray8',
-                    sign: isAmount ? '+' : ''
+                    sign: isAmount ? '+' : '',
                 };
             }
         }
@@ -204,12 +216,15 @@ const getAddress = (transaction, selectedAccountHash, selectedParentHash, t) => 
     if (type === types.ACTIVATION) {
         return <AddressText>{t('components.transaction.this_address')}</AddressText>;
     }
+
     if (type === types.REVEAL) {
         return <AddressText>{t('components.transaction.this_address')}</AddressText>;
     }
+
     if (type === types.DELEGATION) {
         return <TezosAddress address={transaction.delegate} size="14px" weight={200} color="black2" />;
     }
+
     if (
         type === types.ORIGINATION &&
         transaction.source === selectedParentHash &&
@@ -218,6 +233,7 @@ const getAddress = (transaction, selectedAccountHash, selectedParentHash, t) => 
     ) {
         return <TezosAddress address={transaction.originated_contracts} size="14px" weight={200} color="black2" />;
     }
+
     if (type === types.ORIGINATION && transaction.source === selectedParentHash && selectedAccountHash !== selectedParentHash) {
         return null;
     }
@@ -225,6 +241,7 @@ const getAddress = (transaction, selectedAccountHash, selectedParentHash, t) => 
     if (!address) {
         return null;
     }
+
     return <TezosAddress address={address} size="14px" weight={200} color="black2" />;
 };
 
@@ -239,7 +256,7 @@ function Transaction(props: Props) {
     const { t } = useTranslation();
     const fee = transaction.fee ? Number.parseInt(transaction.fee, 10) : 0;
     const { icon, preposition, state, isFee, color, sign, isBurn } = getStatus(transaction, selectedAccountHash, t);
-    const { selectedNode, nodesList } = useSelector<RootState, SettingsState>(rootstate => rootstate.settings, shallowEqual);
+    const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((rootstate) => rootstate.settings, shallowEqual);
 
     let amount = 0;
     if (transaction.amount) {
@@ -251,12 +268,20 @@ function Transaction(props: Props) {
     const address = getAddress(transaction, selectedAccountHash, selectedParentHash, t);
     const origination = transaction.kind === 'origination' && selectedAccountHash !== selectedParentHash;
     const activation = transaction.kind === 'activation' && selectedAccountHash === selectedParentHash;
+
+    let transactionTimestamp: string;
+    if (transaction.status === READY || origination || activation) {
+        transactionTimestamp = timeFormatter(transaction.timestamp);
+    } else if (transaction.status === PENDING && transaction.ttl) {
+        transactionTimestamp = t('components.transaction.pending_blocks', { ttl: transaction.ttl });
+    } else {
+        transactionTimestamp = t('components.transaction.pending');
+    }
+
     return (
         <TransactionContainer>
             <Header>
-                <TransactionDate>
-                    {transaction.status === READY || origination || activation ? timeFormatter(transaction.timestamp) : t('components.transaction.pending')}
-                </TransactionDate>
+                <TransactionDate>{transactionTimestamp}</TransactionDate>
                 <AmountContainer color={color}>
                     {sign}
                     <TezosAmount color={color} size={ms(-1)} amount={amount} format={6} />
