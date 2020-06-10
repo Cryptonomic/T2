@@ -5,9 +5,9 @@
             "displayName": "Tezos Testnet",
             "platform": "tezos",
             "network": "carthagenet",
-            "tezosUrl": "https://tezos-dev.cryptonomic-infra.tech:443",
-            "conseilUrl": "https://conseil-dev.cryptonomic-infra.tech:443",
-            "apiKey": "galleon"
+            "tezosUrl": "",
+            "conseilUrl": "",
+            "apiKey": ""
         }
     ],
     "selectedPath": "Default",

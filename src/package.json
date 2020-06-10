@@ -7,7 +7,7 @@
     "author": {
         "name": "Cryptonomic Inc",
         "email": "info@cryptonomic.tech",
-        "url": "https://github.com/cryptonomic/tezori"
+        "url": "https://github.com/cryptonomic/T2"
     },
     "scripts": {
         "electron-rebuild": "node ../scripts/ElectronRebuild.js",
