@@ -28,9 +28,9 @@ export function invokeAddressThunk(
     parameterFormat: TezosParameterFormat
 ) {
     return async (dispatch, state) => {
-        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
-        const { selectedParentHash, isLedger } = state().app;
+        const { selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -41,18 +41,17 @@ export function invokeAddressThunk(
         }
 
         const keyStore = getSelectedKeyStore(identities, selectedInvokeAddress, selectedParentHash, isLedger);
-        const derivation = isLedger ? getMainPath(pathsList, selectedPath) : '';
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
 
         const realEntryPoint = entryPoint !== '' ? entryPoint : undefined;
 
         const res: any = await sendContractInvocationOperation(
             tezosUrl,
+            signer,
             keyStore,
             contractAddress,
             parsedAmount,
             fee,
-            derivation,
             storage,
             gas,
             realEntryPoint,

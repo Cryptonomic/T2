@@ -366,6 +366,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
     return async (dispatch, state) => {
         const { walletLocation, walletFileName, walletPassword, identities } = state().wallet;
         const { selectedNode, nodesList } = state().settings;
+        const { signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { network, conseilUrl, tezosUrl, apiKey } = mainNode;
         // TODO: clear out message bar
@@ -388,7 +389,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     if (!account) {
                         const keyStore = getSelectedKeyStore([identity], identity.publicKeyHash, identity.publicKeyHash, false);
                         const newKeyStore = { ...keyStore, storeType: KeyStoreType.Fundraiser };
-                        activating = await sendIdentityActivationOperation(tezosUrl, newKeyStore, activationCode).catch((err) => {
+                        activating = await sendIdentityActivationOperation(tezosUrl, signer, newKeyStore, activationCode).catch((err) => {
                             const error = err;
                             error.name = err.message;
                             throw error;
