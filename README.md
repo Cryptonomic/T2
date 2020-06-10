@@ -1,4 +1,4 @@
-# T2
+# Tezori (T2)
 
 A wallet for the Tezos blockchain based on [ConseilJS](https://github.com/Cryptonomic/ConseilJS). T2 is a rewrite of the original Tezori codebase into Typescript. Along the way we rearchitected to code to make it more resilient and extensible. The wallet uses ConseilJS to interact with the Tezos blockchain for operation submission and with the Conseil indexer for fast aggregated data, like the full list of transactions for an account, or the collection of contracts a given account has deployed. ConseilJS also provides a software signer and a Ledger device interface for increased security.
 
@@ -11,7 +11,7 @@ This product was written for the community – fork it, hack it, use it as you p
 
 ### Building
 
-The wallet is built with Typescript, React and Electron. The production deployment lives as [Galleon Wallet](https://cryptonomic.tech/galleon.html) from [Cryptonomic](https://cryptonomic.tech/).
+The wallet is built with Typescript, React and Electron. [Cryptonomic](https://cryptonomic.tech/) offers a deployment of Tezori called [Galleon](https://cryptonomic.tech/galleon.html).
 
 To build your own package add the environment configuration file as `src/extraResources/walletSettings.json`. Cryptonomic uses the [Nautilus Cloud](https://nautilus.cloud/) infrastructure of Tezos and [Conseil indexer](https://github.com/Cryptonomic/Conseil) nodes for production deployments.
 
@@ -61,13 +61,13 @@ Several branding features can be applied in `src/config.json`, including name, l
 
 ### Contributing
 
-We welcome all contributions, be it issue reports, feature suggestions, [language files]() or pull requests. When submitting a PR expect the code to undergo a detailed review prior to any potential inclusion.
+We welcome all contributions, be it issue reports, feature suggestions, [language files](https://github.com/Cryptonomic/T2/tree/master/src/locales) or pull requests. When submitting a PR expect the code to undergo a detailed review prior to any potential inclusion.
 
 ## Support
 
-Cryptonomic hosts a [developer support channel]() on Riot. There is a Telegram chat for [Galleon user support](). Cryptonomic and several of its employees are active on Reddit and Twitter.
+Cryptonomic hosts a [developer support channel](https://matrix.to/#/!heGqMNcsOSHGPxrMJs:cryptonomic.tech?via=cryptonomic.tech&via=matrix.org&via=tzchat.org) on Riot. Cryptonomic and several of its employees are active on Reddit and Twitter.
 
-[ConseilJS documentation]() and [Conseil documentation]() is quite through as well.
+[ConseilJS documentation](https://cryptonomic.github.io/ConseilJS/) and [Conseil documentation](https://github.com/Cryptonomic/Conseil/wiki) is quite through as well.
 
 ## Architecture Overview
 
