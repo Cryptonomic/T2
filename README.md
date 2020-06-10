@@ -38,6 +38,8 @@ To build your own package add the environment configuration file as `src/extraRe
 }
 ```
 
+T2 uses NPM to manage its dependencies, you can get it [here](https://www.npmjs.com/get-npm)!
+
 To install all dependencies:
 
 ```bash
