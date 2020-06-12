@@ -3,7 +3,10 @@ dist/
 release/
 assets/
 dll/
+
 src/dist/
 src/main.prod.js
 src/main.prod.js.map
 src/node_modules
+
+**/walletSettings.json

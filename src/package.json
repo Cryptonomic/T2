@@ -15,10 +15,10 @@
     },
     "license": "GPL-3.0-only",
     "dependencies": {
-        "@ledgerhq/hw-transport-node-hid": "5.13.0",
+        "@ledgerhq/hw-transport-node-hid": "5.16.0",
         "conseiljs": "5.0.1-beta.2",
         "conseiljs-softsigner": "5.0.1-beta.3",
-        "conseiljs-ledgersigner": "5.0.1-beta.2",
+        "conseiljs-ledgersigner": "5.0.1-beta.3",
         "loglevel": "1.6.8",
         "node-fetch": "2.6.0"
     },
