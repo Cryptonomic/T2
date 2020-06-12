@@ -12,6 +12,7 @@ import {
     UPDATE_FETCHED_TIME,
     CHANGE_ACCOUNT_HASH,
     AppActionTypes,
+    SET_SIGNER,
 } from './types';
 
 const initState: AppState = {
@@ -30,7 +31,7 @@ const initState: AppState = {
     selectedParentIndex: 0,
     selectedAccountIndex: 0,
     selectedAccountType: AddressType.Manager,
-    signer: undefined,
+    signer: null,
 };
 
 export function appReducer(state: AppState = initState, action: AppActionTypes) {
@@ -53,6 +54,8 @@ export function appReducer(state: AppState = initState, action: AppActionTypes) 
             return { ...state, newVersion: action.newVersion };
         case CHANGE_ACCOUNT_HASH:
             return { ...state, ...action.payload };
+        case SET_SIGNER:
+            return { ...state, signer: action.signer };
         default:
             return state;
     }
