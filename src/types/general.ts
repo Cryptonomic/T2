@@ -1,4 +1,4 @@
-import { StoreType } from 'conseiljs';
+import { KeyStore, KeyStoreType } from 'conseiljs';
 
 export interface Node {
     displayName: string;
@@ -40,7 +40,7 @@ export interface Identity {
     privateKey: string;
     operations: any;
     order: number;
-    storeType: StoreType;
+    storeType: KeyStoreType;
     activeTab: string;
     status: string;
     transactions: any[]; // TODO: transaction type
@@ -130,3 +130,23 @@ export interface Token {
 }
 
 export type BookMark = Account | Token;
+
+/**
+ * Represents a generic cryptocurrency wallet.
+ */
+export interface Wallet {
+    identities: KeyStore[];
+}
+
+/**
+ * Represents the first version of an encrypted wallet.
+ */
+export interface EncryptedWalletVersionOne {
+    version: string;
+    salt: string;
+    ciphertext: string;
+    /**
+     * Key derivation function
+     */
+    kdf: string;
+}

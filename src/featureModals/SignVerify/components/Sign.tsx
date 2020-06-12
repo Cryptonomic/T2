@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { TezosWalletUtil, TezosLedgerWallet } from 'conseiljs';
 
 import TextField from '../../../components/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -31,7 +30,7 @@ import {
 const Sign = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { isLoading, selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { isLoading, selectedParentHash, isLedger, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const { values, activeTab } = useSelector<RootState, ModalState>((state) => state.modal, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
@@ -54,12 +53,13 @@ const Sign = () => {
             setKeyRevealed(false);
         }
 
-        let signature: string;
-        if (isLedger) {
-            signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', message);
-        } else {
-            signature = await TezosWalletUtil.signText(keyStore, message);
+        if (signer == null) {
+            setError(true);
+            setResult('No signing mechanism available');
+            return;
         }
+
+        const signature = await signer.signText(message);
 
         setError(false);
         setResult(signature);

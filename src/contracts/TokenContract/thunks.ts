@@ -19,7 +19,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -34,6 +34,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
 
         const operationId: string | boolean = await transferBalance(
             tezosUrl,
+            signer,
             keyStore,
             selectedAccountHash,
             fee,
@@ -42,7 +43,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
             amount,
             GAS,
             FREIGHT
-        ).catch(err => {
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`transferBalance failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
@@ -61,7 +62,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
             kind: TRANSACTION,
             source: selectedParentHash,
             operation_group_hash: operationId,
-            fee
+            fee,
         });
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
@@ -79,7 +80,7 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -93,7 +94,7 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const groupid: string = await mint(tezosUrl, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch(err => {
+        const groupid: string = await mint(tezosUrl, signer, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch((err) => {
             console.log(err);
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
@@ -114,7 +115,7 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
             source: keyStore.publicKeyHash,
             operation_group_hash: groupid,
             fee,
-            entryPoint: 'mint'
+            entryPoint: 'mint',
         });
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
@@ -133,7 +134,7 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -147,7 +148,7 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const groupid: string = await burn(tezosUrl, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch(err => {
+        const groupid: string = await burn(tezosUrl, signer, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
@@ -167,7 +168,7 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
             source: keyStore.publicKeyHash,
             operation_group_hash: groupid,
             fee,
-            entryPoint: 'burn'
+            entryPoint: 'burn',
         });
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);

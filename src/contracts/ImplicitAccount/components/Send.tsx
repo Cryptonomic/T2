@@ -118,7 +118,7 @@ function Send(props: Props) {
     const [isAddressIssue, setIsAddressIssue] = useState(false);
     const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(OperationKindType.Transaction, true);
     const { toAddress, amount, fee, isBurn, total, balance } = state;
-    const { isLoading, isLedger, selectedAccountHash, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { isLoading, isLedger, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { selectedNode, nodesList } = useSelector((rootState: RootState) => rootState.settings, shallowEqual);
 
     useEffect(() => {

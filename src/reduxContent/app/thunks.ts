@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
-import { TezosConseilClient, TezosNodeReader, OperationKindType } from 'conseiljs';
-import { changeAccountAction, addNewVersionAction, showSignVerifyAction } from './actions';
+import { TezosConseilClient, TezosNodeReader, OperationKindType, Signer, TezosMessageUtils } from 'conseiljs';
+import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
+import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
+import { changeAccountAction, addNewVersionAction, showSignVerifyAction, setSignerAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
 import { getVersionFromApi } from '../../utils/general';
@@ -22,7 +24,7 @@ const initialFeesState: FetchFees = {
     newFees: AVERAGEFEES,
     isFeeLoaded: false,
     miniFee: OPERATIONFEE,
-    isRevealed: true
+    isRevealed: true,
 };
 
 export const useFetchFees = (operationKind: OperationKindType, isReveal: boolean = false, isManager: boolean = false): FetchFees => {
@@ -35,12 +37,12 @@ export const useFetchFees = (operationKind: OperationKindType, isReveal: boolean
                 const { selectedNode, nodesList } = store.getState().settings;
                 const { conseilUrl, apiKey, network, tezosUrl } = getMainNode(nodesList, selectedNode);
                 const serverFees = await TezosConseilClient.getFeeStatistics({ url: conseilUrl, apiKey, network }, network, operationKind).catch(() => [
-                    AVERAGEFEES
+                    AVERAGEFEES,
                 ]);
                 const fees = {
                     low: serverFees[0].low,
                     medium: serverFees[0].medium,
-                    high: serverFees[0].high
+                    high: serverFees[0].high,
                 };
                 let isNewRevealed = false;
                 let miniLowFee = OPERATIONFEE;
@@ -64,7 +66,7 @@ export const useFetchFees = (operationKind: OperationKindType, isReveal: boolean
                     newFees: fees,
                     isRevealed: isNewRevealed,
                     miniFee: miniLowFee,
-                    isFeeLoaded: true
+                    isFeeLoaded: true,
                 });
             } catch (e) {
                 console.log('canceled');
@@ -76,14 +78,14 @@ export const useFetchFees = (operationKind: OperationKindType, isReveal: boolean
 };
 
 export function changeAccountThunk(accountHash: string, parentHash: string, accountIndex: number, parentIndex: number, addressType: AddressType) {
-    return async dispatch => {
+    return async (dispatch) => {
         dispatch(changeAccountAction(accountHash, parentHash, accountIndex, parentIndex, addressType));
         dispatch(syncAccountOrIdentityThunk(accountHash, parentHash, addressType));
     };
 }
 
 export function getNewVersionThunk() {
-    return async dispatch => {
+    return async (dispatch) => {
         const result = await getVersionFromApi();
         const RemoteVersionIndex = parseInt(result.currentVersionIndex, 10);
         if (RemoteVersionIndex > parseInt(LocalVersionIndex, 10)) {
@@ -93,7 +95,23 @@ export function getNewVersionThunk() {
 }
 
 export function showSignVeiryThunk() {
-    return async dispatch => {
+    return async (dispatch) => {
         dispatch(showSignVerifyAction());
+    };
+}
+
+export function setSignerThunk(key: string) {
+    return async (dispatch, state) => {
+        let signer: Signer;
+        const keyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(key);
+        signer = new SoftSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'));
+        dispatch(setSignerAction(signer));
+    };
+}
+
+export function setLedgerSignerThunk(path: string) {
+    return async (dispatch, state) => {
+        const signer = new LedgerSigner(await TezosLedgerConnector.getInstance(), path);
+        dispatch(setSignerAction(signer));
     };
 }

@@ -14,7 +14,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -29,13 +29,14 @@ export function transferThunk(destination: string, amount: number, fee: number, 
 
         const operationId: string | boolean = await TzbtcTokenHelper.transferBalance(
             tezosUrl,
+            signer,
             keyStore,
             selectedAccountHash,
             fee,
             selectedParentHash,
             destination,
             amount
-        ).catch(err => {
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`transferBalance failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
@@ -54,7 +55,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
             kind: TRANSACTION,
             source: selectedParentHash,
             operation_group_hash: operationId,
-            fee
+            fee,
         });
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);

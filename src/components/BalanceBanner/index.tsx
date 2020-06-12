@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { StoreType } from 'conseiljs';
+import { KeyStoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
 
@@ -18,7 +18,7 @@ import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
 
 import { RootState } from '../../types/store';
 
-const { Mnemonic } = StoreType;
+const { Mnemonic } = KeyStoreType;
 
 import {
     Container,
@@ -43,7 +43,7 @@ import {
     StoreTxt,
     BellIcon,
     TooltipContent,
-    Gap
+    Gap,
 } from './style';
 
 interface Props {
@@ -176,7 +176,7 @@ function BalanceBanner(props: Props) {
 
 BalanceBanner.defaultProps = {
     parentIndex: 0,
-    isWalletSyncing: false
+    isWalletSyncing: false,
 };
 
 export default BalanceBanner;

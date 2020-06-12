@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { TezosWalletUtil, TezosLedgerWallet } from 'conseiljs';
 
 import { ms } from '../../styles/helpers';
 import { getSelectedKeyStore, openLink } from '../../utils/general';
@@ -49,7 +48,7 @@ interface Props {
 
 const Auth = (props: Props) => {
     const { t } = useTranslation();
-    const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { isLoading, isLedger, selectedParentHash, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
@@ -70,12 +69,14 @@ const Auth = (props: Props) => {
     const onAuth = async () => {
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
 
-        let signature: string;
-        if (isLedger) {
-            signature = await TezosLedgerWallet.signText(keyStore.derivationPath || '', prompt);
-        } else {
-            signature = await TezosWalletUtil.signText(keyStore, prompt);
+        if (signer == null) {
+            setError(true);
+            setResult('No signing mechanism available');
+            console.error(error);
+            return;
         }
+
+        const signature = await signer.signText(prompt);
 
         const req = values[activeModal]; // TODO: this should be an enum or constant, not a state lookup
         try {

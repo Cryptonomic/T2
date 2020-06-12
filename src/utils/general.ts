@@ -1,5 +1,6 @@
 import { shell } from 'electron';
-import { TezosConseilClient, TezosNodeReader, TezosWalletUtil, StoreType, KeyStore } from 'conseiljs';
+import { TezosConseilClient, TezosNodeReader, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
+import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { Node, NodeStatus } from '../types/general';
 
 import { findIdentity } from './identity';
@@ -7,23 +8,23 @@ import * as status from '../constants/StatusTypes';
 import { SEND, TRANSACTIONS } from '../constants/TabConstants';
 import { blockExplorerHost, versionReferenceURL } from '../config.json';
 
-const { Mnemonic, Hardware } = StoreType;
+const { Mnemonic, Hardware } = KeyStoreType;
 
 export async function getNodesStatus(node: Node): Promise<NodeStatus> {
     const { tezosUrl, conseilUrl, apiKey, network } = node;
-    const tezRes: any = await TezosNodeReader.getBlockHead(tezosUrl).catch(err => {
+    const tezRes: any = await TezosNodeReader.getBlockHead(tezosUrl).catch((err) => {
         console.error(err);
         return false;
     });
 
-    const consRes = await TezosConseilClient.getBlockHead({ url: conseilUrl, apiKey, network }, network).catch(err => {
+    const consRes = await TezosConseilClient.getBlockHead({ url: conseilUrl, apiKey, network }, network).catch((err) => {
         console.error(err);
         return false;
     });
 
     return {
         tezos: tezRes && tezRes.header ? Number(tezRes.header.level) : 0,
-        conseil: consRes ? Number(consRes.level) : 0
+        conseil: consRes ? Number(consRes.level) : 0,
     };
 }
 
@@ -56,11 +57,12 @@ export function getSelectedKeyStore(
 
     return {
         publicKey,
-        privateKey,
+        secretKey: privateKey,
         publicKeyHash: selectedAccountHash,
+        curve: KeyStoreCurve.ED25519,
         seed: '',
-        storeType: isLedger ? StoreType.Hardware : StoreType.Mnemonic,
-        derivationPath: isLedger ? mainPath : undefined
+        storeType: isLedger ? Hardware : Mnemonic,
+        derivationPath: isLedger ? mainPath : undefined,
     };
 }
 
@@ -68,7 +70,7 @@ export async function activateAndUpdateAccount(account, node: Node) {
     const { conseilUrl, network, apiKey } = node;
     const accountHash = account.publicKeyHash || account.account_id;
     if (account.status === status.READY || account.status === status.CREATED) {
-        const updatedAccount: any = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, accountHash).catch(error => {
+        const updatedAccount: any = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, accountHash).catch((error) => {
             console.log('-debug: Error in: status.READY for:' + accountHash);
             console.error(error);
             return null;
@@ -79,7 +81,7 @@ export async function activateAndUpdateAccount(account, node: Node) {
                 ...account,
                 delegate_value: updatedAccount.delegate_value,
                 balance: Number(updatedAccount.balance),
-                status: status.READY
+                status: status.READY,
             };
         }
     }
@@ -87,7 +89,7 @@ export async function activateAndUpdateAccount(account, node: Node) {
     if (account.status === status.FOUND) {
         return {
             ...account,
-            status: status.READY
+            status: status.READY,
         };
     }
 
@@ -96,7 +98,7 @@ export async function activateAndUpdateAccount(account, node: Node) {
 }
 
 export function generateNewMnemonic() {
-    return TezosWalletUtil.generateMnemonic();
+    return KeyStoreUtils.generateMnemonic();
 }
 
 export function isReady(addressStatus, storeType?, tab?) {

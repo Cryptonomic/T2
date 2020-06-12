@@ -23,7 +23,7 @@ export function delegateThunk(delegateAddress: string, fee: number, password: st
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -40,14 +40,14 @@ export function delegateThunk(delegateAddress: string, fee: number, password: st
 
         let res: any;
         if (delegateAddress === '') {
-            res = await unSetDelegate(tezosUrl, keyStore, selectedAccountHash, fee, derivation).catch((err) => {
+            res = await unSetDelegate(tezosUrl, signer, keyStore, selectedAccountHash, fee).catch((err) => {
                 const errorObj = { name: err.message, ...err };
                 console.error(errorObj);
                 dispatch(createMessageAction(errorObj.name, true));
                 return false;
             });
         } else {
-            res = await setDelegate(tezosUrl, keyStore, selectedAccountHash, delegateAddress, fee, derivation).catch((err) => {
+            res = await setDelegate(tezosUrl, signer, keyStore, selectedAccountHash, delegateAddress, fee).catch((err) => {
                 const errorObj = { name: err.message, ...err };
                 console.error(errorObj);
                 dispatch(createMessageAction(errorObj.name, true));
@@ -117,7 +117,7 @@ export function invokeAddressThunk(
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword } = state().wallet;
-        const { selectedParentHash, isLedger } = state().app;
+        const { selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -135,11 +135,11 @@ export function invokeAddressThunk(
 
         const res: any = await sendContractInvocationOperation(
             tezosUrl,
+            signer,
             keyStore,
             contractAddress,
             parsedAmount,
             fee,
-            derivation,
             storage,
             gas,
             realEntryPoint,
@@ -214,9 +214,9 @@ export function invokeAddressThunk(
 
 export function withdrawThunk(fee: number, amount: string, password: string) {
     return async (dispatch, state): Promise<boolean> => {
-        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -229,9 +229,8 @@ export function withdrawThunk(fee: number, amount: string, password: string) {
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger);
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
-        const derivation = isLedger ? getMainPath(pathsList, selectedPath) : undefined;
 
-        const res: any = await withdrawDelegatedFunds(tezosUrl, keyStore, selectedAccountHash, fee, parsedAmount, derivation).catch((err) => {
+        const res: any = await withdrawDelegatedFunds(tezosUrl, signer, keyStore, selectedAccountHash, fee, parsedAmount).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(err);
             dispatch(createMessageAction(errorObj.name, true));
@@ -290,9 +289,9 @@ export function withdrawThunk(fee: number, amount: string, password: string) {
 
 export function depositThunk(fee: number, amount: string, password: string, toAddress: string) {
     return async (dispatch, state) => {
-        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
-        const { selectedParentHash, isLedger } = state().app;
+        const { selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -305,9 +304,8 @@ export function depositThunk(fee: number, amount: string, password: string, toAd
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger);
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
-        const derivation = isLedger ? getMainPath(pathsList, selectedPath) : undefined;
 
-        const res: any = await depositDelegatedFunds(tezosUrl, keyStore, toAddress, fee, parsedAmount, derivation).catch((err) => {
+        const res: any = await depositDelegatedFunds(tezosUrl, signer, keyStore, toAddress, fee, parsedAmount).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(err);
             dispatch(createMessageAction(errorObj.name, true));
@@ -366,9 +364,9 @@ export function depositThunk(fee: number, amount: string, password: string, toAd
 
 export function sendTezThunk(password: string, toAddress: string, amount: string, fee: number) {
     return async (dispatch, state) => {
-        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -388,9 +386,7 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
 
-        const derivation = isLedger ? getMainPath(pathsList, selectedPath) : undefined;
-
-        const res: any = await sendTransactionOperation(tezosUrl, keyStore, toAddress, parsedAmount, fee, derivation).catch((err) => {
+        const res: any = await sendTransactionOperation(tezosUrl, signer, keyStore, toAddress, parsedAmount, fee).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
@@ -454,9 +450,9 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
 
 export function sendDelegatedFundsThunk(password: string, toAddress: string, amount: string, fee: number) {
     return async (dispatch, state) => {
-        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger);
@@ -474,9 +470,8 @@ export function sendDelegatedFundsThunk(password: string, toAddress: string, amo
         }
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
-        const derivation = isLedger ? getMainPath(pathsList, selectedPath) : undefined;
 
-        const res: any = await sendDelegatedFunds(tezosUrl, keyStore, selectedAccountHash, fee, parsedAmount, derivation, toAddress).catch((err) => {
+        const res: any = await sendDelegatedFunds(tezosUrl, signer, keyStore, selectedAccountHash, fee, parsedAmount, toAddress).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));

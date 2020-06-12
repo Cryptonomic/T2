@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircle from '@material-ui/icons/AddCircle';
 import CloseIcon from '@material-ui/icons/Close';
-import { StoreType } from 'conseiljs';
+import { KeyStoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -33,7 +33,7 @@ import { getLocalData, setLocalData } from '../../utils/localData';
 import { RootState } from '../../types/store';
 import { AddressType, Identity } from '../../types/general';
 
-const { Mnemonic } = StoreType;
+const { Mnemonic } = KeyStoreType;
 
 const Container = styled.div`
     overflow: hidden;
@@ -157,9 +157,9 @@ function AddressBlock(props: Props) {
     const { accountBlock, identityIndex } = props;
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const selectedAccountHash = useSelector<RootState, string>(state => state.app.selectedAccountHash);
-    const isModalOpen = useSelector<RootState, boolean>(state => state.modal.open);
-    const activeModal = useSelector<RootState, string>(state => state.modal.activeModal);
+    const selectedAccountHash = useSelector<RootState, string>((state) => state.app.selectedAccountHash);
+    const isModalOpen = useSelector<RootState, boolean>((state) => state.modal.open);
+    const activeModal = useSelector<RootState, string>((state) => state.modal.activeModal);
     const selectedNode = useSelector(getSelectedNode);
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
     const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
@@ -202,12 +202,12 @@ function AddressBlock(props: Props) {
         }
     }
 
-    const getAddresses = addresses => {
+    const getAddresses = (addresses) => {
         const addresses1: any[] = [];
         const addresses2: any[] = [];
         const addresses3: any[] = [];
         let totalBalance = 0;
-        addresses.forEach(address => {
+        addresses.forEach((address) => {
             const { script, account_id } = address;
             const addressType = getAddressType(account_id, script);
             if (addressType === AddressType.Delegated) {
@@ -224,11 +224,11 @@ function AddressBlock(props: Props) {
             newAddresses: addresses1,
             delegatedAddresses: addresses2.sort((a, b) => a.order - b.order),
             smartAddresses: addresses3.sort((a, b) => a.order - b.order),
-            smartBalance: totalBalance
+            smartBalance: totalBalance,
         };
     };
 
-    const renderNoSmartAddressesDescription = arr => {
+    const renderNoSmartAddressesDescription = (arr) => {
         return (
             <NoSmartAddressesDescriptionList>
                 {arr.map((item, index) => {
@@ -253,7 +253,7 @@ function AddressBlock(props: Props) {
         t('components.addressBlock.descriptions.description1'),
         t('components.addressBlock.descriptions.description2'),
         t('components.addressBlock.descriptions.description3'),
-        t('components.addressBlock.descriptions.description4')
+        t('components.addressBlock.descriptions.description4'),
     ];
     const ready = isReady(status, storeType);
     const isSignModalOpen = isModalOpen && activeModal === 'sign';

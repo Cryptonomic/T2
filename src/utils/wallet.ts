@@ -1,62 +1,42 @@
+import * as fs from 'fs';
 import path from 'path';
-import { TezosFileWallet, TezosLedgerWallet, StoreType } from 'conseiljs';
+import { KeyStore, KeyStoreType, TezosMessageUtils } from 'conseiljs';
+import { CryptoUtils } from 'conseiljs-softsigner';
+import { KeyStoreUtils } from 'conseiljs-ledgersigner';
 import { omit, cloneDeep } from 'lodash';
 
 import { getLocalData, setLocalData } from './localData';
 import { createIdentity } from './identity';
 import { combineAccounts } from './account';
-import { WalletState } from '../types/store';
+import { EncryptedWalletVersionOne, Wallet } from '../types/general';
 import { Identity } from '../types/general';
 import { knownTokenContracts } from '../constants/Token';
 
-const { saveWallet, loadWallet } = TezosFileWallet;
-const { unlockAddress } = TezosLedgerWallet;
+const { unlockAddress } = KeyStoreUtils;
 
 export async function saveUpdatedWallet(identities, walletLocation, walletFileName, password) {
     const completeWalletPath = path.join(walletLocation, walletFileName);
     return await saveWallet(completeWalletPath, { identities }, password);
 }
 
-// function prepareToPersist(walletState: WalletState) {
-//   walletState.identities = walletState.identities.map(identity => {
-//     identity = omit(identity, ['publicKey', 'privateKey', 'activeTab']);
-//     identity.accounts = identity.accounts.map(account => {
-//       account = omit(account, ['activeTab']);
-//       return account;
-//     });
-
-//     return identity;
-//   });
-//   return pick(walletState, ['identities']);
-// }
-
 export function saveIdentitiesToLocal(identities: Identity[]) {
     let newIdentities = cloneDeep(identities);
-    newIdentities = newIdentities.map(identity => {
+    newIdentities = newIdentities.map((identity) => {
         identity = omit(identity, ['publicKey', 'privateKey', 'activeTab']);
-        identity.accounts = identity.accounts.map(account => {
+        identity.accounts = identity.accounts.map((account) => {
             account = omit(account, ['activeTab']);
             return account;
         });
         return identity;
     });
-    // identities.map(identity => {
-    //   let newIdentity = { ...identity};
-    //   newIdentity = omit(newIdentity, ['publicKey', 'privateKey', 'activeTab']);
-    //   const accounts = newIdentity.accounts.map(account => {
-    //     let newAcc = { ...account };
-    //     newAcc = omit(newAcc, ['activeTab']);
-    //     return newAcc;
-    //   });
-    //   return { ...newIdentity, accounts};
-    // })
+
     setLocalData('identities', newIdentities);
 }
 
-// todo type
 function prepareToLoad(serverIdentities, localIdentities): Identity[] {
+    // TODO: types
     return serverIdentities.map((identity, index) => {
-        const foundIdentity = localIdentities.find(localIdentity => identity.publicKeyHash === localIdentity.publicKeyHash);
+        const foundIdentity = localIdentities.find((localIdentity) => identity.publicKeyHash === localIdentity.publicKeyHash);
         let newAccounts = identity.accounts || [];
         if (foundIdentity) {
             newAccounts = combineAccounts(newAccounts, foundIdentity.accounts);
@@ -66,10 +46,10 @@ function prepareToLoad(serverIdentities, localIdentities): Identity[] {
 }
 
 export async function loadPersistedState(walletPath: string, password: string): Promise<Identity[]> {
-    const { identities } = await loadWallet(walletPath, password).catch(err => {
+    const { identities } = await loadWallet(walletPath, password).catch((err) => {
         const errorObj = {
             name: 'components.messageBar.messages.invalid_wallet_password',
-            ...err
+            ...err,
         };
         console.error(errorObj);
         throw errorObj;
@@ -80,25 +60,94 @@ export async function loadPersistedState(walletPath: string, password: string): 
 }
 
 export async function loadWalletFromLedger(derivationPath: string): Promise<Identity[]> {
-    const identity = await unlockAddress(0, derivationPath).catch(err => {
+    const identity = await unlockAddress(derivationPath).catch((err) => {
         const errorObj = {
-            name: 'components.messageBar.messages.ledger_not_connect'
+            name: 'components.messageBar.messages.ledger_not_connect',
         };
         console.error('TezosLedgerWallet.unlockAddress', err);
         throw errorObj;
     });
 
-    identity.storeType = StoreType.Hardware;
+    identity.storeType = KeyStoreType.Hardware;
     identity.derivationPath = derivationPath;
     const identities = [identity];
     const localIdentities = getLocalData('identities');
     return prepareToLoad(identities, localIdentities);
 }
 
-export function initLedgerTransport() {
-    TezosLedgerWallet.initLedgerTransport();
+export function loadTokens(network: string) {
+    return knownTokenContracts.filter((token) => token.network === network);
 }
 
-export function loadTokens(network: string) {
-    return knownTokenContracts.filter(token => token.network === network);
+/**
+ * Saves a wallet to a given file.
+ *
+ * @param {string} filename Path to file
+ * @param {Wallet} wallet Wallet object
+ * @param {string} passphrase User-supplied passphrase
+ * @returns {Promise<Wallet>} Wallet object loaded from disk
+ */
+export async function saveWallet(filename: string, wallet: Wallet, passphrase: string): Promise<Wallet> {
+    const keys = Buffer.from(JSON.stringify(wallet.identities), 'utf8');
+    const salt = await CryptoUtils.generateSaltForPwHash();
+    const encryptedKeys = await CryptoUtils.encryptMessage(keys, passphrase, salt);
+
+    const encryptedWallet: EncryptedWalletVersionOne = {
+        version: '1',
+        salt: TezosMessageUtils.readBufferWithHint(salt, ''),
+        ciphertext: TezosMessageUtils.readBufferWithHint(encryptedKeys, ''),
+        kdf: 'Argon2',
+    };
+
+    const p = new Promise((resolve, reject) => {
+        fs.writeFile(filename, JSON.stringify(encryptedWallet), (err) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve();
+        });
+    });
+    await p;
+    return loadWallet(filename, passphrase);
+}
+
+/**
+ * Loads a wallet from a given file.
+ *
+ * @param {string} filename Name of file
+ * @param {string} passphrase User-supplied passphrase
+ * @returns {Promise<Wallet>} Loaded wallet
+ */
+export async function loadWallet(filename: string, passphrase: string): Promise<Wallet> {
+    const p = new Promise<EncryptedWalletVersionOne>((resolve, reject) => {
+        fs.readFile(filename, (err, data) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            const encryptedWallet: EncryptedWalletVersionOne = JSON.parse(data.toString()) as EncryptedWalletVersionOne;
+            resolve(encryptedWallet);
+        });
+    });
+
+    const ew = await p;
+    const encryptedKeys = TezosMessageUtils.writeBufferWithHint(ew.ciphertext);
+    const salt = TezosMessageUtils.writeBufferWithHint(ew.salt);
+    const keys = JSON.parse((await CryptoUtils.decryptMessage(encryptedKeys, passphrase, salt)).toString()) as KeyStore[];
+
+    return { identities: keys };
+}
+
+/**
+ * Creates a new wallet file.
+ * @param {string} filename Where to save the wallet file
+ * @param {string} password User-supplied passphrase used to secure wallet file
+ * @returns {Promise<Wallet>} Object corresponding to newly-created wallet
+ */
+export async function createWallet(filename: string, password: string): Promise<any> {
+    const wallet: Wallet = { identities: [] };
+    await saveWallet(filename, wallet, password);
+
+    return wallet;
 }
