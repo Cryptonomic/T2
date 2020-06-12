@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { LedgerSigner } from 'conseiljs-ledgersigner';
-import { SoftSigner } from 'conseiljs-softsigner';
 
 import TextField from '../../../components/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -53,6 +51,12 @@ const Sign = () => {
             setKeyRevealed(publicKey === keyStore.publicKey);
         } catch (e) {
             setKeyRevealed(false);
+        }
+
+        if (signer == null) {
+            setError(true);
+            setResult('No signing mechanism available');
+            return;
         }
 
         const signature = await signer.signText(message);

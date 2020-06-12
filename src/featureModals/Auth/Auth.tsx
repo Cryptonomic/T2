@@ -69,6 +69,13 @@ const Auth = (props: Props) => {
     const onAuth = async () => {
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
 
+        if (signer == null) {
+            setError(true);
+            setResult('No signing mechanism available');
+            console.error(error);
+            return;
+        }
+
         const signature = await signer.signText(prompt);
 
         const req = values[activeModal]; // TODO: this should be an enum or constant, not a state lookup
