@@ -34,7 +34,7 @@ import {
     changeAccountAction,
 } from '../app/actions';
 
-import { setSignerThunk } from '../app/thunks';
+import { setSignerThunk, setLedgerSignerThunk } from '../app/thunks';
 
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { createWallet } from '../../utils/wallet';
@@ -571,6 +571,7 @@ export function connectLedgerThunk() {
                 dispatch(setTokensThunk());
                 const { publicKeyHash } = identities[0];
                 dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
+                dispatch(setLedgerSignerThunk(derivation));
                 dispatch(automaticAccountRefresh());
                 dispatch(push('/home'));
                 await dispatch(syncWalletThunk());

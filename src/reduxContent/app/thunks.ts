@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { TezosConseilClient, TezosNodeReader, OperationKindType, Signer, TezosMessageUtils } from 'conseiljs';
 import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
+import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
 import { changeAccountAction, addNewVersionAction, showSignVerifyAction, setSignerAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
@@ -104,6 +105,13 @@ export function setSignerThunk(key: string) {
         let signer: Signer;
         const keyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(key);
         signer = new SoftSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'));
+        dispatch(setSignerAction(signer));
+    };
+}
+
+export function setLedgerSignerThunk(path: string) {
+    return async (dispatch, state) => {
+        const signer = new LedgerSigner(await TezosLedgerConnector.getInstance(), path);
         dispatch(setSignerAction(signer));
     };
 }
