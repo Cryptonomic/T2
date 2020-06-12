@@ -134,7 +134,7 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger } = state().app;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
 
@@ -148,7 +148,7 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const groupid: string = await burn(tezosUrl, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch((err) => {
+        const groupid: string = await burn(tezosUrl, signer, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));

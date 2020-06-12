@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { TezosWalletUtil } from 'conseiljs';
+import { KeyStoreUtils } from 'conseiljs-softsigner';
 
 import CustomTextArea from '../../../components/CustomTextArea';
 import TextField from '../../../components/TextField';
@@ -15,7 +15,7 @@ import { Container, MainContainer, ButtonContainer, InvokeButton, Result, Warnin
 const Verify = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { isLoading, selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { isLoading, selectedParentHash, isLedger, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const [message, setMessage] = useState('');
     const [signature, setSignature] = useState('');
@@ -46,7 +46,7 @@ const Verify = () => {
         }
 
         try {
-            const isVerified = await TezosWalletUtil.checkSignature(signature, message, publicKey);
+            const isVerified = await KeyStoreUtils.checkTextSignature(signature, message, publicKey);
 
             if (!isVerified) {
                 setResult(t('components.signVerifyModal.no_match'));

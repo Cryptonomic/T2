@@ -32,7 +32,7 @@ import {
 const Sign = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { isLoading, selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { isLoading, selectedParentHash, isLedger, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const { values, activeTab } = useSelector<RootState, ModalState>((state) => state.modal, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
@@ -55,12 +55,7 @@ const Sign = () => {
             setKeyRevealed(false);
         }
 
-        let signature: string;
-        if (isLedger) {
-            signature = await LedgerSigner.signText(message);
-        } else {
-            signature = await SoftSigner.signText(message);
-        }
+        const signature = await signer.signText(message);
 
         setError(false);
         setResult(signature);

@@ -98,7 +98,7 @@ export async function activateAndUpdateAccount(account, node: Node) {
 }
 
 export function generateNewMnemonic() {
-    return KeyStoreUtils.generateIdentity();
+    return KeyStoreUtils.generateMnemonic();
 }
 
 export function isReady(addressStatus, storeType?, tab?) {
