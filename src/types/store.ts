@@ -14,7 +14,7 @@ export interface AppState {
     selectedParentIndex: number;
     selectedAccountIndex: number;
     selectedAccountType: AddressType;
-    signer: Signer | undefined;
+    signer: Signer | null;
 }
 export interface WalletState {
     identities: Identity[];

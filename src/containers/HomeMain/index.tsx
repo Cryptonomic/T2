@@ -17,6 +17,7 @@ import { Container, SideBarContainer, AccountItem } from './style';
 function HomeMain() {
     const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
     const addressType = useSelector((state: RootState) => state.app.selectedAccountType);
+    const signer = useSelector((state: RootState) => state.app.signer); // use Signer
     function renderView() {
         switch (addressType) {
             case AddressType.Manager:

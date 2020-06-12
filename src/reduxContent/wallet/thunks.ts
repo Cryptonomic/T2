@@ -34,6 +34,8 @@ import {
     changeAccountAction,
 } from '../app/actions';
 
+import { setSignerThunk } from '../app/thunks';
+
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { createWallet } from '../../utils/wallet';
 import { ACTIVATION } from '../../constants/TransactionTypes';
@@ -509,6 +511,7 @@ export function importSecretKeyThunk(key) {
 
 export function loginThunk(loginType, walletLocation, walletFileName, password) {
     return async (dispatch, state) => {
+        console.log('LOGIN');
         const completeWalletPath = path.join(walletLocation, walletFileName);
         dispatch(setIsLoadingAction(true));
         dispatch(createMessageAction('', false));
@@ -530,8 +533,9 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
 
             dispatch(setWalletAction(identities, walletLocation, walletFileName, password));
             if (identities.length > 0) {
-                const { publicKeyHash } = identities[0];
+                const { publicKeyHash, privateKey } = identities[0];
                 dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
+                dispatch(setSignerThunk(privateKey));
             }
 
             dispatch(setTokensThunk());
