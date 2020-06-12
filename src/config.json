@@ -11,5 +11,6 @@
     "helpUrl": "https://github.com/Cryptonomic/T2",
     "ledgerAppUrl": "https://support.ledger.com/hc/en-us/articles/360016057774-Tezos-XTZ-",
     "ledgerReferral": "",
-    "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/master/version.json"
+    "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/master/version.json",
+    "logLevel": "debug"
 }
