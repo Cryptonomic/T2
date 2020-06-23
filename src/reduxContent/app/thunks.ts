@@ -101,10 +101,13 @@ export function showSignVeiryThunk() {
 }
 
 export function setSignerThunk(key: string) {
+    if (!key || key.length === 0) {
+        throw new Error('Empty key parameter in setSignerThunk()');
+    }
+
     return async (dispatch, state) => {
-        let signer: Signer;
         const keyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(key);
-        signer = new SoftSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'));
+        const signer = new SoftSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'));
         dispatch(setSignerAction(signer));
     };
 }

@@ -381,10 +381,12 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                 case GENERATE_MNEMONIC:
                     identity = await restoreIdentityFromMnemonic(seed, '');
                     identity.storeType = KeyStoreType.Mnemonic;
+                    await dispatch(setSignerThunk(identity.secretKey));
                     break;
                 case FUNDRAISER: {
                     identity = await restoreIdentityFromFundraiser(seed, username.trim(), passPhrase.trim(), pkh.trim());
                     identity.storeType = KeyStoreType.Fundraiser;
+                    await dispatch(setSignerThunk(identity.secretKey));
                     const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(
                         () => false
                     );
@@ -412,6 +414,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                         1: KeyStoreType.Fundraiser,
                     };
                     identity.storeType = storeTypesMap[identity.storeType];
+                    await dispatch(setSignerThunk(identity.secretKey));
                     const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(
                         () => false
                     );
@@ -443,6 +446,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                         );
                     }
                     dispatch(addNewIdentityAction(identity));
+                    dispatch(setSignerThunk(identity.secretKey));
                     dispatch(setTokensThunk());
                     dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
                     await saveUpdatedWallet(state().wallet.identities, walletLocation, walletFileName, walletPassword);
