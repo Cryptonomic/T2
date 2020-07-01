@@ -51,9 +51,11 @@ const KeyDetails = (props: Props) => {
                         {!isLedger && (
                             <Fragment>
                                 <h4>{t('components.keyDetailsModal.secretKey')}</h4>
-                                <MessageContainer onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
-                                    {t('components.keyDetailsModal.secretKeyNotice')}
-                                </MessageContainer>
+                                {!secretKeyVisible && (
+                                    <MessageContainer onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
+                                        {t('components.keyDetailsModal.secretKeyNotice')}
+                                    </MessageContainer>
+                                )}
                                 {secretKeyVisible && (
                                     <Fragment>
                                         <p>{secretKey}</p>
