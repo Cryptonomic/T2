@@ -62,7 +62,7 @@ const KeyDetails = (props: Props) => {
                                 )}
                             </Fragment>
                         )}
-                        {!isLedger && <Fragment>{t('components.keyDetailsModal.hardwareSignerNotice')}</Fragment>}
+                        {isLedger && <Fragment>{t('components.keyDetailsModal.hardwareSignerNotice')}</Fragment>}
                     </Container>
                 </ModalContainer>
             ) : (
