@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import SeedInput from './SeedInput';
 
+import SeedInput from './SeedInput';
 import { DescriptionContainer, ValidFormContainer } from './style';
 
 interface Seed {
