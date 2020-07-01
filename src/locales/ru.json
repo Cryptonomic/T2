@@ -187,11 +187,6 @@
         "balanceBanner": {
             "breadcrumbs": "Аккаунт {{parentIndex}} > {{addressLabel}}",
             "delegated_to": "Делегирован кому",
-            "secret_key": "Secret Key",
-            "reveal_key": "Click to reveal secret key.",
-            "hide_key": "Click to hide secret key.",
-            "warning": "Warning!",
-            "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
             "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
         },
         "copyIcon": {
@@ -253,6 +248,17 @@
             "deploy_description_1": "Некатегоризированная Операция, Непроверенный Символ?",
             "deploy_description_2": "К вашему сведению, Ledger Nano S устройства пока ещё не обладают способностями парсинга скриптов или параметров. Появление вышестоящего сообщения вместо деталей операции является ожидаемым поведением.",
             "deploy_confirm": "Пожалуйста<1> подтвердите </1>, что операция запуска контракта осуществляется на ваш страх и риск."
+        },
+        "keyDetailsModal": {
+            "Address": "Address",
+            "copyAddress": "Copy address",
+            "publicKey": "Public Key",
+            "copyPublicKey": "Copy public key",
+            "secretKey": "Secret Key",
+            "copySecretKey": "Copy secret key",
+            "warning": "Warning!",
+            "secretKeyNotice": "Be careful when handling the unencrypted secret key. Anyone with your secret key has full access to your balance and can sign operations on your behalf! Click to reveal your secret key.",
+            "hardwareSignerNotice": "Hardware signers like the Ledger Nano S store the secret key on the device and do not provide it externally."
         },
         "fees": {
             "low_fee": "Низкая Комиссия",

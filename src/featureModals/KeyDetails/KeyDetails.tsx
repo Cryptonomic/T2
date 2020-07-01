@@ -40,20 +40,19 @@ const KeyDetails = (props: Props) => {
             {open ? (
                 <ModalContainer>
                     <CloseIconWrapper onClick={() => onClose()} />
-                    <ModalTitle>{t('components.balanceBanner.secret_key')}</ModalTitle>
+                    <ModalTitle>{t('components.keyDetailsModal.secretKey')}</ModalTitle>
                     <Container>
-                        <h4>Address</h4>
+                        <h4>{t('components.keyDetailsModal.Address')}</h4>
                         <p>{address}</p>
                         <CopyButton text={address} title="" color="accent" />
-                        <h4>Public Key</h4>
+                        <h4>{t('components.keyDetailsModal.publicKey')}</h4>
                         <p>{publicKey}</p>
                         <CopyButton text={publicKey} title="" color="accent" />
                         {!isLedger && (
                             <Fragment>
-                                <h4>Secret Key</h4>
+                                <h4>{t('components.keyDetailsModal.secretKey')}</h4>
                                 <MessageContainer onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
-                                    {t('components.balanceBanner.warning')}
-                                    {t('components.balanceBanner.do_not_store')}
+                                    {t('components.keyDetailsModal.secretKeyNotice')}
                                 </MessageContainer>
                                 {secretKeyVisible && (
                                     <Fragment>
@@ -63,7 +62,7 @@ const KeyDetails = (props: Props) => {
                                 )}
                             </Fragment>
                         )}
-                        {!isLedger && <Fragment>{/* Some message about hardware signers */}</Fragment>}
+                        {!isLedger && <Fragment>{t('components.keyDetailsModal.hardwareSignerNotice')}</Fragment>}
                     </Container>
                 </ModalContainer>
             ) : (

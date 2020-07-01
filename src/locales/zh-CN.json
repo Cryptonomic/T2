@@ -187,11 +187,6 @@
         "balanceBanner": {
             "breadcrumbs": "账户{{parentIndex}} > {{addressLabel}}",
             "delegated_to": "委托给了",
-            "secret_key": "Secret Key",
-            "reveal_key": "Click to reveal secret key.",
-            "hide_key": "Click to hide secret key.",
-            "warning": "Warning!",
-            "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
             "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
         },
         "copyIcon": {
@@ -253,6 +248,17 @@
             "deploy_description_1": "Unrecognized Operation, Sign Unverified?",
             "deploy_description_2": "请注意Ledger Nano S 设备尚无法解析脚本或者参数。预计你将看到上面的消息，而不是操作细节。",
             "deploy_confirm": "请自担风险地<1>确认</1>在你的设备上的部署。"
+        },
+        "keyDetailsModal": {
+            "Address": "Address",
+            "copyAddress": "Copy address",
+            "publicKey": "Public Key",
+            "copyPublicKey": "Copy public key",
+            "secretKey": "Secret Key",
+            "copySecretKey": "Copy secret key",
+            "warning": "Warning!",
+            "secretKeyNotice": "Be careful when handling the unencrypted secret key. Anyone with your secret key has full access to your balance and can sign operations on your behalf! Click to reveal your secret key.",
+            "hardwareSignerNotice": "Hardware signers like the Ledger Nano S store the secret key on the device and do not provide it externally."
         },
         "fees": {
             "low_fee": "低费用",
