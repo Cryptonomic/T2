@@ -183,6 +183,38 @@ export const InfoContainer = styled.div`
     width: 100%;
 `;
 
+export const Keys = styled.div`
+    padding: 25px 36px 50px;
+`;
+
+export const KeyWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0px;
+`;
+
+export const KeyTitle = styled.h4`
+    margin: 5px 0;
+    font-size: 18px;
+    color: #7691c4;
+`;
+
+export const SecretKeyMessage = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    padding: 20px 40px 0px;
+    color: #4e71ab;
+    font-weight: 300;
+`;
+
+export const KeyAddress = styled.div`
+    word-wrap: break-word;
+    font-weight: 300;
+    color: #123262;
+`;
+
 export const InfoIcon = styled(TezosIcon)`
     font-size: ${ms(2)};
     padding: 1px 7px 0px 0px;

@@ -7,7 +7,19 @@ import { getMainPath } from '../../utils/settings';
 import CopyButton from '../../components/CopyButton';
 import { RootState } from '../../types/store';
 
-import { CloseIconWrapper, Container, MessageContainer, ModalContainer, ModalTitle, ModalWrapper } from '../style';
+import {
+    CloseIconWrapper,
+    Container,
+    MessageContainer,
+    ModalContainer,
+    ModalTitle,
+    ModalWrapper,
+    KeyWrapper,
+    KeyTitle,
+    KeyAddress,
+    Keys,
+    SecretKeyMessage,
+} from '../style';
 
 interface Props {
     open: boolean;
@@ -41,31 +53,46 @@ const KeyDetails = (props: Props) => {
                 <ModalContainer>
                     <CloseIconWrapper onClick={() => onClose()} />
                     <ModalTitle>{t('components.keyDetailsModal.secretKey')}</ModalTitle>
-                    <Container>
-                        <h4>{t('components.keyDetailsModal.Address')}</h4>
-                        <p>{address}</p>
-                        <CopyButton text={address} title="" color="accent" />
-                        <h4>{t('components.keyDetailsModal.publicKey')}</h4>
-                        <p>{publicKey}</p>
-                        <CopyButton text={publicKey} title="" color="accent" />
+                    <Keys>
+                        <KeyWrapper>
+                            <KeyTitle>{t('components.keyDetailsModal.Address')}</KeyTitle>
+                            <KeyAddress>
+                                {address}
+                                <CopyButton text={address} title="" color="accent" />
+                            </KeyAddress>
+                        </KeyWrapper>
+                        <KeyWrapper>
+                            <KeyTitle>{t('components.keyDetailsModal.publicKey')}</KeyTitle>
+                            <KeyAddress>
+                                {publicKey}
+                                <CopyButton text={publicKey} title="" color="accent" />
+                            </KeyAddress>
+                        </KeyWrapper>
                         {!isLedger && (
-                            <Fragment>
-                                <h4>{t('components.keyDetailsModal.secretKey')}</h4>
+                            <KeyWrapper>
+                                <KeyTitle>{t('components.keyDetailsModal.secretKey')}</KeyTitle>
                                 {!secretKeyVisible && (
-                                    <MessageContainer onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
+                                    <SecretKeyMessage onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
                                         {t('components.keyDetailsModal.secretKeyNotice')}
-                                    </MessageContainer>
+                                    </SecretKeyMessage>
                                 )}
                                 {secretKeyVisible && (
-                                    <Fragment>
-                                        <p>{secretKey}</p>
-                                        <CopyButton text={secretKey} title="" color="accent" />
-                                    </Fragment>
+                                    <>
+                                        <KeyAddress>
+                                            {secretKey}
+                                            <CopyButton text={secretKey} title="" color="accent" />
+                                        </KeyAddress>
+                                    </>
                                 )}
-                            </Fragment>
+                            </KeyWrapper>
                         )}
-                        {isLedger && <Fragment>{t('components.keyDetailsModal.hardwareSignerNotice')}</Fragment>}
-                    </Container>
+                        {isLedger && (
+                            <KeyWrapper>
+                                <KeyTitle>{t('components.keyDetailsModal.secretKey')}</KeyTitle>
+                                <SecretKeyMessage>{t('components.keyDetailsModal.hardwareSignerNotice')}</SecretKeyMessage>
+                            </KeyWrapper>
+                        )}
+                    </Keys>
                 </ModalContainer>
             ) : (
                 <ModalContainer />
