@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { ms } from '../../styles/helpers';
-import { getSelectedKeyStore, openLink } from '../../utils/general';
-import { getMainPath } from '../../utils/settings';
+import { openLink } from '../../utils/general';
 import Loader from '../../components/Loader';
 import Tooltip from '../../components/Tooltip';
 import { RootState } from '../../types/store';
@@ -50,14 +49,10 @@ const Auth = (props: Props) => {
     const { t } = useTranslation();
     const { isLoading, isLedger, selectedParentHash, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
-    const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
-    const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
     const values = useSelector<RootState, object>((state) => state.modal.values, shallowEqual);
     const [result, setResult] = useState('');
     const [error, setError] = useState(false);
     const { open, onClose } = props;
-    const { selectedPath, pathsList } = settings;
-    const derivationPath = isLedger ? getMainPath(pathsList, selectedPath) : '';
 
     const [requestor, setRequestor] = useState('');
     const [requestorDescription, setRequestorDescription] = useState('');
@@ -67,8 +62,6 @@ const Auth = (props: Props) => {
     const isDisabled = isLoading || !prompt;
 
     const onAuth = async () => {
-        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
-
         if (signer == null) {
             setError(true);
             setResult('No signing mechanism available');
