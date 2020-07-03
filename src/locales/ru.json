@@ -250,7 +250,8 @@
             "deploy_confirm": "Пожалуйста<1> подтвердите </1>, что операция запуска контракта осуществляется на ваш страх и риск."
         },
         "keyDetailsModal": {
-            "Address": "Address",
+            "title": "Account Keys",
+            "address": "Address",
             "copyAddress": "Copy address",
             "publicKey": "Public Key",
             "copyPublicKey": "Copy public key",

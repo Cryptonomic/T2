@@ -52,10 +52,10 @@ const KeyDetails = (props: Props) => {
             {open ? (
                 <ModalContainer>
                     <CloseIconWrapper onClick={() => onClose()} />
-                    <ModalTitle>{t('components.keyDetailsModal.secretKey')}</ModalTitle>
+                    <ModalTitle>{t('components.keyDetailsModal.title')}</ModalTitle>
                     <Keys>
                         <KeyWrapper>
-                            <KeyTitle>{t('components.keyDetailsModal.Address')}</KeyTitle>
+                            <KeyTitle>{t('components.keyDetailsModal.address')}</KeyTitle>
                             <KeyAddress>
                                 {address}
                                 <CopyButton text={address} title="" color="accent" />
@@ -65,7 +65,7 @@ const KeyDetails = (props: Props) => {
                             <KeyTitle>{t('components.keyDetailsModal.publicKey')}</KeyTitle>
                             <KeyAddress>
                                 {publicKey}
-                                <CopyButton text={publicKey} title="" color="accent" />
+                                <CopyButton text={'Tezos Public Key: ' + publicKey} title="" color="accent" />
                             </KeyAddress>
                         </KeyWrapper>
                         {!isLedger && (
@@ -80,7 +80,7 @@ const KeyDetails = (props: Props) => {
                                     <>
                                         <KeyAddress>
                                             {secretKey}
-                                            <CopyButton text={secretKey} title="" color="accent" />
+                                            <CopyButton text={'Tezos Secret Key: ' + secretKey} title="" color="accent" />
                                         </KeyAddress>
                                     </>
                                 )}

@@ -250,7 +250,8 @@
             "deploy_confirm": "위험을 무릅쓰고 단말기의 배포를 <1>확인</1>해주세요."
         },
         "keyDetailsModal": {
-            "Address": "Address",
+            "title": "Account Keys",
+            "address": "Address",
             "copyAddress": "Copy address",
             "publicKey": "Public Key",
             "copyPublicKey": "Copy public key",

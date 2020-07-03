@@ -250,7 +250,8 @@
             "deploy_confirm": "Bitte<1> bestätige </1>das Bereitstellen auf deinem Gerät, auf eigene Gefahr."
         },
         "keyDetailsModal": {
-            "Address": "Address",
+            "title": "Account Keys",
+            "address": "Address",
             "copyAddress": "Copy address",
             "publicKey": "Public Key",
             "copyPublicKey": "Copy public key",

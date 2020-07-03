@@ -250,7 +250,8 @@
             "deploy_confirm": "ご自身のリスクにおいて、お持ちのデバイスで展開を<1> 確認 </1>してください。"
         },
         "keyDetailsModal": {
-            "Address": "Address",
+            "title": "Account Keys",
+            "address": "Address",
             "copyAddress": "Copy address",
             "publicKey": "Public Key",
             "copyPublicKey": "Copy public key",
