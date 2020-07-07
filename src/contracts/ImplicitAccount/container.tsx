@@ -90,7 +90,7 @@ const Description = (props: DescriptionProps) => {
     );
 };
 
-const tabs = [TRANSACTIONS, SEND, DELEGATE];
+const tabs = [TRANSACTIONS, SEND, RECEIVE, DELEGATE];
 
 function ActionPanel() {
     const { t } = useTranslation();

@@ -27,17 +27,6 @@ const ReceiveContainer = styled.div`
     }
 `;
 
-const QRCodeContainer = styled.canvas`
-    border: 1px solid ${({ theme: { colors } }) => colors.gray1};
-    width: ${ms(9)};
-    height: ${ms(9)};
-    margin: 0 ${ms(5)} 0 0;
-
-    @media (max-width: 1200px) {
-        margin: 0;
-    }
-`;
-
 interface Props {
     address: string;
 }
