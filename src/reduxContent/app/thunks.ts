@@ -107,7 +107,7 @@ export function setSignerThunk(key: string) {
 
     return async (dispatch, state) => {
         const keyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(key);
-        const signer = new SoftSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'));
+        const signer = await SoftSigner.createSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'));
         dispatch(setSignerAction(signer));
     };
 }
