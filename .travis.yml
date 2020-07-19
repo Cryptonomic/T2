@@ -3,6 +3,7 @@ language : node_js
 addons:
     apt:
         packages:
+            - rpm
             - xvfb
 
 node_js:
