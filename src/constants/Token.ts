@@ -3,6 +3,7 @@ import { TRANSACTIONS, DETAILS } from './TabConstants';
 
 import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
 import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
+import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 
 export const knownTokenContracts: Token[] = [
     {
@@ -17,7 +18,7 @@ export const knownTokenContracts: Token[] = [
         icon: stakerdaoIcon,
         scale: 0,
         precision: 0,
-        round: 0
+        round: 0,
     },
     {
         network: 'mainnet',
@@ -31,7 +32,21 @@ export const knownTokenContracts: Token[] = [
         icon: tzbtcIcon,
         scale: 8,
         precision: 8,
-        round: 8
+        round: 8,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9',
+        displayName: 'USDtz',
+        symbol: 'USDtz',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: usdtzIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
     },
     {
         network: 'carthagenet',
@@ -44,7 +59,7 @@ export const knownTokenContracts: Token[] = [
         kind: TokenKind.tzip7,
         scale: 6,
         precision: 6,
-        round: 6
+        round: 6,
     },
     {
         network: 'carthagenet',
@@ -57,7 +72,7 @@ export const knownTokenContracts: Token[] = [
         kind: TokenKind.tzip7,
         scale: 0,
         precision: 0,
-        round: 0
+        round: 0,
     },
     {
         network: 'carthagenet',
@@ -71,7 +86,7 @@ export const knownTokenContracts: Token[] = [
         icon: stakerdaoIcon,
         scale: 0,
         precision: 0,
-        round: 0
+        round: 0,
     },
     {
         network: 'carthagenet',
@@ -85,6 +100,6 @@ export const knownTokenContracts: Token[] = [
         icon: tzbtcIcon,
         scale: 8,
         precision: 8,
-        round: 8
-    }
+        round: 8,
+    },
 ];
