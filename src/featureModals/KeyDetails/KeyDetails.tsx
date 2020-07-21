@@ -7,19 +7,7 @@ import { getMainPath } from '../../utils/settings';
 import CopyButton from '../../components/CopyButton';
 import { RootState } from '../../types/store';
 
-import {
-    CloseIconWrapper,
-    Container,
-    MessageContainer,
-    ModalContainer,
-    ModalTitle,
-    ModalWrapper,
-    KeyWrapper,
-    KeyTitle,
-    KeyAddress,
-    Keys,
-    SecretKeyMessage,
-} from '../style';
+import { CloseIconWrapper, ModalContainer, ModalTitle, ModalWrapper, KeyWrapper, KeyTitle, KeyAddress, Keys, SecretKeyMessage } from '../style';
 
 interface Props {
     open: boolean;
