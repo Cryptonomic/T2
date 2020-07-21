@@ -423,7 +423,7 @@
             "last_updated": "Last updated {{date}}"
         },
         "versionStatus": {
-            "version_update": "You are using an older version of Tezori, which might not be fully functional. Please download v{{version}} at "
+            "version_update": "You are using an older version, which might not be fully functional. Please download v{{version}} at "
         },
         "comingSoon": {
             "coming_soon": "Coming Soon!",

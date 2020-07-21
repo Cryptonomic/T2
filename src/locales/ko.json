@@ -423,7 +423,7 @@
             "last_updated": "최종 업데이트 날짜: {{date}}"
         },
         "versionStatus": {
-            "version_update": "완벽히 작동하지 않을 수 있는 이전 버전의 Tezori을 사용하고 있습니다. 다음에서 v{{version}}을/를 다운로드하세요:"
+            "version_update": "완벽히 작동하지 않을 수 있는 이전 버전의 을 사용하고 있습니다. 다음에서 v{{version}}을/를 다운로드하세요:"
         },
         "comingSoon": {
             "coming_soon": "곧 준비됩니다",
