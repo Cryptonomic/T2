@@ -73,23 +73,19 @@ function SeedInput(props: Props) {
         if (!isFirst) {
             setIsFirst(true);
         }
-        console.log(`${value} - ${val}`);
+
         if (val) {
             if (val === value) {
-                console.log('set - 3');
                 setStatus(3); // TODO: status enum
                 onValidate(true);
             } else if (value.indexOf(val) > -1) {
-                console.log('set - 2');
                 setStatus(2);
                 onValidate(false);
             } else {
-                console.log('set - 1');
                 setStatus(1);
                 onValidate(false);
             }
         } else {
-            console.log('set - 0');
             setStatus(0);
             onValidate(false);
         }

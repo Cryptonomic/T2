@@ -213,7 +213,6 @@ export function syncWalletThunk() {
         const nodesStatus = await getNodesStatus(mainNode);
         dispatch(setNodesStatusAction(nodesStatus));
         const res = getNodesError(nodesStatus);
-        console.log('-debug: res, nodesStatus', res, nodesStatus);
 
         if (res) {
             dispatch(setWalletIsSyncingAction(false));
@@ -368,10 +367,9 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
     return async (dispatch, state) => {
         const { walletLocation, walletFileName, walletPassword, identities } = state().wallet;
         const { selectedNode, nodesList } = state().settings;
-        const { signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { network, conseilUrl, tezosUrl, apiKey } = mainNode;
-        // TODO: clear out message bar
+
         dispatch(createMessageAction('', false));
         dispatch(setIsLoadingAction(true));
         try {
@@ -393,7 +391,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     if (!account) {
                         const keyStore = getSelectedKeyStore([identity], identity.publicKeyHash, identity.publicKeyHash, false);
                         const newKeyStore = { ...keyStore, storeType: KeyStoreType.Fundraiser };
-                        activating = await sendIdentityActivationOperation(tezosUrl, signer, newKeyStore, activationCode).catch((err) => {
+                        activating = await sendIdentityActivationOperation(tezosUrl, state().app.signer, newKeyStore, activationCode).catch((err) => {
                             const error = err;
                             error.name = err.message;
                             throw error;
@@ -429,6 +427,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                 default:
                     break;
             }
+
             if (identity) {
                 const { publicKeyHash } = identity;
                 if (findIdentityIndex(identities, publicKeyHash) === -1) {
@@ -515,7 +514,6 @@ export function importSecretKeyThunk(key) {
 
 export function loginThunk(loginType, walletLocation, walletFileName, password) {
     return async (dispatch, state) => {
-        console.log('LOGIN');
         const completeWalletPath = path.join(walletLocation, walletFileName);
         dispatch(setIsLoadingAction(true));
         dispatch(createMessageAction('', false));
@@ -537,9 +535,9 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
 
             dispatch(setWalletAction(identities, walletLocation, walletFileName, password));
             if (identities.length > 0) {
-                const { publicKeyHash, privateKey } = identities[0];
+                const { publicKeyHash, secretKey } = identities[0];
                 dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
-                dispatch(setSignerThunk(privateKey));
+                dispatch(setSignerThunk(secretKey));
             }
 
             dispatch(setTokensThunk());

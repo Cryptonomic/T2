@@ -187,7 +187,7 @@
         "balanceBanner": {
             "breadcrumbs": "Account {{parentIndex}} > {{addressLabel}}",
             "delegated_to": "Delegated to ",
-            "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
+            "tooltip_content": "Keep track of your account with the Tezos Notifier Bot on Telegram."
         },
         "copyIcon": {
             "copied": "Copied!"

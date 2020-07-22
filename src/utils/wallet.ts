@@ -22,7 +22,7 @@ export async function saveUpdatedWallet(identities, walletLocation, walletFileNa
 export function saveIdentitiesToLocal(identities: Identity[]) {
     let newIdentities = cloneDeep(identities);
     newIdentities = newIdentities.map((identity) => {
-        identity = omit(identity, ['publicKey', 'privateKey', 'activeTab']);
+        identity = omit(identity, ['publicKey', 'privateKey', 'secretKey', 'activeTab']); // WARNING: do not save secret key to local storage
         identity.accounts = identity.accounts.map((account) => {
             account = omit(account, ['activeTab']);
             return account;
@@ -134,7 +134,17 @@ export async function loadWallet(filename: string, passphrase: string): Promise<
     const ew = await p;
     const encryptedKeys = TezosMessageUtils.writeBufferWithHint(ew.ciphertext);
     const salt = TezosMessageUtils.writeBufferWithHint(ew.salt);
-    const keys = JSON.parse((await CryptoUtils.decryptMessage(encryptedKeys, passphrase, salt)).toString()) as KeyStore[];
+
+    const walletData: any[] = JSON.parse((await CryptoUtils.decryptMessage(encryptedKeys, passphrase, salt)).toString());
+    const keys: KeyStore[] = [];
+
+    walletData.forEach((w) => {
+        delete w.privateKey; // TODO: pre v100 wallet data
+        keys.push({
+            ...w,
+            secretKey: w.secretKey || w.privateKey,
+        });
+    });
 
     return { identities: keys };
 }

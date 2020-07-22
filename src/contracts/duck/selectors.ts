@@ -17,11 +17,11 @@ const defaultAccount = {
     storeType: 0,
     status: '',
     script: '',
-    privateKey: '',
+    secretKey: '',
     delegate_value: '',
     storage: '',
     regularAddresses: [],
-    transactions: []
+    transactions: [],
 };
 
 export const getAccountSelector = createSelector(
@@ -29,12 +29,12 @@ export const getAccountSelector = createSelector(
     selectedParentHashSelector,
     identitiesSelector,
     (accountHash, parentHash, identities) => {
-        const selectedIdentity = identities.find(identity => identity.publicKeyHash === parentHash);
+        const selectedIdentity = identities.find((identity) => identity.publicKeyHash === parentHash);
         if (selectedIdentity) {
-            const { accounts, publicKeyHash, balance, privateKey } = selectedIdentity;
+            const { accounts, publicKeyHash, balance, secretKey } = selectedIdentity;
             const regularAddresses = [{ pkh: publicKeyHash, balance }];
 
-            accounts.forEach(acc => {
+            accounts.forEach((acc) => {
                 const { script, account_id } = acc;
                 const addressType = getAddressType(account_id, script);
                 if (addressType === AddressType.Delegated) {
@@ -46,16 +46,16 @@ export const getAccountSelector = createSelector(
                 return {
                     ...defaultAccount,
                     regularAddresses,
-                    ...selectedIdentity
+                    ...selectedIdentity,
                 };
             }
-            const selectedAccount = accounts.find(acc => acc.account_id === accountHash);
+            const selectedAccount = accounts.find((acc) => acc.account_id === accountHash);
             if (selectedAccount) {
                 return {
                     ...defaultAccount,
-                    privateKey,
+                    secretKey,
                     regularAddresses,
-                    ...selectedAccount
+                    ...selectedAccount,
                 };
             }
         }
@@ -66,5 +66,5 @@ export const getAccountSelector = createSelector(
 export const getTokenSelector = createSelector(
     selectedAccountHashSelector,
     tokensSelector,
-    (accountHash, tokens) => tokens.find(token => token.address === accountHash) || tokens[0]
+    (accountHash, tokens) => tokens.find((token) => token.address === accountHash) || tokens[0]
 );
