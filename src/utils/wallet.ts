@@ -139,10 +139,11 @@ export async function loadWallet(filename: string, passphrase: string): Promise<
     const keys: KeyStore[] = [];
 
     walletData.forEach((w) => {
+        const pk = w.privateKey;
         delete w.privateKey; // TODO: pre v100 wallet data
         keys.push({
             ...w,
-            secretKey: w.secretKey || w.privateKey,
+            secretKey: w.secretKey || pk,
         });
     });
 
