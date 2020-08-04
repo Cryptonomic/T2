@@ -53,11 +53,11 @@ export function getSelectedKeyStore(
     mainPath?: string
 ): KeyStore {
     const identity = findIdentity(identities, selectedParentHash);
-    const { publicKey, privateKey } = identity;
+    const { publicKey, secretKey } = identity;
 
     return {
         publicKey,
-        secretKey: privateKey,
+        secretKey,
         publicKeyHash: selectedAccountHash,
         curve: KeyStoreCurve.ED25519,
         seed: '',

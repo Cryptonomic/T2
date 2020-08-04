@@ -187,11 +187,6 @@
         "balanceBanner": {
             "breadcrumbs": "Konto {{parentIndex}} > {{addressLabel}}",
             "delegated_to": "Delegiert zu ",
-            "secret_key": "Secret Key",
-            "reveal_key": "Click to reveal secret key.",
-            "hide_key": "Click to hide secret key.",
-            "warning": "Warning!",
-            "do_not_store": " Do not store your secret key on your  computer. Write it down and keep in a safe place.",
             "tooltip_content": "The Manager Address is the primary address of your account and can be used to send and receive tez."
         },
         "copyIcon": {
@@ -253,6 +248,18 @@
             "deploy_description_1": "Unbekannte Operation, Sign nicht verifiziert?",
             "deploy_description_2": "Bitte beachten Sie, dass Ledger Nano S Geräte noch keine Parameter analysieren können. Es wird erwartet, dass die obige Meldung anstelle von Operationsdetails angezeigt wird.",
             "deploy_confirm": "Bitte<1> bestätige </1>das Bereitstellen auf deinem Gerät, auf eigene Gefahr."
+        },
+        "keyDetailsModal": {
+            "title": "Account Keys",
+            "address": "Address",
+            "copyAddress": "Copy address",
+            "publicKey": "Public Key",
+            "copyPublicKey": "Copy public key",
+            "secretKey": "Secret Key",
+            "copySecretKey": "Copy secret key",
+            "warning": "Warning!",
+            "secretKeyNotice": "Be careful when handling the unencrypted secret key. Anyone with your secret key has full access to your balance and can sign operations on your behalf! Click to reveal your secret key.",
+            "hardwareSignerNotice": "Hardware signers like the Ledger Nano S store the secret key on the device and do not provide it externally."
         },
         "fees": {
             "low_fee": "Geringe Gebühr",
@@ -416,7 +423,7 @@
             "last_updated": "Letztes Update {{date}}"
         },
         "versionStatus": {
-            "version_update": "Sie verwenden eine ältere Version von Tezori, die möglicherweise nicht voll funktionsfähig ist. Bitte laden Sie v{{version}} auf "
+            "version_update": "Sie verwenden eine ältere Version, die möglicherweise nicht voll funktionsfähig ist. Bitte laden Sie v{{version}} auf "
         },
         "comingSoon": {
             "coming_soon": "Demnächst!",

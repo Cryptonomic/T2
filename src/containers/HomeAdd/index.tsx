@@ -31,10 +31,10 @@ import {
     TabContainer,
     Tab,
     AddAddressBodyContainer,
-    ShowHidePwd
+    ShowHidePwd,
 } from './style';
 
-const PasswordTooltip = t => {
+const PasswordTooltip = (t) => {
     return (
         <TooltipContainer>
             <TooltipTitle>{t('containers.homeAddAddress.fundraiser_password')}</TooltipTitle>
@@ -43,7 +43,7 @@ const PasswordTooltip = t => {
     );
 };
 
-const EmailTooltip = t => {
+const EmailTooltip = (t) => {
     return (
         <TooltipContainer>
             <TooltipTitle>{t('containers.homeAddAddress.fundraiser_email_address')}</TooltipTitle>
@@ -52,8 +52,9 @@ const EmailTooltip = t => {
     );
 };
 
-const ActivationTooltip = t => {
+const ActivationTooltip = (t) => {
     const openALink = () => openLink('https://verification.tezos.com/');
+
     return (
         <TooltipContainer>
             <TooltipTitle>{t('containers.homeAddAddress.activation_code')}</TooltipTitle>
@@ -66,7 +67,7 @@ const ActivationTooltip = t => {
     );
 };
 
-const PkhTooltip = t => {
+const PkhTooltip = (t) => {
     return (
         <TooltipContainer>
             <TooltipTitle>{t('containers.homeAddAddress.public_key_hash')}</TooltipTitle>
@@ -109,8 +110,8 @@ function AddAddress() {
                         <SeedInput
                             placeholder={t('containers.homeAddAddress.secret_key_15')}
                             seeds={seeds}
-                            onChange={val => setSeeds(val)}
-                            onError={err => setIsError(err)}
+                            onChange={(val) => setSeeds(val)}
+                            onError={(err) => setIsError(err)}
                         />
                         <RowInputs>
                             <InputWithTooltip>
@@ -118,7 +119,7 @@ function AddAddress() {
                                     label={t('containers.homeAddAddress.fundraiser_password')}
                                     type={isShowedPwd ? 'text' : 'password'}
                                     value={passPhrase}
-                                    onChange={val => setPassPhrase(val)}
+                                    onChange={(val) => setPassPhrase(val)}
                                     right={65}
                                 />
 
@@ -134,7 +135,7 @@ function AddAddress() {
                             </InputWithTooltip>
 
                             <InputWithTooltip>
-                                <TextField label={t('containers.homeAddAddress.public_key_hash')} value={pkh} onChange={val => setPkh(val)} right={30} />
+                                <TextField label={t('containers.homeAddAddress.public_key_hash')} value={pkh} onChange={(val) => setPkh(val)} right={30} />
                                 <Tooltip position="bottom" content={PkhTooltip(t)}>
                                     <TooltipBtn size="small" color="primary">
                                         <TezosIcon iconName="help" size={ms(0)} color="secondary" />
@@ -148,7 +149,7 @@ function AddAddress() {
                                 <TextField
                                     label={t('containers.homeAddAddress.fundraiser_email_address')}
                                     value={username}
-                                    onChange={val => setUsername(val)}
+                                    onChange={(val) => setUsername(val)}
                                     right={30}
                                 />
 
@@ -163,7 +164,7 @@ function AddAddress() {
                                 <TextField
                                     label={t('containers.homeAddAddress.activation_code')}
                                     value={activationCode}
-                                    onChange={val => setActivationCode(val)}
+                                    onChange={(val) => setActivationCode(val)}
                                     right={30}
                                 />
                                 <Tooltip position="top" content={ActivationTooltip(t)}>
@@ -185,7 +186,7 @@ function AddAddress() {
         <Container>
             <TitleContainer>{t('containers.homeAddAddress.add_account')}</TitleContainer>
             <TabContainer>
-                {Object.values(ADD_ADDRESS_TYPES).map(tabName => (
+                {Object.values(ADD_ADDRESS_TYPES).map((tabName) => (
                     <Tab key={tabName} isActive={tabName === activeTab} onClick={() => setActiveTab(tabName)}>
                         {t(tabName)}
                     </Tab>

@@ -15,8 +15,9 @@ import AccountStatus from '../../components/AccountStatus';
 
 import Delegate from './components/Delegate';
 import Send from './components/Send';
+import Receive from './components/Receive';
 
-import { TRANSACTIONS, SEND, DELEGATE } from '../../constants/TabConstants';
+import { TRANSACTIONS, SEND, RECEIVE, DELEGATE } from '../../constants/TabConstants';
 import { READY } from '../../constants/StatusTypes';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
@@ -74,21 +75,22 @@ const DescriptionContainer = styled.p`
 
 interface DescriptionProps {
     onSendClick: () => void;
+    onReceiveClick: () => void;
 }
 
 const Description = (props: DescriptionProps) => {
-    const { onSendClick } = props;
+    const { onSendClick, onReceiveClick } = props;
     return (
         <DescriptionContainer>
             <Trans i18nKey="components.actionPanel.description">
                 It is pretty empty here. Get started
-                <Link onClick={onSendClick}> sending</Link>!
+                <Link onClick={onSendClick}> sending</Link>!<Link onClick={onReceiveClick}> receiving</Link> tez from this address.
             </Trans>
         </DescriptionContainer>
     );
 };
 
-const tabs = [TRANSACTIONS, SEND, DELEGATE];
+const tabs = [TRANSACTIONS, SEND, RECEIVE, DELEGATE];
 
 function ActionPanel() {
     const { t } = useTranslation();
@@ -98,7 +100,7 @@ function ActionPanel() {
 
     const { isLoading, selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
-    const { balance, activeTab, storeType, status, privateKey, delegate_value, transactions } = selectedAccount;
+    const { balance, activeTab, storeType, status, secretKey, delegate_value, transactions } = selectedAccount;
 
     function onChangeTab(newTab: string) {
         dispatch(updateActiveTabThunk(newTab));
@@ -111,6 +113,8 @@ function ActionPanel() {
                 return <Delegate isReady={ready} />;
             case SEND:
                 return <Send isReady={ready} addressBalance={balance} />;
+            case RECEIVE:
+                return <Receive address={selectedAccountHash} />;
             case TRANSACTIONS:
             default: {
                 if (!ready) {
@@ -131,7 +135,7 @@ function ActionPanel() {
                     <EmptyState
                         imageSrc={transactionsEmptyState}
                         title={t('components.actionPanel.empty-title')}
-                        description={<Description onSendClick={() => onChangeTab(SEND)} />}
+                        description={<Description onReceiveClick={() => onChangeTab(RECEIVE)} onSendClick={() => onChangeTab(SEND)} />}
                     />
                 ) : (
                     <Fragment>
@@ -142,7 +146,7 @@ function ActionPanel() {
                                 totalNumber={JSTransactions.length}
                                 firstNumber={firstNumber}
                                 lastNumber={lastNumber}
-                                onClick={val => setCurrentPage(val)}
+                                onClick={(val) => setCurrentPage(val)}
                             />
                         )}
                         {isLoading && <Loader />}
@@ -157,13 +161,13 @@ function ActionPanel() {
                 storeType={storeType}
                 isReady={isReady(status, storeType)}
                 balance={balance || 0}
-                secretKey={privateKey}
+                secretKey={secretKey}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 delegatedAddress={delegate_value}
             />
 
             <TabList count={tabs.length}>
-                {tabs.map(tab => {
+                {tabs.map((tab) => {
                     const ready = isReady(status, storeType, tab);
                     return (
                         <Tab

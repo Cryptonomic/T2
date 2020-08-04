@@ -66,7 +66,7 @@ const Suggestion = styled.div`
 const Error = styled.div`
     font-size: 12px;
     line-height: 18px;
-    color: ${props => props.color};
+    color: ${(props) => props.color};
 `;
 
 const ShowHidePwd = styled.div`
@@ -112,7 +112,13 @@ function InputValid(props: Props) {
         <Container>
             <Content>
                 <LabelWrapper>{label}</LabelWrapper>
-                <InputWrapper key={label} type={isShowed ? 'text' : 'password'} onChange={event => changFunc(event.target.value)} width={width} score={score} />
+                <InputWrapper
+                    key={label}
+                    type={isShowed ? 'text' : 'password'}
+                    onChange={(event) => changFunc(event.target.value)}
+                    width={width}
+                    score={score}
+                />
             </Content>
             <CheckContainer visibilityIcon={true}>
                 {score === 4 && <CheckIcon iconName="checkmark2" size={ms(0)} color="check" onClick={onShow} />}
@@ -124,7 +130,7 @@ function InputValid(props: Props) {
 
             <PasswordStrengthSuggestions>
                 {!!error && <Error color={borderColor}>{error}</Error>}
-                {!!suggestion && <Suggestion dangerouslySetInnerHTML={{ __html: suggestion }} />}
+                {!!suggestion && <Suggestion>suggestion</Suggestion>}
             </PasswordStrengthSuggestions>
         </Container>
     );
@@ -134,7 +140,7 @@ InputValid.defaultProps = {
     suggestion: '',
     score: 0,
     isShowed: false,
-    status: false
+    status: false,
 };
 
 export default InputValid;

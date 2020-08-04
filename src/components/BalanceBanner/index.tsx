@@ -4,15 +4,14 @@ import { KeyStoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
 
+import KeyDetails from '../../featureModals/KeyDetails';
 import TezosAddress from '../TezosAddress';
 import TezosAmount from '../TezosAmount';
 import Update from '../Update';
-import Modal from '../CustomModal';
 import Tooltip from '../Tooltip';
 import { openLink } from '../../utils/general';
 import { AddressType } from '../../types/general';
 import keyIconSvg from '../../../resources/imgs/Key_Icon.svg';
-import circleKeyIconSvg from '../../../resources/imgs/Circle_Key_Icon.svg';
 import { ms } from '../../styles/helpers';
 import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
 
@@ -30,17 +29,8 @@ import {
     Delegate,
     DelegateContainer,
     Breadcrumbs,
-    CircleKeyIcon,
     KeyIconButton,
     KeyIcon,
-    ModalContent,
-    ButtonContainer,
-    CloseButton,
-    HideShowContainer,
-    KeyContainer,
-    WarningContainer,
-    WarningTxt,
-    StoreTxt,
     BellIcon,
     TooltipContent,
     Gap,
@@ -69,10 +59,7 @@ function BalanceBanner(props: Props) {
     const addressIndex = selectedAccountIndex + 1;
     const parentIndex = selectedParentIndex + 1;
 
-    const [isOpen, setIsOpen] = useState(false);
     const [isShowKey, setIsShowKey] = useState(false);
-
-    const maskedSecretKey = secretKey.split('').map(() => '*');
 
     let addressLabel = '';
     switch (selectedAccountType) {
@@ -122,7 +109,7 @@ function BalanceBanner(props: Props) {
                         {!displayName ? addressLabel : displayName}
 
                         {isManager && !isLedger && (
-                            <KeyIconButton size="small" color="primary" onClick={() => setIsOpen(true)}>
+                            <KeyIconButton size="small" color="primary" onClick={() => setIsShowKey(true)}>
                                 <KeyIcon src={keyIconSvg} />
                             </KeyIconButton>
                         )}
@@ -150,26 +137,8 @@ function BalanceBanner(props: Props) {
                     </DelegateContainer>
                 )}
             </BottomRow>
-            <Modal title={t('components.balanceBanner.secret_key')} open={isOpen} onClose={() => setIsOpen(false)}>
-                <ModalContent>
-                    <HideShowContainer onClick={() => setIsShowKey(!isShowKey)}>
-                        {isShowKey ? t('components.balanceBanner.hide_key') : t('components.balanceBanner.reveal_key')}
-                    </HideShowContainer>
-                    <KeyContainer>{isShowKey ? secretKey : maskedSecretKey}</KeyContainer>
-                    <WarningContainer>
-                        <CircleKeyIcon src={circleKeyIconSvg} />
-                        <StoreTxt>
-                            <WarningTxt>{t('components.balanceBanner.warning')}</WarningTxt>
-                            {t('components.balanceBanner.do_not_store')}
-                        </StoreTxt>
-                    </WarningContainer>
-                    <ButtonContainer>
-                        <CloseButton buttonTheme="primary" onClick={() => setIsOpen(false)}>
-                            {t('general.verbs.close')}
-                        </CloseButton>
-                    </ButtonContainer>
-                </ModalContent>
-            </Modal>
+
+            {isShowKey && <KeyDetails open={isShowKey} onClose={() => setIsShowKey(false)} />}
         </Container>
     );
 }

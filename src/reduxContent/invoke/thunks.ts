@@ -8,7 +8,7 @@ import { createTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
-import { getMainNode, getMainPath } from '../../utils/settings';
+import { getMainNode } from '../../utils/settings';
 
 import { findAccountIndex } from '../../utils/account';
 import { findIdentity } from '../../utils/identity';

@@ -21,7 +21,7 @@ const openCustomProtocol = (url, appWindow) => {
     }
 };
 
-ipcMain.on('os-platform', event => {
+ipcMain.on('os-platform', (event) => {
     event.returnValue = os.platform();
 });
 
@@ -41,7 +41,7 @@ const installExtensions = async () => {
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
     const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
-    return Promise.all(extensions.map(name => installer.default(installer[name], forceDownload))).catch();
+    return Promise.all(extensions.map((name) => installer.default(installer[name], forceDownload))).catch();
 };
 
 /**
@@ -65,8 +65,10 @@ app.on('open-url', (event, url) => {
 app.setAsDefaultProtocolClient('galleon');
 
 app.on('ready', async () => {
+    let allowDevTools = false;
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
         await installExtensions();
+        allowDevTools = true;
     }
 
     mainWindow = new BrowserWindow({
@@ -75,8 +77,8 @@ app.on('ready', async () => {
         minWidth: 1024,
         show: false,
         title: 'Tezori',
-        webPreferences: { nodeIntegration: true },
-        width: 1120
+        webPreferences: { nodeIntegration: true, devTools: allowDevTools },
+        width: 1120,
     });
 
     mainWindow.loadURL(`file://${__dirname}/app.html`);

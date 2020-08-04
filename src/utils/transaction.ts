@@ -109,13 +109,7 @@ export async function getIndexedTransactions(accountHash, node: Node) {
     origin = ConseilQueryBuilder.setLimit(origin, 1_000);
 
     let target = ConseilQueryBuilder.blankQuery();
-    target = ConseilQueryBuilder.addPredicate(
-        target,
-        'kind',
-        ConseilOperator.IN,
-        ['transaction', 'activate_account', 'reveal', 'origination', 'delegation'],
-        false
-    );
+    target = ConseilQueryBuilder.addPredicate(target, 'kind', ConseilOperator.EQ, ['transaction'], false);
     target = ConseilQueryBuilder.addPredicate(target, 'destination', ConseilOperator.EQ, [accountHash], false);
     target = ConseilQueryBuilder.addPredicate(target, 'internal', ConseilOperator.EQ, ['false'], false);
     target = ConseilQueryBuilder.addOrdering(target, 'block_level', ConseilSortDirection.DESC);
