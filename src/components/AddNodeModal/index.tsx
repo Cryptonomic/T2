@@ -76,7 +76,7 @@ function AddNodeModal(props: Props) {
       return;
     }
 
-    if (isValidUrl(conseilUrl)) {
+    if (!isValidUrl(conseilUrl)) {
       setConseilError(t('components.addNodeModal.error'));
       return;
     }
