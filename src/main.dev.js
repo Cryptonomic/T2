@@ -4,6 +4,20 @@ const { ipcMain } = electron;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
+// function showOpenDialog() {
+// 	const files = dialog.showOpenDialog({
+// 		title: 'open',
+// 		properties: [ 'openFile' ],
+// 		filters: [
+// 			{
+// 				name: 'text file',
+// 				extensions: [ 'txt' ]
+// 			}
+// 		]
+// 	});
+// 	return files;
+// }
+
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
 
