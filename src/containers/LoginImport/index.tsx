@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import path from 'path';
 import { useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
@@ -79,6 +79,15 @@ function LoginImport() {
 
     function openFile(event) {
         if (event.detail === 0) {
+            return;
+        }
+
+        // [TESTING]
+        if (ipcRenderer.sendSync('is-spectron')) {
+            event.preventDefault();
+            const testingWallet = ipcRenderer.sendSync('testing-wallet');
+            setWalletLocation(path.dirname(testingWallet));
+            setWalletFileName(path.basename(testingWallet));
             return;
         }
 

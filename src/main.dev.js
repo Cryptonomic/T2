@@ -4,20 +4,6 @@ const { ipcMain } = electron;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
-// function showOpenDialog() {
-// 	const files = dialog.showOpenDialog({
-// 		title: 'open',
-// 		properties: [ 'openFile' ],
-// 		filters: [
-// 			{
-// 				name: 'text file',
-// 				extensions: [ 'txt' ]
-// 			}
-// 		]
-// 	});
-// 	return files;
-// }
-
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
 
@@ -37,6 +23,16 @@ const openCustomProtocol = (url, appWindow) => {
 
 ipcMain.on('os-platform', (event) => {
     event.returnValue = os.platform();
+});
+
+// [TESTING]
+ipcMain.on('is-spectron', (e) => {
+    e.returnValue = process.env.NODE_TEST === 'spectron';
+});
+
+// [TESTING]
+ipcMain.on('testing-wallet', (e) => {
+    e.returnValue = `${__dirname}/tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet`;
 });
 
 let mainWindow = null;

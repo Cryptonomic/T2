@@ -1,7 +1,6 @@
 const assert = require('assert');
 const path = require('path');
 const { Application } = require('spectron');
-const fakeDialog = require('spectron-fake-dialog');
 const { electron } = require('process');
 
 // construct paths
@@ -17,21 +16,19 @@ describe('Test', function () {
     const app = new Application({
         path: electronBinary,
         args: [baseDir],
+        env: {
+            NODE_TEST: 'spectron',
+        },
     });
-    fakeDialog.apply(app);
 
-    before(() =>
-        app.start().then(() => {
-            fakeDialog.mock([{ method: 'showOpenDialog', value: ['tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet'] }]);
-        })
-    );
+    before(() => app.start());
     after(() => app.stop());
 
     it('first test', async () => {
         const count = await app.client.getWindowCount();
         assert.equal(count, 1);
-        const header = await app.client.getText('h1.sc-pYZcj');
-        assert.equal(header, 'Tezori');
+        // const header = await app.client.getText('h1.sc-pYZcj');
+        // assert.equal(header, 'Tezori');
         // await sleep(3000);
         await app.client.click('button=Continue');
         // await sleep(3000);
@@ -52,5 +49,6 @@ describe('Test', function () {
         // );
         // const remoteFilePath = await app.client.uploadFile(filePath);
         await app.client.click('#test button');
+        await sleep(5000);
     });
 });

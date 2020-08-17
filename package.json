@@ -31,7 +31,7 @@
 		"start": "cross-env NODE_ENV=production electron ./src/main.prod.js",
 		"start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron ./src/main.dev.js",
 		"start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config ./configs/webpack.config.renderer.dev.js",
-		"test": "cross-env NODE_ENV=development electron-mocha",
+		"test": "cross-env NODE_ENV=development mocha",
 		"test-all": "npm run lint && npm run build && npm run test && npm run build-e2e && npm run test-e2e",
 		"test-e2e": "node ./scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe electron:./src ./test/e2e/HomePage.e2e.ts",
 		"test-e2e-live": "node ./scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe --live electron:./src ./test/e2e/HomePage.e2e.ts",
@@ -43,15 +43,27 @@
 		}
 	},
 	"lint-staged": {
-		"{src,test,mocks}/**/*.{js,ts,tsx,json,css,scss,md}": [ "prettier --config ./.prettierrc --write", "git add" ],
-		"{src,test,mocks}/**/*.{js,ts,tsx}": [ "tslint --project ./tsconfig.json --fix", "git add" ]
+		"{src,test,mocks}/**/*.{js,ts,tsx,json,css,scss,md}": [
+			"prettier --config ./.prettierrc --write",
+			"git add"
+		],
+		"{src,test,mocks}/**/*.{js,ts,tsx}": [
+			"tslint --project ./tsconfig.json --fix",
+			"git add"
+		]
 	},
 	"jest": {
 		"transform": {
 			".+\\.tsx?$": "ts-jest"
 		},
 		"testRegex": "(/test/.+\\.spec)\\.tsx?$",
-		"moduleFileExtensions": [ "ts", "tsx", "js", "json", "node" ],
+		"moduleFileExtensions": [
+			"ts",
+			"tsx",
+			"js",
+			"json",
+			"node"
+		],
 		"moduleNameMapper": {
 			"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
 			"\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js"
@@ -61,17 +73,28 @@
 		"protocols": [
 			{
 				"name": "tezori",
-				"schemes": [ "tezori" ]
+				"schemes": [
+					"tezori"
+				]
 			}
 		],
 		"productName": "Tezori",
 		"appId": "tech.cryptonomic.tezori",
-		"files": [ "dist/", "locales/", "app.html", "main.prod.js", "main.prod.js.map", "package.json" ],
+		"files": [
+			"dist/",
+			"locales/",
+			"app.html",
+			"main.prod.js",
+			"main.prod.js.map",
+			"package.json"
+		],
 		"mac": {
 			"hardenedRuntime": true,
 			"entitlements": "./resources/entitlements.mac.plist",
 			"entitlementsInherit": "./resources/entitlements.mac.plist",
-			"target": [ "dmg" ]
+			"target": [
+				"dmg"
+			]
 		},
 		"dmg": {
 			"contents": [
@@ -89,10 +112,17 @@
 			"sign": false
 		},
 		"win": {
-			"target": [ "nsis", "msi" ]
+			"target": [
+				"nsis",
+				"msi"
+			]
 		},
 		"linux": {
-			"target": [ "deb", "rpm", "snap" ],
+			"target": [
+				"deb",
+				"rpm",
+				"snap"
+			],
 			"category": "Development"
 		},
 		"directories": {
@@ -161,7 +191,6 @@
 		"source-map-loader": "0.2.4",
 		"spectron": "10.0.1",
 		"spectron-dialog-addon": "^1.0.1",
-		"spectron-fake-dialog": "0.0.1",
 		"style-loader": "1.2.1",
 		"terser-webpack-plugin": "3.0.1",
 		"ts-jest": "26.0.0",
