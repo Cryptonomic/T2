@@ -131,7 +131,7 @@ export function clearOperationId(operationId) {
 
 export const getVersionFromApi = async () => {
     try {
-        const response = await fetch(versionReferenceURL);
+        const response = await fetch(versionReferenceURL, { cache: 'no-store' });
         const responseJson = await response.json();
         return responseJson;
     } catch (error) {
