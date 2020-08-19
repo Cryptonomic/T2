@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import path from 'path';
 import zxcvbn from 'zxcvbn';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,7 @@ import {
     WalletFileSection,
     FileDescription,
     FileDescriptionArrowIcon,
-    ButtonAddIcon
+    ButtonAddIcon,
 } from './style';
 import { RootState } from '../../types/store';
 
@@ -57,8 +57,18 @@ function LoginCreate() {
         if (event.detail === 0 && walletLocation && walletFileName) {
             return;
         }
+
+        // [TESTING]
+        if (ipcRenderer.sendSync('is-spectron')) {
+            event.preventDefault();
+            const newWallet = ipcRenderer.sendSync('new-wallet');
+            setWalletLocation(path.dirname(newWallet));
+            setWalletFileName(path.basename(newWallet));
+            return;
+        }
+
         const currentWindow = remote.getCurrentWindow();
-        remote.dialog.showSaveDialog(currentWindow, { filters: dialogFilters }).then(result => {
+        remote.dialog.showSaveDialog(currentWindow, { filters: dialogFilters }).then((result) => {
             const filePath = result.filePath;
             if (filePath) {
                 setWalletLocation(path.dirname(filePath));
@@ -163,7 +173,7 @@ function LoginCreate() {
     const isDisabled = isLoading || !isPasswordValidation || !isPasswordMatched || !walletFileName;
 
     return (
-        <CreateContainer onKeyDown={event => onEnterPress(event.key, isDisabled)}>
+        <CreateContainer onKeyDown={(event) => onEnterPress(event.key, isDisabled)}>
             <WalletContainers>
                 <BackButtonContainer>
                     <BackButton label={t('general.back')} />
@@ -173,12 +183,19 @@ function LoginCreate() {
                 <FormContainer>
                     <CreateFileSelector>
                         {getWalletFileSection()}
-                        <CreateFileButton startIcon={<ButtonAddIcon />} size="small" variant="outlined" onClick={evt => saveFile(evt)}>
+                        <CreateFileButton
+                            id="new-wallet-file-button"
+                            startIcon={<ButtonAddIcon />}
+                            size="small"
+                            variant="outlined"
+                            onClick={(evt) => saveFile(evt)}
+                        >
                             {t('containers.loginCreate.create_new_wallet_btn')}
                         </CreateFileButton>
                     </CreateFileSelector>
                     <PasswordsContainer>
                         <ValidInput
+                            id={t('create-wallet-password')}
                             label={t('containers.loginCreate.create_wallet_password_label')}
                             isShowed={isPwdShowed}
                             error={pwdError}
@@ -189,6 +206,7 @@ function LoginCreate() {
                             onShow={() => onPasswordShow(0)}
                         />
                         <ValidInput
+                            id={t('confirm-wallet-password')}
                             label={t('containers.loginCreate.confirm_wallet_password_label')}
                             status={true}
                             isShowed={isConfirmPwdShowed}

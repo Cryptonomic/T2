@@ -39,6 +39,11 @@ ipcMain.on('testing-wallet', (e) => {
     e.returnValue = `${walletLocation}`;
 });
 
+// [TESTING]
+ipcMain.on('new-wallet', (e) => {
+    e.returnValue = `${__dirname}/new.tezwallet`;
+});
+
 let mainWindow = null;
 
 if (process.env.NODE_ENV === 'production') {
