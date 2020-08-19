@@ -86,6 +86,7 @@ const CheckContainer = styled.div<{ visibilityIcon?: boolean }>`
 `;
 
 interface Props {
+    id?: string;
     label: string;
     error: string;
     suggestion?: string;
@@ -99,7 +100,7 @@ interface Props {
 
 function InputValid(props: Props) {
     const { t } = useTranslation();
-    const { label, error, suggestion, score, status, isShowed, changFunc, onShow, visibilityIcon } = props;
+    const { id, label, error, suggestion, score, status, isShowed, changFunc, onShow, visibilityIcon } = props;
     const borderColor = focusBorderColors[score];
     let width = '';
     if (score && !status) {
@@ -113,6 +114,7 @@ function InputValid(props: Props) {
             <Content>
                 <LabelWrapper>{label}</LabelWrapper>
                 <InputWrapper
+                    id={id}
                     key={label}
                     type={isShowed ? 'text' : 'password'}
                     onChange={(event) => changFunc(event.target.value)}

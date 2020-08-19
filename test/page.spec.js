@@ -50,6 +50,14 @@ const TestPage = function () {
         await this.app.client.click('#openWalletButton');
     };
 
+    this.createNewWallet = async () => {
+        await this.app.client.click('span=Create New Wallet');
+        await this.app.client.click('#new-wallet-file-button');
+        await this.app.client.setValue('#create-wallet-password', 'cryptonomic1');
+        await this.app.client.setValue('#confirm-wallet-password', 'cryptonomic1');
+        await this.app.client.click('span=Create Wallet');
+    };
+
     this.getWindowCount = function () {
         return this.app.client.waitUntilWindowLoaded().getWindowCount();
     };
