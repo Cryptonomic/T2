@@ -125,14 +125,14 @@ function LoginImport() {
                     <BackButton label={t('general.back')} />
                 </BackButtonContainer>
                 <WalletTitle>{t('containers.loginImport.open_wallet_label')}</WalletTitle>
-                <ImportButtonContainer id="test">
-                    <SelectBtn id="test2" size="small" color="secondary" variant="outlined" onClick={openFile}>
+                <ImportButtonContainer>
+                    <SelectBtn id="selectWalletButton" size="small" color="secondary" variant="outlined" onClick={openFile}>
                         {t('containers.loginImport.select_file_btn')}
                     </SelectBtn>
-                    <WalletFileName id="test3">{walletFileName}</WalletFileName>
+                    <WalletFileName id="walletFileName">{walletFileName}</WalletFileName>
                 </ImportButtonContainer>
-                <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
-                <ActionButton onClick={() => onLogin(IMPORT)} color="secondary" variant="extended" disabled={isDisabled}>
+                <PasswordInput id="walletPassword" label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
+                <ActionButton id="openWalletButton" onClick={() => onLogin(IMPORT)} color="secondary" variant="extended" disabled={isDisabled}>
                     {t('general.verbs.open')}
                 </ActionButton>
             </WalletContainers>

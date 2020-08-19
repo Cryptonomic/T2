@@ -1,6 +1,7 @@
 const assert = require('assert');
 const path = require('path');
 const { Application } = require('spectron');
+const testPage = require('./page.spec');
 const { electron } = require('process');
 
 // construct paths
@@ -10,7 +11,11 @@ const electronBinary = path.join(baseDir, 'node_modules', '.bin', 'electron');
 // utility functions
 const sleep = (time) => new Promise((r) => setTimeout(r, time));
 
-describe('Test', function () {
+// page object
+
+const page = new testPage();
+
+describe('Test Example', function () {
     this.timeout(500000);
 
     const app = new Application({
@@ -21,34 +26,26 @@ describe('Test', function () {
         },
     });
 
+    page.setApp(app);
+
     before(() => app.start());
     after(() => app.stop());
 
+    // it('Page title is correct', async () => {
+    // 	const appTitle = await page.getApplicationTitle();
+    // 	assert.equal(appTitle, page.pageTitle);
+    // });
+
     it('first test', async () => {
-        const count = await app.client.getWindowCount();
-        assert.equal(count, 1);
-        // const header = await app.client.getText('h1.sc-pYZcj');
-        // assert.equal(header, 'Tezori');
-        // await sleep(3000);
-        await app.client.click('button=Continue');
-        // await sleep(3000);
-        await app.client.click('button=I Agree');
-        // await sleep(3000);
-        await app.client.click('#settingsButton');
-        // await sleep(3000);
-        await app.client.click('#settingsTestNodeButton');
-        await app.client.click('div=Tezos Testnet (nautilus.cloud)');
-        await app.client.click('span=Back to Login');
-        // await sleep(3000);
-        await app.client.click('span=Open Existing Wallet');
-        // await app.client.click('span=Select Wallet File');
-        // const filePath = '/Users/jacekwalczak/Documents/GitHub/T2/test/tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet';
-        // await app.client.chooseFile(
-        // 	'#test button',
-        // 	'/Users/jacekwalczak/Documents/GitHub/T2/test/tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet'
-        // );
-        // const remoteFilePath = await app.client.uploadFile(filePath);
-        await app.client.click('#test button');
-        await sleep(5000);
+        const appTitle = await page.getApplicationTitle();
+        assert.equal(appTitle, page.pageTitle);
+
+        // await app.client.click('button=Continue');
+        // await app.client.click('button=I Agree');
+        await page.selectLanguageAndAgreeToTerms();
+        await page.setTestNode();
+        await page.openExistingWallet();
+
+        await sleep(10000);
     });
 });

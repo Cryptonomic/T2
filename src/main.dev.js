@@ -32,7 +32,9 @@ ipcMain.on('is-spectron', (e) => {
 
 // [TESTING]
 ipcMain.on('testing-wallet', (e) => {
-    e.returnValue = `${__dirname}/tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet`;
+    let path = require('path');
+    let p = path.join(__dirname, '.', 'tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet');
+    e.returnValue = `${p}`;
 });
 
 let mainWindow = null;
