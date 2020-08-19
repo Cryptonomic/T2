@@ -1,5 +1,6 @@
 const electron = require('electron');
 const os = require('os');
+const { desktopCapturer } = require('electron');
 const { ipcMain } = electron;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -27,14 +28,15 @@ ipcMain.on('os-platform', (event) => {
 
 // [TESTING]
 ipcMain.on('is-spectron', (e) => {
-    e.returnValue = process.env.NODE_TEST === 'spectron';
+    e.returnValue = process.env.NODE_ENV === 'spectron';
 });
 
 // [TESTING]
 ipcMain.on('testing-wallet', (e) => {
     let path = require('path');
-    let p = path.join(__dirname, '.', 'tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet');
-    e.returnValue = `${p}`;
+    const baseDir = path.join(__dirname);
+    const walletLocation = path.join(baseDir, 'ś');
+    e.returnValue = `${walletLocation}`;
 });
 
 let mainWindow = null;

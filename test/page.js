@@ -43,15 +43,15 @@ const TestPage = function () {
         let buttonEnabled = await this.app.client.isEnabled('#openWalletButton');
         assert.equal(buttonEnabled, false);
 
-        await this.app.client.addValue('#walletPassword input', 'cryptonomic1');
+        await this.app.client.addValue('#walletPassword input', 'ś');
 
         buttonEnabled = await this.app.client.isEnabled('#openWalletButton');
         assert.equal(buttonEnabled, true);
         await this.app.client.click('#openWalletButton');
     };
 
-    this.getWindowCount = function () {
-        return this.app.client.waitUntilWindowLoaded().getWindowCount();
+    this.getWindowCount = async () => {
+        return await this.app.client.waitUntilWindowLoaded().getWindowCount();
     };
 
     this.getApplicationTitle = function () {

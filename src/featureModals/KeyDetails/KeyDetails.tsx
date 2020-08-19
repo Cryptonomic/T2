@@ -38,20 +38,20 @@ const KeyDetails = (props: Props) => {
     return (
         <ModalWrapper open={open}>
             {open ? (
-                <ModalContainer>
+                <ModalContainer id="accountKeys">
                     <CloseIconWrapper onClick={() => onClose()} />
                     <ModalTitle>{t('components.keyDetailsModal.title')}</ModalTitle>
                     <Keys>
                         <KeyWrapper>
                             <KeyTitle>{t('components.keyDetailsModal.address')}</KeyTitle>
-                            <KeyAddress>
+                            <KeyAddress id="address">
                                 {address}
                                 <CopyButton text={address} title="" color="accent" />
                             </KeyAddress>
                         </KeyWrapper>
                         <KeyWrapper>
                             <KeyTitle>{t('components.keyDetailsModal.publicKey')}</KeyTitle>
-                            <KeyAddress>
+                            <KeyAddress id="publicKey">
                                 {publicKey}
                                 <CopyButton text={'Tezos Public Key: ' + publicKey} title="" color="accent" />
                             </KeyAddress>
@@ -60,13 +60,13 @@ const KeyDetails = (props: Props) => {
                             <KeyWrapper>
                                 <KeyTitle>{t('components.keyDetailsModal.secretKey')}</KeyTitle>
                                 {!secretKeyVisible && (
-                                    <SecretKeyMessage onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
+                                    <SecretKeyMessage id="secretMessage" onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
                                         {t('components.keyDetailsModal.secretKeyNotice')}
                                     </SecretKeyMessage>
                                 )}
                                 {secretKeyVisible && (
                                     <>
-                                        <KeyAddress>
+                                        <KeyAddress id="secretKey">
                                             {secretKey}
                                             <CopyButton text={'Tezos Secret Key: ' + secretKey} title="" color="accent" />
                                         </KeyAddress>

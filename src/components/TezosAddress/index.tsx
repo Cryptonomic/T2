@@ -33,17 +33,18 @@ interface Props {
     size: string;
     text?: string;
     color2?: string;
+    id?: string;
 }
 
 const TezosAddress = (props: Props) => {
-    const { address, weight, size, color, text, color2 } = props;
+    const { address, weight, size, color, text, color2, id } = props;
 
     if (!address) {
-        return  <span/>;
+        return <span />;
     }
 
     return (
-        <Address weight={weight} color={color} size={size}>
+        <Address weight={weight} color={color} size={size} id="tezosAddress">
             <span>
                 <FirstPart color={color2 || color}>{address.slice(0, 3)}</FirstPart>
                 <SecondPart>{address.slice(3)}</SecondPart>

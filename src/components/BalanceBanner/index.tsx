@@ -95,10 +95,10 @@ function BalanceBanner(props: Props) {
     }
 
     return (
-        <Container>
+        <Container id="balanceBanner">
             <TopRow isReady={isReady}>
                 <Breadcrumbs>{breadcrumbs}</Breadcrumbs>
-                <Update onClick={onSyncWallet} time={time} isReady={isReady} isWalletSyncing={isWalletSyncing} />
+                <Update id="Update" onClick={onSyncWallet} time={time} isReady={isReady} isWalletSyncing={isWalletSyncing} />
             </TopRow>
             <BottomRow isReady={isReady}>
                 {selectedAccountType !== AddressType.Smart && (
@@ -109,7 +109,7 @@ function BalanceBanner(props: Props) {
                         {!displayName ? addressLabel : displayName}
 
                         {isManager && !isLedger && (
-                            <KeyIconButton size="small" color="primary" onClick={() => setIsShowKey(true)}>
+                            <KeyIconButton id="keyButton" size="small" color="primary" onClick={() => setIsShowKey(true)}>
                                 <KeyIcon src={keyIconSvg} />
                             </KeyIconButton>
                         )}
@@ -122,7 +122,7 @@ function BalanceBanner(props: Props) {
                         )}
                     </AddressTitle>
                 )}
-                <AddressInfo>
+                <AddressInfo id="addressInfo">
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} />
                     <Gap />
 
@@ -131,9 +131,9 @@ function BalanceBanner(props: Props) {
                     ) : null}
                 </AddressInfo>
                 {delegatedAddress && (
-                    <DelegateContainer>
+                    <DelegateContainer id="delegate">
                         <Delegate>{t('components.balanceBanner.delegated_to')}</Delegate>
-                        <TezosAddress address={delegatedAddress} color="white" size={ms(-1)} weight={300} />
+                        <TezosAddress id="tezosAddres" address={delegatedAddress} color="white" size={ms(-1)} weight={300} />
                     </DelegateContainer>
                 )}
             </BottomRow>
