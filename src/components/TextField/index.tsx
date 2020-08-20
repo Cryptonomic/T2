@@ -5,7 +5,7 @@ import NumberFormat from 'react-number-format';
 
 const Container = styled(FormControl)`
     width: 100%;
-    pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
+    pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 
 const InputWrapper = styled(Input)<{ right: number | undefined }>`
@@ -49,11 +49,11 @@ const NumberFormatCustom: React.ComponentType<any> = (props: Props1) => {
             {...other}
             type="text"
             getInputRef={inputRef}
-            onValueChange={values => {
+            onValueChange={(values) => {
                 onChange({
                     target: {
-                        value: values.value
-                    }
+                        value: values.value,
+                    },
                 });
             }}
             thousandSeparator={true}
@@ -62,6 +62,7 @@ const NumberFormatCustom: React.ComponentType<any> = (props: Props1) => {
 };
 
 interface Props {
+    id?: string;
     label: string;
     type?: string;
     errorText?: string | React.ReactNode;
@@ -75,12 +76,12 @@ interface Props {
 }
 
 function TextField(props: Props) {
-    const { label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
+    const { id, label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
     return (
         <Container disabled={disabled}>
             <LabelWrapper htmlFor="custom-input">{label}</LabelWrapper>
             <InputWrapper
-                id="custom-input"
+                id={id}
                 key={label}
                 type={type}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +106,7 @@ TextField.defaultProps = {
     type: 'text',
     errorText: '',
     disabled: false,
-    right: 0
+    right: 0,
 };
 
 export default TextField;

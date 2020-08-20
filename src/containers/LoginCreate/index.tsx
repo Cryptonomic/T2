@@ -184,7 +184,7 @@ function LoginCreate() {
                     <CreateFileSelector>
                         {getWalletFileSection()}
                         <CreateFileButton
-                            id="new-wallet-file-button"
+                            id="newWalletFileButton"
                             startIcon={<ButtonAddIcon />}
                             size="small"
                             variant="outlined"
@@ -195,7 +195,7 @@ function LoginCreate() {
                     </CreateFileSelector>
                     <PasswordsContainer>
                         <ValidInput
-                            id={t('create-wallet-password')}
+                            id={t('createWalletPassword')}
                             label={t('containers.loginCreate.create_wallet_password_label')}
                             isShowed={isPwdShowed}
                             error={pwdError}
@@ -206,7 +206,7 @@ function LoginCreate() {
                             onShow={() => onPasswordShow(0)}
                         />
                         <ValidInput
-                            id={t('confirm-wallet-password')}
+                            id={t('confirmWalletPassword')}
                             label={t('containers.loginCreate.confirm_wallet_password_label')}
                             status={true}
                             isShowed={isConfirmPwdShowed}
