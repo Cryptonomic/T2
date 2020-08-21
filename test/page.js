@@ -34,7 +34,7 @@ const TestPage = function () {
         await this.goBackFromSetting();
     };
 
-    this.openExistingWallet = async () => {
+    this.openExistingWallet = async (password) => {
         await this.app.client.click('span=Open Existing Wallet');
         await this.app.client.click('#selectWalletButton');
         const walletFileName = await this.app.client.getText('#walletFileName');
@@ -43,7 +43,7 @@ const TestPage = function () {
         let buttonEnabled = await this.app.client.isEnabled('#openWalletButton');
         assert.equal(buttonEnabled, false);
 
-        await this.app.client.addValue('#walletPassword input', 'ś');
+        await this.app.client.addValue('#walletPassword input', password);
 
         buttonEnabled = await this.app.client.isEnabled('#openWalletButton');
         assert.equal(buttonEnabled, true);

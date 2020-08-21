@@ -28,14 +28,14 @@ ipcMain.on('os-platform', (event) => {
 
 // [TESTING]
 ipcMain.on('is-spectron', (e) => {
-    e.returnValue = process.env.NODE_ENV === 'spectron';
+    e.returnValue = process.env.WEB_CLIENT === 'spectron';
 });
 
 // [TESTING]
 ipcMain.on('testing-wallet', (e) => {
     let path = require('path');
-    const baseDir = path.join(__dirname);
-    const walletLocation = path.join(baseDir, 'ś');
+    const baseDir = path.join(__dirname, '..');
+    const walletLocation = path.join(baseDir, 'test', 'walletsData', process.env.WALLET_LOCATION);
     e.returnValue = `${walletLocation}`;
 });
 
