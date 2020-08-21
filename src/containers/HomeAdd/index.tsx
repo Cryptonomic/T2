@@ -116,6 +116,7 @@ function AddAddress() {
                         <RowInputs>
                             <InputWithTooltip>
                                 <TextField
+                                    id={'fundraiserPassword'}
                                     label={t('containers.homeAddAddress.fundraiser_password')}
                                     type={isShowedPwd ? 'text' : 'password'}
                                     value={passPhrase}
@@ -135,7 +136,13 @@ function AddAddress() {
                             </InputWithTooltip>
 
                             <InputWithTooltip>
-                                <TextField label={t('containers.homeAddAddress.public_key_hash')} value={pkh} onChange={(val) => setPkh(val)} right={30} />
+                                <TextField
+                                    id="publicKeyHash"
+                                    label={t('containers.homeAddAddress.public_key_hash')}
+                                    value={pkh}
+                                    onChange={(val) => setPkh(val)}
+                                    right={30}
+                                />
                                 <Tooltip position="bottom" content={PkhTooltip(t)}>
                                     <TooltipBtn size="small" color="primary">
                                         <TezosIcon iconName="help" size={ms(0)} color="secondary" />
@@ -147,6 +154,7 @@ function AddAddress() {
                         <RowInputs>
                             <InputWithTooltip>
                                 <TextField
+                                    id={'fundraiserEmailAddress'}
                                     label={t('containers.homeAddAddress.fundraiser_email_address')}
                                     value={username}
                                     onChange={(val) => setUsername(val)}
@@ -162,6 +170,7 @@ function AddAddress() {
 
                             <InputWithTooltip>
                                 <TextField
+                                    id={'homeAddressActivationCode'}
                                     label={t('containers.homeAddAddress.activation_code')}
                                     value={activationCode}
                                     onChange={(val) => setActivationCode(val)}

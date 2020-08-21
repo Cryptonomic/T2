@@ -90,7 +90,7 @@ const TopBar = (props: Props) => {
                 <Logo />
                 {isLoggedIn && <Text>{walletName}</Text>}
             </InfoContainer>
-            <ButtonContainer onClick={() => openLink(helpUrl)} buttonTheme="plain">
+            <ButtonContainer id="helpButton" onClick={() => openLink(helpUrl)} buttonTheme="plain">
                 <HelpIcon size={ms(1.8)} color="primary" iconName="help-outline" />
                 <ButtonText>{t('components.settingController.help')}</ButtonText>
             </ButtonContainer>

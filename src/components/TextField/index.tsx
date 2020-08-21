@@ -76,7 +76,7 @@ interface Props {
 }
 
 function TextField(props: Props) {
-    const { label, type, onChange, errorText, disabled, right, endAdornment, readOnly, id, ...other } = props;
+    const { id, label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
     return (
         <Container id={id} disabled={disabled}>
             <LabelWrapper htmlFor="custom-input">{label}</LabelWrapper>
