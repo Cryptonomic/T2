@@ -184,7 +184,7 @@ function LoginCreate() {
                     <CreateFileSelector>
                         {getWalletFileSection()}
                         <CreateFileButton
-                            id="newWalletFileButton"
+                            id="test-new-file-button"
                             startIcon={<ButtonAddIcon />}
                             size="small"
                             variant="outlined"

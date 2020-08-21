@@ -78,10 +78,10 @@ interface Props {
 function TextField(props: Props) {
     const { id, label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
     return (
-        <Container id={id} disabled={disabled}>
-            <LabelWrapper htmlFor="custom-input">{label}</LabelWrapper>
+        <Container disabled={disabled}>
+            <LabelWrapper htmlFor={id || 'custom-input'}>{label}</LabelWrapper>
             <InputWrapper
-                id="custom-input"
+                id={id || 'custom-input'}
                 key={label}
                 type={type}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
