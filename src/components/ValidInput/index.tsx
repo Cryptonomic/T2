@@ -86,7 +86,6 @@ const CheckContainer = styled.div<{ visibilityIcon?: boolean }>`
 `;
 
 interface Props {
-    id?: string;
     label: string;
     error: string;
     suggestion?: string;
@@ -96,11 +95,12 @@ interface Props {
     visibilityIcon?: boolean | undefined;
     changFunc: (val: string) => void;
     onShow: () => void;
+    dataSpectron?: string;
 }
 
 function InputValid(props: Props) {
     const { t } = useTranslation();
-    const { id, label, error, suggestion, score, status, isShowed, changFunc, onShow, visibilityIcon } = props;
+    const { dataSpectron, label, error, suggestion, score, status, isShowed, changFunc, onShow, visibilityIcon } = props;
     const borderColor = focusBorderColors[score];
     let width = '';
     if (score && !status) {
@@ -114,7 +114,7 @@ function InputValid(props: Props) {
             <Content>
                 <LabelWrapper>{label}</LabelWrapper>
                 <InputWrapper
-                    id={id}
+                    data-spectron={dataSpectron}
                     key={label}
                     type={isShowed ? 'text' : 'password'}
                     onChange={(event) => changFunc(event.target.value)}

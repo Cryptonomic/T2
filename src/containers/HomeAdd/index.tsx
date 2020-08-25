@@ -193,7 +193,7 @@ function AddAddress() {
 
     return (
         <Container>
-            <TitleContainer id="title-add-an-account">{t('containers.homeAddAddress.add_account')}</TitleContainer>
+            <TitleContainer data-spectron="title-add-an-account">{t('containers.homeAddAddress.add_account')}</TitleContainer>
             <TabContainer>
                 {Object.values(ADD_ADDRESS_TYPES).map((tabName) => (
                     <Tab key={tabName} isActive={tabName === activeTab} onClick={() => setActiveTab(tabName)}>
