@@ -72,16 +72,16 @@ interface Props {
     onChange?: (val: string) => void;
     endAdornment?: React.ReactElement;
     readOnly?: boolean;
-    id?: string;
+    dataSpectron?: string;
 }
 
 function TextField(props: Props) {
-    const { id, label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
+    const { dataSpectron, label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
     return (
         <Container disabled={disabled}>
-            <LabelWrapper htmlFor={id || 'custom-input'}>{label}</LabelWrapper>
+            <LabelWrapper htmlFor={dataSpectron || 'custom-input'}>{label}</LabelWrapper>
             <InputWrapper
-                id={id || 'custom-input'}
+                data-spectron={dataSpectron || 'custom-input'}
                 key={label}
                 type={type}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

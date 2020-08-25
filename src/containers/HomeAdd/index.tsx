@@ -116,7 +116,7 @@ function AddAddress() {
                         <RowInputs>
                             <InputWithTooltip>
                                 <TextField
-                                    id="test-home-address-fundraiser-password"
+                                    data-spectron="home-address-fundraiser-password"
                                     label={t('containers.homeAddAddress.fundraiser_password')}
                                     type={isShowedPwd ? 'text' : 'password'}
                                     value={passPhrase}
@@ -137,7 +137,7 @@ function AddAddress() {
 
                             <InputWithTooltip>
                                 <TextField
-                                    id="test-home-address-publish-key"
+                                    data-spectron="home-address-publish-key"
                                     label={t('containers.homeAddAddress.public_key_hash')}
                                     value={pkh}
                                     onChange={(val) => setPkh(val)}
@@ -154,7 +154,7 @@ function AddAddress() {
                         <RowInputs>
                             <InputWithTooltip>
                                 <TextField
-                                    id="test-fundraiser-email"
+                                    data-spectron="fundraiser-email"
                                     label={t('containers.homeAddAddress.fundraiser_email_address')}
                                     value={username}
                                     onChange={(val) => setUsername(val)}
@@ -170,7 +170,7 @@ function AddAddress() {
 
                             <InputWithTooltip>
                                 <TextField
-                                    id="test-home-address-activation-code"
+                                    data-spectron="home-address-activation-code"
                                     label={t('containers.homeAddAddress.activation_code')}
                                     value={activationCode}
                                     onChange={(val) => setActivationCode(val)}

@@ -90,7 +90,7 @@ const Sign = () => {
                 {error && result && <Result isError={error}>{result}</Result>}
                 {!error && result && (
                     <TextField
-                        id="signatureValue"
+                        data-spectron="signature-value"
                         label={t('general.nouns.signature')}
                         value={result}
                         readOnly={true}
