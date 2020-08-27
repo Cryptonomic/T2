@@ -131,7 +131,11 @@ function InputValid(props: Props) {
             </CheckContainer>
 
             <PasswordStrengthSuggestions>
-                {!!error && <Error color={borderColor}>{error}</Error>}
+                {!!error && (
+                    <Error data-spectron={`error-${dataSpectron}`} color={borderColor}>
+                        {error}
+                    </Error>
+                )}
                 {!!suggestion && <Suggestion>suggestion</Suggestion>}
             </PasswordStrengthSuggestions>
         </Container>

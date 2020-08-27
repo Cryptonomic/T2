@@ -156,7 +156,7 @@ function LoginCreate() {
             return (
                 <WalletFileSection>
                     <CheckIcon iconName="checkmark2" size={ms(5)} color="check" />
-                    <WalletFileName>{walletFileName}</WalletFileName>
+                    <WalletFileName data-spectron="new-wallet-file-name">{walletFileName}</WalletFileName>
                 </WalletFileSection>
             );
         }
