@@ -124,7 +124,7 @@ function InputValid(props: Props) {
             </Content>
             <CheckContainer visibilityIcon={true}>
                 {score === 4 && <CheckIcon iconName="checkmark2" size={ms(0)} color="check" onClick={onShow} />}
-                <ShowHidePwd onClick={onShow} style={{ cursor: 'pointer' }}>
+                <ShowHidePwd data-spectron={`visibility-${dataSpectron}`} onClick={onShow} style={{ cursor: 'pointer' }}>
                     {visibilityIcon && (isShowed ? <VisibilityIcon color="secondary" /> : <VisibilityIcon color="action" />)}
                     {!visibilityIcon && t(isShowed ? 'general.verbs.hide' : 'general.verbs.show')}
                 </ShowHidePwd>
