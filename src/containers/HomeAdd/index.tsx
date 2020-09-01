@@ -124,7 +124,7 @@ function AddAddress() {
                                     right={65}
                                 />
 
-                                <ShowHidePwd onClick={() => setIsShowedPwd(!isShowedPwd)} style={{ cursor: 'pointer' }}>
+                                <ShowHidePwd data-spectron="show-hide-password" onClick={() => setIsShowedPwd(!isShowedPwd)} style={{ cursor: 'pointer' }}>
                                     {t(isShowedPwd ? 'general.verbs.hide' : 'general.verbs.show')}
                                 </ShowHidePwd>
 
