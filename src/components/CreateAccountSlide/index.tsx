@@ -56,7 +56,7 @@ function CreateAccountSlide() {
     function mainRender() {
         switch (currentSlide) {
             case 0:
-                return <ShowSeedPhrase id="test-create-account-list-seed" seed={seed} onUpdate={() => updateMnemonic()} />;
+                return <ShowSeedPhrase seed={seed} onUpdate={() => updateMnemonic()} />;
             case 1:
                 return <BackUpSeedPhrase seed={seed} onValid={(isVal) => setIsDisabled(isVal)} />;
             default:

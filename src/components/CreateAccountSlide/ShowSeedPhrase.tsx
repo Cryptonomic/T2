@@ -5,13 +5,13 @@ import CopyButton from '../CopyButton';
 import { DescriptionContainer, IconContainer, RefreshButton, RefreshIconWrapper, SeedsContainer, SeedColume, SeedItem, SeedIndex } from './style';
 
 interface Props {
-    id?: string;
+    dataSpectron?: string;
     seed: string;
     onUpdate: () => void;
 }
 
 function ShowSeedPhrase(props: Props) {
-    const { id, seed, onUpdate } = props;
+    const { dataSpectron, seed, onUpdate } = props;
     const { t } = useTranslation();
 
     function setupSeedColumns() {
@@ -39,12 +39,12 @@ function ShowSeedPhrase(props: Props) {
     return (
         <Fragment>
             <DescriptionContainer>{t('components.createAccountSlide.descriptions.description1')}</DescriptionContainer>
-            <SeedsContainer id={id}>
+            <SeedsContainer data-spectron={dataSpectron}>
                 {seeds.map((items, index) => {
                     return (
-                        <SeedColume id="test-phase-column" key={index}>
+                        <SeedColume data-spectron="phase-column" key={index}>
                             {items.map((item, index1) => (
-                                <SeedItem id="test-item" key={index1}>
+                                <SeedItem key={index1}>
                                     <SeedIndex>{index * 6 + index1 + 1}</SeedIndex>
                                     {item}
                                 </SeedItem>
