@@ -33,7 +33,7 @@ import {
     Linebar,
     LedgerConnect,
     DescriptionBold,
-    SelectedPath
+    SelectedPath,
 } from './style';
 
 import { openLink } from '../../utils/general';
@@ -155,7 +155,10 @@ function LoginHome(props: Props) {
                             <div>
                                 {t('containers.loginHome.want_to_import_fundraiser_paper_wallet')}
                                 <Trans i18nKey="containers.loginHome.create_named_wallet">
-                                    <Link onClick={() => goTo('create')}>Create a wallet</Link> first.
+                                    <Link data-spectron="create-wallet-link" onClick={() => goTo('create')}>
+                                        Create a wallet
+                                    </Link>{' '}
+                                    first.
                                 </Trans>
                             </div>
                         </Tip>
