@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1599120752313" clover="3.2.0">
+  <project timestamp="1599120752313" name="All files">
+    <metrics statements="54" coveredstatements="20" conditionals="32" coveredconditionals="6" methods="10" coveredmethods="2" elements="96" coveredelements="28" complexity="0" loc="54" ncloc="54" packages="3" files="3" classes="3"/>
+    <package name="components.NodesStatus">
+      <metrics statements="12" coveredstatements="10" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="1"/>
+      <file name="index.tsx" path="/Users/dariuszsobkowicz/Workspace/Cryptnomic/T2/src/components/NodesStatus/index.tsx">
+        <metrics statements="12" coveredstatements="10" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="6" count="1" type="cond" truecount="2" falsecount="0"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="16" count="1" type="cond" truecount="2" falsecount="0"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="components.TezosIcon">
+      <metrics statements="38" coveredstatements="6" conditionals="28" coveredconditionals="2" methods="5" coveredmethods="0"/>
+      <file name="index.tsx" path="/Users/dariuszsobkowicz/Workspace/Cryptnomic/T2/src/components/TezosIcon/index.tsx">
+        <metrics statements="38" coveredstatements="6" conditionals="28" coveredconditionals="2" methods="5" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="4" count="1" type="cond" truecount="2" falsecount="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="64" count="0" type="stmt"/>
+        <line num="68" count="0" type="stmt"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
+        <line num="80" count="0" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="92" count="0" type="stmt"/>
+        <line num="96" count="0" type="stmt"/>
+        <line num="100" count="0" type="stmt"/>
+        <line num="104" count="0" type="stmt"/>
+        <line num="108" count="0" type="stmt"/>
+        <line num="112" count="0" type="stmt"/>
+        <line num="116" count="0" type="stmt"/>
+        <line num="120" count="0" type="stmt"/>
+        <line num="124" count="0" type="stmt"/>
+        <line num="128" count="0" type="stmt"/>
+        <line num="133" count="1" type="stmt"/>
+        <line num="134" count="0" type="stmt"/>
+        <line num="135" count="0" type="stmt"/>
+        <line num="142" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="styles">
+      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+      <file name="helpers.ts" path="/Users/dariuszsobkowicz/Workspace/Cryptnomic/T2/src/styles/helpers.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="5" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

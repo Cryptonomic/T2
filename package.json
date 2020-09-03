@@ -31,7 +31,7 @@
     "start": "cross-env NODE_ENV=production electron ./src/main.prod.js",
     "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron ./src/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config ./configs/webpack.config.renderer.dev.js",
-    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 jest",
+    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 jest --coverage",
     "test-all": "npm run lint && npm run build && npm run test && npm run build-e2e && npm run test-e2e",
     "test-e2e": "node ./scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe electron:./src ./test/e2e/HomePage.e2e.ts",
     "test-e2e-live": "node ./scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe --live electron:./src ./test/e2e/HomePage.e2e.ts",
@@ -53,10 +53,13 @@
     ]
   },
   "jest": {
+	"setupFilesAfterEnv": [
+		"<rootDir>/setupTests.js"
+	],
     "transform": {
       ".+\\.tsx?$": "ts-jest"
     },
-    "testRegex": "(/test/.+\\.spec)\\.tsx?$",
+    "testRegex": "(/__tests__/.+\\.spec)\\.tsx?$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -168,6 +171,8 @@
     "electron-devtools-installer": "3.0.0",
     "electron-notarize": "0.3.0",
     "electron-rebuild": "1.11.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.4",
     "file-loader": "6.0.0",
     "husky": "4.2.5",
     "image-webpack-loader": "6.0.0",
@@ -203,6 +208,7 @@
     "@material-ui/core": "4.9.14",
     "@material-ui/icons": "4.9.1",
     "@material-ui/lab": "4.0.0-alpha.53",
+    "@types/enzyme": "^3.10.5",
     "bignumber.js": "9.0.0",
     "blakejs": "1.1.0",
     "connected-react-router": "6.8.0",
