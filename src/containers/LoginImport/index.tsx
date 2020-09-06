@@ -126,13 +126,13 @@ function LoginImport() {
                 </BackButtonContainer>
                 <WalletTitle>{t('containers.loginImport.open_wallet_label')}</WalletTitle>
                 <ImportButtonContainer>
-                    <SelectBtn id="selectWalletButton" size="small" color="secondary" variant="outlined" onClick={openFile}>
+                    <SelectBtn data-spectron="select-wallet-button" id="selectWalletButton" size="small" color="secondary" variant="outlined" onClick={openFile}>
                         {t('containers.loginImport.select_file_btn')}
                     </SelectBtn>
-                    <WalletFileName id="walletFileName">{walletFileName}</WalletFileName>
+                    <WalletFileName data-spectron="wallet-file-name" id="walletFileName">{walletFileName}</WalletFileName>
                 </ImportButtonContainer>
-                <PasswordInput id="walletPassword" label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
-                <ActionButton id="openWalletButton" onClick={() => onLogin(IMPORT)} color="secondary" variant="extended" disabled={isDisabled}>
+                <PasswordInput dataSpectron="wallet-password" id="walletPassword" label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
+                <ActionButton data-spectron="open-wallet-button" id="openWalletButton" onClick={() => onLogin(IMPORT)} color="secondary" variant="extended" disabled={isDisabled}>
                     {t('general.verbs.open')}
                 </ActionButton>
             </WalletContainers>

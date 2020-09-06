@@ -45,14 +45,15 @@ interface Props {
   title: string;
   open: boolean;
   children?: React.ReactNode;
+  dataSpectron?: string;
   onClose: () => void;
 }
 
 const CustomModal = (props: Props) => {
-  const { title, open, children, onClose, ...other } = props;
+  const { title, open, children, dataSpectron, onClose, ...other } = props;
   return (
     <ModalWrapper open={open}>
-      <ModalContainer {...other}>
+      <ModalContainer data-spectron={dataSpectron} {...other}>
         <CloseIconWrapper onClick={onClose} />
         <ModalTitle>{title}</ModalTitle>
         {children}

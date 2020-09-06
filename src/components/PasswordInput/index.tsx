@@ -21,16 +21,17 @@ interface Props {
     id?: string;
     containerStyle?: object;
     password: string;
+    dataSpectron?: string;
     onChange: (val: string) => void;
 }
 
 function PasswordInput(props: Props) {
-    const { label, id, password, onChange, containerStyle } = props;
+    const { label, id, password, dataSpectron, onChange, containerStyle } = props;
     const { t } = useTranslation();
     const [isShowed, setIsShowed] = useState(false);
     return (
         <Container id={id} style={containerStyle}>
-            <TextField label={label} type={isShowed ? 'text' : 'password'} value={password} onChange={(newVal: string) => onChange(newVal)} right={42} />
+            <TextField data-spectron={dataSpectron} label={label} type={isShowed ? 'text' : 'password'} value={password} onChange={(newVal: string) => onChange(newVal)} right={42} />
             <ShowHidePwd style={{ cursor: 'pointer' }} onClick={() => setIsShowed(!isShowed)}>
                 {t(isShowed ? 'general.verbs.hide' : 'general.verbs.show')}
             </ShowHidePwd>

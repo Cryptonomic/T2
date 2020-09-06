@@ -14,10 +14,11 @@ interface Props {
     precision: number;
     maxValue?: number;
     minValue?: number;
+    dataSpectron?: string;
 }
 
 const NumericInput = (props: Props) => {
-    const { symbol, amount, label, errorText, onChange, precision, maxValue, minValue } = props;
+    const { symbol, amount, label, errorText, onChange, precision, maxValue, minValue, dataSpectron } = props;
 
     function validateInput(text: string) {
         const n = new BigNumber(text).toNumber();
@@ -37,7 +38,7 @@ const NumericInput = (props: Props) => {
 
     return (
         <NumericInputContainer>
-            <TextField label={label} value={amount} onChange={t => validateInput(t)} type="number" errorText={errorText} />
+            <TextField data-spectron={dataSpectron} label={label} value={amount} onChange={t => validateInput(t)} type="number" errorText={errorText} />
             {!symbol ? <TezosIconInput color="secondary" iconName="tezos" /> : <SymbolTxt>{symbol}</SymbolTxt>}
         </NumericInputContainer>
     );

@@ -94,12 +94,12 @@ const TopBar = (props: Props) => {
                 <HelpIcon size={ms(1.8)} color="primary" iconName="help-outline" />
                 <ButtonText>{t('components.settingController.help')}</ButtonText>
             </ButtonContainer>
-            <ButtonContainer id="settingsButton" onClick={() => goToSettings()} buttonTheme="plain">
+            <ButtonContainer data-spectron="settings-button" id="settingsButton" onClick={() => goToSettings()} buttonTheme="plain">
                 <Icon size={ms(2.2)} color="primary" iconName="settings" />
                 <ButtonText>{t('components.settingController.settings')}</ButtonText>
             </ButtonContainer>
             {isLoggedIn && (
-                <ButtonContainer buttonTheme="plain" onClick={() => logout()}>
+                <ButtonContainer data-spectron="logout-button" buttonTheme="plain" onClick={() => logout()}>
                     <Icon size={ms(2.2)} color="primary" iconName="logout" />
                     <ButtonText>{t('components.settingController.logout')}</ButtonText>
                 </ButtonContainer>

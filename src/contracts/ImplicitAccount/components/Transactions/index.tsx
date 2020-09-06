@@ -31,13 +31,13 @@ export default function Transactions(props: Props) {
     }, {});
 
     const renderDayTransactions = (day, grTransactions, grIndex) => (
-        <SectionContainer key={grIndex}>
-            <TransactionsLabel date={day} skipFormat={true} />
+        <SectionContainer data-spectron="transaction-daily" key={grIndex}>
+            <TransactionsLabel dataSpectron="transaction-date" date={day} skipFormat={true} />
             {grTransactions.map((transaction, index) => {
                 return <Transaction key={index} transaction={transaction} selectedAccountHash={selectedAccountHash} selectedParentHash={selectedParentHash} />;
             })}
         </SectionContainer>
     );
 
-    return <Container>{Object.keys(transactionsByDate).map((day, index) => renderDayTransactions(day, transactionsByDate[day], index))}</Container>;
+    return <Container data-spectron="transaction">{Object.keys(transactionsByDate).map((day, index) => renderDayTransactions(day, transactionsByDate[day], index))}</Container>;
 }

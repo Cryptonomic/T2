@@ -35,7 +35,7 @@ function Receive(props: Props) {
     const { address } = props;
 
     return (
-        <ReceiveContainer>
+        <ReceiveContainer data-spectron="receive-container">
             <HashContainer>
                 <TezosAddress address={address} size="16px" weight={300} color="primary" text={address} />
             </HashContainer>

@@ -19,11 +19,12 @@ interface Props {
     fee: number;
     miniFee?: number;
     tooltip?: React.ReactNode;
+    dataSpectron?: string;
     onChange: (val: number) => void;
 }
 
 function Fee(props: Props) {
-    const { onChange, low, medium, high, fee, miniFee, tooltip } = props;
+    const { onChange, low, medium, high, fee, miniFee, tooltip, dataSpectron } = props;
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<React.ReactNode>('');
@@ -93,6 +94,7 @@ function Fee(props: Props) {
     return (
         <Fragment>
             <CustomSelect
+                data-spectron="fee-container"
                 label={t('general.nouns.fee')}
                 value={fee}
                 onChange={onFeeChange}
@@ -108,7 +110,7 @@ function Fee(props: Props) {
                         feeTitle = 'components.fees.custom_fee';
                     }
                     return (
-                        <FeeContentWrapper>
+                        <FeeContentWrapper data-spectron="selected-fee-value">
                             {t(feeTitle)}: {formatAmount(value)} <TezosIcon color="black" iconName="tezos" />
                             {tooltip}
                         </FeeContentWrapper>
@@ -127,7 +129,7 @@ function Fee(props: Props) {
                 {getCustomMenuItem()}
                 <ItemWrapper value="custom">{t('components.fees.custom')}</ItemWrapper>
             </CustomSelect>
-            <Modal title={t('components.fees.enter_custom_amount')} open={open} onClose={onCloseModal}>
+            <Modal dataSpectron="custom-fee-modal" title={t('components.fees.enter_custom_amount')} open={open} onClose={onCloseModal}>
                 <ModalContent>
                     <MiniFeeTitle>
                         <Trans i18nKey="components.fees.required_minium_fee" values={{ fee: formatAmount(miniFee) }}>

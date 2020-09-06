@@ -99,6 +99,7 @@ const CustomTextArea = (props: Props) => {
     <FormControlWrapper>
       <LabelWrapper htmlFor="micheline-input">{label}</LabelWrapper>
       <InputWrapper
+        data-spectron="micheline-input"
         id="micheline-input"
         key={label}
         onChange={event => onChange(event.target.value)}

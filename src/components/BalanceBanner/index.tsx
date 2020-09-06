@@ -95,7 +95,7 @@ function BalanceBanner(props: Props) {
     }
 
     return (
-        <Container id="balanceBanner">
+        <Container data-spectron="balance-banner" id="balanceBanner">
             <TopRow isReady={isReady}>
                 <Breadcrumbs>{breadcrumbs}</Breadcrumbs>
                 <Update id="Update" onClick={onSyncWallet} time={time} isReady={isReady} isWalletSyncing={isWalletSyncing} />
@@ -109,20 +109,20 @@ function BalanceBanner(props: Props) {
                         {!displayName ? addressLabel : displayName}
 
                         {isManager && !isLedger && (
-                            <KeyIconButton id="keyButton" size="small" color="primary" onClick={() => setIsShowKey(true)}>
+                            <KeyIconButton data-spectron="key-button" id="keyButton" size="small" color="primary" onClick={() => setIsShowKey(true)}>
                                 <KeyIcon src={keyIconSvg} />
                             </KeyIconButton>
                         )}
                         {isManager && (
                             <Tooltip position="bottom" content={<TooltipContent>{t('components.balanceBanner.tooltip_content')}</TooltipContent>}>
-                                <IconButton size="small" color="primary" onClick={() => openUrl()}>
+                                <IconButton data-spectron="bell-icon" size="small" color="primary" onClick={() => openUrl()}>
                                     <BellIcon />
                                 </IconButton>
                             </Tooltip>
                         )}
                     </AddressTitle>
                 )}
-                <AddressInfo id="addressInfo">
+                <AddressInfo data-spectron="address-info" id="addressInfo">
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} />
                     <Gap />
 
@@ -131,9 +131,9 @@ function BalanceBanner(props: Props) {
                     ) : null}
                 </AddressInfo>
                 {delegatedAddress && (
-                    <DelegateContainer id="delegate">
+                    <DelegateContainer data-spectron="delegate" id="delegate">
                         <Delegate>{t('components.balanceBanner.delegated_to')}</Delegate>
-                        <TezosAddress id="tezosAddres" address={delegatedAddress} color="white" size={ms(-1)} weight={300} />
+                        <TezosAddress address={delegatedAddress} color="white" size={ms(-1)} weight={300} />
                     </DelegateContainer>
                 )}
             </BottomRow>

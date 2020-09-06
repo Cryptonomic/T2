@@ -124,6 +124,7 @@ const SettingsContainer = () => {
                 <RowForParts>
                     <Part>
                         <CustomSelect
+                            data-spectron="settings-test-node-button"
                             id="settingsTestNodeButton"
                             label="Nodes"
                             value={selectedNode}

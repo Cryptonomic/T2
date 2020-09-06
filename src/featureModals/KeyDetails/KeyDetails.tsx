@@ -38,20 +38,20 @@ const KeyDetails = (props: Props) => {
     return (
         <ModalWrapper open={open}>
             {open ? (
-                <ModalContainer id="accountKeys">
-                    <CloseIconWrapper onClick={() => onClose()} />
+                <ModalContainer data-spectron="account-keys">
+                    <CloseIconWrapper data-spectron="close-button" onClick={() => onClose()} />
                     <ModalTitle>{t('components.keyDetailsModal.title')}</ModalTitle>
                     <Keys>
                         <KeyWrapper>
                             <KeyTitle>{t('components.keyDetailsModal.address')}</KeyTitle>
-                            <KeyAddress id="address">
+                            <KeyAddress data-spectron="address">
                                 {address}
                                 <CopyButton text={address} title="" color="accent" />
                             </KeyAddress>
                         </KeyWrapper>
                         <KeyWrapper>
                             <KeyTitle>{t('components.keyDetailsModal.publicKey')}</KeyTitle>
-                            <KeyAddress id="publicKey">
+                            <KeyAddress data-spectron="public-key">
                                 {publicKey}
                                 <CopyButton text={'Tezos Public Key: ' + publicKey} title="" color="accent" />
                             </KeyAddress>
@@ -60,13 +60,13 @@ const KeyDetails = (props: Props) => {
                             <KeyWrapper>
                                 <KeyTitle>{t('components.keyDetailsModal.secretKey')}</KeyTitle>
                                 {!secretKeyVisible && (
-                                    <SecretKeyMessage id="secretMessage" onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
+                                    <SecretKeyMessage data-spectron="secret-message" onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
                                         {t('components.keyDetailsModal.secretKeyNotice')}
                                     </SecretKeyMessage>
                                 )}
                                 {secretKeyVisible && (
                                     <>
-                                        <KeyAddress id="secretKey">
+                                        <KeyAddress data-spectron="secret-key">
                                             {secretKey}
                                             <CopyButton text={'Tezos Secret Key: ' + secretKey} title="" color="accent" />
                                         </KeyAddress>
@@ -83,8 +83,8 @@ const KeyDetails = (props: Props) => {
                     </Keys>
                 </ModalContainer>
             ) : (
-                <ModalContainer />
-            )}
+                    <ModalContainer />
+                )}
         </ModalWrapper>
     );
 };

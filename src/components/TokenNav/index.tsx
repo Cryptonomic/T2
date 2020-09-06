@@ -43,20 +43,21 @@ const TokenBalance = styled.p<{ isActive: boolean }>`
 interface Props {
     isActive: boolean;
     token: Token;
+    dataSpectron?: string;
     onClick?: () => void;
 }
 
 function TokenNav(props: Props) {
-    const { isActive, token, onClick } = props;
+    const { isActive, token, dataSpectron, onClick } = props;
 
     const icon = token.icon ? token.icon : defaultIcon;
 
     return (
-        <Container isActive={isActive} onClick={onClick}>
+        <Container data-spectron={dataSpectron} isActive={isActive} onClick={onClick}>
             <SideImg src={icon} />
             <MainContainer>
-                <TokenTitle isActive={isActive}>{token.displayName}</TokenTitle>
-                <TokenBalance isActive={isActive}>
+                <TokenTitle data-spectron="token-title" isActive={isActive}>{token.displayName}</TokenTitle>
+                <TokenBalance data-spectron="token-amount" isActive={isActive}>
                     <AmountView
                         color={isActive ? '#FFFFFF' : 'primary'}
                         size={ms(0)}

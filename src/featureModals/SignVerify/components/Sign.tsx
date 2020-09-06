@@ -90,6 +90,7 @@ const Sign = () => {
                 {error && result && <Result isError={error}>{result}</Result>}
                 {!error && result && (
                     <TextField
+                        data-spectron="signature-value"
                         id="signatureValue"
                         label={t('general.nouns.signature')}
                         value={result}
@@ -109,7 +110,7 @@ const Sign = () => {
                             The account is not revealed, copy public key? <CopyButton text={key} title="" color="accent" />
                         </InfoContainer>
                     )}
-                    <InvokeButton id="signButton" buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
+                    <InvokeButton data-spectron="sign-button" id="signButton" buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
                         {t('general.verbs.sign')}
                     </InvokeButton>
                 </ButtonContainer>

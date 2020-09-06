@@ -44,7 +44,7 @@ const TezosAddress = (props: Props) => {
     }
 
     return (
-        <Address weight={weight} color={color} size={size} id="tezosAddress">
+        <Address weight={weight} color={color} size={size} data-spectron="tezos-address">
             <span>
                 <FirstPart color={color2 || color}>{address.slice(0, 3)}</FirstPart>
                 <SecondPart>{address.slice(3)}</SecondPart>

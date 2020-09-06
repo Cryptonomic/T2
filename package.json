@@ -31,7 +31,7 @@
 		"start": "cross-env NODE_ENV=production electron ./src/main.prod.js",
 		"start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron ./src/main.dev.js",
 		"start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config ./configs/webpack.config.renderer.dev.js",
-		"test": "cross-env NODE_ENV=test mocha",
+		"test": "cross-env NODE_ENV=test mocha --require test/hooks.js",
 		"test-all": "npm run lint && npm run build && npm run test && npm run build-e2e && npm run test-e2e",
 		"test-e2e": "node ./scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe electron:./src ./test/e2e/HomePage.e2e.ts",
 		"test-e2e-live": "node ./scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe --live electron:./src ./test/e2e/HomePage.e2e.ts",

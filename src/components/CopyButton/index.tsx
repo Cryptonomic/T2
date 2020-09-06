@@ -5,7 +5,7 @@ import ContentCopy from '@material-ui/icons/FileCopyOutlined';
 import { Tooltip, Button, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
-const Container = styled(Button)<{ realcolor: string }>`
+const Container = styled(Button) <{ realcolor: string }>`
     &&& {
         padding: 0;
         font-size: 14px;
@@ -19,14 +19,14 @@ const Container = styled(Button)<{ realcolor: string }>`
     }
 `;
 
-const IconButtonWrapper = styled(IconButton)<{ realcolor: string }>`
+const IconButtonWrapper = styled(IconButton) <{ realcolor: string }>`
     &&& {
         color: ${({ realcolor, theme: { colors } }) => colors[realcolor]};
         margin-left: 5px;
     }
 `;
 
-const CopyIconWrapper = styled(ContentCopy)<{ iconstyle?: any }>`
+const CopyIconWrapper = styled(ContentCopy) <{ iconstyle?: any }>`
     &&& {
         width: 19px;
         height: 19px;
@@ -58,6 +58,7 @@ function CopyButton(props: Props) {
 
     return (
         <Tooltip
+            data-spectron="copy-button"
             open={isShowed}
             title={<React.Fragment>{t('components.copyIcon.copied')}</React.Fragment>}
             leaveDelay={500}
@@ -79,10 +80,10 @@ function CopyButton(props: Props) {
                     {title}
                 </Container>
             ) : (
-                <IconButtonWrapper size="small" realcolor={color} onClick={() => copyToClipboard()}>
-                    <CopyIconWrapper iconstyle={iconStyle} />
-                </IconButtonWrapper>
-            )}
+                    <IconButtonWrapper size="small" realcolor={color} onClick={() => copyToClipboard()}>
+                        <CopyIconWrapper iconstyle={iconStyle} />
+                    </IconButtonWrapper>
+                )}
         </Tooltip>
     );
 }

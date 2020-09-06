@@ -322,9 +322,10 @@ function AddDelegateModal(props: Props) {
 
     const { isIssue, warningMessage, balanceColor } = getBalanceState();
     return (
-        <Modal title={t('components.addDelegateModal.add_delegate_title')} open={open} onClose={onCloseClick}>
+        <Modal dataSpectron="delegation-contract-modal" title={t('components.addDelegateModal.add_delegate_title')} open={open} onClose={onCloseClick}>
             <InputAddressContainer>
                 <InputAddress
+                    dataSpectron="delegate-address"
                     label={t('general.nouns.delegate_address')}
                     operationType="delegate"
                     tooltip={true}
@@ -336,6 +337,7 @@ function AddDelegateModal(props: Props) {
                 <AmountFeePassContainer>
                     <AmountSendContainer>
                         <TezosNumericInput
+                            dataSpectron="amount"
                             decimalSeparator={t('general.decimal_separator')}
                             label={t('general.nouns.amount')}
                             amount={amount}
@@ -366,7 +368,7 @@ function AddDelegateModal(props: Props) {
                         <TextField disabled={true} label={t('general.verbs.burn')} defaultValue="0.257000" />
                         <TezosIconInput color="gray5" iconName="tezos" />
                         <Tooltip position="bottom" content={renderGasToolTip()}>
-                            <BurnTooltip size="small">
+                            <BurnTooltip data-spectron="burn" size="small">
                                 <TezosIcon iconName="help" size={ms(1)} color="gray5" />
                             </BurnTooltip>
                         </Tooltip>
@@ -376,7 +378,7 @@ function AddDelegateModal(props: Props) {
                     <BalanceArrow />
                     <BalanceContent>
                         <BalanceTitle>{t('general.nouns.total')}</BalanceTitle>
-                        <TotalAmount weight="500" color={amount ? 'gray3' : 'gray8'} size={ms(0.65)} amount={total} />
+                        <TotalAmount dataSpectron="total" weight="500" color={amount ? 'gray3' : 'gray8'} size={ms(0.65)} amount={total} />
                         <BalanceTitle>{t('general.nouns.remaining_balance')}</BalanceTitle>
                         <BalanceAmount weight="500" color={balanceColor} size={ms(-0.75)} amount={balance} />
                         {isIssue && (
@@ -392,13 +394,14 @@ function AddDelegateModal(props: Props) {
             <PasswordButtonContainer>
                 {!isLedger && (
                     <PasswordInput
+                        dataSpectron="wallet-password"
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => createAccount()}>
+                <DelegateButton data-spectron="delegate-button" buttonTheme="primary" disabled={isDisabled} onClick={() => createAccount()}>
                     {t('general.verbs.delegate')}
                 </DelegateButton>
             </PasswordButtonContainer>

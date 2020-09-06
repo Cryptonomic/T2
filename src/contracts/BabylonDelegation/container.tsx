@@ -34,7 +34,7 @@ const Container = styled.section`
     flex-grow: 1;
 `;
 
-const Tab = styled(Button)<{ isActive: boolean; ready: boolean }>`
+const Tab = styled(Button) <{ isActive: boolean; ready: boolean }>`
     background: ${({ isActive, theme: { colors } }) => (isActive ? colors.white : colors.accent)};
     color: ${({ isActive, theme: { colors } }) => (isActive ? colors.primary : lighten(0.4, colors.accent))};
     cursor: ${({ ready }) => (ready ? 'pointer' : 'initial')};
@@ -109,20 +109,20 @@ function ActionPanel() {
                 return transactions.length === 0 ? (
                     <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />
                 ) : (
-                    <Fragment>
-                        <Transactions transactions={showedTransactions} selectedAccountHash={selectedAccountHash} selectedParentHash={selectedParentHash} />
-                        {pageCount > 1 && (
-                            <PageNumbers
-                                currentPage={currentPage}
-                                totalNumber={JSTransactions.length}
-                                firstNumber={firstNumber}
-                                lastNumber={lastNumber}
-                                onClick={val => setCurrentPage(val)}
-                            />
-                        )}
-                        {isLoading && <Loader />}
-                    </Fragment>
-                );
+                        <Fragment>
+                            <Transactions transactions={showedTransactions} selectedAccountHash={selectedAccountHash} selectedParentHash={selectedParentHash} />
+                            {pageCount > 1 && (
+                                <PageNumbers
+                                    currentPage={currentPage}
+                                    totalNumber={JSTransactions.length}
+                                    firstNumber={firstNumber}
+                                    lastNumber={lastNumber}
+                                    onClick={val => setCurrentPage(val)}
+                                />
+                            )}
+                            {isLoading && <Loader />}
+                        </Fragment>
+                    );
             }
         }
     }
@@ -142,6 +142,7 @@ function ActionPanel() {
                     const ready = isReady(status, storeType, tab);
                     return (
                         <Tab
+
                             isActive={activeTab === tab}
                             key={tab}
                             ready={ready}

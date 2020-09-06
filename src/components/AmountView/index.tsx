@@ -74,11 +74,11 @@ const AmountView = (props: Props) => {
             </Amount>
         </Tooltip>
     ) : (
-        <Amount color={color} size={size} weight={weight} style={SelectableText}>
-            {truncatedAmount}
-            {getIcon()}
-        </Amount>
-    );
+            <Amount color={color} size={size} weight={weight} style={SelectableText}>
+                {truncatedAmount}
+                {getIcon()}
+            </Amount>
+        );
 };
 
 AmountView.defaultProps = {

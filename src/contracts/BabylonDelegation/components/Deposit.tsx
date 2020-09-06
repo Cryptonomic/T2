@@ -97,9 +97,10 @@ function Deposit(props: Props) {
     });
 
     return (
-        <Container onKeyDown={event => onEnterPress(event.key, isDisabled)}>
+        <Container data-spectron='deposit' onKeyDown={event => onEnterPress(event.key, isDisabled)}>
             <AmountContainer>
                 <TezosNumericInput
+                    dataSpectron="amount"
                     decimalSeparator={t('general.decimal_separator')}
                     label={t('general.nouns.amount')}
                     amount={amount}
@@ -113,19 +114,20 @@ function Deposit(props: Props) {
             </FeeContainer>
             <WarningContainer>
                 <TezosIcon iconName="info" size={ms(5)} color="info" />
-                <InfoText>{warningTxt}</InfoText>
+                <InfoText data-spectron="deposit-warning">{warningTxt}</InfoText>
             </WarningContainer>
 
             <PasswordButtonContainer>
                 {!isLedger && (
                     <PasswordInput
+                        dataSpectron="wallet-password"
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={val => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onInvokeOperation()}>
+                <InvokeButton data-spectron="deposit-bottom-button" buttonTheme="primary" disabled={isDisabled} onClick={() => onInvokeOperation()}>
                     {t('general.verbs.deposit')}
                 </InvokeButton>
             </PasswordButtonContainer>

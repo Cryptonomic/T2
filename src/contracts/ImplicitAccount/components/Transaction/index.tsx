@@ -279,18 +279,18 @@ function Transaction(props: Props) {
     }
 
     return (
-        <TransactionContainer>
+        <TransactionContainer data-spectron="single-transaction">
             <Header>
-                <TransactionDate>{transactionTimestamp}</TransactionDate>
+                <TransactionDate data-spectron="transaction-date-hour">{transactionTimestamp}</TransactionDate>
                 <AmountContainer color={color}>
                     {sign}
-                    <TezosAmount color={color} size={ms(-1)} amount={amount} format={6} />
+                    <TezosAmount dataSpectron="tezos-amount" color={color} size={ms(-1)} amount={amount} format={6} />
                 </AmountContainer>
             </Header>
             <Container>
                 <ContentDiv>
                     <StateIcon iconName={icon} size={ms(-2)} color="accent" />
-                    <StateText>
+                    <StateText data-spectron="transaction-type">
                         {state}
                         {address ? <span>{preposition}</span> : null}
                     </StateText>
@@ -303,14 +303,14 @@ function Transaction(props: Props) {
                     />
                 </ContentDiv>
                 {isBurn && (
-                    <Fee>
+                    <Fee data-spectron="fee">
                         <span>{t('components.transaction.burn')}: </span>
                         <TezosAmount color="gray5" size={ms(-2)} amount={257000} format={6} />
                     </Fee>
                 )}
                 {isBurn && isFee && <Linebar />}
                 {isFee && (
-                    <Fee>
+                    <Fee data-spectron="fee">
                         <span>{t('general.nouns.fee')}: </span>
                         <TezosAmount color="gray5" size={ms(-2)} amount={fee} format={6} />
                     </Fee>

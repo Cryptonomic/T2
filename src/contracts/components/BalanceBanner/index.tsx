@@ -48,15 +48,15 @@ function BalanceBanner(props: Props) {
     }
 
     return (
-        <Container>
+        <Container data-spectron="token-balance-banner">
             <TopRow isReady={isReady}>
                 <Breadcrumbs>{breadcrumbs}</Breadcrumbs>
                 <Update onClick={onSyncWallet} time={time} isReady={isReady} isWalletSyncing={isWalletSyncing} />
             </TopRow>
             <BottomRow isReady={isReady}>
-                <AddressTitle>{displayName}</AddressTitle>
+                <AddressTitle data-spectron="token-name">{displayName}</AddressTitle>
                 <AddressInfo>
-                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} />
+                    <TezosAddress data-spectron="token-address" address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} />
                     <Gap />
                     <AmountView
                         color="white"
@@ -70,7 +70,7 @@ function BalanceBanner(props: Props) {
                         round={token.round}
                     />
                 </AddressInfo>
-                <AddressInfo>
+                <AddressInfo data-spectron="token-address-info">
                     {token.details && token.details.paused !== true && 'Token is active.'}{' '}
                     {token.details && token.details.supply && 'Total supply is ' + formatAmount(token.details.supply) + '.'}
                 </AddressInfo>

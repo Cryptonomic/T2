@@ -59,12 +59,13 @@ interface Props {
     tooltip?: boolean;
     address?: string;
     operationType: 'send' | 'delegate' | 'invoke' | 'send_babylon' | 'tz1'; // TODO: enum
+    dataSpectron?: string;
     onIssue?: (error: boolean) => void;
     onAddressType?: (type: AddressType) => void;
 }
 
 function InputAddress(props: Props) {
-    const { label, onChange, operationType, address, tooltip, onIssue, onAddressType } = props;
+    const { label, onChange, operationType, dataSpectron, address, tooltip, onIssue, onAddressType } = props;
     const { t } = useTranslation();
     const [error, setError] = useState('');
     const { selectedNode, nodesList } = useSelector((state: RootState) => state.settings, shallowEqual);
@@ -167,7 +168,7 @@ function InputAddress(props: Props) {
     const inputDebounce = debounce(300, onValidateAddress);
 
     return (
-        <DelegateContainer>
+        <DelegateContainer data-spectron={dataSpectron}>
             <TextField label={label} onChange={value => inputDebounce(value)} errorText={error} />
             {tooltip && (
                 <Tooltip position="bottom" content={renderToolTipComponent()}>

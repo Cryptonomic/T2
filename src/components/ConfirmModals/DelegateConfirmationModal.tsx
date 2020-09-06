@@ -177,7 +177,7 @@ const DelegateConfirmationModal = (props: Props) => {
             title={t('components.delegate.change_delegate')}
             open={open}
             onClose={onCloseClick}
-            // onKeyDown={onEnterPress}
+        // onKeyDown={onEnterPress}
         >
             <ModalContainer isAddress={!!address}>
                 {!!address && (

@@ -80,10 +80,10 @@ function Transaction(props: Props) {
     const address = getAddress(transaction, selectedParentHash);
 
     return (
-        <TransactionContainer>
+        <TransactionContainer data-spectron="single-transaction">
             <Header>
-                <TransactionDate>{transaction.status === READY ? timeFormatter(transaction.timestamp) : t('components.transaction.pending')}</TransactionDate>
-                <AmountContainer color={color}>
+                <TransactionDate data-spectron="transaction-date-hour">{transaction.status === READY ? timeFormatter(transaction.timestamp) : t('components.transaction.pending')}</TransactionDate>
+                <AmountContainer data-spectron="tezos-amount" color={color}>
                     {sign}
                     <AmountView
                         color={color}
@@ -99,7 +99,7 @@ function Transaction(props: Props) {
             <Container>
                 <ContentDiv>
                     <StateIcon iconName={icon} size={ms(-2)} color="accent" />
-                    <StateText>
+                    <StateText data-spectron="transaction-type">
                         {state}
                         {address ? <span>{preposition}</span> : null}
                     </StateText>
@@ -108,8 +108,8 @@ function Transaction(props: Props) {
                             {transaction.entryPoint} of {address}
                         </span>
                     ) : (
-                        address
-                    )}
+                            address
+                        )}
                     <LinkIcon
                         iconName="new-window"
                         size={ms(0)}
@@ -119,7 +119,7 @@ function Transaction(props: Props) {
                 </ContentDiv>
 
                 {isFee && (
-                    <Fee>
+                    <Fee data-spectron="fee">
                         <span>{t('general.nouns.fee')}: </span>
                         <AmountView color="gray5" size={ms(-2)} amount={fee} precision={6} round={6} />
                     </Fee>

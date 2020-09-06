@@ -102,6 +102,7 @@ function Delegate(props: Props) {
         <Container onKeyDown={(event) => onEnterPress(event.key)}>
             <AmountContainer>
                 <InputAddress
+                    dataSpectron="baker-address"
                     label={t(`components.delegateConfirmationModal.${!isRevealed ? 'address_label' : 'new_address_label'}`)}
                     operationType="delegate"
                     tooltip={false}
@@ -109,7 +110,7 @@ function Delegate(props: Props) {
                     onIssue={(val) => setIsAddressIssue(val)}
                 />
             </AmountContainer>
-            <FeeContainer>
+            <FeeContainer id="fee-container">
                 <Fees
                     low={newFees.low}
                     medium={newFees.medium}
@@ -137,26 +138,27 @@ function Delegate(props: Props) {
             <PasswordButtonContainer>
                 {!isLedger && (
                     <PasswordInput
+                        dataSpectron="wallet-password"
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
+                <InvokeButton data-spectron="change-delegate-button" buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
                     {t('components.delegate.change_delegate')}
                 </InvokeButton>
             </PasswordButtonContainer>
-            <AddDelegationContainer>
+            <AddDelegationContainer data-spectron="add-delegation-button">
                 {isManagerReady ? (
                     <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, 'delegate_contract'))} />
                 ) : (
-                    <Tooltip position="top" content={<NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>}>
-                        <IconButton size="small" color="primary">
-                            <AddCircleWrapper active={0} />
-                        </IconButton>
-                    </Tooltip>
-                )}
+                        <Tooltip position="top" content={<NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>}>
+                            <IconButton size="small" color="primary">
+                                <AddCircleWrapper active={0} />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                 <BoldSpan onClick={() => dispatch(setModalOpen(true, 'delegate_contract'))}>{t('components.delegate.add_delegation_contract')}</BoldSpan>
                 <Tooltip
                     position="top"

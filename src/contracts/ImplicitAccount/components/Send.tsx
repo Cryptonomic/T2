@@ -276,9 +276,10 @@ function Send(props: Props) {
     const isDisabled = amount === '0' || !amount || !toAddress || !isReady || isIssue || isLoading || isAddressIssue;
 
     return (
-        <Container>
+        <Container data-spectron="send">
             <SendTitle>{t('components.send.send_xtz')}</SendTitle>
             <InputAddress
+                dataSpectron="recipient-address"
                 label={t('components.send.recipient_address')}
                 address={selectedAccountHash}
                 operationType="send"
@@ -286,7 +287,7 @@ function Send(props: Props) {
                 onIssue={(err) => setIsAddressIssue(err)}
                 onAddressType={(type) => setAddressType(type)}
             />
-            <AmountContainer>
+            <AmountContainer data-spectron="amount">
                 <TezosNumericInput
                     decimalSeparator={t('general.decimal_separator')}
                     label={t('general.nouns.amount')}
@@ -294,7 +295,7 @@ function Send(props: Props) {
                     onChange={handleAmountChange}
                     errorText={error}
                 />
-                <UseMax onClick={() => onUseMax()}>{t('general.verbs.use_max')}</UseMax>
+                <UseMax data-spectron="use-max-button" onClick={() => onUseMax()}>{t('general.verbs.use_max')}</UseMax>
             </AmountContainer>
             <FeesBurnContainer>
                 <FeeContainer>
@@ -317,7 +318,7 @@ function Send(props: Props) {
                     />
                 </FeeContainer>
                 {isBurn && (
-                    <BurnsContainer>
+                    <BurnsContainer data-spectron="burn">
                         <TextField disabled={true} label={t('components.transaction.burn')} defaultValue="0.257000" />
                         <TezosIconInput color="gray5" iconName="tezos" />
                         <Tooltip position="bottom" content={renderBurnToolTip()}>
@@ -330,15 +331,15 @@ function Send(props: Props) {
             </FeesBurnContainer>
 
             <BottomContainer>
-                <div>
+                <div data-spectron="total-amount">
                     <BalanceTitle>{t('general.nouns.total')}</BalanceTitle>
                     <TezosAmount weight="500" color={amount ? 'gray3' : 'gray8'} size={ms(0.65)} amount={total} />
                 </div>
-                <BalanceContent>
+                <BalanceContent data-spectron="remaining-balance">
                     <BalanceTitle>{t('general.nouns.remaining_balance')}</BalanceTitle>
-                    <TezosAmount weight="500" color={balanceColor} size={ms(0.65)} amount={balance} />
+                    <TezosAmount dataSpectron="amount" weight="500" color={balanceColor} size={ms(0.65)} amount={balance} />
                 </BalanceContent>
-                <SendButton disabled={isDisabled} onClick={() => onValidateAmount()} buttonTheme="primary">
+                <SendButton data-spectron="send-bottom-button" disabled={isDisabled} onClick={() => onValidateAmount()} buttonTheme="primary">
                     {t('general.verbs.send')}
                 </SendButton>
             </BottomContainer>
@@ -359,16 +360,16 @@ function Send(props: Props) {
                     isBurn={isBurn}
                 />
             ) : (
-                <SendLedgerConfirmationModal
-                    amount={amount}
-                    fee={fee}
-                    address={toAddress}
-                    source={selectedAccountHash}
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    isLoading={isLoading}
-                />
-            )}
+                    <SendLedgerConfirmationModal
+                        amount={amount}
+                        fee={fee}
+                        address={toAddress}
+                        source={selectedAccountHash}
+                        open={open}
+                        onClose={() => setOpen(false)}
+                        isLoading={isLoading}
+                    />
+                )}
         </Container>
     );
 }

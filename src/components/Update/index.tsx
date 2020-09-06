@@ -54,12 +54,13 @@ function Update(props: Props) {
     const Refresh = isReady && isWalletSyncing ? SpinningRefreshIcon : RefreshIcon;
     return (
         <Container id={id}>
-            <Text>
+            <Text data-spectron="update-time">
                 {t('components.update.last_updated', {
                     date: moment(time).format('LT'),
                 })}
             </Text>
             <Refresh
+                data-spectron="refresh-button"
                 id="updateButton"
                 style={{
                     fill: 'white',

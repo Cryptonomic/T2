@@ -19,11 +19,11 @@ const Amount = styled.span<Pick<AmountProps, 'size' | 'weight' | 'style' | 'clas
     color: ${({ color, theme: { colors } }) => (color ? colors[color] : colors.primary)};
     font-size: ${({ size }) => size};
     font-weight: ${({
-        weight = 'normal',
-        theme: {
-            typo: { weights }
-        }
-    }) => weights[weight]};
+    weight = 'normal',
+    theme: {
+        typo: { weights }
+    }
+}) => weights[weight]};
     display: inline-flex;
     align-items: center;
     letter-spacing: 0.6px;
@@ -72,10 +72,11 @@ interface Props {
     format: number;
     showTooltip?: boolean;
     symbol?: string;
+    dataSpectron?: string;
 }
 
 const TezosAmount = (props: Props) => {
-    const { size, color, amount, iconName, weight, showTooltip, format, symbol } = props;
+    const { size, color, amount, iconName, weight, showTooltip, format, symbol, dataSpectron } = props;
     function getRealValue() {
         if (!!symbol) {
             return {
@@ -104,18 +105,18 @@ const TezosAmount = (props: Props) => {
     }
     const { strBalance, view } = getRealValue();
     return showTooltip ? (
-        <Tooltip position="bottom" content={<Content formatedBalance={strBalance} />}>
+        <Tooltip data-spectron={dataSpectron} position="bottom" content={<Content formatedBalance={strBalance} />}>
             <Amount color={color} size={size} weight={weight} style={SelectableText}>
                 {view}
                 {getIcon()}
             </Amount>
         </Tooltip>
     ) : (
-        <Amount color={color} size={size} weight={weight} format={format} style={SelectableText}>
-            {view}
-            {getIcon()}
-        </Amount>
-    );
+            <Amount data-spectron={dataSpectron} color={color} size={size} weight={weight} format={format} style={SelectableText}>
+                {view}
+                {getIcon()}
+            </Amount>
+        );
 };
 
 TezosAmount.defaultProps = {

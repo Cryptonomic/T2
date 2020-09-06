@@ -49,7 +49,7 @@ const AddressLabel = styled.div`
     justify-content: space-between;
 `;
 
-const AddDelegateLabel = styled(AddressLabel)<{ isActive?: boolean }>`
+const AddDelegateLabel = styled(AddressLabel) <{ isActive?: boolean }>`
     display: flex;
     flex-direction: row;
     font-size: 14px;
@@ -138,7 +138,7 @@ const CloseIconWrapper = styled(CloseIcon)`
     cursor: pointer;
 `;
 
-const AddCircleWrapper = styled(AddCircle)<{ active: number }>`
+const AddCircleWrapper = styled(AddCircle) <{ active: number }>`
     &&& {
         fill: #7b91c0;
         width: ${ms(1)};
@@ -261,7 +261,7 @@ function AddressBlock(props: Props) {
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
 
     return (
-        <Container>
+        <Container data-spectron="address-block">
             {ready ? (
                 <Address
                     isManager={true}
@@ -270,13 +270,13 @@ function AddressBlock(props: Props) {
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
                 />
             ) : (
-                <AddressStatus
-                    isManager={true}
-                    isActive={!isModalOpen && isManagerActive}
-                    status={status}
-                    onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
-                />
-            )}
+                    <AddressStatus
+                        isManager={true}
+                        isActive={!isModalOpen && isManagerActive}
+                        status={status}
+                        onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
+                    />
+                )}
             <AddDelegateLabel>
                 <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
             </AddDelegateLabel>
@@ -296,14 +296,14 @@ function AddressBlock(props: Props) {
                         onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
                     />
                 ) : (
-                    <AddressStatus
-                        key={addressId}
-                        isContract={true}
-                        isActive={!isModalOpen && isDelegatedActive}
-                        status={address.status}
-                        onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
-                    />
-                );
+                        <AddressStatus
+                            key={addressId}
+                            isContract={true}
+                            isActive={!isModalOpen && isDelegatedActive}
+                            status={address.status}
+                            onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
+                        />
+                    );
             })}
 
             <AddressLabel>
@@ -335,6 +335,7 @@ function AddressBlock(props: Props) {
 
                 return (
                     <TokenNav
+                        dataSpectron="token-nav"
                         key={token.address}
                         isActive={!isModalOpen && token.address === selectedAccountHash}
                         token={token}
@@ -348,12 +349,12 @@ function AddressBlock(props: Props) {
                 {isManagerReady ? (
                     <AddCircleWrapper active={1} onClick={() => onCheckInteractModal()} />
                 ) : (
-                    <Tooltip position="bottom" content={<NoFundTooltip>{t('components.addressBlock.not_ready_interact_tooltip')}</NoFundTooltip>}>
-                        <IconButton size="small" color="primary">
-                            <AddCircleWrapper active={0} />
-                        </IconButton>
-                    </Tooltip>
-                )}
+                        <Tooltip position="bottom" content={<NoFundTooltip>{t('components.addressBlock.not_ready_interact_tooltip')}</NoFundTooltip>}>
+                            <IconButton size="small" color="primary">
+                                <AddCircleWrapper active={0} />
+                            </IconButton>
+                        </Tooltip>
+                    )}
             </AddDelegateLabel>
             {smartAddresses.map((address, index) => {
                 const addressId = address.account_id;
@@ -370,14 +371,14 @@ function AddressBlock(props: Props) {
                         onClick={() => goToAccount(addressId, index, AddressType.Smart)}
                     />
                 ) : (
-                    <AddressStatus
-                        key={addressId}
-                        isActive={isActive}
-                        status={address.status}
-                        isContract={true}
-                        onClick={() => goToAccount(addressId, index, AddressType.Smart)}
-                    />
-                );
+                        <AddressStatus
+                            key={addressId}
+                            isActive={isActive}
+                            status={address.status}
+                            isContract={true}
+                            onClick={() => goToAccount(addressId, index, AddressType.Smart)}
+                        />
+                    );
             })}
 
             {isSignModalOpen && <SignVerifyModal open={isSignModalOpen} onClose={() => setIsModalOpen(false, 'sign')} />}
