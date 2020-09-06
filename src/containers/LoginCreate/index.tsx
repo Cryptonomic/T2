@@ -156,7 +156,7 @@ function LoginCreate() {
             return (
                 <WalletFileSection>
                     <CheckIcon iconName="checkmark2" size={ms(5)} color="check" />
-                    <WalletFileName>{walletFileName}</WalletFileName>
+                    <WalletFileName data-spectron="new-wallet-file-name">{walletFileName}</WalletFileName>
                 </WalletFileSection>
             );
         }
@@ -184,7 +184,7 @@ function LoginCreate() {
                     <CreateFileSelector>
                         {getWalletFileSection()}
                         <CreateFileButton
-                            id="newWalletFileButton"
+                            data-spectron="new-file-button"
                             startIcon={<ButtonAddIcon />}
                             size="small"
                             variant="outlined"
@@ -195,7 +195,7 @@ function LoginCreate() {
                     </CreateFileSelector>
                     <PasswordsContainer>
                         <ValidInput
-                            id={t('createWalletPassword')}
+                            dataSpectron="create-wallet-password"
                             label={t('containers.loginCreate.create_wallet_password_label')}
                             isShowed={isPwdShowed}
                             error={pwdError}
@@ -206,7 +206,7 @@ function LoginCreate() {
                             onShow={() => onPasswordShow(0)}
                         />
                         <ValidInput
-                            id={t('confirmWalletPassword')}
+                            dataSpectron="confirm-wallet-password"
                             label={t('containers.loginCreate.confirm_wallet_password_label')}
                             status={true}
                             isShowed={isConfirmPwdShowed}

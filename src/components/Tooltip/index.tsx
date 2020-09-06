@@ -6,7 +6,7 @@ import { lighten } from 'polished';
 import { ms } from '../../styles/helpers';
 import { TooltipProps } from './types';
 
-const StyledTooltip = styled(props => <Tooltip classes={{ popper: props.className, tooltip: 'tooltip' }} {...props} />)`
+const StyledTooltip = styled((props) => <Tooltip classes={{ popper: props.className, tooltip: 'tooltip' }} {...props} />)`
     & .tooltip {
         padding: ${ms(-2)};
         color: ${({ theme: { colors } }) => colors.primary};
@@ -40,8 +40,8 @@ const StyledTooltip = styled(props => <Tooltip classes={{ popper: props.classNam
     }
 `;
 
-const TooltipWrapper = ({ children, content, position }: TooltipProps) => (
-    <StyledTooltip arrow={true} interactive={true} title={content} placement={position}>
+const TooltipWrapper = ({ dataSpectron, children, content, position }: TooltipProps) => (
+    <StyledTooltip data-spectron={dataSpectron} arrow={true} interactive={true} title={content} placement={position}>
         {children}
     </StyledTooltip>
 );

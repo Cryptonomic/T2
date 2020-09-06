@@ -48,7 +48,9 @@ ipcMain.on('testing-wallet', (e) => {
 
 // [TESTING]
 ipcMain.on('new-wallet', (e) => {
-    e.returnValue = `${__dirname}/new.tezwallet`;
+    let path = require('path');
+    const baseDir = path.join(__dirname, '..');
+    e.returnValue = `${baseDir}/test/temporaryFiles/new.tezwallet`;
 });
 
 let mainWindow = null;

@@ -91,7 +91,10 @@ const Sign = () => {
                 {!error && result && (
                     <TextField
                         data-spectron="signature-value"
+<<<<<<< HEAD
                         id="signatureValue"
+=======
+>>>>>>> c3dcecf2e6773687befc5fffa0854a5c6175d5f5
                         label={t('general.nouns.signature')}
                         value={result}
                         readOnly={true}

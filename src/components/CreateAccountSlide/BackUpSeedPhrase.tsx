@@ -5,17 +5,19 @@ import SeedInput from './SeedInput';
 import { DescriptionContainer, ValidFormContainer } from './style';
 
 interface Seed {
+    dataSpectron?: number;
     index: number;
     value: string;
 }
 
 interface Props {
+    dataSpectron?: string;
     seed: string;
     onValid: (isVal: boolean) => void;
 }
 
 function BackUpSeedPhrase(props: Props) {
-    const { seed, onValid } = props;
+    const { dataSpectron, seed, onValid } = props;
     const { t } = useTranslation();
     const [randomSeeds, setRandomSeeds] = useState<Seed[]>([]);
     const [validationStatus, setValidationStatus] = useState<boolean[]>([]);
@@ -48,9 +50,15 @@ function BackUpSeedPhrase(props: Props) {
     return (
         <Fragment>
             <DescriptionContainer>{t('components.createAccountSlide.descriptions.description3')}</DescriptionContainer>
-            <ValidFormContainer>
+            <ValidFormContainer data-spectron="valid-format-container-seed-input">
                 {randomSeeds.map((item, index) => (
-                    <SeedInput key={index} value={item.value} index={item.index + 1} onValidate={(val) => checkValidation(index, val)} />
+                    <SeedInput
+                        key={index}
+                        value={item.value}
+                        index={item.index + 1}
+                        onValidate={(val) => checkValidation(index, val)}
+                        data-spectron="random-seeds"
+                    />
                 ))}
             </ValidFormContainer>
         </Fragment>

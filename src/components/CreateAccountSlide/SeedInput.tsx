@@ -32,13 +32,14 @@ const WarningIcon = styled(Warning)`
 `;
 
 interface Props {
+    dataSpectron?: string;
     value: string;
     index: number;
     onValidate: (isValid: boolean) => void;
 }
 
 function SeedInput(props: Props) {
-    const { index, value, onValidate } = props;
+    const { dataSpectron, index, value, onValidate } = props;
     const { t } = useTranslation();
     const [isFirst, setIsFirst] = useState(false);
     const [status, setStatus] = useState(0);
@@ -124,7 +125,7 @@ function SeedInput(props: Props) {
 
     return (
         <StyledInputContainer>
-            <TextField label={label} onChange={(newVal) => changFunc(newVal)} errorText={t(error)} />
+            <TextField label={label} onChange={(newVal) => changFunc(newVal)} errorText={t(error)} data-spectron="random-seed-text-field" />
             {icon}
         </StyledInputContainer>
     );
