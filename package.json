@@ -213,7 +213,6 @@
 		"@material-ui/core": "4.9.14",
 		"@material-ui/icons": "4.9.1",
 		"@material-ui/lab": "4.0.0-alpha.53",
-		"@types/electron-clipboard-extended": "^1.0.1",
 		"bignumber.js": "9.0.0",
 		"blakejs": "1.1.0",
 		"connected-react-router": "6.8.0",
