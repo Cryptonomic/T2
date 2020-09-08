@@ -247,7 +247,7 @@ function Send(props: Props) {
         return (
             <TooltipContainer>
                 <TooltipTitle>{t('components.send.burn_tooltip_title')}</TooltipTitle>
-                <TooltipContent>
+                <TooltipContent data-spectron="burn-message">
                     <Trans i18nKey="components.send.burn_tooltip_content">
                         The recipient address you entered has a zero balance. Sending funds to an empty Manager address (tz1,2,3) requires a one-time
                         <BoldSpan>0.257</BoldSpan> XTZ burn fee.
@@ -295,7 +295,9 @@ function Send(props: Props) {
                     onChange={handleAmountChange}
                     errorText={error}
                 />
-                <UseMax data-spectron="use-max-button" onClick={() => onUseMax()}>{t('general.verbs.use_max')}</UseMax>
+                <UseMax data-spectron="use-max-button" onClick={() => onUseMax()}>
+                    {t('general.verbs.use_max')}
+                </UseMax>
             </AmountContainer>
             <FeesBurnContainer>
                 <FeeContainer>
@@ -360,16 +362,16 @@ function Send(props: Props) {
                     isBurn={isBurn}
                 />
             ) : (
-                    <SendLedgerConfirmationModal
-                        amount={amount}
-                        fee={fee}
-                        address={toAddress}
-                        source={selectedAccountHash}
-                        open={open}
-                        onClose={() => setOpen(false)}
-                        isLoading={isLoading}
-                    />
-                )}
+                <SendLedgerConfirmationModal
+                    amount={amount}
+                    fee={fee}
+                    address={toAddress}
+                    source={selectedAccountHash}
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    isLoading={isLoading}
+                />
+            )}
         </Container>
     );
 }

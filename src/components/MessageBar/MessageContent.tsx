@@ -129,9 +129,9 @@ const MessageContent = (props: Props) => {
     }
 
     return (
-        <MessageContainer data-spectron='message-bar' isError={isError}>
-            <StyledCloseIcon onClick={() => onClose()} />
-            <MessageHeader data-spectron='message' isWrap={content !== 'general.errors.no_ledger_detected'}>
+        <MessageContainer data-spectron="message-bar" isError={isError}>
+            <StyledCloseIcon data-spectron="message-close" onClick={() => onClose()} />
+            <MessageHeader data-spectron="message" isWrap={content !== 'general.errors.no_ledger_detected'}>
                 {!!hash && <CheckIcon iconName="checkmark2" size={ms(0)} color="white" />}
                 {t(content, { localeParam })}
             </MessageHeader>
@@ -147,7 +147,7 @@ const MessageContent = (props: Props) => {
                             width: '15px',
                             height: '15px',
                             position: 'relative',
-                            top: '3px'
+                            top: '3px',
                         }}
                     />
 

@@ -5,13 +5,10 @@ const BasePage = require('./basePage');
 
 class TransactionPage extends BasePage {
     constructor(app) {
-        super(app)
+        super(app);
         this.firstTransactionType = '[data-spectron="transaction-daily"] [data-spectron="single-transaction"]:nth-child(2) [data-spectron="transaction-type"]';
-        this.firstTransactionHour = '[data-spectron="transaction-daily"] [data-spectron="single-transaction"]:nth-child(2) [data-spectron="transaction-date-hour"]';
-
-        this.setApp = function (app) {
-            this.app = app;
-        };
+        this.firstTransactionHour =
+            '[data-spectron="transaction-daily"] [data-spectron="single-transaction"]:nth-child(2) [data-spectron="transaction-date-hour"]';
 
         this.refreshApp = async () => {
             await this.app.client.click(this.refreshButton);
@@ -82,7 +79,7 @@ class TransactionPage extends BasePage {
 
         this.assertClipBoard = async (text) => {
             const clipboardAddress = await this.app.electron.clipboard.readText();
-            assert.equal(clipboardAddress, text, "clipboard text different");
+            assert.equal(clipboardAddress, text, 'clipboard text different');
         };
 
         this.updateWallet = async () => {
@@ -102,17 +99,14 @@ class TransactionPage extends BasePage {
             const address = addressOne[0] + addressTwo[0];
             const amount = await this.app.client.getText('[data-spectron="tezos-amount"]');
 
-            let fee = 0;
-            if (type === 'Sentto') {
-                fee = await this.app.client.getText('[data-spectron="fee"] span:nth-child(2)');
-            }
+            const fee = await this.app.client.getText('[data-spectron="fee"] span:nth-child(2)');
             const transactionData = {
-                date: date,
+                date: date[0],
                 hour: hour[0],
                 type: type[0],
                 address: address,
                 amount: amount[0],
-                fee: fee[0]
+                fee: fee[0].slice(0, -2),
             };
             return transactionData;
         };
@@ -137,7 +131,7 @@ class TransactionPage extends BasePage {
                 type: type[0],
                 address: address,
                 amount: amount[0],
-                fee: fee[0]
+                fee: fee[0],
             };
             return transactionData;
         };

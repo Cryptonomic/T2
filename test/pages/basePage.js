@@ -1,34 +1,43 @@
 const assert = require('assert');
 const moment = require('moment');
-const { sleepApp } = require('../utils/sleepApp')
-
-//Bug -> moge wybrac pusty custome fee
+const { sleepApp } = require('../utils/sleepApp');
 
 class BasePage {
     constructor(app) {
         this.app = app;
         this.windowCount = 1;
         this.pageTitle = 'Tezori';
+        this.managerAddressSectionButton = '//*[@id="root"]/div/div[2]/div/div/div/div[1]';
         this.languageContinueButton = 'button=Continue';
         this.termsAgreeButton = 'button=I Agree';
         this.settingsButton = '[data-spectron="settings-button"]';
+        this.updateTime = '[data-spectron="update-time"]';
         this.refreshButton = '[data-spectron="refresh-button"]';
         this.logOutButton = '[data-spectron="logout-button"]';
-        this.popUpMessage = "[data-spectron='message-bar'] [data-spectron='message']"
+        this.popUpMessage = "[data-spectron='message-bar'] [data-spectron='message']";
+        this.closePopUpButton = "[data-spectron='message-close']";
+
+        this.openAppMainSection = async () => {
+            await this.app.client.click(this.managerAddressSectionButton);
+        };
 
         this.pushButton = async function (selectron) {
-            await this.app.client.waitUntil(
-                async () => await this.app.client.isEnabled(selectron) === true,
-                {
-                    timeout: 5000,
-                    timeoutMsg: `expected button ${selectron} to be enabled`
-                }
-            );
-            await this.app.client.click(selectron)
+            await this.app.client.waitUntil(async () => (await this.app.client.isEnabled(selectron)) === true, {
+                timeout: 5000,
+                timeoutMsg: `expected button ${selectron} to be enabled`,
+            });
+            await this.app.client.click(selectron);
         };
 
         this.refreshApp = async () => {
             await this.app.client.click(this.refreshButton);
+        };
+
+        this.assertPopUpAlert = async (alertMessage) => {
+            await this.app.client.waitForExist(this.popUpMessage, 1000 * 60 * 2);
+            const alert = await this.app.client.getText(this.popUpMessage);
+            await sleepApp(5000);
+            assert.equal(true, alert.includes(alertMessage), `pop up: ${alert}`);
         };
 
         this.selectLanguageAndAgreeToTerms = async () => {
@@ -91,12 +100,12 @@ class BasePage {
 
         this.buttonEnabledFalse = async (selector) => {
             let buttonEnabled = await this.app.client.isEnabled(selector);
-            assert.equal(buttonEnabled, false);
+            assert.equal(buttonEnabled, false, `Button: ${selector} is enabled but shouldn't`);
         };
 
         this.assertClipBoard = async (text) => {
             const clipboardAddress = await this.app.electron.clipboard.readText();
-            assert.equal(clipboardAddress, text, "clipboard text different");
+            assert.equal(clipboardAddress, text, 'clipboard text different');
         };
 
         this.updateWallet = async () => {
@@ -126,7 +135,7 @@ class BasePage {
                 type: type[0],
                 address: address,
                 amount: amount[0],
-                fee: fee[0]
+                fee: fee[0],
             };
             return transactionData;
         };
@@ -151,7 +160,7 @@ class BasePage {
                 type: type[0],
                 address: address,
                 amount: amount[0],
-                fee: fee[0]
+                fee: fee[0],
             };
             return transactionData;
         };

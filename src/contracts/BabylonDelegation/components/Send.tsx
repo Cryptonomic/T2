@@ -254,9 +254,8 @@ function Send(props: Props) {
 
     return (
         <Container>
-            <SendTitle id="test">{t('components.send.send_xtz')}</SendTitle>
+            <SendTitle>{t('components.send.send_xtz')}</SendTitle>
             <InputAddress
-                dataSpectron="test"
                 label={t('components.send.recipient_address')}
                 address={selectedAccountHash}
                 operationType="send_babylon"
@@ -336,16 +335,16 @@ function Send(props: Props) {
                     isBurn={isBurn}
                 />
             ) : (
-                    <SendLedgerConfirmationModal
-                        amount={amount}
-                        fee={fee}
-                        address={toAddress}
-                        source={selectedAccountHash}
-                        open={open}
-                        onClose={() => setOpen(false)}
-                        isLoading={isLoading}
-                    />
-                )}
+                <SendLedgerConfirmationModal
+                    amount={amount}
+                    fee={fee}
+                    address={toAddress}
+                    source={selectedAccountHash}
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    isLoading={isLoading}
+                />
+            )}
         </Container>
     );
 }

@@ -85,16 +85,12 @@ const Sign = () => {
             <MainContainer>
                 <CustomTextArea label={t('general.nouns.message')} onChange={(val) => setMessage(val)} defaultValue={message} />
             </MainContainer>
-            <ResultContainer id="signature">
+            <ResultContainer>
                 {error && <WarningIcon />}
                 {error && result && <Result isError={error}>{result}</Result>}
                 {!error && result && (
                     <TextField
                         data-spectron="signature-value"
-<<<<<<< HEAD
-                        id="signatureValue"
-=======
->>>>>>> c3dcecf2e6773687befc5fffa0854a5c6175d5f5
                         label={t('general.nouns.signature')}
                         value={result}
                         readOnly={true}
@@ -113,7 +109,7 @@ const Sign = () => {
                             The account is not revealed, copy public key? <CopyButton text={key} title="" color="accent" />
                         </InfoContainer>
                     )}
-                    <InvokeButton data-spectron="sign-button" id="signButton" buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
+                    <InvokeButton data-spectron="sign-button" buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
                         {t('general.verbs.sign')}
                     </InvokeButton>
                 </ButtonContainer>
