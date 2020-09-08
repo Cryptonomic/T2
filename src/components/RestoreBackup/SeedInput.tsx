@@ -69,21 +69,27 @@ function SeedInput(props: Props) {
 
     function onChangeInput(e, val) {
         const inputWords = seedPhraseConvert(val);
-        const invalidWords = inputWords.filter(element => seedJson.indexOf(element) === -1);
+        const invalidWords = inputWords.filter((element) => seedJson.indexOf(element) === -1);
 
-        if (inputWords.length > invalidWords.length) {
+        if (inputWords.length > 1 && inputWords.length > invalidWords.length) {
+            // paste multiple
             onChange([...seeds, ...inputWords]);
         }
 
+        const matchingWords = seedJson.filter((w) => w.startsWith(inputWords[0]));
+        if (inputWords.length === 1 && matchingWords.length === 1) {
+            onChange([...seeds, matchingWords[0]]);
+        }
+
         if (invalidWords.length > 0) {
-            setBadWords([...badWords, ...invalidWords]);
+            setBadWords([...badWords, ...invalidWords]); // paint bad words red
         }
 
         setInputVal(val);
     }
 
     function onChangeItems(e, items) {
-        const newBadWords = badWords.filter(item => items.indexOf(item) > -1);
+        const newBadWords = badWords.filter((item) => items.indexOf(item) > -1);
         let newError = '';
 
         if (newBadWords.length > 0) {
@@ -116,7 +122,7 @@ function SeedInput(props: Props) {
                 if (inputValue.length < 2) {
                     return [];
                 }
-                return options.filter(option => {
+                return options.filter((option) => {
                     return option.toLowerCase().startsWith(inputValue.toLowerCase());
                 });
             }}
@@ -137,7 +143,7 @@ function SeedInput(props: Props) {
                     );
                 })
             }
-            renderInput={params => (
+            renderInput={(params) => (
                 <TextfieldWrapper
                     {...params}
                     variant="standard"
