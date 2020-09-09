@@ -114,7 +114,7 @@ function LoginHome(props: Props) {
                             {!isLedgerConnecting && t('containers.loginHome.connect_ledger')}
                         </UnlockWalletButton>
                         {activePath && (
-                            <SelectedPath>
+                            <SelectedPath data-spectron="selected-path">
                                 {t('containers.loginHome.selectedPath')} {activePath}
                             </SelectedPath>
                         )}
@@ -147,7 +147,13 @@ function LoginHome(props: Props) {
                         <UnlockWalletButton color="secondary" variant="extended" onClick={() => goTo('import')} disabled={!isAgreement}>
                             {t('containers.loginHome.open_exisiting_wallet_btn')}
                         </UnlockWalletButton>
-                        <CreateWalletButton color="primary" variant="outlined" onClick={() => goTo('create')} disabled={!isAgreement}>
+                        <CreateWalletButton
+                            data-spectron="create-wallet"
+                            color="primary"
+                            variant="outlined"
+                            onClick={() => goTo('create')}
+                            disabled={!isAgreement}
+                        >
                             {t('containers.loginHome.create_new_wallet_btn')}
                         </CreateWalletButton>
                         <Linebar />
