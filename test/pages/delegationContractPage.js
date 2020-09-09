@@ -5,8 +5,9 @@ const BasePage = require('./basePage');
 
 class DelegationContractPage extends BasePage {
     constructor(app) {
-        super(app)
-        this.sendRecipientAddressInput = '[data-spectron="recipient-address"] input';
+        super(app);
+        this.delegationRecipientAddressInput = '[data-spectron="withdraw"] [data-spectron="amount"] input';
+        this.delegationContractBalanceAmount = '[data-spectron="address-info"] span:nth-child(3)';
         this.delegationcontractFeeSection = '[data-spectron="fee-container"]';
         this.delegationcontractLowFee = 'ul li:nth-child(1)';
         this.delegationcontractMediumFee = 'ul li:nth-child(2)';
@@ -14,70 +15,83 @@ class DelegationContractPage extends BasePage {
         this.selectedFeeValue = '[data-spectron="selected-fee-value"]';
         this.delegationcontractSendBottomButton = '[data-spectron="token-send-bottom-button"]';
         this.delegationcontractWalletPassword = '[data-spectron="password-input"] input';
-        this.delegationcontractRecipientInputAlert = '[data-spectron="token-recipient-address"] p'
+        this.delegationcontractRecipientInputAlert = '[data-spectron="token-recipient-address"] p';
 
-        this.firstDelegationContract = '[data-spectron="address-block"] [data-spectron="address"]:nth-child(3)'
-        this.delegationContractWithdrawWarning = '[data-spectron="withdraw-warning"]'
-        this.delegationContractDepositWarning = '[data-spectron="deposit-warning"]'
+        this.firstDelegationContract = '[data-spectron="address-block"] [data-spectron="address"]:nth-child(3)';
+        this.delegationContractWithdrawWarning = '[data-spectron="withdraw-warning"]';
+        this.delegationContractDepositWarning = '[data-spectron="deposit-warning"]';
 
         this.retrieveTokenBalanceBannerData = async () => {
             const tokenPageTitle = await this.app.client.getText('[data-spectron="token-name"]');
-            const addressPartOne = await this.app.client.getText('[data-spectron="token-balance-banner"] [data-spectron="tezos-address"] span span:nth-child(1)');
-            const addressPartTwo = await this.app.client.getText('[data-spectron="token-balance-banner"] [data-spectron="tezos-address"] span span:nth-child(2)');
+            const addressPartOne = await this.app.client.getText(
+                '[data-spectron="token-balance-banner"] [data-spectron="tezos-address"] span span:nth-child(1)'
+            );
+            const addressPartTwo = await this.app.client.getText(
+                '[data-spectron="token-balance-banner"] [data-spectron="tezos-address"] span span:nth-child(2)'
+            );
             const tokenAddress = addressPartOne + addressPartTwo;
             const tokenAddressInfo = await this.app.client.getText('[data-spectron="token-address-info"]');
             const ballanceBannerInfo = {
                 title: tokenPageTitle,
                 addres: tokenAddress,
-                addresInfo: tokenAddressInfo
-            }
+                addresInfo: tokenAddressInfo,
+            };
             return ballanceBannerInfo;
-        }
+        };
 
-        this.changeFeeLevel = async (feeLevel) => {
+        this.changeFeeLevel = async (feeLevel, customFeeInt = undefined) => {
             await this.app.client.click(this.delegationcontractFeeSection);
-            await sleepApp(5000)
+            await sleepApp(2000);
             switch (feeLevel) {
-                case "Low":
+                case 'Low':
                     await this.app.client.click(this.delegationcontractLowFee); // take lowest fee
-                    await sleepApp(5000)
-                    const selectedFeeOne = await this.app.client.getText(this.selectedFeeValue)
-                    assert.equal(selectedFeeOne.includes("Low Fee"), true)
+                    await sleepApp(2000);
+                    const selectedFeeOne = await this.app.client.getText(this.selectedFeeValue);
+                    assert.equal(selectedFeeOne.includes('Low Fee'), true);
                     break;
-                case "Medium":
-                    await this.app.client.click(this.delegationcontractMediumFee); // take lowest fee
+                case 'Medium':
+                    await this.app.client.click(this.delegationcontractMediumFee);
+                    await sleepApp(2000);
                     break;
-                case "High":
-                    await this.app.client.click(this.delegationcontractHighFee); // take lowest fee
+                case 'High':
+                    await this.app.client.click(this.delegationcontractHighFee);
+                    await sleepApp(2000);
                     break;
-                case "Custom":
-                    await this.app.client.click("li=Custom");
-                    await this.app.client.setValue('[data-spectron="custom-fee-modal"] input', 0.005);
-                    await this.app.client.click("button=Set Custom Fee");
-                    const selectedFeeTwo = await this.app.client.getText(this.selectedFeeValue)
-                    assert.equal(selectedFeeTwo.includes("0.005"), true)
+                case 'Custom':
+                    await this.app.client.click('li=Custom');
+                    if (customFeeInt) {
+                        await this.app.client.setValue('[data-spectron="custom-fee-modal"] input', customFeeInt);
+                    }
+                    if (!customFeeInt) {
+                        await this.buttonEnabledFalse('button=Set Custom Fee');
+                    }
+                    await this.app.client.click('button=Set Custom Fee');
+                    sleepApp(2000);
+                    const selectedFeeTwo = await this.app.client.getText(this.selectedFeeValue);
+                    if (customFeeInt) {
+                        assert.equal(selectedFeeTwo.includes(customFeeInt), true);
+                    }
                     break;
                 default:
                     await this.app.client.click(this.delegationcontractLowFee);
             }
-        }
+        };
 
-        this.fillWithdrawForm = async ({
-            amount = undefined,
-            fee = undefined,
-            walletPassword = undefined,
-            withdraw = true
-        }) => {
+        this.fillWithdrawForm = async ({ amount = undefined, fee = undefined, customFeeInt = undefined, walletPassword = undefined, withdraw = true }) => {
             if (amount) {
-                await app.client.setValue('[data-spectron="withdraw"] [data-spectron="amount"] input', amount);
-                await this.buttonEnabledFalse('[data-spectron="withdraw-bottom-button"]');
+                if (amount === 'Max') {
+                    await this.app.client.click('div=Use Max');
+                } else {
+                    await this.app.client.setValue('[data-spectron="withdraw"] [data-spectron="amount"] input', amount);
+                    await this.buttonEnabledFalse('[data-spectron="withdraw-bottom-button"]');
+                }
             }
             if (fee) {
-                await this.changeFeeLevel(fee)
+                await this.changeFeeLevel(fee, customFeeInt);
                 await this.buttonEnabledFalse('[data-spectron="withdraw-bottom-button"]');
             }
             if (walletPassword) {
-                await app.client.setValue('[data-spectron="wallet-password"] input', walletPassword);
+                await this.app.client.setValue('[data-spectron="wallet-password"] input', walletPassword);
                 if (!amount) {
                     await this.buttonEnabledFalse('[data-spectron="withdraw-bottom-button"]');
                 }
@@ -85,24 +99,19 @@ class DelegationContractPage extends BasePage {
             if (withdraw) {
                 await this.pushButton('[data-spectron="withdraw-bottom-button"]');
             }
-        }
+        };
 
-        this.fillDepositForm = async ({
-            amount = undefined,
-            fee = undefined,
-            walletPassword = undefined,
-            withdraw = true
-        }) => {
+        this.fillDepositForm = async ({ amount = undefined, fee = undefined, customFeeInt = undefined, walletPassword = undefined, withdraw = true }) => {
             if (amount) {
-                await app.client.setValue('[data-spectron="deposit"] [data-spectron="amount"] input', amount);
+                await this.app.client.setValue('[data-spectron="deposit"] [data-spectron="amount"] input', amount);
                 await this.buttonEnabledFalse('[data-spectron="deposit-bottom-button"]');
             }
             if (fee) {
-                await this.changeFeeLevel(fee)
+                await this.changeFeeLevel(fee, customFeeInt);
                 await this.buttonEnabledFalse('[data-spectron="deposit-bottom-button"]');
             }
             if (walletPassword) {
-                await app.client.setValue('[data-spectron="wallet-password"] input', walletPassword);
+                await this.app.client.setValue('[data-spectron="wallet-password"] input', walletPassword);
                 if (!amount) {
                     await this.buttonEnabledFalse('[data-spectron="deposit-bottom-button"]');
                 }
@@ -110,7 +119,7 @@ class DelegationContractPage extends BasePage {
             if (withdraw) {
                 await this.pushButton('[data-spectron="deposit-bottom-button"]');
             }
-        }
+        };
 
         // recieve
         // this.returnLastTransaction = async () => {

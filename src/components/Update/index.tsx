@@ -61,7 +61,6 @@ function Update(props: Props) {
             </Text>
             <Refresh
                 data-spectron="refresh-button"
-                id="updateButton"
                 style={{
                     fill: 'white',
                     height: ms(2),

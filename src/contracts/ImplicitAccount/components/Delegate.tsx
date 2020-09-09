@@ -110,7 +110,7 @@ function Delegate(props: Props) {
                     onIssue={(val) => setIsAddressIssue(val)}
                 />
             </AmountContainer>
-            <FeeContainer id="fee-container">
+            <FeeContainer>
                 <Fees
                     low={newFees.low}
                     medium={newFees.medium}
@@ -153,12 +153,12 @@ function Delegate(props: Props) {
                 {isManagerReady ? (
                     <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, 'delegate_contract'))} />
                 ) : (
-                        <Tooltip position="top" content={<NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>}>
-                            <IconButton size="small" color="primary">
-                                <AddCircleWrapper active={0} />
-                            </IconButton>
-                        </Tooltip>
-                    )}
+                    <Tooltip position="top" content={<NoFundTooltip>{t('components.addressBlock.not_ready_tooltip')}</NoFundTooltip>}>
+                        <IconButton size="small" color="primary">
+                            <AddCircleWrapper active={0} />
+                        </IconButton>
+                    </Tooltip>
+                )}
                 <BoldSpan onClick={() => dispatch(setModalOpen(true, 'delegate_contract'))}>{t('components.delegate.add_delegation_contract')}</BoldSpan>
                 <Tooltip
                     position="top"

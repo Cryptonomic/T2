@@ -8,7 +8,7 @@ interface Props {
 
 const SettingsCustomSelectItem = ({ value, url }: Props) => (
     <SelectRenderWrapper>
-        <span id="test">{value} </span>
+        <span>{value} </span>
         {url && <NodeUrlSpan>({url})</NodeUrlSpan>}
     </SelectRenderWrapper>
 );

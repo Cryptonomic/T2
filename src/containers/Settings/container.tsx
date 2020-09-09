@@ -125,7 +125,6 @@ const SettingsContainer = () => {
                     <Part>
                         <CustomSelect
                             data-spectron="settings-test-node-button"
-                            id="settingsTestNodeButton"
                             label="Nodes"
                             value={selectedNode}
                             onChange={onChangeCustomSelectNodes}

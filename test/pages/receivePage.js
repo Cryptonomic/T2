@@ -8,15 +8,15 @@ class ReceivePage extends BasePage {
         super(app);
         this.receiveAddresPartOne = '[data-spectron="address-info"] [data-spectron="tezos-address"] span span:nth-child(1)';
         this.receiveAddresPartTwo = '[data-spectron="address-info"] [data-spectron="tezos-address"] span span:nth-child(2)';
+        this.receiveCopyButton = '[data-spectron="receive-container"] svg';
 
         this.receiveReceiveAddress = async () => {
             const addressOne = await this.app.client.getText(this.receiveAddresPartOne);
             const addressTwo = await this.app.client.getText(this.receiveAddresPartTwo);
             const recieveAddress = addressOne + addressTwo;
-            return recieveAddress
-        }
+            return recieveAddress;
+        };
     }
-
 }
 
 module.exports = ReceivePage;

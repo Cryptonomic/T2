@@ -28,7 +28,7 @@ import {
     TooltipTitle,
     TooltipContent,
     BoldSpan,
-    FeeTooltipBtn
+    FeeTooltipBtn,
 } from './style';
 
 interface Props {
@@ -85,25 +85,25 @@ function Delegate(props: Props) {
     };
 
     return (
-        <Container data-spectron="delegate-section" onKeyDown={event => onEnterPress(event.key)}>
+        <Container data-spectron="delegate-section" onKeyDown={(event) => onEnterPress(event.key)}>
             <AmountContainer data-spectron="amount-container">
                 <InputAddress
                     dataSpectron="baker-address-input"
                     label={t('components.delegateConfirmationModal.new_address_label')}
                     operationType="delegate"
                     tooltip={false}
-                    onChange={val => setAddress(val)}
-                    onIssue={val => setIsAddressIssue(val)}
+                    onChange={(val) => setAddress(val)}
+                    onIssue={(val) => setIsAddressIssue(val)}
                 />
             </AmountContainer>
-            <FeeContainer id="fees" data-spectron="fees">
+            <FeeContainer data-spectron="fees">
                 <Fees
                     low={newFees.low}
                     medium={newFees.medium}
                     high={newFees.high}
                     fee={fee}
                     miniFee={miniFee}
-                    onChange={val => setFee(val)}
+                    onChange={(val) => setFee(val)}
                     tooltip={
                         !isRevealed && (
                             <Tooltip position="bottom" content={renderFeeToolTip}>
@@ -116,7 +116,7 @@ function Delegate(props: Props) {
                 />
             </FeeContainer>
 
-            <WarningContainer id="warning" data-spectron="warning-container">
+            <WarningContainer data-spectron="warning-container">
                 <TezosIcon iconName="info" size={ms(5)} color="info" />
                 <InfoText>{t('components.delegateConfirmationModal.delegate_warning')}</InfoText>
             </WarningContainer>
@@ -126,7 +126,7 @@ function Delegate(props: Props) {
                     <PasswordInput
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
-                        onChange={val => setPassPhrase(val)}
+                        onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}

@@ -1,14 +1,13 @@
 const assert = require('assert');
 const path = require('path');
 const { Application } = require('spectron');
-const BasePage = require('./pages/basePage')
+const BasePage = require('./pages/basePage');
 
 // construct paths
 const baseDir = path.join(__dirname, '..');
 const electronBinary = path.join(baseDir, 'node_modules', '.bin', 'electron');
 
-
-describe('base app param tests', function () {
+describe('Base app param tests: ', function () {
     this.timeout(500000);
 
     const app = new Application({
@@ -25,12 +24,12 @@ describe('base app param tests', function () {
     beforeEach(() => app.start());
     afterEach(() => app.stop());
 
-    it.only('Page title is correct', async () => {
+    it('app title is correct', async () => {
         const appTitle = await basePage.getApplicationTitle();
         assert.equal(appTitle, basePage.pageTitle);
     });
 
-    it('App load only with one window', async () => {
+    it('app loads only with one window', async () => {
         const windowNumber = await basePage.getWindowCount();
         assert.equal(windowNumber, 1);
     });

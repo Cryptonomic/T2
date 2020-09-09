@@ -1,11 +1,11 @@
 const assert = require('assert');
 const path = require('path');
 const { Application } = require('spectron');
-const ReceivePage = require('./pages/receivePage')
-const { sleepApp } = require('./utils/sleepApp')
+const ReceivePage = require('../pages/receivePage');
+const { sleepApp } = require('../utils/sleepApp');
 
 // construct paths
-const baseDir = path.join(__dirname, '..');
+const baseDir = path.join(__dirname, '..', '..');
 const electronBinary = path.join(baseDir, 'node_modules', '.bin', 'electron');
 
 describe('Implicit account Receive tests: ', function () {
@@ -31,9 +31,13 @@ describe('Implicit account Receive tests: ', function () {
 
     it.only('section present right receive address', async () => {
         await receivePage.openExistingWallet(process.env.TZ1_PASSWORD);
-        await receivePage.navigateToSection("Receive");
+        await receivePage.navigateToSection('Receive');
 
         const recieveAddress = await receivePage.receiveReceiveAddress();
         assert.equal(recieveAddress, process.env.TZ1_ADDRESS);
+
+        //check if addres is copy correctly
+        await app.client.click(receivePage.receiveCopyButton);
+        await receivePage.assertClipBoard(process.env.TZ1_ADDRESS);
     });
 });

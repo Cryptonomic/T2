@@ -40,7 +40,7 @@ import {
     UseMax,
     StorageFormatContainer,
     ColFormat,
-    ColStorage
+    ColStorage,
 } from './style';
 
 // TODO: move to featureModals
@@ -64,7 +64,7 @@ const defaultState = {
     isOpenLedgerConfirm: false,
     michelsonCode: '',
     delegate: '',
-    codeFormat: TezosParameterFormat.Micheline
+    codeFormat: TezosParameterFormat.Micheline,
 };
 
 function DeployContract(props: Props) {
@@ -78,7 +78,7 @@ function DeployContract(props: Props) {
     const [state, setState] = useState(() => {
         return {
             ...defaultState,
-            fee: averageFees.medium
+            fee: averageFees.medium,
         };
     });
     const { amount, fee, gas, storage, passPhrase, isOpenLedgerConfirm, parameters, michelsonCode, codeFormat, delegate } = state;
@@ -86,7 +86,7 @@ function DeployContract(props: Props) {
     const isDisabled = isLoading || !amount || (!passPhrase && !isLedger) || !parameters || !michelsonCode;
 
     function updateState(updatedValues) {
-        setState(prevState => {
+        setState((prevState) => {
             return { ...prevState, ...updatedValues };
         });
     }
@@ -146,25 +146,26 @@ function DeployContract(props: Props) {
     }, [enterNum]);
 
     return (
-        <MainContainer>
+        <MainContainer data-spectron="deploy-contract-section">
             <TabContainer>
                 <InputAddressContainer>
                     <CustomTextArea
+                        data-spectron="code-area"
                         label={t('components.interactModal.paste_micheline_code', { format: codeFormat })}
-                        onChange={val => updateState({ michelsonCode: val })}
+                        onChange={(val) => updateState({ michelsonCode: val })}
                     />
                 </InputAddressContainer>
 
                 <StorageFormatContainer>
-                    <ColStorage>
-                        <TextField label={t('components.interactModal.initial_storage')} onChange={val => updateState({ parameters: val })} />
+                    <ColStorage data-spectron="storage">
+                        <TextField label={t('components.interactModal.initial_storage')} onChange={(val) => updateState({ parameters: val })} />
                     </ColStorage>
-                    <ColFormat>
-                        <FormatSelector value={codeFormat} onChange={val => updateState({ codeFormat: val })} />
+                    <ColFormat data-spectron="format-selector">
+                        <FormatSelector value={codeFormat} onChange={(val) => updateState({ codeFormat: val })} />
                     </ColFormat>
                 </StorageFormatContainer>
                 <ParametersContainer>
-                    <TextField label={t('general.verbs.delegate')} onChange={val => updateState({ delegate: val })} />
+                    <TextField label={t('general.verbs.delegate')} onChange={(val) => updateState({ delegate: val })} />
                 </ParametersContainer>
 
                 <DeployAddressContainer>
@@ -176,11 +177,11 @@ function DeployContract(props: Props) {
                     </DeployAddressContent>
                 </DeployAddressContainer>
                 <RowContainer>
-                    <ColContainer>
-                        <TextField type="number" label={t('components.interactModal.storage_limit')} onChange={val => updateState({ storage: val })} />
+                    <ColContainer data-spectron="storage-limit">
+                        <TextField type="number" label={t('components.interactModal.storage_limit')} onChange={(val) => updateState({ storage: val })} />
                     </ColContainer>
-                    <ColContainer>
-                        <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={val => updateState({ gas: val })} />
+                    <ColContainer data-spectron="gas">
+                        <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={(val) => updateState({ gas: val })} />
                     </ColContainer>
                 </RowContainer>
                 <RowContainer>
@@ -189,7 +190,7 @@ function DeployContract(props: Props) {
                             decimalSeparator={t('general.decimal_separator')}
                             label={t('general.nouns.amount')}
                             amount={amount}
-                            onChange={val => updateState({ amount: val })}
+                            onChange={(val) => updateState({ amount: val })}
                         />
                         <UseMax onClick={onUseMax}>{t('general.verbs.use_max')}</UseMax>
                     </AmountContainer>
@@ -200,7 +201,7 @@ function DeployContract(props: Props) {
                             high={averageFees.high}
                             fee={fee}
                             miniFee={OPERATIONFEE}
-                            onChange={val => updateState({ fee: val })}
+                            onChange={(val) => updateState({ fee: val })}
                         />
                     </FeeContainer>
                 </RowContainer>
@@ -208,13 +209,14 @@ function DeployContract(props: Props) {
             <PasswordButtonContainer>
                 {!isLedger && (
                     <PasswordInput
+                        dataSpectron="wallet-password"
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={updatePassPhrase}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onDeployOperation}>
+                <InvokeButton data-spectron="deploy-button" buttonTheme="primary" disabled={isDisabled} onClick={onDeployOperation}>
                     {t('general.verbs.deploy')}
                 </InvokeButton>
             </PasswordButtonContainer>
