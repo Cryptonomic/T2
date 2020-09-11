@@ -98,7 +98,7 @@ function Fee(props: Props) {
                 label={t('general.nouns.fee')}
                 value={fee}
                 onChange={onFeeChange}
-                renderValue={value => {
+                renderValue={(value) => {
                     let feeTitle = 'components.fees.low_fee';
                     if (value === low) {
                         feeTitle = 'components.fees.low_fee';
@@ -144,7 +144,7 @@ function Fee(props: Props) {
                         onChange={handleCustomChange}
                         errorText={error}
                     />
-                    <StyledSaveButton buttonTheme="primary" onClick={() => handleSetCustom()} disabled={!!error}>
+                    <StyledSaveButton data-spectron="set-custom-fee-button" buttonTheme="primary" onClick={() => handleSetCustom()} disabled={!!error}>
                         {t('components.fees.set_custom_fee')}
                     </StyledSaveButton>
                 </ModalContent>

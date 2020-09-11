@@ -106,48 +106,48 @@ class DelegatePage extends BasePage {
             return bakerAddress;
         };
 
-        this.changeFeeLevel = async (feeLevel, customFeeInt = undefined) => {
-            await this.app.client.click(this.delegateFeeSection);
-            let selectedFee;
-            await sleepApp(2000);
-            switch (feeLevel) {
-                case 'Low':
-                    await this.app.client.click(this.delegateLowFee);
-                    await sleepApp(2000);
-                    selectedFee = await this.app.client.getText(this.selectedFeeValue);
-                    assert.equal(selectedFee.includes('Low Fee'), true);
-                    break;
-                case 'Medium':
-                    await this.app.client.click(this.delegateMediumFee);
-                    selectedFee = await this.app.client.getText(this.selectedFeeValue);
-                    assert.equal(selectedFee.includes('Medium Fee'), true);
-                    await sleepApp(2000);
-                    break;
-                case 'High':
-                    await this.app.client.click(this.delegateHighFee);
-                    selectedFee = await this.app.client.getText(this.selectedFeeValue);
-                    assert.equal(selectedFee.includes('High Fee'), true);
-                    await sleepApp(2000);
-                    break;
-                case 'Custom':
-                    await this.app.client.click('li=Custom');
-                    if (customFeeInt) {
-                        await this.app.client.setValue('[data-spectron="custom-fee-modal"] input', customFeeInt);
-                    }
-                    if (!customFeeInt) {
-                        await this.buttonEnabledFalse('button=Set Custom Fee');
-                    }
-                    await this.app.client.click('button=Set Custom Fee');
-                    sleepApp(2000);
-                    const selectedFeeTwo = await this.app.client.getText(this.selectedFeeValue);
-                    if (customFeeInt) {
-                        assert.equal(selectedFeeTwo.includes(customFeeInt), true);
-                    }
-                    break;
-                default:
-                    await this.app.client.click(this.delegateLowFee);
-            }
-        };
+        // this.changeFeeLevel = async (feeLevel, customFeeInt = undefined) => {
+        //     await this.app.client.click(this.delegateFeeSection);
+        //     let selectedFee;
+        //     await sleepApp(2000);
+        //     switch (feeLevel) {
+        //         case 'Low':
+        //             await this.app.client.click(this.delegateLowFee);
+        //             await sleepApp(2000);
+        //             selectedFee = await this.app.client.getText(this.selectedFeeValue);
+        //             assert.equal(selectedFee.includes('Low Fee'), true);
+        //             break;
+        //         case 'Medium':
+        //             await this.app.client.click(this.delegateMediumFee);
+        //             selectedFee = await this.app.client.getText(this.selectedFeeValue);
+        //             assert.equal(selectedFee.includes('Medium Fee'), true);
+        //             await sleepApp(2000);
+        //             break;
+        //         case 'High':
+        //             await this.app.client.click(this.delegateHighFee);
+        //             selectedFee = await this.app.client.getText(this.selectedFeeValue);
+        //             assert.equal(selectedFee.includes('High Fee'), true);
+        //             await sleepApp(2000);
+        //             break;
+        //         case 'Custom':
+        //             await this.app.client.click('li=Custom');
+        //             if (customFeeInt) {
+        //                 await this.app.client.setValue('[data-spectron="custom-fee-modal"] input', customFeeInt);
+        //             }
+        //             if (!customFeeInt) {
+        //                 await this.buttonEnabledFalse('button=Set Custom Fee');
+        //             }
+        //             await this.app.client.click('button=Set Custom Fee');
+        //             sleepApp(2000);
+        //             const selectedFeeTwo = await this.app.client.getText(this.selectedFeeValue);
+        //             if (customFeeInt) {
+        //                 assert.equal(selectedFeeTwo.includes(customFeeInt), true);
+        //             }
+        //             break;
+        //         default:
+        //             await this.app.client.click(this.delegateLowFee);
+        //     }
+        // };
 
         this.changeBakerAddress = async ({
             bakerAddress = undefined,
@@ -163,7 +163,7 @@ class DelegatePage extends BasePage {
                 }
             }
             if (feeLevel) {
-                await this.changeFeeLevel(feeLevel, customFeeInt);
+                await this.changeFeeLevelBASE(feeLevel, customFeeInt);
                 if (!bakerAddress || !walletPassword) {
                     this.buttonEnabledFalse(this.delegateChangeButton);
                 }

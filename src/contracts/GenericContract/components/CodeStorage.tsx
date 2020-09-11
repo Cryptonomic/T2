@@ -27,7 +27,7 @@ const CodeStorage = (props: Props) => {
     return (
         <Container>
             <MainContainer>
-                <CodeTxt>{code}</CodeTxt>
+                <CodeTxt data-spectron="code-storage">{code}</CodeTxt>
             </MainContainer>
         </Container>
     );

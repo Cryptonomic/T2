@@ -9,6 +9,10 @@ const TokenPage = require('./pages/tokenPage');
 const baseDir = path.join(__dirname, '..');
 const electronBinary = path.join(baseDir, 'node_modules', '.bin', 'electron');
 
+const envVariables = path.join(baseDir, 'test/.env');
+// load evironment variables
+require('dotenv').config({ path: envVariables });
+
 describe('Tokens main features tests: ', function () {
     this.timeout(500000);
 
@@ -33,7 +37,7 @@ describe('Tokens main features tests: ', function () {
     afterEach(() => app.stop());
 
     it('tokens Balance Banner shows right data', async () => {
-        await tokenPage.navigetToTokenSection('Token Sample');
+        await tokenPage.openTokenContract('Token Sample');
         const pageData = await tokenPage.retrieveTokenBalanceBannerData();
         assert.equal(pageData.title, 'Token Sample');
         assert.equal(pageData.addres, 'KT1HzQofKBxzfiKoMzGbkxBgjis2mWnCtbC2');
@@ -43,7 +47,7 @@ describe('Tokens main features tests: ', function () {
     });
 
     it('send tokens to proper recipient', async () => {
-        await tokenPage.navigetToTokenSection('Token Sample');
+        await tokenPage.openTokenContract('Token Sample');
         await tokenPage.navigateToSection('Send');
         await tokenPage.sendTokens({
             recipientAddress: process.env.TZ2_ADDRESS,
@@ -56,7 +60,7 @@ describe('Tokens main features tests: ', function () {
     });
 
     it('send tokens with wrong password', async () => {
-        await tokenPage.navigetToTokenSection('Token Sample');
+        await tokenPage.openTokenContract('Token Sample');
         await tokenPage.navigateToSection('Send');
         await tokenPage.sendTokens({
             recipientAddress: process.env.TZ2_ADDRESS,
@@ -69,7 +73,7 @@ describe('Tokens main features tests: ', function () {
     });
 
     it('set recipients to smarty contract address', async () => {
-        await tokenPage.navigetToTokenSection('Token Sample');
+        await tokenPage.openTokenContract('Token Sample');
         await tokenPage.navigateToSection('Send');
         await tokenPage.sendTokens({
             recipientAddress: 'KT1HzQofKBxzfiKoMzGbkxBgjis2mWnCtbC2',
@@ -81,14 +85,14 @@ describe('Tokens main features tests: ', function () {
     });
 
     it.skip('last transaction is not dublicated in transaction section - verify hours', async () => {
-        await tokenPage.navigetToTokenSection('Token Sample');
+        await tokenPage.openTokenContract('Token Sample');
         await tokenPage.navigateToSection('Transactions');
         const lastTransactionsHoursList = await tokenPage.app.client.getText('[data-spectron="transaction-date-hour"]');
         assert.equal(lastTransactionsHoursList[0] !== lastTransactionsHoursList[1], true);
     });
 
     it('send tokens to proper recipient is visible in source account transaction', async () => {
-        await tokenPage.navigetToTokenSection('Token Sample');
+        await tokenPage.openTokenContract('Token Sample');
         await tokenPage.navigateToSection('Send');
         await tokenPage.sendTokens({
             recipientAddress: process.env.TZ2_ADDRESS,
@@ -98,9 +102,7 @@ describe('Tokens main features tests: ', function () {
             send: true,
         });
 
-        const fee = await app.client.getText(tokenPage.selectedFeeValue);
-        const splitFee = fee.split(' ');
-        const retrievedFee = parseFloat(splitFee[2]);
+        const fee = await tokenPage.retrieveSelectedFeeValueBase();
 
         const transactionDate = moment().format('MMMM D, YYYY');
 
@@ -115,6 +117,6 @@ describe('Tokens main features tests: ', function () {
         assert.equal(lastTransaction.hour, 'Pending...');
         assert.equal(lastTransaction.address, 'tz1YXRdYAbNhwd5Vx1hhP2kt8JWAW6WD16Uq');
         assert.equal(lastTransaction.amount, '-\n1,000000 TKS');
-        assert.equal(lastTransaction.fee, retrievedFee); // Fee is changing!
+        assert.equal(lastTransaction.fee, fee); // Fee is changing!
     });
 });

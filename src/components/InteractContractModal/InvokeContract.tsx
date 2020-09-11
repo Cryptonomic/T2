@@ -36,7 +36,7 @@ import {
     LinkIcon,
     StorageFormatContainer,
     ColFormat,
-    ColStorage
+    ColStorage,
 } from './style';
 
 const utez = 1000000;
@@ -60,7 +60,7 @@ const defaultState = {
     passPhrase: '',
     isOpenLedgerConfirm: false,
     codeFormat: TezosParameterFormat.Micheline,
-    entryPoint: ''
+    entryPoint: '',
 };
 
 function InvokeContract(props: Props) {
@@ -74,7 +74,7 @@ function InvokeContract(props: Props) {
             ...defaultState,
             selectedInvokeAddress: addresses[0].pkh,
             balance: addresses[0].balance,
-            fee: averageFees.medium
+            fee: averageFees.medium,
         };
     });
     const {
@@ -90,13 +90,13 @@ function InvokeContract(props: Props) {
         entryPoint,
         isAddressIssue,
         contractAddress,
-        selectedInvokeAddress
+        selectedInvokeAddress,
     } = state;
 
     const isDisabled = isAddressIssue || isLoading || !amount || !contractAddress || (!passPhrase && !isLedger);
 
     function updateState(updatedValues) {
-        setState(prevState => {
+        setState((prevState) => {
             return { ...prevState, ...updatedValues };
         });
     }
@@ -163,10 +163,11 @@ function InvokeContract(props: Props) {
             <TabContainer>
                 <InputAddressContainer>
                     <InputAddress
+                        dataSpectron="contract-address"
                         operationType="invoke"
                         label={t('components.interactModal.smart_address')}
-                        onChange={val => updateState({ contractAddress: val })}
-                        onIssue={status => updateState({ isAddressIssue: status })}
+                        onChange={(val) => updateState({ contractAddress: val })}
+                        onIssue={(status) => updateState({ isAddressIssue: status })}
                     />
                     {!isAddressIssue && contractAddress && (
                         <React.Fragment>
@@ -176,32 +177,41 @@ function InvokeContract(props: Props) {
                     )}
                 </InputAddressContainer>
                 <StorageFormatContainer>
-                    <ColStorage>
-                        <TextField label={t('components.interactModal.parameters')} onChange={val => updateState({ parameters: val })} />
+                    <ColStorage data-spectron="parameters">
+                        <TextField label={t('components.interactModal.parameters')} onChange={(val) => updateState({ parameters: val })} />
                     </ColStorage>
-                    <ColFormat>
-                        <FormatSelector value={codeFormat} onChange={val => updateState({ codeFormat: val })} />
+                    <ColFormat data-spectron="format-selector">
+                        <FormatSelector value={codeFormat} onChange={(val) => updateState({ codeFormat: val })} />
                     </ColFormat>
                 </StorageFormatContainer>
                 <ParametersContainer>
-                    <TextField label={t('components.interactModal.entry_point')} onChange={val => updateState({ entryPoint: val })} />
+                    <TextField
+                        dataSpectron="entry-point"
+                        label={t('components.interactModal.entry_point')}
+                        onChange={(val) => updateState({ entryPoint: val })}
+                    />
                 </ParametersContainer>
 
                 <RowContainer>
-                    <ColContainer>
-                        <TextField type="number" label={t('components.interactModal.storage_limit')} onChange={val => updateState({ storage: Number(val) })} />
+                    <ColContainer data-spectron="storage-limit">
+                        <TextField
+                            type="number"
+                            label={t('components.interactModal.storage_limit')}
+                            onChange={(val) => updateState({ storage: Number(val) })}
+                        />
                     </ColContainer>
-                    <ColContainer>
-                        <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={val => updateState({ gas: Number(val) })} />
+                    <ColContainer data-spectron="gas-limit">
+                        <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={(val) => updateState({ gas: Number(val) })} />
                     </ColContainer>
                 </RowContainer>
                 <RowContainer>
                     <AmountContainer>
                         <TezosNumericInput
+                            dataSpectron="amount"
                             decimalSeparator={t('general.decimal_separator')}
                             label={t('general.nouns.amount')}
                             amount={amount}
-                            onChange={val => updateState({ amount: val })}
+                            onChange={(val) => updateState({ amount: val })}
                         />
                         <UseMax onClick={onUseMax}>{t('general.verbs.use_max')}</UseMax>
                     </AmountContainer>
@@ -212,7 +222,7 @@ function InvokeContract(props: Props) {
                             high={averageFees.high}
                             fee={fee}
                             miniFee={OPERATIONFEE}
-                            onChange={val => updateState({ fee: val })}
+                            onChange={(val) => updateState({ fee: val })}
                         />
                     </FeeContainer>
                 </RowContainer>
@@ -226,7 +236,7 @@ function InvokeContract(props: Props) {
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onInvokeOperation}>
+                <InvokeButton data-spectron="invoke-button" buttonTheme="primary" disabled={isDisabled} onClick={onInvokeOperation}>
                     {t('general.verbs.invoke')}
                 </InvokeButton>
             </PasswordButtonContainer>

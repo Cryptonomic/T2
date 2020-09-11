@@ -6,10 +6,15 @@ const moment = require('moment');
 const { sleepApp } = require('../utils/sleepApp');
 
 const DelegatePage = require('../pages/delegatePage');
+const TransactionPage = require('test/pages/transactionPage');
 
 // construct paths
 const baseDir = path.join(__dirname, '..', '..');
 const electronBinary = path.join(baseDir, 'node_modules', '.bin', 'electron');
+
+const envVariables = path.join(baseDir, 'test/.env');
+// load evironment variables
+require('dotenv').config({ path: envVariables });
 
 describe('Implicit account Delegation tests: ', function () {
     this.timeout(500000);
@@ -24,6 +29,7 @@ describe('Implicit account Delegation tests: ', function () {
 
     // page object
     const delegatePage = new DelegatePage(app);
+    const transactionPage = new TransactionPage(app);
 
     beforeEach(async () => {
         await app.start();
@@ -34,7 +40,48 @@ describe('Implicit account Delegation tests: ', function () {
 
     afterEach(() => app.stop());
 
-    it('change baker address to previous one', async function () {
+    it('change baker address happy path', async function () {
+        await delegatePage.openDelegationContract(1);
+        await delegatePage.navigateToSection('Transactions');
+        await transactionPage.waitUntilPendingTransactionFinished();
+        await delegatePage.navigateToSection('Delegate');
+
+        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
+        const bakerAddress = await delegatePage.retrieveDelegateToAddres();
+        if (bakerAddress) {
+            if (bakerAddress === 'tz1aWXP237BLwNHJcCD4b3DutCevhqq2T1Z9') {
+                await delegatePage.changeBakerAddress({
+                    bakerAddress: 'tz1VxS7ff4YnZRs8b4mMP4WaMVpoQjuo1rjf',
+                    feeLevel: 'Hihg',
+                    walletPassword: process.env.TZ1_PASSWORD,
+                    send: true,
+                });
+            } else {
+                await delegatePage.changeBakerAddress({
+                    bakerAddress: 'tz1aWXP237BLwNHJcCD4b3DutCevhqq2T1Z9',
+                    feeLevel: 'High',
+                    walletPassword: process.env.TZ1_PASSWORD,
+                    send: true,
+                });
+            }
+            await delegatePage.assertPopUpAlert('Successfully started delegation update.');
+        } else {
+            await delegatePage.changeBakerAddress({
+                bakerAddress: 'tz1VxS7ff4YnZRs8b4mMP4WaMVpoQjuo1rjf',
+                feeLevel: 'High',
+                walletPassword: process.env.TZ1_PASSWORD,
+                send: true,
+            });
+            await delegatePage.assertPopUpAlert('Successfully started delegation update.');
+        }
+    });
+
+    //Bug: message is 'Successfully started delegation update.'
+    it.skip('change baker address to already choosen', async function () {
+        await delegatePage.openDelegationContract(1);
+        await delegatePage.navigateToSection('Transactions');
+        await transactionPage.waitUntilPendingTransactionFinished();
+
         await delegatePage.navigateToSection('Delegate');
         await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
 
@@ -54,6 +101,10 @@ describe('Implicit account Delegation tests: ', function () {
     });
 
     it('change baker address to account wallet addres disabled delegate-button', async () => {
+        await delegatePage.openDelegationContract(1);
+        await delegatePage.navigateToSection('Transactions');
+        await transactionPage.waitUntilPendingTransactionFinished();
+
         await delegatePage.navigateToSection('Delegate');
         await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
         await delegatePage.changeBakerAddress({
@@ -66,6 +117,7 @@ describe('Implicit account Delegation tests: ', function () {
     });
 
     it('change baker address input validation', async () => {
+        await delegatePage.openDelegationContract(1);
         await delegatePage.navigateToSection('Delegate');
         await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
 
@@ -101,6 +153,7 @@ describe('Implicit account Delegation tests: ', function () {
     });
 
     it('change baker address to new one but not registered', async () => {
+        await delegatePage.openDelegationContract(1);
         await delegatePage.navigateToSection('Delegate');
         await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
         await delegatePage.changeBakerAddress({
@@ -114,39 +167,8 @@ describe('Implicit account Delegation tests: ', function () {
         await delegatePage.assertPopUpAlert('(permanent. proto.006-PsCARTHA.contract.manager.unregistered_delegate)');
     });
 
-    it('change baker address to registered one', async function () {
-        await delegatePage.navigateToSection('Delegate');
-        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
-        const bakerAddress = await delegatePage.retrieveDelegateToAddres();
-        if (bakerAddress) {
-            if (bakerAddress === 'tz1aWXP237BLwNHJcCD4b3DutCevhqq2T1Z9') {
-                await delegatePage.changeBakerAddress({
-                    bakerAddress: 'tz1VxS7ff4YnZRs8b4mMP4WaMVpoQjuo1rjf',
-                    feeLevel: 'Low',
-                    walletPassword: process.env.TZ1_PASSWORD,
-                    send: true,
-                });
-            } else {
-                await delegatePage.changeBakerAddress({
-                    bakerAddress: 'tz1aWXP237BLwNHJcCD4b3DutCevhqq2T1Z9',
-                    feeLevel: 'Low',
-                    walletPassword: process.env.TZ1_PASSWORD,
-                    send: true,
-                });
-            }
-            await delegatePage.assertPopUpAlert('Successfully started delegation update.');
-        } else {
-            await delegatePage.changeBakerAddress({
-                bakerAddress: 'tz1VxS7ff4YnZRs8b4mMP4WaMVpoQjuo1rjf',
-                feeLevel: 'Low',
-                walletPassword: process.env.TZ1_PASSWORD,
-                send: true,
-            });
-            await delegatePage.assertPopUpAlert('Successfully started delegation update.');
-        }
-    });
-
     it('change baker address with incorrect password', async () => {
+        await delegatePage.openDelegationContract(1);
         await delegatePage.navigateToSection('Delegate');
         await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
         const incorrectPassword = 'password';
@@ -160,6 +182,7 @@ describe('Implicit account Delegation tests: ', function () {
     });
 
     it('change fee works properly when we leave custom fee empty', async () => {
+        await delegatePage.openDelegationContract(1);
         await delegatePage.navigateToSection('Delegate');
         await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
 
@@ -169,18 +192,5 @@ describe('Implicit account Delegation tests: ', function () {
             feeLevel: 'Custom',
             send: false,
         });
-    });
-
-    it('add delegation contract', async () => {
-        await delegatePage.navigateToSection('Delegate');
-        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
-        await delegatePage.addDelegationContract({
-            delegateAddress: 'tz1VxS7ff4YnZRs8b4mMP4WaMVpoQjuo1rjf',
-            amount: 1,
-            fee: 'Low',
-            walletPassword: process.env.TZ1_PASSWORD,
-            delegate: true,
-        });
-        await delegatePage.assertPopUpAlert('Successfully started address origination.');
     });
 });

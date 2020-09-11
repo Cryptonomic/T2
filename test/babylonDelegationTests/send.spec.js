@@ -16,7 +16,7 @@ const envVariables = path.join(baseDir, 'test/.env');
 // load evironment variables
 require('dotenv').config({ path: envVariables });
 
-describe('Implicit account Send tests: ', function () {
+describe('Babylon Delegation Send tests: ', function () {
     this.timeout(500000);
 
     const app = new Application({
@@ -41,9 +41,7 @@ describe('Implicit account Send tests: ', function () {
     afterEach(() => app.stop());
 
     it('send shows right message after sending tzx', async () => {
-        // check if all transaction are finshed
-        await sendPage.navigateToSection('Transactions');
-        await transactionPage.waitUntilPendingTransactionFinished();
+        await sendPage.openDelegationContract(1);
         await sendPage.navigateToSection('Send');
 
         await sendPage.fillSendForm({
@@ -58,7 +56,34 @@ describe('Implicit account Send tests: ', function () {
         const confirmationData = await sendPage.retriveSendConfirmationData();
         assert.equal(confirmationData.amount.slice(0, 1), '1');
         assert.equal(confirmationData.fee.slice(0, -1), retrievedFee, 'fee incorrect');
-        assert.equal(confirmationData.source, process.env.TZ1_ADDRESS);
+        assert.equal(confirmationData.source, 'KT1MiHyTCjTyQhUAjHhHR8FbF6CndcykTABK');
+        assert.equal(confirmationData.destination, process.env.TZ2_ADDRESS);
+
+        await sendPage.sendConfirmation({
+            password: process.env.TZ1_PASSWORD,
+            _confirm: false,
+        });
+
+        await sleepApp(5000);
+    });
+
+    it('send shows right message after sending tzx', async () => {
+        await sendPage.openDelegationContract(1);
+        await sendPage.navigateToSection('Send');
+
+        await sendPage.fillSendForm({
+            recipientAddress: process.env.TZ2_ADDRESS,
+            amount: 1,
+            feeLevel: 'High',
+            send: true,
+        });
+
+        const retrievedFee = await sendPage.retrieveSelectedFeeValueBase();
+
+        const confirmationData = await sendPage.retriveSendConfirmationData();
+        assert.equal(confirmationData.amount.slice(0, 1), '1');
+        assert.equal(confirmationData.fee.slice(0, -1), retrievedFee, 'fee incorrect');
+        assert.equal(confirmationData.source, 'KT1MiHyTCjTyQhUAjHhHR8FbF6CndcykTABK');
         assert.equal(confirmationData.destination, process.env.TZ2_ADDRESS);
 
         await sendPage.sendConfirmation({
@@ -70,14 +95,15 @@ describe('Implicit account Send tests: ', function () {
     });
 
     it('max amount works correctly', async () => {
+        await app.client.click(delegationContractPage.firstDelegationContract);
+        await sleepApp(2000);
         await sendPage.navigateToSection('Send');
         await sendPage.fillSendForm({
-            amount: 'Max',
-            fee: 'Low',
+            amount: 'Low',
             send: false,
         });
         const remainingBalance = await app.client.getHTML(sendPage.sendRemainingBalance);
-        assert.equal(remainingBalance.includes('0.000001'), true, `remaning balance is: ${remainingBalance}`);
+        assert.equal(remainingBalance.includes('0.000001'), true);
     });
 
     it('total and remaning balance, fee works correctly', async () => {
@@ -131,7 +157,7 @@ describe('Implicit account Send tests: ', function () {
     it('send to myself is not allowed', async () => {
         await sendPage.navigateToSection('Send');
         await sendPage.fillSendForm({
-            recipientAddress: process.env.TZ1_ADDRESS,
+            recipientAddress: 'KT1MiHyTCjTyQhUAjHhHR8FbF6CndcykTABK',
             amount: 1,
             send: false,
         });
@@ -150,9 +176,6 @@ describe('Implicit account Send tests: ', function () {
     });
 
     it.skip('transaction is visible in transactions section', async () => {
-        // check if all transaction are finshed
-        await sendPage.navigateToSection('Transactions');
-        await transactionPage.waitUntilPendingTransactionFinished();
         await sendPage.navigateToSection('Send');
 
         await sendPage.fillSendForm({
@@ -185,9 +208,6 @@ describe('Implicit account Send tests: ', function () {
     });
 
     it.skip('transaction is visible in transactions section in  destination transactions section', async () => {
-        // check if all transaction are finshed
-        await sendPage.navigateToSection('Transactions');
-        await transactionPage.waitUntilPendingTransactionFinished();
         await sendPage.navigateToSection('Send');
 
         await sendPage.fillSendForm({

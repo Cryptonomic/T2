@@ -9,6 +9,10 @@ const moment = require('moment');
 const baseDir = path.join(__dirname, '..', '..');
 const electronBinary = path.join(baseDir, 'node_modules', '.bin', 'electron');
 
+const envVariables = path.join(baseDir, 'test/.env');
+// load evironment variables
+require('dotenv').config({ path: envVariables });
+
 describe('Implicit account Balance Banner tests: ', function () {
     this.timeout(500000);
 

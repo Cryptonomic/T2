@@ -88,7 +88,7 @@ function Delegate(props: Props) {
         <Container data-spectron="delegate-section" onKeyDown={(event) => onEnterPress(event.key)}>
             <AmountContainer data-spectron="amount-container">
                 <InputAddress
-                    dataSpectron="baker-address-input"
+                    dataSpectron="baker-address"
                     label={t('components.delegateConfirmationModal.new_address_label')}
                     operationType="delegate"
                     tooltip={false}
@@ -124,13 +124,14 @@ function Delegate(props: Props) {
             <PasswordButtonContainer>
                 {!isLedger && (
                     <PasswordInput
+                        dataSpectron="wallet-password"
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
+                <InvokeButton data-spectron="change-delegate-button" buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
                     {t('components.delegate.change_delegate')}
                 </InvokeButton>
             </PasswordButtonContainer>

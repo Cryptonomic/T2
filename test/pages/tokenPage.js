@@ -16,10 +16,6 @@ class TokenPage extends BasePage {
         this.tokenWalletPassword = '[data-spectron="password-input"] input';
         this.tokenRecipientInputAlert = '[data-spectron="token-recipient-address"] p';
 
-        this.navigetToTokenSection = async (tokenName) => {
-            await this.app.client.click(`[data-spectron="token-title"]=${tokenName}`);
-        };
-
         this.retrieveTokenBalanceBannerData = async () => {
             const tokenPageTitle = await this.app.client.getText('[data-spectron="token-name"]');
             const addressPartOne = await this.app.client.getText(
@@ -40,43 +36,43 @@ class TokenPage extends BasePage {
             return ballanceBannerInfo;
         };
 
-        this.changeFeeLevel = async (feeLevel, customFeeInt = undefined) => {
-            await this.app.client.click(this.tokenFeeSection);
-            await sleepApp(1000);
-            switch (feeLevel) {
-                case 'Low':
-                    await this.app.client.click(this.tokenLowFee);
-                    await sleepApp(2000);
-                    const selectedFee = await this.app.client.getText(this.selectedFeeValue);
-                    assert.equal(selectedFee.includes('Low Fee'), true);
-                    break;
-                case 'Medium':
-                    await this.app.client.click(this.tokenMediumFee);
-                    await sleepApp(2000);
-                    break;
-                case 'High':
-                    await this.app.client.click(this.tokenHighFee);
-                    await sleepApp(2000);
-                    break;
-                case 'Custom':
-                    await this.app.client.click('li=Custom');
-                    if (customFeeInt) {
-                        await this.app.client.setValue('[data-spectron="custom-fee-modal"] input', customFeeInt);
-                    }
-                    if (!customFeeInt) {
-                        await this.buttonEnabledFalse('button=Set Custom Fee');
-                    }
-                    await this.app.client.click('button=Set Custom Fee');
-                    sleepApp(2000);
-                    const selectedFeeTwo = await this.app.client.getText(this.selectedFeeValue);
-                    if (customFeeInt) {
-                        assert.equal(selectedFeeTwo.includes(customFeeInt), true);
-                    }
-                    break;
-                default:
-                    await this.app.client.click(this.tokenLowFee);
-            }
-        };
+        // this.changeFeeLevel = async (feeLevel, customFeeInt = undefined) => {
+        //     await this.app.client.click(this.tokenFeeSection);
+        //     await sleepApp(1000);
+        //     switch (feeLevel) {
+        //         case 'Low':
+        //             await this.app.client.click(this.tokenLowFee);
+        //             await sleepApp(2000);
+        //             const selectedFee = await this.app.client.getText(this.selectedFeeValue);
+        //             assert.equal(selectedFee.includes('Low Fee'), true);
+        //             break;
+        //         case 'Medium':
+        //             await this.app.client.click(this.tokenMediumFee);
+        //             await sleepApp(2000);
+        //             break;
+        //         case 'High':
+        //             await this.app.client.click(this.tokenHighFee);
+        //             await sleepApp(2000);
+        //             break;
+        //         case 'Custom':
+        //             await this.app.client.click('li=Custom');
+        //             if (customFeeInt) {
+        //                 await this.app.client.setValue('[data-spectron="custom-fee-modal"] input', customFeeInt);
+        //             }
+        //             if (!customFeeInt) {
+        //                 await this.buttonEnabledFalse('button=Set Custom Fee');
+        //             }
+        //             await this.app.client.click('button=Set Custom Fee');
+        //             sleepApp(2000);
+        //             const selectedFeeTwo = await this.app.client.getText(this.selectedFeeValue);
+        //             if (customFeeInt) {
+        //                 assert.equal(selectedFeeTwo.includes(customFeeInt), true);
+        //             }
+        //             break;
+        //         default:
+        //             await this.app.client.click(this.tokenLowFee);
+        //     }
+        // };
 
         this.sendTokens = async ({
             recipientAddress = undefined,
@@ -95,7 +91,7 @@ class TokenPage extends BasePage {
                 await this.buttonEnabledFalse(this.tokenSendBottomButton);
             }
             if (fee) {
-                await this.changeFeeLevel(fee, customFeeInt);
+                await this.changeFeeLevelBASE(fee, customFeeInt);
                 await this.buttonEnabledFalse(this.tokenSendBottomButton);
             }
             if (walletPassword) {

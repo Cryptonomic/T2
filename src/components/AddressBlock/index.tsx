@@ -278,7 +278,7 @@ function AddressBlock(props: Props) {
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
                 />
             )}
-            <AddDelegateLabel>
+            <AddDelegateLabel data-spectron="delegation-contract-label">
                 <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
             </AddDelegateLabel>
 
@@ -289,6 +289,7 @@ function AddressBlock(props: Props) {
 
                 return delegatedAddressReady ? (
                     <Address
+                        dataSpectron="delegation-contract"
                         key={addressId}
                         isContract={true}
                         accountId={addressId}
@@ -364,6 +365,7 @@ function AddressBlock(props: Props) {
 
                 return smartAddressReady ? (
                     <Address
+                        dataSpectron="smart-contract"
                         key={addressId}
                         isContract={true}
                         accountId={addressId}

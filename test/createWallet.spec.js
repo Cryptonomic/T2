@@ -9,6 +9,10 @@ const { sleepApp } = require('./utils/sleepApp');
 const baseDir = path.join(__dirname, '..');
 const electronBinary = path.join(baseDir, 'node_modules', '.bin', 'electron');
 
+const envVariables = path.join(baseDir, 'test/.env');
+// load evironment variables
+require('dotenv').config({ path: envVariables });
+
 describe.only('Create Wallet:', function () {
     this.timeout(500000);
 

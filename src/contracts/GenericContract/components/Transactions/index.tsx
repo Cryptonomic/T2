@@ -39,5 +39,9 @@ export default function Transactions(props: Props) {
         </SectionContainer>
     );
 
-    return <Container>{Object.keys(transactionsByDate).map((day, index) => renderDayTransactions(day, transactionsByDate[day], index))}</Container>;
+    return (
+        <Container data-spectron="transaction">
+            {Object.keys(transactionsByDate).map((day, index) => renderDayTransactions(day, transactionsByDate[day], index))}
+        </Container>
+    );
 }

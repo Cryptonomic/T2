@@ -180,7 +180,7 @@ function DeployContract(props: Props) {
                     <ColContainer data-spectron="storage-limit">
                         <TextField type="number" label={t('components.interactModal.storage_limit')} onChange={(val) => updateState({ storage: val })} />
                     </ColContainer>
-                    <ColContainer data-spectron="gas">
+                    <ColContainer data-spectron="gas-limit">
                         <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={(val) => updateState({ gas: val })} />
                     </ColContainer>
                 </RowContainer>

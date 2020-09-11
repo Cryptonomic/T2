@@ -7,7 +7,7 @@ class BasePage {
         this.app = app;
         this.windowCount = 1;
         this.pageTitle = 'Tezori';
-        this.managerAddressSectionButton = '//*[@id="root"]/div/div[2]/div/div/div/div[1]';
+        this.managerAddressSectionButton = '[data-spectron="main-addres"]';
         this.languageContinueButton = 'button=Continue';
         this.termsAgreeButton = 'button=I Agree';
         this.settingsButton = '[data-spectron="settings-button"]';
@@ -19,14 +19,6 @@ class BasePage {
 
         this.openAppMainSection = async () => {
             await this.app.client.click(this.managerAddressSectionButton);
-        };
-
-        this.pushButton = async function (selectron) {
-            await this.app.client.waitUntil(async () => (await this.app.client.isEnabled(selectron)) === true, {
-                timeout: 5000,
-                timeoutMsg: `expected button ${selectron} to be enabled`,
-            });
-            await this.app.client.click(selectron);
         };
 
         this.refreshApp = async () => {
@@ -75,37 +67,30 @@ class BasePage {
 
             await this.app.client.addValue('[data-spectron="wallet-password"] input', password);
             await this.app.client.click('[data-spectron="open-wallet-button"]');
-            await this.app.client.waitForExist('[data-spectron="address-block"] [data-spectron="address"] [data-spectron="amount"]', 30000);
-        };
-
-        this.getWindowCount = async () => {
-            return await this.app.client.waitUntilWindowLoaded().getWindowCount();
-        };
-
-        this.getApplicationTitle = function () {
-            return this.app.client.waitUntilWindowLoaded().getTitle();
-        };
-
-        this.clickButtonAndGetText = function () {
-            return this.app.client.click(this.buttonId).getText(this.textId);
+            await this.app.client.waitForExist('[data-spectron="main-addres"] [data-spectron="amount"]', 30000);
         };
 
         this.navigateToSection = async (sectionName) => {
             await this.app.client.click(`span=${sectionName}`);
         };
 
+        this.openDelegationContract = async (index) => {
+            await this.app.client.click(`[data-spectron="delegation-contract"]:nth-child(${2 + index})`);
+            await sleepApp(300);
+        };
+
+        this.openSmartContract = async (index) => {
+            await this.app.client.click(`[data-spectron="smart-contract"]:nth-child(${9 + index})`);
+            await sleepApp(3000);
+        };
+
+        this.openTokenContract = async (tokenName) => {
+            await this.app.client.click(`[data-spectron="token-title"]=${tokenName}`);
+            await sleepApp(3000);
+        };
+
         this.openSignAndVerify = async () => {
             await this.app.client.click('div=Sign & Verify');
-        };
-
-        this.buttonEnabledFalse = async (selector) => {
-            let buttonEnabled = await this.app.client.isEnabled(selector);
-            assert.equal(buttonEnabled, false, `Button: ${selector} is enabled but shouldn't`);
-        };
-
-        this.assertClipBoard = async (text) => {
-            const clipboardAddress = await this.app.electron.clipboard.readText();
-            assert.equal(clipboardAddress, text, 'clipboard text different');
         };
 
         this.updateWallet = async () => {
@@ -115,7 +100,6 @@ class BasePage {
             assert.equal(updateDate, currentDate);
         };
 
-        // transaction
         this.returnLastTransaction = async () => {
             const date = await this.app.client.getText('[data-spectron="transaction-date"]');
             const hour = await this.app.client.getText('[data-spectron="transaction-date-hour"]');
@@ -140,29 +124,184 @@ class BasePage {
             return transactionData;
         };
 
-        // tokens recieve
-        this.returnLastTokenTransaction = async () => {
-            const date = await this.app.client.getText('[data-spectron="transaction-date"]');
-            const hour = await this.app.client.getText('[data-spectron="transaction-date-hour"]');
-            const type = await this.app.client.getText('[data-spectron="transaction-type"]');
-            const addressOne = await this.app.client.getText('[data-spectron="transaction"] [data-spectron="tezos-address"] span span:nth-child(1)');
-            const addressTwo = await this.app.client.getText('[data-spectron="transaction"] [data-spectron="tezos-address"] span span:nth-child(2)');
-            const address = addressOne[0] + addressTwo[0];
-            const amount = await this.app.client.getText('[data-spectron="tezos-amount"]');
+        //-----Create Smart Contract----------------------------------------------------
 
-            let fee = 0;
-            if (type === 'Sentto') {
-                fee = await this.app.client.getText('[data-spectron="fee"] span:nth-child(2)');
+        this.pushCreateSmartContractButton = async () => {
+            await this.app.client.click('[data-spectron="delegation-label"] svg');
+            await this.app.client.click('span=Deploy a New Contract');
+        };
+
+        this.acceptTestNodeWarningDuringSmartContractCreation = async () => {
+            await this.app.client.click('[dataSpectron="understand-check"]');
+            await this.app.client.click('[dataSpectron="dont-message"]');
+            await this.app.client.click('[data-spectron="proceed-button"]');
+        };
+
+        this.startDeployingsmartContract = async () => {
+            await this.app.client.click('[data-spectron="proceed-button"]');
+        };
+
+        this.fillDeployContractForm = async ({
+            smartContract = undefined,
+            storage = undefined,
+            type = undefined,
+            storageLimit = undefined,
+            gas = undefined,
+            password = undefined,
+            deploy = undefined,
+        }) => {
+            if (storage) {
+                await this.app.client.setValue('[data-spectron="storage"] input', storage);
             }
-            const transactionData = {
-                date: date,
-                hour: hour[0],
-                type: type[0],
-                address: address,
-                amount: amount[0],
-                fee: fee[0],
-            };
-            return transactionData;
+            if (storageLimit) {
+                await this.app.client.setValue('[data-spectron="storage-limit"] input', storageLimit);
+            }
+            if (type) {
+                await this.app.client.click('[data-spectron="format-selector"]');
+                if (type === 'micheline') {
+                    await this.app.client.click(`ul li:nth-child(1)`);
+                }
+                if (type === 'michelson') {
+                    await this.app.client.click(`ul li:nth-child(2)`);
+                }
+            }
+            if (gas) {
+                await this.app.client.setValue('[data-spectron="gas-limit"] input', gas);
+            }
+            if (password) {
+                await this.app.client.setValue('[data-spectron="deploy-contract-section"] [data-spectron="wallet-password"] input', password);
+            }
+            if (smartContract) {
+                await this.app.client.setValue('[data-spectron="code-area"] textarea:nth-child(1)', smartContract);
+                await sleepApp(3000);
+            }
+            if (deploy) {
+                await this.pushButton('[data-spectron="deploy-button"]');
+            }
+        };
+
+        this.fillInvokeContractFormFromMainMenu = async ({
+            contractAddress = undefined,
+            parameters = undefined,
+            type = undefined,
+            entryPoint = undefined,
+            storageLimit = undefined,
+            gas = undefined,
+            password = undefined,
+            invoke = undefined,
+        }) => {
+            if (contractAddress) {
+                await this.app.client.setValue('[data-spectron="contract-address"] input', contractAddress);
+            }
+            if (parameters) {
+                await this.app.client.setValue('[data-spectron="parameters"] input', parameters);
+            }
+            if (type) {
+                await this.app.client.click('[data-spectron="format-selector"]');
+                if (type === 'micheline') {
+                    await this.app.client.click(`ul li:nth-child(1)`);
+                }
+                if (type === 'michelson') {
+                    await this.app.client.click(`ul li:nth-child(2)`);
+                }
+            }
+            if (entryPoint) {
+                await this.app.client.setValue('[data-spectron="entry-point"] input', entryPoint);
+            }
+            if (storageLimit) {
+                await this.app.client.setValue('[data-spectron="storage-limit"] input', storageLimit);
+            }
+            if (gas) {
+                await this.app.client.setValue('[data-spectron="gas-limit"] input', gas);
+            }
+            if (password) {
+                await this.app.client.setValue('[data-spectron="deploy-contract-section"] [data-spectron="wallet-password"] input', password);
+            }
+            if (invoke) {
+                await this.pushButton('[data-spectron="invoke-button"]');
+            }
+        };
+
+        //-----Const component methods--------------------------------------------------
+
+        this.changeFeeLevelBASE = async (feeLevel, customFeeInt = undefined) => {
+            let selectedFee;
+            await this.app.client.click('[data-spectron="fee-container"]');
+            await sleepApp(1000);
+            switch (feeLevel) {
+                case 'Low':
+                    await this.app.client.click('ul li:nth-child(1)');
+                    await sleepApp(2000);
+                    // const selectedFee = await this.app.client.getText('[data-spectron="selected-fee-value"]');
+                    // assert.equal(selectedFee.includes('Low Fee'), true);
+                    break;
+                case 'Medium':
+                    await this.app.client.click('ul li:nth-child(2)');
+                    await sleepApp(2000);
+                    break;
+                case 'High':
+                    await this.app.client.click('ul li:nth-child(3)');
+                    await sleepApp(2000);
+                    break;
+                case 'Custom Preset':
+                    await this.app.client.click('ul li:nth-child(4)');
+                    await sleepApp(2000);
+                    break;
+                case 'Custom':
+                    await this.app.client.click('[data-value="custom"]');
+                    if (customFeeInt) {
+                        await this.app.client.setValue('[data-spectron="custom-fee-modal"] input', customFeeInt);
+                        await sleepApp(2000);
+                    }
+                    if (!customFeeInt) {
+                        await this.buttonEnabledFalse('[data-spectron="set-custom-fee-button"]');
+                    }
+                    await this.app.client.click('[data-spectron="custom-fee-modal"] button');
+                    // selectedFee = await this.app.client.getText('[data-spectron="selected-fee-value"]');
+                    // if (customFeeInt) {
+                    //     assert.equal(selectedFeeTwo.includes(customFeeInt), true);
+                    // }
+                    break;
+                default:
+                    await this.app.client.click('ul li:nth-child(1)');
+            }
+            selectedFee = await this.app.client.getText('[data-spectron="selected-fee-value"]');
+            return selectedFee;
+        };
+
+        this.retrieveSelectedFeeValueBase = async () => {
+            const selectedFee = await this.app.client.getText('[data-spectron="selected-fee-value"]');
+            const splitFee = selectedFee.split(' ');
+            const retrievedFee = parseFloat(splitFee[2]);
+            return retrievedFee;
+        };
+
+        //-----Spectron API wrapped it more readable function---------------------
+
+        this.getWindowCount = async () => {
+            return await this.app.client.waitUntilWindowLoaded().getWindowCount();
+        };
+
+        this.getApplicationTitle = function () {
+            return this.app.client.waitUntilWindowLoaded().getTitle();
+        };
+
+        this.buttonEnabledFalse = async (selector) => {
+            let buttonEnabled = await this.app.client.isEnabled(selector);
+            assert.equal(buttonEnabled, false, `Button: ${selector} is enabled but shouldn't`);
+        };
+
+        this.assertClipBoard = async (text) => {
+            const clipboardAddress = await this.app.electron.clipboard.readText();
+            assert.equal(clipboardAddress, text, 'clipboard text different');
+        };
+
+        this.pushButton = async function (selectron) {
+            await this.app.client.waitUntil(async () => (await this.app.client.isEnabled(selectron)) === true, {
+                timeout: 5000,
+                timeoutMsg: `expected button ${selectron} to be enabled`,
+            });
+            await this.app.client.click(selectron);
         };
     }
 }
