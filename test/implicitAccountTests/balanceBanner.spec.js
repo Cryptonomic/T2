@@ -40,7 +40,7 @@ describe('Implicit account Balance Banner tests: ', function () {
         assert.equal(process.env.TZ1_ADDRESS, fullTezAddress, 'balance banner address is wrong');
 
         //check if addres is copy correctly
-        await app.client.click(balanceBannerPage.balanceBannerCopyAddressButton);
+        await app.client.click(balanceBannerPage.copyAddressButton);
         await balanceBannerPage.assertClipBoard(process.env.TZ1_ADDRESS);
     });
 
@@ -61,8 +61,8 @@ describe('Implicit account Balance Banner tests: ', function () {
     });
 
     it('balance banner bell button shows correct info', async () => {
-        await app.client.moveToObject(balanceBannerPage.balanceBannerBellButton);
-        await app.client.waitForExist(balanceBannerPage.balanceBannerBellText, 2000);
+        await app.client.moveToObject(balanceBannerPage.bellButton);
+        await app.client.waitForExist(balanceBannerPage.bellText, 2000);
     });
 
     it('balance banner is properly updated', async () => {

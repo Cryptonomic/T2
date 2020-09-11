@@ -1,12 +1,12 @@
 const assert = require('assert');
 const path = require('path');
 const { Application } = require('spectron');
-const CreateWalletPage = require('./pages/createWallet');
+const CreateWalletPage = require('../pages/createWallet');
 const fs = require('fs');
 const { sleepApp } = require('./utils/sleepApp');
 
 // construct paths
-const baseDir = path.join(__dirname, '..');
+const baseDir = path.join(__dirname, '..', '..');
 const electronBinary = path.join(baseDir, 'node_modules', '.bin', 'electron');
 
 const envVariables = path.join(baseDir, 'test/.env');

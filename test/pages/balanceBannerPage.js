@@ -6,12 +6,12 @@ const BasePage = require('./basePage');
 class BalanceBannerPAge extends BasePage {
     constructor(app) {
         super(app);
-        this.balanceBannerAddresPartOne = '[data-spectron="address-info"] [data-spectron="tezos-address"] span span:nth-child(1)';
-        this.balanceBannerAddresPartTwo = '[data-spectron="address-info"] [data-spectron="tezos-address"] span span:nth-child(2)';
-        this.balanceBannerKeyButton = '[data-spectron="key-button"]';
-        this.balanceBannerBellButton = '[data-spectron="bell-icon"]';
-        this.balanceBannerCopyAddressButton = '[data-spectron="balance-banner"] [data-spectron="copy-button"]';
-        this.balanceBannerBellText = 'div=Keep track of your account with the Tezos Notifier Bot on Telegram.';
+        this.addresPartOne = '[data-spectron="address-info"] [data-spectron="tezos-address"] span span:nth-child(1)';
+        this.addresPartTwo = '[data-spectron="address-info"] [data-spectron="tezos-address"] span span:nth-child(2)';
+        this.keyButton = '[data-spectron="key-button"]';
+        this.bellButton = '[data-spectron="bell-icon"]';
+        this.copyAddressButton = '[data-spectron="balance-banner"] [data-spectron="copy-button"]';
+        this.bellText = 'div=Keep track of your account with the Tezos Notifier Bot on Telegram.';
 
         this.keySectionAddress = '[data-spectron="account-keys"] [data-spectron="address"]';
         this.keySectionPublicKey = '[data-spectron="account-keys"] [data-spectron="public-key"]';
@@ -23,14 +23,14 @@ class BalanceBannerPAge extends BasePage {
         this.keySectionCloseButton = '[data-spectron="account-keys"] [data-spectron="close-button"]';
 
         this.retrieveAccountAddress = async () => {
-            const tezAddressOne = await app.client.getText(this.balanceBannerAddresPartOne);
-            const tezAddressTwo = await app.client.getText(this.balanceBannerAddresPartTwo);
+            const tezAddressOne = await app.client.getText(this.addresPartOne);
+            const tezAddressTwo = await app.client.getText(this.addresPartTwo);
             const fullTezAddress = tezAddressOne + tezAddressTwo;
             return fullTezAddress;
         };
 
         this.openKeySection = async () => {
-            await app.client.click(this.balanceBannerKeyButton);
+            await app.client.click(this.keyButton);
         };
 
         this.revealSecretKey = async () => {

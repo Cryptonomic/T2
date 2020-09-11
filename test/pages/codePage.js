@@ -1,6 +1,3 @@
-const assert = require('assert');
-const moment = require('moment');
-const { sleepApp } = require('../utils/sleepApp');
 const BasePage = require('./basePage');
 
 class CodePage extends BasePage {

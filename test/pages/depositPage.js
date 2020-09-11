@@ -6,20 +6,20 @@ const BasePage = require('./basePage');
 class DepositPage extends BasePage {
     constructor(app) {
         super(app);
-        this.delegationRecipientAddressInput = '[data-spectron="withdraw"] [data-spectron="amount"] input';
-        this.delegationContractBalanceAmount = '[data-spectron="address-info"] span:nth-child(3)';
+        this.recipientAddressInput = '[data-spectron="withdraw"] [data-spectron="amount"] input';
+        this.balanceAmount = '[data-spectron="address-info"] span:nth-child(3)';
         this.delegationcontractFeeSection = '[data-spectron="fee-container"]';
         this.delegationcontractLowFee = 'ul li:nth-child(1)';
         this.delegationcontractMediumFee = 'ul li:nth-child(2)';
         this.delegationcontractHighFee = 'ul li:nth-child(3)';
         this.selectedFeeValue = '[data-spectron="selected-fee-value"]';
-        this.delegationcontractSendBottomButton = '[data-spectron="token-send-bottom-button"]';
-        this.delegationcontractWalletPassword = '[data-spectron="password-input"] input';
-        this.delegationcontractRecipientInputAlert = '[data-spectron="token-recipient-address"] p';
+        this.sendBottomButton = '[data-spectron="token-send-bottom-button"]';
+        this.walletPassword = '[data-spectron="password-input"] input';
+        this.recipientInputAlert = '[data-spectron="token-recipient-address"] p';
 
         this.firstDelegationContract = '[data-spectron="address-block"] [data-spectron="address"]:nth-child(3)';
-        this.delegationContractWithdrawWarning = '[data-spectron="withdraw-warning"]';
-        this.delegationContractDepositWarning = '[data-spectron="deposit-warning"]';
+        this.withdrawWarning = '[data-spectron="withdraw-warning"]';
+        this.depositWarning = '[data-spectron="deposit-warning"]';
 
         this.retrieveTokenBalanceBannerData = async () => {
             const tokenPageTitle = await this.app.client.getText('[data-spectron="token-name"]');

@@ -58,7 +58,7 @@ describe('Delegation Contracts deposit main features: ', function () {
         //open first delegation contract
         await depositPage.openDelegationContract(1);
         await depositPage.navigateToSection('Deposit');
-        const warningText = await app.client.getText(depositPage.delegationContractDepositWarning);
+        const warningText = await app.client.getText(depositPage.depositWarning);
         assert.equal(warningText, 'Transfer balance from the manager account at tz1cLSKms3WtRAy8SYha2ZXFDuhAEXc6CSG4.');
     });
 

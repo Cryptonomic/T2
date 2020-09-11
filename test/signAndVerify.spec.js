@@ -48,8 +48,8 @@ describe('Sign & Verify main features tests: ', function () {
         await signAndVerifyPage.openSignAndVerify();
         await signAndVerifyPage.navigateToSection('Verify');
 
-        await app.client.waitForExist(signAndVerifyPage.signAndVerifyDownVerifyButton);
-        signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.signAndVerifyDownVerifyButton);
+        await app.client.waitForExist(signAndVerifyPage.downVerifyButton);
+        signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.downVerifyButton);
 
         const message = 'My message';
         await signAndVerifyPage.verifySignature({
@@ -58,13 +58,13 @@ describe('Sign & Verify main features tests: ', function () {
             signature: process.env.TZ1_SIGNATURE,
             verify: true,
         });
-        await app.client.waitForExist(signAndVerifyPage.signAndVerifyConfirmedAlert, 3000);
+        await app.client.waitForExist(signAndVerifyPage.confirmedAlert, 3000);
     });
 
     it('verify generate invalid alert when signature not match message', async () => {
         await signAndVerifyPage.openSignAndVerify();
         await signAndVerifyPage.navigateToSection('Verify');
-        signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.signAndVerifyDownVerifyButton);
+        signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.downVerifyButton);
 
         const message = 'My message';
         const wrongSignature = 'edsigu57kEW5gzskhJb6DdbesMcw6LLRpp6vX6CscEmRRrnCSYUBGXCZKoVGmNdnq29ecvdUW6rxbS31u9FeGfzk9KLMxbEUYqa';
@@ -74,13 +74,13 @@ describe('Sign & Verify main features tests: ', function () {
             signature: wrongSignature,
             verify: true,
         });
-        await app.client.waitForExist(signAndVerifyPage.signAndVerifyWrongAlert, 3000);
+        await app.client.waitForExist(signAndVerifyPage.wrongAlert, 3000);
     });
 
     it('verify generate invalid alert when address is melformed', async () => {
         await signAndVerifyPage.openSignAndVerify();
         await signAndVerifyPage.navigateToSection('Verify');
-        signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.signAndVerifyDownVerifyButton);
+        signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.downVerifyButton);
 
         const message = 'My message';
         await signAndVerifyPage.verifySignature({
@@ -102,7 +102,7 @@ describe('Sign & Verify main features tests: ', function () {
                 verify: false,
             });
             await sleepApp(5000);
-            await signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.signAndVerifyDownVerifyButton);
+            await signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.downVerifyButton);
         }
     });
 });

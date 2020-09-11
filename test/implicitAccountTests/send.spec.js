@@ -76,7 +76,7 @@ describe('Implicit account Send tests: ', function () {
             fee: 'Low',
             send: false,
         });
-        const remainingBalance = await app.client.getHTML(sendPage.sendRemainingBalance);
+        const remainingBalance = await app.client.getHTML(sendPage.remainingBalance);
         assert.equal(remainingBalance.includes('0.000001'), true, `remaning balance is: ${remainingBalance}`);
     });
 
@@ -91,7 +91,7 @@ describe('Implicit account Send tests: ', function () {
         const retrievedFee = await sendPage.retrieveSelectedFeeValueBase();
         const retrievedFeePlusTotal = parseFloat(retrievedFee) + 15;
 
-        const total = await app.client.getText(sendPage.sendTotalAmount);
+        const total = await app.client.getText(sendPage.totalAmount);
         const retrievedTotal = total.slice(0, -2);
         assert.equal(retrievedTotal, retrievedFeePlusTotal, 'fee + amounnt incorrect');
     });
@@ -116,12 +116,12 @@ describe('Implicit account Send tests: ', function () {
             feeLevel: 'Low',
             send: false,
         });
-        await app.client.waitUntilTextExists(sendPage.sendRecipientInputAlert, "This account doesn't exist on the blockchain or has 0 balance", 50000);
-        await app.client.waitForExist(sendPage.sendBurnSection);
+        await app.client.waitUntilTextExists(sendPage.recipientInputAlert, "This account doesn't exist on the blockchain or has 0 balance", 50000);
+        await app.client.waitForExist(sendPage.burnSection);
 
-        await app.client.moveToObject(sendPage.sendBurnSectionButton);
+        await app.client.moveToObject(sendPage.burnSectionButton);
         await sleepApp(3000);
-        const burnMessage = await app.client.getText(sendPage.sendBurnSectionMessage);
+        const burnMessage = await app.client.getText(sendPage.burnSectionMessage);
         assert.equal(
             burnMessage,
             'The recipient address you entered has a zero balance. Sending funds to an empty Manager address (tz1,2,3) requires a one-time 0.257 XTZ burn fee.'
@@ -135,8 +135,8 @@ describe('Implicit account Send tests: ', function () {
             amount: 1,
             send: false,
         });
-        await app.client.waitUntilTextExists(sendPage.sendRecipientInputAlert, 'You cannot send funds to yourself.', 50000);
-        await sendPage.buttonEnabledFalse(sendPage.sendSendButton);
+        await app.client.waitUntilTextExists(sendPage.recipientInputAlert, 'You cannot send funds to yourself.', 50000);
+        await sendPage.buttonEnabledFalse(sendPage.sendBottomButton);
     });
 
     it('send 0 tezos is not allowed', async () => {
@@ -146,7 +146,7 @@ describe('Implicit account Send tests: ', function () {
             amount: 0,
             send: false,
         });
-        await sendPage.buttonEnabledFalse(sendPage.sendSendButton);
+        await sendPage.buttonEnabledFalse(sendPage.sendBottomButton);
     });
 
     it.skip('transaction is visible in transactions section', async () => {

@@ -4,6 +4,7 @@ const { Application } = require('spectron');
 const moment = require('moment');
 const { sleepApp } = require('./utils/sleepApp');
 const TokenPage = require('./pages/tokenPage');
+const TransactionPage = require('./pages/transactionPage');
 
 // construct paths
 const baseDir = path.join(__dirname, '..');
@@ -26,6 +27,7 @@ describe('Tokens main features tests: ', function () {
 
     // page object
     const tokenPage = new TokenPage(app);
+    const transactionPage = new TransactionPage(app);
 
     beforeEach(async () => {
         await app.start();
@@ -48,6 +50,8 @@ describe('Tokens main features tests: ', function () {
 
     it('send tokens to proper recipient', async () => {
         await tokenPage.openTokenContract('Token Sample');
+        await delegatePage.navigateToSection('Transactions');
+        await transactionPage.waitUntilPendingTransactionFinished();
         await tokenPage.navigateToSection('Send');
         await tokenPage.sendTokens({
             recipientAddress: process.env.TZ2_ADDRESS,
@@ -79,9 +83,9 @@ describe('Tokens main features tests: ', function () {
             recipientAddress: 'KT1HzQofKBxzfiKoMzGbkxBgjis2mWnCtbC2',
             send: false,
         });
-        await app.client.waitForExist(tokenPage.tokenRecipientInputAlert);
+        await app.client.waitForExist(tokenPage.recipientInputAlert);
         const alertMessge = 'This is a smart contract address. Please use interact with contracts button to transfer funds.';
-        await app.client.waitUntilTextExists(tokenPage.tokenRecipientInputAlert, alertMessge, 6000);
+        await app.client.waitUntilTextExists(tokenPage.recipientInputAlert, alertMessge, 6000);
     });
 
     it.skip('last transaction is not dublicated in transaction section - verify hours', async () => {
@@ -93,6 +97,8 @@ describe('Tokens main features tests: ', function () {
 
     it('send tokens to proper recipient is visible in source account transaction', async () => {
         await tokenPage.openTokenContract('Token Sample');
+        await delegatePage.navigateToSection('Transactions');
+        await transactionPage.waitUntilPendingTransactionFinished();
         await tokenPage.navigateToSection('Send');
         await tokenPage.sendTokens({
             recipientAddress: process.env.TZ2_ADDRESS,

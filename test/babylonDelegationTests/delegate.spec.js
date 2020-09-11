@@ -46,7 +46,7 @@ describe('Implicit account Delegation tests: ', function () {
         await transactionPage.waitUntilPendingTransactionFinished();
         await delegatePage.navigateToSection('Delegate');
 
-        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
+        await app.client.waitForExist(delegatePage.addressInput);
         const bakerAddress = await delegatePage.retrieveDelegateToAddres();
         if (bakerAddress) {
             if (bakerAddress === 'tz1aWXP237BLwNHJcCD4b3DutCevhqq2T1Z9') {
@@ -83,7 +83,7 @@ describe('Implicit account Delegation tests: ', function () {
         await transactionPage.waitUntilPendingTransactionFinished();
 
         await delegatePage.navigateToSection('Delegate');
-        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
+        await app.client.waitForExist(delegatePage.bakerAddressInput);
 
         const bakerAddress = await delegatePage.retrieveDelegateToAddres();
         if (bakerAddress) {
@@ -93,7 +93,7 @@ describe('Implicit account Delegation tests: ', function () {
                 walletPassword: process.env.TZ1_PASSWORD,
                 send: true,
             });
-            await app.client.waitForExist(delegatePage.delegationInformationMessageText);
+            await app.client.waitForExist(delegatePage.informationMessageText);
             await app.client.waitForExist('div=(temporary. proto.006-PsCARTHA.delegate.unchanged)', 1000 * 60 * 2);
         } else {
             this.skip();
@@ -106,7 +106,7 @@ describe('Implicit account Delegation tests: ', function () {
         await transactionPage.waitUntilPendingTransactionFinished();
 
         await delegatePage.navigateToSection('Delegate');
-        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
+        await app.client.waitForExist(delegatePage.bakerAddressInput);
         await delegatePage.changeBakerAddress({
             bakerAddress: process.env.TZ1_ADDRESS,
             feeLevel: 'Low',
@@ -119,7 +119,7 @@ describe('Implicit account Delegation tests: ', function () {
     it('change baker address input validation', async () => {
         await delegatePage.openDelegationContract(1);
         await delegatePage.navigateToSection('Delegate');
-        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
+        await app.client.waitForExist(delegatePage.bakerAddressInput);
 
         const testData = [
             ['1', 'You can only delegate to tz1, tz2 or tz3 addresses.'],
@@ -137,7 +137,7 @@ describe('Implicit account Delegation tests: ', function () {
                 send: false,
             });
             await delegatePage.buttonEnabledFalse(delegatePage.delegateChangeButton);
-            const changeBakerMessage = await app.client.getText(delegatePage.delegationBakerAddressMessage);
+            const changeBakerMessage = await app.client.getText(delegatePage.bakerAddressMessage);
             assert.equal(changeBakerMessage, message);
         }
         // await delegatePage.changeBakerAddress({
@@ -148,14 +148,14 @@ describe('Implicit account Delegation tests: ', function () {
         // })
         // delegatePage.buttonEnabledFalse(delegatePage.delegateChangeButton)
         // const message = "You can only delegate to tz1, tz2 or tz3 addresses."
-        // const changeBakerMessage = await app.client.getText(delegatePage.delegationBakerAddressMessage)
+        // const changeBakerMessage = await app.client.getText(delegatePage.bakerAddressMessage)
         // assert.equal(changeBakerMessage, message)
     });
 
     it('change baker address to new one but not registered', async () => {
         await delegatePage.openDelegationContract(1);
         await delegatePage.navigateToSection('Delegate');
-        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
+        await app.client.waitForExist(delegatePage.bakerAddressInput);
         await delegatePage.changeBakerAddress({
             bakerAddress: process.env.TZ3_ADDRESS,
             feeLevel: 'Low',
@@ -170,7 +170,7 @@ describe('Implicit account Delegation tests: ', function () {
     it('change baker address with incorrect password', async () => {
         await delegatePage.openDelegationContract(1);
         await delegatePage.navigateToSection('Delegate');
-        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
+        await app.client.waitForExist(delegatePage.bakerAddressInput);
         const incorrectPassword = 'password';
         await delegatePage.changeBakerAddress({
             bakerAddress: 'tz1aWXP237BLwNHJcCD4b3DutCevhqq2T1Z9',
@@ -184,7 +184,7 @@ describe('Implicit account Delegation tests: ', function () {
     it('change fee works properly when we leave custom fee empty', async () => {
         await delegatePage.openDelegationContract(1);
         await delegatePage.navigateToSection('Delegate');
-        await app.client.waitForExist(delegatePage.delegationBakerAddressInput);
+        await app.client.waitForExist(delegatePage.bakerAddressInput);
 
         //assertion are hidden in function
         await delegatePage.changeBakerAddress({
