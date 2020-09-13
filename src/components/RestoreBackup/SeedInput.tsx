@@ -73,7 +73,7 @@ function SeedInput(props: Props) {
 
         if (inputWords.length > 1 && inputWords.length > invalidWords.length) {
             // paste multiple
-            onChange([...seeds, ...inputWords]);
+            onChange([...seeds, ...inputWords.filter((w) => !w.match(/[0-9]{1,2}\./))]);
         }
 
         const matchingWords = seedJson.filter((w) => w.startsWith(inputWords[0]));
