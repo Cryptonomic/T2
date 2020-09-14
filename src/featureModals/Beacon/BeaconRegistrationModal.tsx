@@ -45,7 +45,7 @@ interface Props {
     onClose: () => void;
 }
 
-const Auth = (props: Props) => {
+const BeaconRegistrationModal = (props: Props) => {
     const { t } = useTranslation();
     const { isLoading, selectedParentHash, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
@@ -170,4 +170,4 @@ const Auth = (props: Props) => {
     );
 };
 
-export default Auth;
+export default BeaconRegistrationModal;
