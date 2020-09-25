@@ -40,6 +40,7 @@ export const Theme = {
         gray14: '#F0F3F8',
         gray15: '#9E9E9E',
         gray16: 'rgba(0, 0, 0, 0.38)',
+        gray17: '#333333',
 
         // font colors
         index0: '#94a9d1',
@@ -57,31 +58,31 @@ export const Theme = {
         error1: '#ea776c',
 
         // info color
-        info: '#c8d2e7'
+        info: '#c8d2e7',
     },
     animations: {
         defaultTime: '300ms',
-        secondaryTime: '450ms'
+        secondaryTime: '450ms',
     },
     animationCurves: {
-        defaultCurve: 'cubic-bezier(0.23, 1, 0.32, 1) '
+        defaultCurve: 'cubic-bezier(0.23, 1, 0.32, 1) ',
     },
     typo: {
         fontFamily: {
             primary: "'Roboto', sans-serif",
-            tezosIcons: "'Tezos-icons'"
+            tezosIcons: "'Tezos-icons'",
         },
         weights: {
             light: 100,
             normal: 400,
-            bold: 500
-        }
+            bold: 500,
+        },
     },
     layers: {
         top: 1000,
         middle: 900,
-        bottom: 800
-    }
+        bottom: 800,
+    },
 };
 
 export default Theme;

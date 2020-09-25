@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
+import Drawer from '@material-ui/core/Drawer';
 import i18n from 'i18next';
 
+import LandingCar from '../Landing';
 import Checkbox from '../../components/Checkbox/';
-import TermsModal from '../../components/TermsModal';
-import LanguageSelectModal from '../../components/LanguageSelectModal';
 import { name, ledgerReferral } from '../../config.json';
 import { setLocalData, getLocalData, resetLocalData } from '../../utils/localData';
 import { changeLocaleThunk } from '../Settings/duck/thunk';
@@ -33,7 +33,7 @@ import {
     Linebar,
     LedgerConnect,
     DescriptionBold,
-    SelectedPath
+    SelectedPath,
 } from './style';
 
 import { openLink } from '../../utils/general';
@@ -43,7 +43,7 @@ import keystoreImg from '../../../resources/imgs/Keystore.svg';
 import ledgerUnconnectedImg from '../../../resources/ledger-unconnected.svg';
 import ledgerConnectedImg from '../../../resources/ledger-connect.svg';
 
-const LANGUAGE_STORAGE = 'isShowedLanguageScene';
+const INIT_SCENE = 'isShowedInitScene';
 const AGREEMENT_STORAGE = 'isPPAccepted';
 
 type Props = RouteComponentProps<{ path: string }>;
@@ -57,29 +57,24 @@ function LoginHome(props: Props) {
     const activePath = useSelector(getSelectedPath);
     const isLedgerConnecting = useSelector((state: RootState) => state.app.isLedgerConnecting);
     const [isAgreement, setIsAgreement] = useState(() => getLocalData(AGREEMENT_STORAGE));
-    const [isLanguageSelected, setIsLanguageSelected] = useState(() => getLocalData(LANGUAGE_STORAGE));
+    const [isShowedInitScene, setIsShowedInitScene] = useState(() => getLocalData(INIT_SCENE));
 
     const ledgerImg = isLedgerConnecting ? ledgerConnectedImg : ledgerUnconnectedImg;
     // resetLocalData('wallet');
-
-    function updateStatusAgreement() {
-        setIsAgreement(!isAgreement);
-        setLocalData(AGREEMENT_STORAGE, !isAgreement);
-    }
 
     function onChangeLanguage(lang: string) {
         dispatch(changeLocaleThunk(lang));
         i18n.changeLanguage(lang);
     }
 
-    function goToTermsModal() {
-        setIsLanguageSelected(!isLanguageSelected);
-        setLocalData(LANGUAGE_STORAGE, !isLanguageSelected);
+    function updateStatusAgreement() {
+        setIsAgreement(!isAgreement);
+        setLocalData(AGREEMENT_STORAGE, !isAgreement);
     }
 
-    function goToLanguageSelect() {
-        setLocalData(LANGUAGE_STORAGE, !isLanguageSelected);
-        setIsLanguageSelected(!isLanguageSelected);
+    function goToMain() {
+        setIsShowedInitScene(!isShowedInitScene);
+        setLocalData(INIT_SCENE, !isShowedInitScene);
     }
 
     function goTo(route) {
@@ -173,19 +168,9 @@ function LoginHome(props: Props) {
                     </Trans>
                 </Description>
             </TermsAndPolicySection>
-            <LanguageSelectModal
-                isOpen={!isLanguageSelected}
-                onLanguageChange={onChangeLanguage}
-                selectedLanguage={locale}
-                onContinue={() => goToTermsModal()}
-            />
-            <TermsModal
-                goTo={goTo}
-                isOpen={!isAgreement && isLanguageSelected}
-                agreeTermsAndPolicy={() => updateStatusAgreement()}
-                onBack={goToLanguageSelect}
-            />
-            <Background />
+            <Drawer anchor={'bottom'} open={!isShowedInitScene}>
+                <LandingCar selectedLanguage={locale} onLanguageChange={onChangeLanguage} onContinue={() => goToMain()} goTo={goTo} />
+            </Drawer>
         </SectionContainer>
     );
 }
