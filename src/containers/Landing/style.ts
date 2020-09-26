@@ -49,7 +49,7 @@ export const CarouselIndicator = styled.li<{ isActive: boolean }>`
     }};
 `;
 
-export const ButtonContainer = styled(Button)<{ isleft: boolean }>`
+export const ButtonContainer = styled(Button)<{ isleft: number }>`
     &&& {
         padding: 0;
         position: absolute;

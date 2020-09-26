@@ -115,7 +115,7 @@ function Landing(props: Props) {
     const getPrevButton = (onClickHandler, hasPrev) => {
         if (!hasPrev) return null;
         return (
-            <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} startIcon={<BackCaret />} isleft={true}>
+            <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} startIcon={<BackCaret />} isleft={1}>
                 {t('general.back')}
             </ButtonContainer>
         );
@@ -131,13 +131,13 @@ function Landing(props: Props) {
         }
         if (selectedIndex === 1 && (!isTos || !isPP)) {
             return (
-                <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} endIcon={<NextCaret />} isleft={false} disabled={true}>
+                <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} endIcon={<NextCaret />} isleft={0} disabled={true}>
                     {t('general.next')}
                 </ButtonContainer>
             );
         }
         return (
-            <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} endIcon={<NextCaret />} isleft={false}>
+            <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} endIcon={<NextCaret />} isleft={0}>
                 {t('general.next')}
             </ButtonContainer>
         );
