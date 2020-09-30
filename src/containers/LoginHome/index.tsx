@@ -75,9 +75,9 @@ function LoginHome(props: Props) {
 
     function goToMain() {
         setIsShowedInitScene(!isShowedInitScene);
-        setIsAgreement(!isAgreement);
+        setIsAgreement(true);
         setLocalData(INIT_SCENE, !isShowedInitScene);
-        setLocalData(AGREEMENT_STORAGE, !isAgreement);
+        setLocalData(AGREEMENT_STORAGE, true);
     }
 
     function goTo(route) {

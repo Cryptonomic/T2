@@ -43,16 +43,49 @@ interface Props {
 function Landing(props: Props) {
     const { t } = useTranslation();
     const { selectedLanguage, onLanguageChange, goTo, onContinue } = props;
+    const [isTos, setIsTos] = useState(() => {
+        const isFlag = localStorage.getItem('isTos');
+        return !!isFlag && isFlag === 'true' ? true : false;
+    });
 
-    const [isTos, setIsTos] = useState(false);
-    const [isPP, setIsPP] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [isPP, setIsPP] = useState(() => {
+        const isFlag = localStorage.getItem('isPP');
+        return !!isFlag && isFlag === 'true' ? true : false;
+    });
+
+    const [selectedIndex, setSelectedIndex] = useState(() => {
+        const index = localStorage.getItem('initIndex');
+        if (!index) {
+            return 0;
+        } else {
+            return Number(index);
+        }
+    });
+
+    function saveData() {
+        localStorage.setItem('initIndex', String(selectedIndex));
+        localStorage.setItem('isTos', String(isTos));
+        localStorage.setItem('isPP', String(isPP));
+    }
+
+    function removeData() {
+        localStorage.removeItem('initIndex');
+        localStorage.removeItem('isTos');
+        localStorage.removeItem('isPP');
+    }
 
     function openTermsService() {
+        saveData();
         goTo('conditions/termsOfService');
     }
     function openPrivacyPolicy() {
+        saveData();
         goTo('conditions/privacyPolicy');
+    }
+
+    function gotoMainPage() {
+        removeData();
+        onContinue();
     }
 
     function getMainPart(index) {
@@ -124,7 +157,7 @@ function Landing(props: Props) {
     const getNextButton = (onClickHandler, hasNext, label) => {
         if (!hasNext) {
             return (
-                <StartBtn variant="contained" color="secondary" disableRipple={true} onClick={onContinue}>
+                <StartBtn variant="contained" color="secondary" disableRipple={true} onClick={() => gotoMainPage()}>
                     {t('general.get_started')}
                 </StartBtn>
             );
@@ -151,6 +184,7 @@ function Landing(props: Props) {
             showStatus={false}
             useKeyboardArrows={false}
             stopOnHover={false}
+            selectedItem={selectedIndex}
             onChange={(e) => setSelectedIndex(e)}
             renderIndicator={(onClickHandler, isSelected, index, label) => <CarouselIndicator key={index} isActive={isSelected} />}
             renderArrowPrev={(onClickHandler, hasPrev, label) => getPrevButton(onClickHandler, hasPrev)}
