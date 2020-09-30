@@ -29,11 +29,15 @@ const Container = styled.div`
 
 function App() {
     const dispatch = useDispatch();
-    const wallet = useSelector<RootState, WalletState>(state => state.wallet, shallowEqual);
-    const { newVersion, isLedger, isLoading } = useSelector<RootState, AppState>(state => state.app, shallowEqual);
+    const wallet = useSelector<RootState, WalletState>((state) => state.wallet, shallowEqual);
+    const { newVersion, isLedger, isLoading } = useSelector<RootState, AppState>((state) => state.app, shallowEqual);
     const walletName = useSelector(getWalletName);
     const isNodes = useSelector(getIsNodesSelector);
     const isLoggedIn = getLoggedIn(wallet);
+
+    localStorage.removeItem('initIndex');
+    localStorage.removeItem('isTos');
+    localStorage.removeItem('isPP');
 
     useEffect(() => {
         dispatch(getNewVersionThunk());
@@ -94,7 +98,7 @@ function App() {
                 <Route path="/settings" component={Settings} />
                 <Route
                     path="/login"
-                    render={routerProps => {
+                    render={(routerProps) => {
                         if (!isNodes) {
                             return <Redirect to="/walletNodesRequired" />;
                         }
