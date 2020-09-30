@@ -60,7 +60,8 @@ function LoginHome(props: Props) {
     const [isShowedInitScene, setIsShowedInitScene] = useState(() => getLocalData(INIT_SCENE));
 
     const ledgerImg = isLedgerConnecting ? ledgerConnectedImg : ledgerUnconnectedImg;
-    // resetLocalData('wallet');
+    // resetLocalData('isShowedInitScene');
+    // resetLocalData(AGREEMENT_STORAGE);
 
     function onChangeLanguage(lang: string) {
         dispatch(changeLocaleThunk(lang));
@@ -74,7 +75,9 @@ function LoginHome(props: Props) {
 
     function goToMain() {
         setIsShowedInitScene(!isShowedInitScene);
+        setIsAgreement(true);
         setLocalData(INIT_SCENE, !isShowedInitScene);
+        setLocalData(AGREEMENT_STORAGE, true);
     }
 
     function goTo(route) {
