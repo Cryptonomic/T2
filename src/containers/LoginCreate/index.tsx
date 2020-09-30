@@ -29,7 +29,7 @@ import {
     WalletFileSection,
     FileDescription,
     FileDescriptionArrowIcon,
-    ButtonAddIcon
+    ButtonAddIcon,
 } from './style';
 import { RootState } from '../../types/store';
 
@@ -53,29 +53,13 @@ function LoginCreate() {
     const [confirmPwdScore, setConfirmPwdScore] = useState(0);
     const [confirmPwdText, setConfirmPwdText] = useState('');
 
-    function saveFile(event) {
-        if (event.detail === 0 && walletLocation && walletFileName) {
-            return;
-        }
-        const currentWindow = remote.getCurrentWindow();
-        remote.dialog.showSaveDialog(currentWindow, { filters: dialogFilters }).then(result => {
-            const filePath = result.filePath;
-            if (filePath) {
-                setWalletLocation(path.dirname(filePath));
-                setWalletFileName(path.basename(filePath));
-            }
-        });
-    }
-
     function onChangePassword(pwd: string) {
         if (pwd) {
             const pwdStrength = zxcvbn(pwd);
             const score = pwdStrength.score || 1;
             let error = '';
-            if (score < 3) {
+            if (score < 4) {
                 error = t('containers.loginCreate.password_not_strong');
-            } else if (score === 3) {
-                error = t('containers.loginCreate.you_almost_there');
             } else {
                 error = t('containers.loginCreate.you_got_it');
             }
@@ -113,7 +97,7 @@ function LoginCreate() {
             score = 4;
             isMatched = true;
             confirmStr = t('containers.loginCreate.password_match');
-        } else if (password !== confirmPassword && indexVal < 0 && confirmPassword) {
+        } else if (password !== pwd && indexVal < 0 && pwd) {
             score = 1;
             isMatched = false;
             confirmStr = t('containers.loginCreate.password_dont_match');
@@ -125,7 +109,13 @@ function LoginCreate() {
     }
 
     function onLogin(loginType: string) {
-        dispatch(loginThunk(loginType, walletLocation, walletFileName, password));
+        const currentWindow = remote.getCurrentWindow();
+        remote.dialog.showSaveDialog(currentWindow, { filters: dialogFilters }).then((result) => {
+            const filePath = result.filePath;
+            if (filePath) {
+                dispatch(loginThunk(loginType, path.dirname(filePath), path.basename(filePath), password));
+            }
+        });
     }
 
     function onPasswordShow(index: number) {
@@ -141,29 +131,11 @@ function LoginCreate() {
             onLogin(CREATE);
         }
     }
-    function getWalletFileSection() {
-        if (walletFileName) {
-            return (
-                <WalletFileSection>
-                    <CheckIcon iconName="checkmark2" size={ms(5)} color="check" />
-                    <WalletFileName>{walletFileName}</WalletFileName>
-                </WalletFileSection>
-            );
-        }
 
-        return (
-            <>
-                <CreateFileEmptyIcon src={createFileEmptyIcon} />
-                <FileDescription>Name your wallet file and select a file location</FileDescription>
-                <FileDescriptionArrowIcon iconName="arrow-right" color="gray16" />
-            </>
-        );
-    }
-
-    const isDisabled = isLoading || !isPasswordValidation || !isPasswordMatched || !walletFileName;
+    const isDisabled = isLoading || !isPasswordValidation || !isPasswordMatched;
 
     return (
-        <CreateContainer onKeyDown={event => onEnterPress(event.key, isDisabled)}>
+        <CreateContainer onKeyDown={(event) => onEnterPress(event.key, isDisabled)}>
             <WalletContainers>
                 <BackButtonContainer>
                     <BackButton label={t('general.back')} />
@@ -171,12 +143,12 @@ function LoginCreate() {
                 <WalletTitle>{t('containers.loginCreate.create_wallet_title')}</WalletTitle>
                 <WalletDescription>{t('containers.loginCreate.create_wallet_description')}</WalletDescription>
                 <FormContainer>
-                    <CreateFileSelector>
+                    {/* <CreateFileSelector>
                         {getWalletFileSection()}
                         <CreateFileButton startIcon={<ButtonAddIcon />} size="small" variant="outlined" onClick={evt => saveFile(evt)}>
                             {t('containers.loginCreate.create_new_wallet_btn')}
                         </CreateFileButton>
-                    </CreateFileSelector>
+                    </CreateFileSelector> */}
                     <PasswordsContainer>
                         <ValidInput
                             label={t('containers.loginCreate.create_wallet_password_label')}
@@ -201,7 +173,7 @@ function LoginCreate() {
                     </PasswordsContainer>
                 </FormContainer>
                 <ActionButton onClick={() => onLogin(CREATE)} color="secondary" variant="extended" disabled={isDisabled}>
-                    {t('containers.loginCreate.create_wallet_btn')}
+                    {t('general.verbs.continue')}
                 </ActionButton>
             </WalletContainers>
         </CreateContainer>
