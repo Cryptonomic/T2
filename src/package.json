@@ -17,10 +17,10 @@
     "dependencies": {
         "@ledgerhq/hw-transport-node-hid": "5.16.0",
         "conseiljs": "5.0.5",
-        "conseiljs-softsigner": "5.0.3",
         "conseiljs-ledgersigner": "5.0.3",
+        "conseiljs-softsigner": "5.0.3",
         "loglevel": "1.6.8",
-        "node-fetch": "2.6.0"
+        "node-fetch": "^2.6.1"
     },
     "engines": {
         "node": "12.18.3",
