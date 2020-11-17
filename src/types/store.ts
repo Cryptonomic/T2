@@ -1,5 +1,6 @@
-import { Path, Node, NodeStatus, Identity, Token, AddressType } from './general';
 import { Signer } from 'conseiljs';
+
+import { Path, Node, NodeStatus, Identity, Token, AddressType } from './general';
 
 export interface AppState {
     isLoading: boolean;
@@ -15,7 +16,9 @@ export interface AppState {
     selectedAccountIndex: number;
     selectedAccountType: AddressType;
     signer: Signer | null;
+    beaconClient: any | null;
 }
+
 export interface WalletState {
     identities: Identity[];
     walletFileName: string;
@@ -44,7 +47,7 @@ export interface ModalState {
     activeModal: string;
     activeTab: string;
     tabs: string[];
-    values: {};
+    values: any;
 }
 
 export interface RootState {

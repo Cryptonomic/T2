@@ -3,7 +3,17 @@ import { useStore } from 'react-redux';
 import { TezosConseilClient, TezosNodeReader, OperationKindType, Signer, TezosMessageUtils } from 'conseiljs';
 import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
 import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
-import { changeAccountAction, addNewVersionAction, showSignVerifyAction, setSignerAction } from './actions';
+import {
+    WalletClient,
+    BeaconMessageType,
+    PermissionScope,
+    PermissionResponseInput,
+    OperationResponseInput,
+    TezosTransactionOperation,
+} from '@airgap/beacon-sdk';
+
+import { AppState } from '../../types/store';
+import { changeAccountAction, addNewVersionAction, showSignVerifyAction, setSignerAction, setBeaconClientAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
 import { getVersionFromApi } from '../../utils/general';
@@ -105,7 +115,7 @@ export function setSignerThunk(key: string) {
         throw new Error('Empty key parameter in setSignerThunk()');
     }
 
-    return async (dispatch, state) => {
+    return async (dispatch) => {
         const keyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(key);
         const signer = await SoftSigner.createSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'));
         dispatch(setSignerAction(signer));
@@ -113,8 +123,26 @@ export function setSignerThunk(key: string) {
 }
 
 export function setLedgerSignerThunk(path: string) {
-    return async (dispatch, state) => {
+    return async (dispatch) => {
         const signer = new LedgerSigner(await TezosLedgerConnector.getInstance(), path);
         dispatch(setSignerAction(signer));
+    };
+}
+
+export function initBeaconThunk() {
+    return async (dispatch) => {
+        const client = new WalletClient({ name: 'Beacon Wallet Client' });
+        await client.init();
+        dispatch(setBeaconClientAction(client));
+    };
+}
+
+export function connectBeaconThunk(data: string) {
+    return async (dispatch, state: AppState) => {
+        try {
+            await state.beaconClient.addPeer(JSON.parse(data));
+        } catch (e) {
+            console.log('QR data not provided. Skipping');
+        }
     };
 }

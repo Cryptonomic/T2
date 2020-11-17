@@ -12,6 +12,12 @@ export const CHANGE_ACCOUNT_HASH = 'CHANGE_ACCOUNT_HASH';
 export const SHOW_SIGN_VERIFY = 'SHOW_SIGN_VERIFY';
 export const LOGOUT = 'LOGOUT';
 export const SET_SIGNER = 'SET_SIGNER';
+export const SET_BEACON_CLIENT = 'SET_BEACON_CLIENT';
+
+export interface SetBeaconClientAction {
+    type: typeof SET_BEACON_CLIENT;
+    client: any;
+}
 
 export interface SetSignerAction {
     type: typeof SET_SIGNER;
@@ -89,4 +95,5 @@ export type AppActionTypes =
     | UpdateFetchedTimeAction
     | ChangeAccountAction
     | ShowSignVerifyAction
-    | SetSignerAction;
+    | SetSignerAction
+    | SetBeaconClientAction;

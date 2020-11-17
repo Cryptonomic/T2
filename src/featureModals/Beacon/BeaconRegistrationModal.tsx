@@ -2,12 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import {
+    WalletClient,
+    BeaconMessageType,
+    Network,
+    PermissionScope,
+    PermissionResponseInput,
+    OperationResponseInput,
+    TezosTransactionOperation,
+} from '@airgap/beacon-sdk';
 
+import { getSelectedKeyStore } from '../../utils/general';
+import { getMainNode, getMainPath } from '../../utils/settings';
 import { ms } from '../../styles/helpers';
 import { openLink } from '../../utils/general';
 import Loader from '../../components/Loader';
 import Tooltip from '../../components/Tooltip';
-import { RootState } from '../../types/store';
+import { RootState, ModalState } from '../../types/store';
 
 import {
     ModalWrapper,
@@ -47,121 +58,101 @@ interface Props {
 
 const BeaconRegistrationModal = (props: Props) => {
     const { t } = useTranslation();
-    const { isLoading, selectedParentHash, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { isLoading, selectedParentHash, isLedger, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
+    const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
+
+    const beaconClient = useSelector<RootState, WalletClient>((state: RootState) => state.app.beaconClient);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
-    const values = useSelector<RootState, object>((state) => state.modal.values, shallowEqual);
-    const [result, setResult] = useState('');
-    const [error, setError] = useState(false);
+    const modalValues = useSelector<RootState, ModalState>((state) => state.modal.values, shallowEqual);
+
     const { open, onClose } = props;
 
+    const [result, setResult] = useState('');
+    const [error, setError] = useState(false);
     const [requestor, setRequestor] = useState('');
-    const [requestorDescription, setRequestorDescription] = useState('');
-    const [requestorUrl, setRequestorUrl] = useState('');
-    const [prompt, setPrompt] = useState('');
+    const [requestorRelay, setRequestorRelay] = useState('');
+    const [requestorKey, setRequestorKey] = useState('');
+    const [authorizationRequestId, setAuthorizationRequestId] = useState('');
+    const [authorizationScope, setAuthorizationScope] = useState('');
 
-    const isDisabled = isLoading || !prompt;
+    const derivationPath = isLedger ? getMainPath(settings.pathsList, settings.selectedPath) : '';
+    const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
+    const connectedBlockchainNode = getMainNode(settings.nodesList, settings.selectedNode);
 
-    const onAuth = async () => {
-        if (signer == null) {
-            setError(true);
-            setResult('No signing mechanism available');
-            console.error(error);
-            return;
-        }
+    const onConnect = async () => {
+        // TODO: loading indicator
+        console.log('BeaconRegistration.onConnect');
+        const beaconRequest = modalValues[activeModal];
+        await beaconClient.addPeer(beaconRequest);
+        console.log('BeaconRegistration.onConnect, peer added');
+        beaconClient
+            .connect(async (message) => {
+                if (message.type === BeaconMessageType.PermissionRequest) {
+                    console.log('BeaconRegistration.onConnect, permissions request', message);
+                    if (connectedBlockchainNode.network !== message.network.type) {
+                        // TODO: error network mismatch
+                    }
 
-        const signature = await signer.signText(prompt);
+                    if (requestorKey !== message.appMetadata.senderId) {
+                        // TODO: error requestor key mismatch
+                    }
 
-        const req = values[activeModal]; // TODO: this should be an enum or constant, not a state lookup
-        try {
-            setResult('Signature sent'); // TODO: localization
-            setError(false);
-            const response = await fetch(`${req.callback}&sig=${Buffer.from(signature).toString('base64')}`);
-            if (!response.ok) {
-                throw new Error('Signature response rejected'); // TODO: localization
-            }
-        } catch (error) {
-            setError(true);
-            setResult('Signature submission failed'); // TODO: localization
-            console.error(error);
-        }
+                    setAuthorizationRequestId(message.id);
+                    setAuthorizationScope(message.scopes.join(', '));
+                } else {
+                    console.log('BeaconRegistration.onConnect, unexpected message', message);
+                    // TODO: error unexpected message
+                }
+            })
+            .catch((err) => console.error('connect error', err));
     };
 
-    const onClick = (link: string) => {
-        openLink(link);
+    const onAuthorize = async () => {
+        const response: PermissionResponseInput = {
+            type: BeaconMessageType.PermissionResponse,
+            network: { type: connectedBlockchainNode.network } as Network,
+            scopes: authorizationScope.split(', ') as PermissionScope[],
+            id: authorizationRequestId,
+            publicKey: keyStore.publicKey,
+        };
+        console.log('onAuthorize', response);
+        await beaconClient.respond(response);
+        onClose();
     };
 
     useEffect(() => {
-        const req = values[activeModal];
+        const req = modalValues[activeModal];
         if (req) {
-            if (req.requestor) {
-                setRequestor(req.requestor);
-            }
-
-            if (req.desc) {
-                setRequestorDescription(req.desc);
-            }
-
-            if (req.requrl) {
-                setRequestorUrl(req.requrl);
-            }
-
-            if (req.prompt) {
-                let p = req.prompt.replace(/\n/g, '');
-                p = p.slice(0, Math.min(100, p.length));
-                setPrompt(p);
-            }
-
-            if (req.target && req.target !== selectedParentHash) {
-                setError(true);
-                setResult('Account address mismatch'); // TODO: localization
-            }
-
-            if (!req.target) {
-                setError(true);
-                setResult('Missing target address'); // TODO: localization
-            }
-
-            if (!req.requrl) {
-                setError(true);
-                setResult('Missing dApp link'); // TODO: localization
-            }
+            setRequestor(req.name);
+            setRequestorRelay(req.relayServer);
+            setRequestorKey(req.publicKey);
         }
     }, []);
-
+    // TODO: below needs a cancel button next to the connect button and a deny button next to the grant button
     return (
         <ModalWrapper open={open}>
             {open ? (
                 <ModalContainer>
                     <CloseIconWrapper onClick={() => onClose()} />
-                    <ModalTitle>{t('components.AuthenticateModal.title')}</ModalTitle>
+                    <ModalTitle>{t('components.Beacon.registrationModal.title')}</ModalTitle>
                     <Container>
-                        <MainContainer>
-                            <TitleContainer>
-                                <LinkContainer onClick={() => onClick(requestorUrl)} key={requestorUrl}>
-                                    <ContentTitle>
-                                        {requestor}
-                                        <Tooltip position="bottom" content={<TooltipContent>{`Open ${requestorUrl} in a browser`}</TooltipContent>}>
-                                            <LinkIcon iconName="new-window" size={ms(0)} color="black" />
-                                        </Tooltip>
-                                    </ContentTitle>
-                                </LinkContainer>
-                                <ContentSubtitle>{requestorDescription}</ContentSubtitle>
-                            </TitleContainer>
-                            <div>{t('components.AuthenticateModal.signature_prompt')}</div>
-                            <PromptContainer>{prompt}</PromptContainer>
-                        </MainContainer>
-                        <ResultContainer>
-                            <Result error={error}>{result}</Result>
-                        </ResultContainer>
-                        <Footer>
-                            <ButtonContainer>
-                                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onAuth}>
-                                    {t('general.verbs.authenticate')}
-                                </InvokeButton>
-                            </ButtonContainer>
-                        </Footer>
+                        <div>{requestor}</div>
+                        <div>{requestorRelay}</div>
+
+                        <div>{authorizationScope}</div>
                     </Container>
                     {isLoading && <Loader />}
+                    <Footer>
+                        <ButtonContainer>
+                            <InvokeButton buttonTheme="primary" onClick={onConnect}>
+                                {t('general.verbs.connect')}
+                            </InvokeButton>
+                            <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
+                                {t('general.verbs.authorize')}
+                            </InvokeButton>
+                        </ButtonContainer>
+                    </Footer>
                 </ModalContainer>
             ) : (
                 <ModalContainer />

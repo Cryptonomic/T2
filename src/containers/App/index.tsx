@@ -3,14 +3,6 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { ipcRenderer } from 'electron';
-import {
-    WalletClient,
-    BeaconMessageType,
-    PermissionScope,
-    PermissionResponseInput,
-    OperationResponseInput,
-    TezosTransactionOperation,
-} from '@airgap/beacon-sdk';
 
 import Home from '../Home';
 import Login from '../Login';
@@ -34,38 +26,6 @@ const Container = styled.div`
     min-height: 100vh;
     padding: 0;
 `;
-
-async function connectBeacon() {
-    const client = new WalletClient({ name: 'My Wallet' });
-    await client.init(); // Establish P2P connection
-
-    try {
-        await client.addPeer(JSON.parse(''));
-    } catch (e) {
-        console.log('QR data not provided. Skipping');
-    }
-
-    // await addPeers();
-
-    client
-        .connect(async (message) => {
-            await handleBeaconEvent(message);
-            // await client.respond(); // TODO: needs to be called from the modal
-        })
-        .catch((error) => console.error('connect error', error));
-}
-
-async function handleBeaconEvent(message) {
-    const dispatch = useDispatch();
-
-    if (message.type === BeaconMessageType.PermissionRequest) {
-        dispatch(setModalValue(message, 'beaconRegistration'));
-        // dispatch(setModalOpen(true, 'beaconRegistration'));
-    } else if (message.type === BeaconMessageType.OperationRequest) {
-        dispatch(setModalValue(message, 'beaconEvent'));
-        // dispatch(setModalOpen(true, 'beaconEvent'));
-    }
-}
 
 function App() {
     const dispatch = useDispatch();

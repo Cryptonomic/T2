@@ -27,7 +27,9 @@
             "burn": "Burn",
             "sign": "Sign",
             "verify": "Verify",
-            "copy": "Copy"
+            "copy": "Copy",
+            "connect": "Connect",
+            "authorize": "Authorize"
         },
         "nouns": {
             "amount": "Amount",
@@ -131,6 +133,17 @@
         "AuthenticateModal": {
             "title": "dApp Authentication Request",
             "signature_prompt": "Authenticate by signing the words below to confirm your control of the private key associated with this account"
+        },
+        "Beacon": {
+            "registrationModal": {
+                "title": "Beacon Connection Request"
+            },
+            "eventModal": {
+                "title": "Beacon Event"
+            },
+            "infoModal": {
+                "title": "Beacon Status"
+            }
         },
         "interactModal": {
             "interact_contract": "Interact with Contracts",
