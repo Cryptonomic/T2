@@ -4,11 +4,21 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import TezosIcon from '../TezosIcon';
-import { ms } from '../../styles/helpers';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
+
 import { useTranslation } from 'react-i18next';
 
-const focusBorderColors = ['#2c7df7', '#ea776c', '#e69940', '#d3b53b', '#259c90'];
+function getBorderColors(score) {
+    switch (score) {
+        case 0:
+            return '#2c7df7';
+        case 4:
+            return '#4EB020';
+        default:
+            return '#ea776c';
+    }
+}
 
 const Container = styled.div`
     position: relative;
@@ -17,33 +27,35 @@ const Content = styled(FormControl)`
     width: 100%;
 `;
 
-const InputWrapper = styled(Input)<{ width: string; score: number }>`
+const InputWrapper = styled(Input)<{ score: number }>`
   &&& {
-    &[class*='focused'] {
-      &:before {
-        border-bottom: solid 2px rgba(0, 0, 0, 0.22);
-      }
-      &:after {
-        width: ${({ width }) => width};
-        border-bottom-color: ${({ score }) => focusBorderColors[score]};
-      }
+    &.MuiInput-underline {
+        &:hover:not(.Mui-disabled):before {
+            border-bottom-color: ${({ score }) => getBorderColors(score)};
+        }
+        &:after {
+            border-bottom-color: ${({ score }) => getBorderColors(score)};
+        }
+        
     }
+    &.MuiInput-focused {
+        &:hover:not(.Mui-disabled):before {
+            border-bottom-color: ${({ score }) => getBorderColors(score)};
+        }
+        &:after {
+            border-bottom-color: ${({ score }) => getBorderColors(score)};
+        }
+    }
+    
     color: ${({ theme: { colors } }) => colors.primary};
     font-size: 16px;
     font-weight: 300;
-
-    &:before {
-      border-bottom: solid 1px rgba(0, 0, 0, 0.12);
-    }
-    &:hover:before {
-      border-bottom: solid 2px rgba(0, 0, 0, 0.22) !important;
-    }
   }
 }`;
 const LabelWrapper = styled(InputLabel)`
   &&& {
-    &[class*='focused'] {
-      color: ${({ theme: { colors } }) => colors.gray3};
+    &.MuiInput-focused {
+        color: ${({ theme: { colors } }) => colors.gray3};
     }
     color: rgba(0, 0, 0, 0.38);
     font-size: 16px;
@@ -74,8 +86,26 @@ const ShowHidePwd = styled.div`
     font-size: 12px;
     font-weight: 500;
 `;
-const CheckIcon = styled(TezosIcon)`
-    margin-right: 3px;
+const CheckIcon = styled(CheckCircle)`
+    &&& {
+        margin-right: 3px;
+        fill: #4eb020;
+        width: 21px;
+        height: 21px;
+        position: relative;
+        top: 2px;
+    }
+`;
+
+const CancelIcon = styled(CancelRoundedIcon)`
+    &&& {
+        margin-right: 3px;
+        fill: #ea776c;
+        width: 21px;
+        height: 21px;
+        position: relative;
+        top: 2px;
+    }
 `;
 
 const CheckContainer = styled.div<{ visibilityIcon?: boolean }>`
@@ -100,28 +130,27 @@ interface Props {
 function InputValid(props: Props) {
     const { t } = useTranslation();
     const { label, error, suggestion, score, status, isShowed, changFunc, onShow, visibilityIcon } = props;
-    const borderColor = focusBorderColors[score];
-    let width = '';
-    if (score && !status) {
-        width = `${score * 25}%`;
-    } else {
-        width = `100%`;
+    const borderColor = getBorderColors(score);
+
+    function getIcon(val) {
+        switch (val) {
+            case 0:
+                return null;
+            case 4:
+                return <CheckIcon />;
+            default:
+                return <CancelIcon />;
+        }
     }
 
     return (
         <Container>
             <Content>
                 <LabelWrapper>{label}</LabelWrapper>
-                <InputWrapper
-                    key={label}
-                    type={isShowed ? 'text' : 'password'}
-                    onChange={(event) => changFunc(event.target.value)}
-                    width={width}
-                    score={score}
-                />
+                <InputWrapper key={label} type={isShowed ? 'text' : 'password'} onChange={(event) => changFunc(event.target.value)} score={score} />
             </Content>
             <CheckContainer visibilityIcon={true}>
-                {score === 4 && <CheckIcon iconName="checkmark2" size={ms(0)} color="check" onClick={onShow} />}
+                {getIcon(score)}
                 <ShowHidePwd onClick={onShow} style={{ cursor: 'pointer' }}>
                     {visibilityIcon && (isShowed ? <VisibilityIcon color="secondary" /> : <VisibilityIcon color="action" />)}
                     {!visibilityIcon && t(isShowed ? 'general.verbs.hide' : 'general.verbs.show')}
