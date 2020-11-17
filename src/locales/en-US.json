@@ -89,7 +89,8 @@
         "to": "to",
         "of": "of",
         "from": "from",
-        "by": "by"
+        "by": "by",
+        "get_started": "Get Started"
     },
     "components": {
         "accountStatus": {
@@ -295,7 +296,14 @@
         },
         "languageSelectModal": {
             "choose_language": "Choose Language",
+            "select_language": "Please select a language",
             "language_selection_description": "You can always change your language selection in the settings."
+        },
+        "landingCarousel": {
+            "galleon_access_des": "Galleon gives you easy access to the Tezos Blockchain. It does not have access to your funds.",
+            "guard_password_des": "Guard your password carefully! Galleon doesn’t have access to your password and cannot restore it if you lose it.",
+            "agree_terms": "I agree with the Terms of Service",
+            "agree_policy": "I agree with the Privacy Policy"
         },
         "messageBar": {
             "operation_id": "OPERATION ID",
@@ -443,7 +451,7 @@
             "fundraiser_password": "Fundraiser Password",
             "public_key_hash": "Public key hash",
             "fundraiser_email_address": "Fundraiser Email Address",
-            "activation_code": "Activation Code (Optional if account was activated)",
+            "activation_code": "Activation Code (Optional if already activated)",
             "tooltips": {
                 "password_tooltip": "This is the password that you used when generating a Tezos paper wallet to participate in the Fundraiser.",
                 "email_tooltip": "This is the email address that you used when generating a Tezos paper wallet to participate in the Fundraiser",

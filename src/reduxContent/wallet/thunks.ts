@@ -2,7 +2,8 @@ import path from 'path';
 import { ipcRenderer } from 'electron';
 import { push } from 'react-router-redux';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-import { TezosConseilClient, TezosNodeWriter, KeyStoreType, Tzip7ReferenceTokenHelper, StakerDAOTokenHelper, TzbtcTokenHelper } from 'conseiljs';
+import { TezosNodeWriter, KeyStoreType, Tzip7ReferenceTokenHelper, StakerDAOTokenHelper, TzbtcTokenHelper } from 'conseiljs';
+import { TezosConseilClient, ConseilQueryBuilder, ConseilOperator, ConseilDataClient } from 'conseiljs';
 import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
@@ -385,10 +386,21 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     identity = await restoreIdentityFromFundraiser(seed, username.trim(), passPhrase.trim(), pkh.trim());
                     identity.storeType = KeyStoreType.Fundraiser;
                     await dispatch(setSignerThunk(identity.secretKey));
-                    const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(
-                        () => false
-                    );
-                    if (!account) {
+
+                    let query = ConseilQueryBuilder.blankQuery();
+                    query = ConseilQueryBuilder.addFields(query, 'pkh');
+                    query = ConseilQueryBuilder.addPredicate(query, 'pkh', ConseilOperator.EQ, [identity.publicKeyHash], false);
+                    query = ConseilQueryBuilder.addPredicate(query, 'kind', ConseilOperator.EQ, ['activate_account'], false);
+                    query = ConseilQueryBuilder.setLimit(query, 1);
+
+                    const account = await ConseilDataClient.executeEntityQuery(
+                        { url: conseilUrl, apiKey, network },
+                        'tezos',
+                        network,
+                        'operations',
+                        query
+                    ).catch(() => []);
+                    if (!account || account.length === 0) {
                         const keyStore = getSelectedKeyStore([identity], identity.publicKeyHash, identity.publicKeyHash, false);
                         const newKeyStore = { ...keyStore, storeType: KeyStoreType.Fundraiser };
                         activating = await sendIdentityActivationOperation(tezosUrl, state().app.signer, newKeyStore, activationCode).catch((err) => {

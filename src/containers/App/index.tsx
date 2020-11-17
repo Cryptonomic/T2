@@ -75,6 +75,10 @@ function App() {
     const isNodes = useSelector(getIsNodesSelector);
     const isLoggedIn = getLoggedIn(wallet);
 
+    localStorage.removeItem('initIndex');
+    localStorage.removeItem('isTos');
+    localStorage.removeItem('isPP');
+
     useEffect(() => {
         dispatch(getNewVersionThunk());
 
