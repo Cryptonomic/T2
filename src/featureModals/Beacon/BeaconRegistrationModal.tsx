@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import {
@@ -12,6 +12,7 @@ import {
     TezosTransactionOperation,
 } from '@airgap/beacon-sdk';
 
+import { connectBeaconThunk } from '../../reduxContent/app/thunks';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { ms } from '../../styles/helpers';
@@ -58,6 +59,7 @@ interface Props {
 
 const BeaconRegistrationModal = (props: Props) => {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
     const { isLoading, selectedParentHash, isLedger, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
@@ -82,10 +84,8 @@ const BeaconRegistrationModal = (props: Props) => {
 
     const onConnect = async () => {
         // TODO: loading indicator
-        console.log('BeaconRegistration.onConnect');
         const beaconRequest = modalValues[activeModal];
         await beaconClient.addPeer(beaconRequest);
-        console.log('BeaconRegistration.onConnect, peer added');
         beaconClient
             .connect(async (message) => {
                 if (message.type === BeaconMessageType.PermissionRequest) {
@@ -100,9 +100,6 @@ const BeaconRegistrationModal = (props: Props) => {
 
                     setAuthorizationRequestId(message.id);
                     setAuthorizationScope(message.scopes.join(', '));
-                } else {
-                    console.log('BeaconRegistration.onConnect, unexpected message', message);
-                    // TODO: error unexpected message
                 }
             })
             .catch((err) => console.error('connect error', err));
@@ -116,8 +113,11 @@ const BeaconRegistrationModal = (props: Props) => {
             id: authorizationRequestId,
             publicKey: keyStore.publicKey,
         };
-        console.log('onAuthorize', response);
+
         await beaconClient.respond(response);
+
+        dispatch(connectBeaconThunk());
+
         onClose();
     };
 

@@ -319,11 +319,11 @@ function AddressBlock(props: Props) {
                 ) : null}
             </AddressLabel>
 
-            <AddDelegateLabel isActive={isModalOpen} onClick={() => setIsModalOpen(true, 'sign')}>
+            <AddDelegateLabel isActive={isModalOpen && activeModal === 'sign'} onClick={() => setIsModalOpen(true, 'sign')}>
                 <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
             </AddDelegateLabel>
 
-            <AddDelegateLabel isActive={isModalOpen} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
+            <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
                 <DelegateTitle>{t('components.Beacon.infoModal.title')}</DelegateTitle>
             </AddDelegateLabel>
 

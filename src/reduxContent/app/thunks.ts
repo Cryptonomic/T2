@@ -3,15 +3,9 @@ import { useStore } from 'react-redux';
 import { TezosConseilClient, TezosNodeReader, OperationKindType, Signer, TezosMessageUtils } from 'conseiljs';
 import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
 import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
-import {
-    WalletClient,
-    BeaconMessageType,
-    PermissionScope,
-    PermissionResponseInput,
-    OperationResponseInput,
-    TezosTransactionOperation,
-} from '@airgap/beacon-sdk';
+import { WalletClient } from '@airgap/beacon-sdk';
 
+import { setModalOpen, setModalValue } from '../../reduxContent/modal/actions';
 import { AppState } from '../../types/store';
 import { changeAccountAction, addNewVersionAction, showSignVerifyAction, setSignerAction, setBeaconClientAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
@@ -130,19 +124,30 @@ export function setLedgerSignerThunk(path: string) {
 }
 
 export function initBeaconThunk() {
-    return async (dispatch) => {
-        const client = new WalletClient({ name: 'Beacon Wallet Client' });
-        await client.init();
-        dispatch(setBeaconClientAction(client));
+    return async (dispatch, state) => {
+        const { app } = state();
+        if (app.beaconClient != null) {
+            return;
+        }
+
+        const beaconClient = new WalletClient({ name: 'Beacon Wallet Client' });
+        dispatch(setBeaconClientAction(beaconClient));
+
+        await beaconClient.init();
+
+        if ((await beaconClient.getPeers()).length > 0) {
+            dispatch(connectBeaconThunk());
+        }
     };
 }
 
-export function connectBeaconThunk(data: string) {
-    return async (dispatch, state: AppState) => {
-        try {
-            await state.beaconClient.addPeer(JSON.parse(data));
-        } catch (e) {
-            console.log('QR data not provided. Skipping');
-        }
+export function connectBeaconThunk() {
+    return async (dispatch, state) => {
+        const { app } = state();
+
+        app.beaconClient.connect(async (message) => {
+            dispatch(setModalValue(message, 'beaconEvent'));
+            dispatch(setModalOpen(true, 'beaconEvent'));
+        });
     };
 }

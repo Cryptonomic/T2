@@ -29,7 +29,8 @@
             "verify": "Verify",
             "copy": "Copy",
             "connect": "Connect",
-            "authorize": "Authorize"
+            "authorize": "Authorize",
+            "approve": "Approve"
         },
         "nouns": {
             "amount": "Amount",
@@ -139,7 +140,7 @@
                 "title": "Beacon Connection Request"
             },
             "eventModal": {
-                "title": "Beacon Event"
+                "title": "Beacon Request"
             },
             "infoModal": {
                 "title": "Beacon Status"

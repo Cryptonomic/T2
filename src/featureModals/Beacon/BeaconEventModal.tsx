@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { ms } from '../../styles/helpers';
 import { openLink } from '../../utils/general';
+import { getMainNode, getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
 import Tooltip from '../../components/Tooltip';
 import { RootState } from '../../types/store';
@@ -50,118 +51,63 @@ const BeaconEventModal = (props: Props) => {
     const { isLoading, selectedParentHash, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
     const values = useSelector<RootState, object>((state) => state.modal.values, shallowEqual);
-    const [result, setResult] = useState('');
-    const [error, setError] = useState(false);
+    const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
+
     const { open, onClose } = props;
 
+    const [result, setResult] = useState('');
+    const [error, setError] = useState(false);
     const [requestor, setRequestor] = useState('');
-    const [requestorDescription, setRequestorDescription] = useState('');
-    const [requestorUrl, setRequestorUrl] = useState('');
+    const [operationAmount, setOperationAmount] = useState(0);
+    const [operationParams, setOperationParams] = useState('');
+    const [operationTarget, setOperationTarget] = useState('');
     const [prompt, setPrompt] = useState('');
 
+    const connectedBlockchainNode = getMainNode(settings.nodesList, settings.selectedNode);
     const isDisabled = isLoading || !prompt;
-
-    const onAuth = async () => {
-        if (signer == null) {
-            setError(true);
-            setResult('No signing mechanism available');
-            console.error(error);
-            return;
-        }
-
-        const signature = await signer.signText(prompt);
-
-        const req = values[activeModal]; // TODO: this should be an enum or constant, not a state lookup
-        try {
-            setResult('Signature sent'); // TODO: localization
-            setError(false);
-            const response = await fetch(`${req.callback}&sig=${Buffer.from(signature).toString('base64')}`);
-            if (!response.ok) {
-                throw new Error('Signature response rejected'); // TODO: localization
-            }
-        } catch (error) {
-            setError(true);
-            setResult('Signature submission failed'); // TODO: localization
-            console.error(error);
-        }
-    };
-
-    const onClick = (link: string) => {
-        openLink(link);
-    };
 
     useEffect(() => {
         const req = values[activeModal];
-        if (req) {
-            if (req.requestor) {
-                setRequestor(req.requestor);
-            }
+        console.log(req);
 
-            if (req.desc) {
-                setRequestorDescription(req.desc);
-            }
-
-            if (req.requrl) {
-                setRequestorUrl(req.requrl);
-            }
-
-            if (req.prompt) {
-                let p = req.prompt.replace(/\n/g, '');
-                p = p.slice(0, Math.min(100, p.length));
-                setPrompt(p);
-            }
-
-            if (req.target && req.target !== selectedParentHash) {
-                setError(true);
-                setResult('Account address mismatch'); // TODO: localization
-            }
-
-            if (!req.target) {
-                setError(true);
-                setResult('Missing target address'); // TODO: localization
-            }
-
-            if (!req.requrl) {
-                setError(true);
-                setResult('Missing dApp link'); // TODO: localization
-            }
+        if (connectedBlockchainNode.network !== req.network.type) {
+            // TODO: error network mismatch
         }
+
+        // TODO: validate req.senderId against local list, see BeaconInfoModal for details
+
+        setRequestor(req.appMetadata.name);
+        setOperationAmount(Number(req.operationDetails[0].amount));
+        // req.operationDetails[0].kind "transaction"
+        // setTrasactionParams();
+        setOperationTarget(req.operationDetails[0].destination);
+
+        // type: "operation_request"
     }, []);
+
+    const onApprove = async () => {
+        //
+    };
 
     return (
         <ModalWrapper open={open}>
             {open ? (
                 <ModalContainer>
                     <CloseIconWrapper onClick={() => onClose()} />
-                    <ModalTitle>{t('components.AuthenticateModal.title')}</ModalTitle>
+                    <ModalTitle>{t('components.Beacon.eventModal.title')}</ModalTitle>
                     <Container>
-                        <MainContainer>
-                            <TitleContainer>
-                                <LinkContainer onClick={() => onClick(requestorUrl)} key={requestorUrl}>
-                                    <ContentTitle>
-                                        {requestor}
-                                        <Tooltip position="bottom" content={<TooltipContent>{`Open ${requestorUrl} in a browser`}</TooltipContent>}>
-                                            <LinkIcon iconName="new-window" size={ms(0)} color="black" />
-                                        </Tooltip>
-                                    </ContentTitle>
-                                </LinkContainer>
-                                <ContentSubtitle>{requestorDescription}</ContentSubtitle>
-                            </TitleContainer>
-                            <div>{t('components.AuthenticateModal.signature_prompt')}</div>
-                            <PromptContainer>{prompt}</PromptContainer>
-                        </MainContainer>
-                        <ResultContainer>
-                            <Result error={error}>{result}</Result>
-                        </ResultContainer>
-                        <Footer>
-                            <ButtonContainer>
-                                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onAuth}>
-                                    {t('general.verbs.authenticate')}
-                                </InvokeButton>
-                            </ButtonContainer>
-                        </Footer>
+                        {requestor} is requesting a {operationParams.length > 0 ? 'contract call' : 'simple transaction'} to be executed to send{' '}
+                        {operationAmount > 0 ? (operationAmount / 1_000_000).toFixed(6) : ''} {operationParams.length > 0 ? 'with the following' : 'without'}{' '}
+                        {operationParams.length > 0 ? operationParams : ''} parameters to {operationTarget}.
                     </Container>
                     {isLoading && <Loader />}
+                    <Footer>
+                        <ButtonContainer>
+                            <InvokeButton buttonTheme="primary" onClick={onApprove}>
+                                {t('general.verbs.approve')}
+                            </InvokeButton>
+                        </ButtonContainer>
+                    </Footer>
                 </ModalContainer>
             ) : (
                 <ModalContainer />
