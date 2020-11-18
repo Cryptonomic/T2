@@ -2,7 +2,7 @@ import path from 'path';
 import { ipcRenderer } from 'electron';
 import { push } from 'react-router-redux';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-import { TezosNodeWriter, KeyStoreType, Tzip7ReferenceTokenHelper, StakerDAOTokenHelper, TzbtcTokenHelper } from 'conseiljs';
+import { TezosNodeWriter, KeyStoreType, Tzip7ReferenceTokenHelper, StakerDAOTokenHelper, TzbtcTokenHelper, ChainlinkTokenHelper } from 'conseiljs';
 import { TezosConseilClient, ConseilQueryBuilder, ConseilOperator, ConseilDataClient } from 'conseiljs';
 import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { createMessageAction } from '../../reduxContent/message/actions';
@@ -44,6 +44,7 @@ import { Identity, Token, AddressType } from '../../types/general';
 
 import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
 import * as tzip7Util from '../../contracts/TokenContract/util';
+import * as tzclUtil from '../../contracts/TezosChainlink/util';
 
 const { restoreIdentityFromFundraiser, restoreIdentityFromMnemonic, restoreIdentityFromSecretKey } = KeyStoreUtils;
 
@@ -192,6 +193,10 @@ export function syncTokenThunk(tokenAddress) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
+            } else if (tokens[tokenIndex].kind === 'tzcl') {
+                const mapid = tokens[tokenIndex].mapid || 0;
+                balanceAsync = ChainlinkTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                transAsync = tzclUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
             }
 
             const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
@@ -318,6 +323,35 @@ export function syncWalletThunk() {
 
                     const balance = await TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
                     const transactions = await tzbtcUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions); /* TODO */
+
+                    return { ...token, mapid, administrator, balance, transactions };
+                } else if (token.kind === TokenKind.tzcl) {
+                    try {
+                        const validCode = await ChainlinkTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
+                        if (!validCode) {
+                            console.log(`warning, tzcl fingerprint mismatch for token: ${JSON.stringify(token)}`);
+                        }
+                    } catch {
+                        console.log(`warning, tzcl fingerprint mismatch for token: ${JSON.stringify(token)}`);
+                    }
+
+                    let mapid = token.mapid;
+                    const administrator = token.administrator || '';
+
+                    if (!mapid || mapid === -1) {
+                        const newStorage = await ChainlinkTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => {
+                            return { balanceMap: -1 };
+                        });
+                        mapid = newStorage.balanceMap;
+                    }
+
+                    if (mapid === -1) {
+                        console.log(`warning, could not process token: ${JSON.stringify(token)}`);
+                        return { ...token, mapid, administrator, balance: 0 };
+                    }
+
+                    const balance = await ChainlinkTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
+                    const transactions = await tzclUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions); /* TODO */
 
                     return { ...token, mapid, administrator, balance, transactions };
                 } else {

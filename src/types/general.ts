@@ -56,6 +56,7 @@ export enum AddressType {
     None,
     STKR,
     TzBTC,
+    TzCl,
 }
 
 export interface RegularAddress {
@@ -108,6 +109,7 @@ export enum TokenKind {
     stkr = 'stkr',
     usdtez = 'usdtez',
     tzbtc = 'tzbtc',
+    tzcl = 'tzcl',
 }
 
 export interface Token {

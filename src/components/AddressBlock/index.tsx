@@ -328,9 +328,10 @@ function AddressBlock(props: Props) {
                 let tokenType = AddressType.Token; // TODO
                 if (token.kind === 'stkr') {
                     tokenType = AddressType.STKR;
-                }
-                if (token.kind === 'tzbtc') {
+                } else if (token.kind === 'tzbtc') {
                     tokenType = AddressType.TzBTC;
+                } else if (token.kind === 'tzcl') {
+                    tokenType = AddressType.TzCl;
                 }
 
                 return (

@@ -10,6 +10,7 @@ import TokenContract from '../../contracts/TokenContract';
 import ImplicitAccount from '../../contracts/ImplicitAccount';
 import StakerToken from '../../contracts/StakerToken';
 import TzBtcToken from '../../contracts/TzBtcToken';
+import ChainlinkToken from '../../contracts/TezosChainlink';
 
 import { sortArr } from '../../utils/array';
 import { Container, SideBarContainer, AccountItem } from './style';
@@ -30,6 +31,8 @@ function HomeMain() {
                 return <StakerToken />;
             case AddressType.TzBTC:
                 return <TzBtcToken />;
+            case AddressType.TzCl:
+                return <ChainlinkToken />;
             default:
                 return <GenericContract />;
         }

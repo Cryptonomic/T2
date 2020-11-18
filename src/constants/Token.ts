@@ -102,4 +102,17 @@ export const knownTokenContracts: Token[] = [
         precision: 8,
         round: 8,
     },
+    {
+        network: 'carthagenet',
+        address: 'KT1TQR3eyYCytqBK9EB28J1taa2cX41F9R8x',
+        displayName: 'tzChainlink',
+        symbol: 'TZCL',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzcl,
+        scale: 0,
+        precision: 0,
+        round: 0,
+    },
 ];
