@@ -20,7 +20,7 @@
         "conseiljs-ledgersigner": "5.0.4-beta.1",
         "conseiljs-softsigner": "5.0.3",
         "loglevel": "1.7.0",
-        "node-fetch": "^2.6.1"
+        "node-fetch": "2.6.1"
     },
     "engines": {
         "node": "12.19.1",
