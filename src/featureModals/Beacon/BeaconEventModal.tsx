@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { ms } from '../../styles/helpers';
+import { sendTezThunk, getIsImplicitAndEmptyThunk } from '../../contracts/duck/thunks';
+import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';
 import { openLink } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
@@ -86,7 +88,15 @@ const BeaconEventModal = (props: Props) => {
     }, []);
 
     const onApprove = async () => {
-        //
+        const requiresBurn = await getIsImplicitAndEmptyThunk(operationTarget, settings.nodesList, settings.selectedNode);
+
+        // TODO: validate fee against min
+        // TODO: validate burn+amount+fee against balance - 1xtz
+        // TODO: validate amount > 0
+        // TODO: validate destination != self
+
+        // dispatch(sendTezThunk(password, target, amount, Math.floor(fee))); // amount as fraction, fee as mutez – Ugh
+        // dispatch(invokeAddressThunk(contractAddress, fee, amount, storage, gas, parameters, passPhrase, selectedInvokeAddress, entryPoint, codeFormat));
     };
 
     return (

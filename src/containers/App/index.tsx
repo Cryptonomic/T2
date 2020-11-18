@@ -3,6 +3,7 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { ipcRenderer } from 'electron';
+import base58check from 'bs58check';
 
 import Home from '../Home';
 import Login from '../Login';
@@ -49,25 +50,23 @@ function App() {
         ipcRenderer.on('wallet', (event, url) => {
             const urlProps = new URL(url);
             const pathname = urlProps.pathname.slice(2);
+            const searchParams = urlProps.searchParams;
 
-            if (!['sign', 'auth', 'beaconRegistration', 'beaconEvent'].includes(pathname)) {
-                return;
-            }
+            if (pathname.length === 0 && searchParams.has('type') && searchParams.get('type') === 'tzip10') {
+                const beaconRequest = searchParams.get('data') || '';
+                dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconRegistration'));
+                dispatch(setModalOpen(true, 'beaconRegistration'));
+            } else if (['sign', 'auth', 'beaconRegistration', 'beaconEvent'].includes(pathname) && searchParams.has('r')) {
+                const req = searchParams.get('r') || '';
 
-            const searchParams = new URLSearchParams(urlProps.search);
-            const req = searchParams.get('r');
+                dispatch(setModalValue(JSON.parse(Buffer.from(req, 'base64').toString('utf8')), pathname));
 
-            if (!req) {
-                return;
-            }
-
-            dispatch(setModalValue(JSON.parse(Buffer.from(req, 'base64').toString('utf8')), pathname));
-
-            if (pathname === 'sign') {
-                dispatch(setModalActiveTab(pathname));
-                dispatch(setModalOpen(true, pathname));
-            } else {
-                dispatch(setModalOpen(true, pathname));
+                if (pathname === 'sign') {
+                    dispatch(setModalActiveTab(pathname));
+                    dispatch(setModalOpen(true, pathname));
+                } else {
+                    dispatch(setModalOpen(true, pathname));
+                }
             }
         });
     }, []);

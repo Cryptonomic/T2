@@ -330,6 +330,7 @@ function AddressBlock(props: Props) {
             <AddDelegateLabel>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
             </AddDelegateLabel>
+
             {tokens.map((token, index) => {
                 if (!token.balance) {
                     return null;
