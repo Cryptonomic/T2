@@ -77,6 +77,7 @@ const BeaconEventModal = (props: Props) => {
         }
 
         // TODO: validate req.senderId against local list, see BeaconInfoModal for details
+        // TODO: validate req.senderId is going against the correct network (separately from above)
 
         setRequestor(req.appMetadata.name);
         setOperationAmount(Number(req.operationDetails[0].amount));
