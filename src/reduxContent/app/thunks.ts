@@ -98,12 +98,6 @@ export function getNewVersionThunk() {
     };
 }
 
-export function showSignVeiryThunk() {
-    return async (dispatch) => {
-        dispatch(showSignVerifyAction());
-    };
-}
-
 export function setSignerThunk(key: string) {
     if (!key || key.length === 0) {
         throw new Error('Empty key parameter in setSignerThunk()');
