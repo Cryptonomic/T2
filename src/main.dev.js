@@ -72,63 +72,32 @@ app.on('open-url', (event, url) => {
 app.setAsDefaultProtocolClient('galleon');
 
 app.on('ready', async () => {
-    let allowDevTools = false;
-    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+    if (isDevelopment) {
         await installExtensions();
-        allowDevTools = true;
     }
 
-    const template = [
-        // { role: 'appMenu' }
-        ...(isMac
-            ? [
-                  {
-                      label: app.name,
-                      submenu: [
-                          { role: 'about' },
-                          { type: 'separator' },
-                          { role: 'services' },
-                          { type: 'separator' },
-                          { role: 'hide' },
-                          { role: 'hideothers' },
-                          { role: 'unhide' },
-                          { type: 'separator' },
-                          { role: 'quit' },
-                      ],
-                  },
-              ]
-            : []),
-        // { role: 'fileMenu' }
-        {
-            label: '&File',
-            submenu: [isMac ? { role: 'close' } : { role: 'quit' }],
-        },
-        // { role: 'editMenu' }
-        {
-            label: 'Edit',
+    let menuTemplate = [];
+    if (isMac) {
+        menuTemplate.push({
+            label: app.name,
             submenu: [
-                { role: 'undo' },
-                { role: 'redo' },
+                { role: 'about' },
                 { type: 'separator' },
-                { role: 'cut' },
-                { role: 'copy' },
-                { role: 'paste' },
-                ...(isMac
-                    ? [
-                          { role: 'pasteAndMatchStyle' },
-                          { role: 'delete' },
-                          { role: 'selectAll' },
-                          { type: 'separator' },
-                          {
-                              label: 'Speech',
-                              submenu: [{ role: 'startSpeaking' }, { role: 'stopSpeaking' }],
-                          },
-                      ]
-                    : [{ role: 'delete' }, { type: 'separator' }, { role: 'selectAll' }]),
+                { role: 'services' },
+                { type: 'separator' },
+                { role: 'hide' },
+                { role: 'hideothers' },
+                { role: 'unhide' },
+                { type: 'separator' },
+                { role: 'quit' },
             ],
-        },
-        // { role: 'viewMenu' }
-        {
+        });
+    }
+
+    menuTemplate.push({ label: '&File', submenu: [isMac ? { role: 'close' } : { role: 'quit' }] });
+
+    if (isDevelopment) {
+        menuTemplate.push({
             label: 'View',
             submenu: [
                 { role: 'reload' },
@@ -141,40 +110,38 @@ app.on('ready', async () => {
                 { type: 'separator' },
                 { role: 'togglefullscreen' },
             ],
-        },
-        // { role: 'windowMenu' }
-        {
-            label: 'Window',
-            submenu: [
-                { role: 'minimize' },
-                { role: 'zoom' },
-                ...(isMac ? [{ type: 'separator' }, { role: 'front' }, { type: 'separator' }, { role: 'window' }] : [{ role: 'close' }]),
-            ],
-        },
-        {
-            role: 'help',
-            submenu: !isMac
-                ? [
-                      { role: 'about' },
-                      {
-                          label: 'Learn More',
-                          click: async () => {
-                              await electron.shell.openExternal(helpUrl);
-                          },
-                      },
-                  ]
-                : [
-                      {
-                          label: 'Learn More',
-                          click: async () => {
-                              await electron.shell.openExternal(helpUrl);
-                          },
-                      },
-                  ],
-        },
-    ];
+        });
+    }
 
-    const menu = Menu.buildFromTemplate(template);
+    menuTemplate.push({
+        label: 'Window',
+        submenu: [
+            { role: 'minimize' },
+            { role: 'zoom' },
+            ...(isMac ? [{ type: 'separator' }, { role: 'front' }, { type: 'separator' }, { role: 'window' }] : [{ role: 'close' }]),
+        ],
+    });
+
+    let helpSubmenu = [];
+
+    if (!isMac) {
+        helpSubmenu.push({ role: 'about' });
+    }
+
+    menuTemplate.push({
+        role: 'help',
+        submenu: [
+            ...helpSubmenu,
+            {
+                label: 'Learn More',
+                click: async () => {
+                    await electron.shell.openExternal(helpUrl);
+                },
+            },
+        ],
+    });
+
+    const menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
 
     mainWindow = new BrowserWindow({
@@ -183,7 +150,7 @@ app.on('ready', async () => {
         minWidth: 1024,
         show: false,
         title: 'Tezori',
-        webPreferences: { nodeIntegration: true, devTools: allowDevTools },
+        webPreferences: { nodeIntegration: true, devTools: isDevelopment },
         width: 1120,
     });
 

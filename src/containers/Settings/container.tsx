@@ -20,6 +20,8 @@ import { changeLocaleThunk, changeNodeThunk, addNodeThunk, removeNodeThunk, chan
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 import { RootState, SettingsState } from '../../types/store';
 
+import { name, version, LocalVersionIndex } from '../../config.json';
+
 import { Container, BackButtonContainer, Content, Content6, ContentTitle, RowForParts, Part, ItemWrapper, AddIcon } from './styles';
 const defaultNodeList = getInitWalletSettings().nodesList;
 
@@ -27,7 +29,7 @@ const SettingsContainer = () => {
     const history = useHistory();
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { locale, pathsList, selectedPath, selectedNode, nodesList } = useSelector<RootState, SettingsState>(state => state.settings, shallowEqual);
+    const { locale, pathsList, selectedPath, selectedNode, nodesList } = useSelector<RootState, SettingsState>((state) => state.settings, shallowEqual);
     const [isNodeModalOpen, setIsNodeModalOpen] = useState(false);
     const [isPathModalOpen, setIsPathModalOpen] = useState(false);
     const [isPathChanged, setIsPathChanged] = useState(false);
@@ -40,12 +42,12 @@ const SettingsContainer = () => {
         dispatch(removePathThunk(label));
     };
 
-    const onRemoveNode = (event: React.MouseEvent, name: string) => {
+    const onRemoveNode = (event: React.MouseEvent, nodeName: string) => {
         event.stopPropagation();
-        if (name === selectedNode) {
+        if (nodeName === selectedNode) {
             setIsPathChanged(true);
         }
-        dispatch(removeNodeThunk(name));
+        dispatch(removeNodeThunk(nodeName));
     };
 
     const onAddNode = (node: Node) => {
@@ -108,7 +110,8 @@ const SettingsContainer = () => {
             <BackButtonContainer>
                 <BackButton label={backTitle} onClick={onClickBackButton} />
             </BackButtonContainer>
-            <H2>{t('containers.homeSettings.general_settings')}</H2>
+
+            <H2>{`${t('containers.homeSettings.general_settings')}, ${name} ${version} (${LocalVersionIndex})`}</H2>
 
             <Content6>
                 <ContentTitle>{t('containers.homeSettings.select_display_language')}</ContentTitle>
@@ -127,10 +130,10 @@ const SettingsContainer = () => {
                             label="Nodes"
                             value={selectedNode}
                             onChange={onChangeCustomSelectNodes}
-                            renderValue={value => <CustomSelectItem value={value} />}
+                            renderValue={(value) => <CustomSelectItem value={value} />}
                         >
                             {nodesList.map(({ displayName, network }, index: number) => {
-                                const foundIndexed = defaultNodeList.findIndex(node => node.network === network);
+                                const foundIndexed = defaultNodeList.findIndex((node) => node.network === network);
                                 return (
                                     <ItemWrapper key={displayName} value={displayName}>
                                         <SettingsMenuItem
@@ -163,7 +166,7 @@ const SettingsContainer = () => {
                             label="Derivation Path"
                             value={selectedPath}
                             onChange={onChangeCustomSelectDerivationPath}
-                            renderValue={value => <CustomSelectItem value={value} url={pathName} />}
+                            renderValue={(value) => <CustomSelectItem value={value} url={pathName} />}
                         >
                             {pathsList.map(({ label, derivation }, index: number) => (
                                 <ItemWrapper key={label} value={label}>
