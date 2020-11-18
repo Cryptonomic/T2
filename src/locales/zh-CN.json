@@ -142,7 +142,7 @@
             "storage_limit": "存储限制",
             "gas_limit": "计算费用限制",
             "parameters": "参数",
-            "view_scan": "在Mininax上查看",
+            "view_scan": "在Arronax上查看",
             "initial_storage": "初始存储",
             "paste_micheline_code": "把Micheline代码粘贴进你的智能合同里",
             "entry_point": "Entry Point"

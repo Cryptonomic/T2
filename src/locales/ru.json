@@ -142,7 +142,7 @@
             "storage_limit": "Лимит Хранилища",
             "gas_limit": "Gas Лимит",
             "parameters": "Параметры",
-            "view_scan": "Посмотреть на Mininax",
+            "view_scan": "Посмотреть на Arronax",
             "initial_storage": "Изначальное хранилище",
             "paste_micheline_code": "Вставить Micheline код в ваш смарт контракт",
             "entry_point": "Entry Point"

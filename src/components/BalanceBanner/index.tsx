@@ -92,7 +92,7 @@ function BalanceBanner(props: Props) {
     }
 
     function openNotifierUrl() {
-        openLink(`https://t.me/TezosNotifierBot?start=mininax_${publicKeyHash}`);
+        openLink(`https://t.me/TezosNotifierBot?start=arronax_${publicKeyHash}`);
     }
 
     function openHarpoonUrl() {

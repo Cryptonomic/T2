@@ -142,7 +142,7 @@
             "storage_limit": "ストレージ制限",
             "gas_limit": "ガスリミット",
             "parameters": "パラメーター",
-            "view_scan": "Mininaxのビュー",
+            "view_scan": "Arronaxのビュー",
             "initial_storage": "初期ストレージ",
             "paste_micheline_code": "スマートコントラクトMichelineコードにペースト",
             "entry_point": "Entry Point"

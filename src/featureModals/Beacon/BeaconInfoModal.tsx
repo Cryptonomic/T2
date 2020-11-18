@@ -2,15 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import {
-    WalletClient,
-    BeaconMessageType,
-    Network,
-    PermissionScope,
-    PermissionResponseInput,
-    OperationResponseInput,
-    TezosTransactionOperation,
-} from '@airgap/beacon-sdk';
+import { WalletClient } from '@airgap/beacon-sdk';
 
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
@@ -98,7 +90,6 @@ const BeaconInfoModal = (props: Props) => {
                     //
                 }
             }
-
             setBeaconState(beaconInfo);
         };
         readState();

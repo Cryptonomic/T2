@@ -142,7 +142,7 @@
             "storage_limit": "Límite de almacenamiento",
             "gas_limit": "Límite de gas",
             "parameters": "Parámetros",
-            "view_scan": "Ver en Mininax",
+            "view_scan": "Ver en Arronax",
             "initial_storage": "Almacenamiento inicial",
             "paste_micheline_code": "Pegar en tu código Micheline del contrato inteligente",
             "entry_point": "Entry Point"

@@ -157,7 +157,7 @@
             "storage_limit": "Storage Limit",
             "gas_limit": "Gas Limit",
             "parameters": "Parameters",
-            "view_scan": "View on Mininax",
+            "view_scan": "View on Arronax",
             "initial_storage": "Initial Storage",
             "paste_micheline_code": "Paste in your smart contract {{format}} code",
             "entry_point": "Entry Point"
@@ -321,7 +321,7 @@
         },
         "messageBar": {
             "operation_id": "OPERATION ID",
-            "view_block_explorer": "View on Mininax",
+            "view_block_explorer": "View on Arronax",
             "messages": {
                 "amount_not_valid": "Amount is not valid.",
                 "address_begin": "Address must begin with tz1 or KT1.",

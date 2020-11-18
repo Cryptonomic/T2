@@ -142,7 +142,7 @@
             "storage_limit": "Depolama Limiti",
             "gas_limit": "Gaz Limiti",
             "parameters": "Parametreler",
-            "view_scan": "Mininax'DE GÖRÜNTÜLE",
+            "view_scan": "Arronax'DE GÖRÜNTÜLE",
             "initial_storage": "İlk Depolama",
             "paste_micheline_code": "Akıllı Sözleşme'nizin Micheline kodunu yapıştırın",
             "entry_point": "Entry Point"
