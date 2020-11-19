@@ -9,7 +9,7 @@ import LoaderSpinner from '../LoaderSpinner';
 import { H4 } from '../Heading/';
 
 import * as statuses from '../../constants/StatusTypes';
-import { formatAmount } from '../../utils/currancy';
+import { formatAmount } from '../../utils/currency';
 import Info from './Info';
 import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';

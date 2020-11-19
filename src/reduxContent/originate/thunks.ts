@@ -2,7 +2,7 @@ import { TezosNodeWriter, BabylonDelegationHelper, TezosParameterFormat } from '
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { displayError } from '../../utils/formValidation';
-import { tezToUtez } from '../../utils/currancy';
+import { tezToUtez } from '../../utils/currency';
 import { createAccount } from '../../utils/account';
 import { findIdentity } from '../../utils/identity';
 import { getMainNode, getMainPath } from '../../utils/settings';

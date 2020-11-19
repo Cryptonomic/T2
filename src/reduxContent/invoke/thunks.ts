@@ -1,7 +1,7 @@
 import { TezosNodeWriter, TezosParameterFormat } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
-import { tezToUtez } from '../../utils/currancy';
+import { tezToUtez } from '../../utils/currency';
 
 import { saveIdentitiesToLocal } from '../../utils/wallet';
 import { createTransaction } from '../../utils/transaction';

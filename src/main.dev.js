@@ -96,9 +96,14 @@ app.on('ready', async () => {
 
     menuTemplate.push({ label: '&File', submenu: [isMac ? { role: 'close' } : { role: 'quit' }] });
 
+    menuTemplate.push({
+        label: '&Edit',
+        submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'delete' }],
+    });
+
     if (isDevelopment) {
         menuTemplate.push({
-            label: 'View',
+            label: '&View',
             submenu: [
                 { role: 'reload' },
                 { role: 'forceReload' },
@@ -114,7 +119,7 @@ app.on('ready', async () => {
     }
 
     menuTemplate.push({
-        label: 'Window',
+        label: '&Window',
         submenu: [
             { role: 'minimize' },
             { role: 'zoom' },

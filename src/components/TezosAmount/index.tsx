@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import TezosIcon from '../TezosIcon';
 import CopyIcon from '../CopyButton';
 import Tooltip from '../Tooltip';
-import { formatAmount } from '../../utils/currancy';
+import { formatAmount } from '../../utils/currency';
 import { ms } from '../../styles/helpers';
 
 interface AmountProps {
@@ -21,8 +21,8 @@ const Amount = styled.span<Pick<AmountProps, 'size' | 'weight' | 'style' | 'clas
     font-weight: ${({
         weight = 'normal',
         theme: {
-            typo: { weights }
-        }
+            typo: { weights },
+        },
     }) => weights[weight]};
     display: inline-flex;
     align-items: center;
@@ -36,7 +36,7 @@ const Amount = styled.span<Pick<AmountProps, 'size' | 'weight' | 'style' | 'clas
 
 const SelectableText = {
     userSelect: 'text',
-    cursor: 'text'
+    cursor: 'text',
 };
 
 const Icon = styled(TezosIcon)`
@@ -80,7 +80,7 @@ const TezosAmount = (props: Props) => {
         if (!!symbol) {
             return {
                 strBalance: amount.toString(),
-                view: amount.toString()
+                view: amount.toString(),
             };
         }
 
@@ -88,7 +88,7 @@ const TezosAmount = (props: Props) => {
         const viewBal = format === 6 ? formatStrBal : `~${formatAmount(amount, format)}`;
         return {
             strBalance: formatStrBal,
-            view: viewBal
+            view: viewBal,
         };
     }
 
@@ -124,7 +124,7 @@ TezosAmount.defaultProps = {
     size: ms(0),
     weight: 'bold',
     color: 'primary',
-    format: 6
+    format: 6,
 };
 
 export default TezosAmount;
