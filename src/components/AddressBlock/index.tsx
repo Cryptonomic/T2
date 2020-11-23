@@ -323,9 +323,11 @@ function AddressBlock(props: Props) {
                 <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
             </AddDelegateLabel>
 
+            {/*
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
                 <DelegateTitle>{t('components.Beacon.infoModal.title')}</DelegateTitle>
             </AddDelegateLabel>
+            */}
 
             <AddDelegateLabel>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
