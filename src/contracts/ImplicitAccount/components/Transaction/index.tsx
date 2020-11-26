@@ -305,7 +305,7 @@ function Transaction(props: Props) {
                 {isBurn && (
                     <Fee>
                         <span>{t('components.transaction.burn')}: </span>
-                        <TezosAmount color="gray5" size={ms(-2)} amount={257000} format={6} />
+                        <TezosAmount color="gray5" size={ms(-2)} amount={64250} format={6} />
                     </Fee>
                 )}
                 {isBurn && isFee && <Linebar />}
