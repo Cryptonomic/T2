@@ -13,6 +13,7 @@ import {
     CHANGE_ACCOUNT_HASH,
     AppActionTypes,
     SET_SIGNER,
+    SET_BEACON_CLIENT,
 } from './types';
 
 const initState: AppState = {
@@ -32,6 +33,7 @@ const initState: AppState = {
     selectedAccountIndex: 0,
     selectedAccountType: AddressType.Manager,
     signer: null,
+    beaconClient: null,
 };
 
 export function appReducer(state: AppState = initState, action: AppActionTypes) {
@@ -56,6 +58,8 @@ export function appReducer(state: AppState = initState, action: AppActionTypes) 
             return { ...state, ...action.payload };
         case SET_SIGNER:
             return { ...state, signer: action.signer };
+        case SET_BEACON_CLIENT:
+            return { ...state, beaconClient: action.client };
         default:
             return state;
     }

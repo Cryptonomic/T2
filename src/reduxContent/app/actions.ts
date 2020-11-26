@@ -24,6 +24,8 @@ import {
     ShowSignVerifyAction,
     SET_SIGNER,
     SetSignerAction,
+    SET_BEACON_CLIENT,
+    SetBeaconClientAction,
 } from './types';
 import { NodeStatus, AddressType } from '../../types/general';
 
@@ -105,4 +107,8 @@ export function showSignVerifyAction(): ShowSignVerifyAction {
 
 export function setSignerAction(signer: Signer): SetSignerAction {
     return { type: SET_SIGNER, signer };
+}
+
+export function setBeaconClientAction(client: any): SetBeaconClientAction {
+    return { type: SET_BEACON_CLIENT, client };
 }

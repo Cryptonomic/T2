@@ -1,7 +1,11 @@
 const electron = require('electron');
 const os = require('os');
+
+const { helpUrl } = require('./config.json');
+
 const { ipcMain } = electron;
 const app = electron.app;
+const Menu = electron.Menu;
 const BrowserWindow = electron.BrowserWindow;
 
 const openCustomProtocol = (url, appWindow) => {
@@ -32,7 +36,10 @@ if (process.env.NODE_ENV === 'production') {
     sourceMapSupport.install();
 }
 
-if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+const isMac = process.platform === 'darwin';
+const isDevelopment = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
+if (isDevelopment) {
     require('electron-debug')();
 }
 
@@ -65,11 +72,82 @@ app.on('open-url', (event, url) => {
 app.setAsDefaultProtocolClient('galleon');
 
 app.on('ready', async () => {
-    let allowDevTools = false;
-    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+    if (isDevelopment) {
         await installExtensions();
-        allowDevTools = true;
     }
+
+    let menuTemplate = [];
+    if (isMac) {
+        menuTemplate.push({
+            label: app.name,
+            submenu: [
+                { role: 'about' },
+                { type: 'separator' },
+                { role: 'services' },
+                { type: 'separator' },
+                { role: 'hide' },
+                { role: 'hideothers' },
+                { role: 'unhide' },
+                { type: 'separator' },
+                { role: 'quit' },
+            ],
+        });
+    }
+
+    menuTemplate.push({ label: '&File', submenu: [isMac ? { role: 'close' } : { role: 'quit' }] });
+
+    menuTemplate.push({
+        label: '&Edit',
+        submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'delete' }],
+    });
+
+    if (isDevelopment) {
+        menuTemplate.push({
+            label: '&View',
+            submenu: [
+                { role: 'reload' },
+                { role: 'forceReload' },
+                { role: 'toggleDevTools' },
+                { type: 'separator' },
+                { role: 'resetZoom' },
+                { role: 'zoomIn' },
+                { role: 'zoomOut' },
+                { type: 'separator' },
+                { role: 'togglefullscreen' },
+            ],
+        });
+    }
+
+    menuTemplate.push({
+        label: '&Window',
+        submenu: [
+            { role: 'minimize' },
+            { role: 'zoom' },
+            ...(isMac ? [{ type: 'separator' }, { role: 'front' }, { type: 'separator' }, { role: 'window' }] : [{ role: 'close' }]),
+        ],
+    });
+
+    let helpSubmenu = [];
+
+    if (!isMac) {
+        helpSubmenu.push({ role: 'about' });
+    }
+
+    menuTemplate.push({
+        role: 'help',
+        submenu: [
+            ...helpSubmenu,
+            {
+                label: 'Learn More',
+                click: async () => {
+                    await electron.shell.openExternal(helpUrl);
+                },
+            },
+        ],
+    });
+
+    const menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
 
     mainWindow = new BrowserWindow({
         height: 768,
@@ -77,7 +155,7 @@ app.on('ready', async () => {
         minWidth: 1024,
         show: false,
         title: 'Tezori',
-        webPreferences: { nodeIntegration: true, devTools: allowDevTools },
+        webPreferences: { nodeIntegration: true, devTools: isDevelopment },
         width: 1120,
     });
 

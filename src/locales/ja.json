@@ -142,7 +142,7 @@
             "storage_limit": "ストレージ制限",
             "gas_limit": "ガスリミット",
             "parameters": "パラメーター",
-            "view_scan": "Mininaxのビュー",
+            "view_scan": "Arronaxのビュー",
             "initial_storage": "初期ストレージ",
             "paste_micheline_code": "スマートコントラクトMichelineコードにペースト",
             "entry_point": "Entry Point"
@@ -364,7 +364,7 @@
             "recipient_address": "受取人アドレス",
             "holder_address": "Holder Address",
             "burn_tooltip_title": "バーン費用がかかる理由は？",
-            "burn_tooltip_content": "入力した受取人アドレスには残高がありません。空のマネージャーアドレス(tz1,2,3)に資金を送るためには、一度限り<1> 0.257 </1>XTZ バーン費用が必要です。",
+            "burn_tooltip_content": "入力した受取人アドレスには残高がありません。空のマネージャーアドレス(tz1,2,3)に資金を送るためには、一度限り<1> 0.06425 </1>XTZ バーン費用が必要です。",
             "fee_tooltip_title": "この取引の費用が少し高い理由は？",
             "fee_tooltip_content": "これはこのアドレスからの最初の取引で、ブロックチェーンを使用するためにブロックチェーンのパブリックキーを示す必要があります。通常の送信操作費用に、パブリックキーを示すために<1> 0.001300 XTZ </1>を追加しました。",
             "warnings": {

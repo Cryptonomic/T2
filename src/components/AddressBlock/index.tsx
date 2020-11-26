@@ -24,6 +24,9 @@ import TokenNav from '../TokenNav';
 
 import SignVerifyModal from '../../featureModals/SignVerify';
 import AuthModal from '../../featureModals/Auth';
+import BeaconRegistrationModal from '../../featureModals/Beacon/BeaconRegistrationModal';
+import BeaconEventModal from '../../featureModals/Beacon/BeaconEventModal';
+import BeaconInfoModal from '../../featureModals/Beacon/BeaconInfoModal';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
@@ -258,6 +261,9 @@ function AddressBlock(props: Props) {
     const ready = isReady(status, storeType);
     const isSignModalOpen = isModalOpen && activeModal === 'sign';
     const isAuthModalOpen = isModalOpen && activeModal === 'auth';
+    const isBeaconRegistrationModalOpen = isModalOpen && activeModal === 'beaconRegistration';
+    const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
+    const isBeaconEventModalOpen = isModalOpen && activeModal === 'beaconEvent';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
 
     return (
@@ -313,13 +319,20 @@ function AddressBlock(props: Props) {
                 ) : null}
             </AddressLabel>
 
-            <AddDelegateLabel isActive={isModalOpen} onClick={() => setIsModalOpen(true, 'sign')}>
+            <AddDelegateLabel isActive={isModalOpen && activeModal === 'sign'} onClick={() => setIsModalOpen(true, 'sign')}>
                 <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
             </AddDelegateLabel>
+
+            {/*
+            <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
+                <DelegateTitle>{t('components.Beacon.infoModal.title')}</DelegateTitle>
+            </AddDelegateLabel>
+            */}
 
             <AddDelegateLabel>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
             </AddDelegateLabel>
+
             {tokens.map((token, index) => {
                 if (!token.balance) {
                     return null;
@@ -382,6 +395,11 @@ function AddressBlock(props: Props) {
 
             {isSignModalOpen && <SignVerifyModal open={isSignModalOpen} onClose={() => setIsModalOpen(false, 'sign')} />}
             {isAuthModalOpen && <AuthModal open={isAuthModalOpen} onClose={() => setIsModalOpen(false, 'auth')} />}
+            {isBeaconRegistrationModalOpen && (
+                <BeaconRegistrationModal open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
+            )}
+            {isBeaconEventModalOpen && <BeaconEventModal open={isBeaconEventModalOpen} onClose={() => setIsModalOpen(false, 'beaconEvent')} />}
+            {isBeaconInfoModalOpen && <BeaconInfoModal open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />}
 
             {isInteractModalOpen && (
                 <InteractContractModal open={isInteractModalOpen} onClose={() => setIsInteractModalOpen(false)} addresses={regularAddresses} />

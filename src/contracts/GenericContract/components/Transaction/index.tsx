@@ -14,7 +14,7 @@ import {
     REG_TX_GAS_CONSUMPTION,
     REG_TX_GAS_CONSUMPTION_ATHENS,
     REG_TX_GAS_CONSUMPTION_BABYLON,
-    EMPTY_OUT_TX_GAS_CONSUMPTION
+    EMPTY_OUT_TX_GAS_CONSUMPTION,
 } from '../../../../constants/ConsumedGasValue';
 import { RootState, SettingsState } from '../../../../types/store';
 import { getMainNode } from '../../../../utils/settings';
@@ -95,7 +95,7 @@ const openLink = (element, nodesList: Node[], selectedNode: string) => {
     return openBlockExplorerForOperation(element, currentNode.network);
 };
 
-const timeFormatter = timestamp => {
+const timeFormatter = (timestamp) => {
     const time = new Date(timestamp);
     return moment(time).format('LT');
 };
@@ -114,7 +114,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                 state: t('components.transaction.public_key_reveal'),
                 isFee: false,
                 color: 'gray8',
-                sign: ''
+                sign: '',
             };
         }
         case types.ACTIVATION: {
@@ -124,7 +124,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                 state: t('components.transaction.activation'),
                 isFee: false,
                 color: 'gray8',
-                sign: ''
+                sign: '',
             };
         }
         case types.DELEGATION: {
@@ -134,7 +134,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                 state: t('components.transaction.updated_delegate'),
                 isFee: true,
                 color: 'gray8',
-                sign: ''
+                sign: '',
             };
         }
         case types.ORIGINATION: {
@@ -146,7 +146,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     isFee,
                     color: isAmount ? 'error1' : 'gray8',
                     sign: isAmount ? '-' : '',
-                    isBurn: true
+                    isBurn: true,
                 };
             }
 
@@ -156,7 +156,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                 state: t('components.transaction.origination'),
                 isFee,
                 color: isAmount ? 'check' : 'gray8',
-                sign: isAmount ? '+' : ''
+                sign: isAmount ? '+' : '',
             };
         }
         default: {
@@ -174,7 +174,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     state: t('components.transaction.sent'),
                     isFee,
                     color: isAmount ? 'error1' : 'gray8',
-                    sign: isAmount ? '-' : ''
+                    sign: isAmount ? '-' : '',
                 };
             } else if (isSameLocation && !isFlag) {
                 return {
@@ -183,7 +183,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     state: t('components.transaction.invoke_function'),
                     isFee: true,
                     color: isAmount ? 'error1' : 'gray8',
-                    sign: isAmount ? '-' : ''
+                    sign: isAmount ? '-' : '',
                 };
             } else if (!isSameLocation && isFlag) {
                 return {
@@ -192,7 +192,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     state: t('components.transaction.received'),
                     isFee: false,
                     color: isAmount ? 'check' : 'gray8',
-                    sign: isAmount ? '+' : ''
+                    sign: isAmount ? '+' : '',
                 };
             } else {
                 return {
@@ -201,7 +201,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     state: t('components.transaction.invoked'),
                     isFee,
                     color: isAmount ? 'check' : 'gray8',
-                    sign: isAmount ? '+' : ''
+                    sign: isAmount ? '+' : '',
                 };
             }
         }
@@ -250,7 +250,7 @@ function Transaction(props: Props) {
     const { t } = useTranslation();
     const fee = transaction.fee ? Number.parseInt(transaction.fee, 10) : 0;
     const { icon, preposition, state, isFee, color, sign, isBurn } = getStatus(transaction, selectedAccountHash, t);
-    const { selectedNode, nodesList } = useSelector<RootState, SettingsState>(rootstate => rootstate.settings, shallowEqual);
+    const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((rootstate) => rootstate.settings, shallowEqual);
 
     let amount = 0;
     if (transaction.amount) {
@@ -291,7 +291,7 @@ function Transaction(props: Props) {
                 {isBurn && (
                     <Fee>
                         <span>{t('components.transaction.burn')}: </span>
-                        <TezosAmount color="gray5" size={ms(-2)} amount={257000} format={6} />
+                        <TezosAmount color="gray5" size={ms(-2)} amount={64250} format={6} />
                     </Fee>
                 )}
                 {isBurn && isFee && <Linebar />}

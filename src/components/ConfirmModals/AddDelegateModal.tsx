@@ -177,7 +177,7 @@ const BoldSpan = styled.span`
 `;
 
 const utez = 1000000;
-const GAS = 257000; // TODO: burn actually
+const GAS = 64250; // TODO: burn actually
 
 interface Props {
     open: boolean;
@@ -363,7 +363,7 @@ function AddDelegateModal(props: Props) {
                         />
                     </FeeContainer>
                     <GasInputContainer>
-                        <TextField disabled={true} label={t('general.verbs.burn')} defaultValue="0.257000" />
+                        <TextField disabled={true} label={t('general.verbs.burn')} defaultValue="0.06425" />
                         <TezosIconInput color="gray5" iconName="tezos" />
                         <Tooltip position="bottom" content={renderGasToolTip()}>
                             <BurnTooltip size="small">

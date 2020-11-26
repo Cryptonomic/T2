@@ -3,7 +3,11 @@ import { useStore } from 'react-redux';
 import { TezosConseilClient, TezosNodeReader, OperationKindType, Signer, TezosMessageUtils } from 'conseiljs';
 import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
 import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
-import { changeAccountAction, addNewVersionAction, showSignVerifyAction, setSignerAction } from './actions';
+import { WalletClient } from '@airgap/beacon-sdk';
+
+import { setModalOpen, setModalValue } from '../../reduxContent/modal/actions';
+import { AppState } from '../../types/store';
+import { changeAccountAction, addNewVersionAction, showSignVerifyAction, setSignerAction, setBeaconClientAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
 import { getVersionFromApi } from '../../utils/general';
@@ -94,18 +98,12 @@ export function getNewVersionThunk() {
     };
 }
 
-export function showSignVeiryThunk() {
-    return async (dispatch) => {
-        dispatch(showSignVerifyAction());
-    };
-}
-
 export function setSignerThunk(key: string) {
     if (!key || key.length === 0) {
         throw new Error('Empty key parameter in setSignerThunk()');
     }
 
-    return async (dispatch, state) => {
+    return async (dispatch) => {
         const keyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(key);
         const signer = await SoftSigner.createSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'));
         dispatch(setSignerAction(signer));
@@ -113,8 +111,37 @@ export function setSignerThunk(key: string) {
 }
 
 export function setLedgerSignerThunk(path: string) {
-    return async (dispatch, state) => {
+    return async (dispatch) => {
         const signer = new LedgerSigner(await TezosLedgerConnector.getInstance(), path);
         dispatch(setSignerAction(signer));
+    };
+}
+
+export function initBeaconThunk() {
+    return async (dispatch, state) => {
+        const { app } = state();
+        if (app.beaconClient != null) {
+            return;
+        }
+
+        const beaconClient = new WalletClient({ name: 'Beacon Wallet Client' });
+        dispatch(setBeaconClientAction(beaconClient));
+
+        await beaconClient.init();
+
+        if ((await beaconClient.getPeers()).length > 0) {
+            dispatch(connectBeaconThunk());
+        }
+    };
+}
+
+export function connectBeaconThunk() {
+    return async (dispatch, state) => {
+        const { app } = state();
+
+        app.beaconClient.connect(async (message) => {
+            dispatch(setModalValue(message, 'beaconEvent'));
+            dispatch(setModalOpen(true, 'beaconEvent'));
+        });
     };
 }

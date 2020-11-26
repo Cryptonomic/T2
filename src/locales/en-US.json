@@ -27,7 +27,10 @@
             "burn": "Burn",
             "sign": "Sign",
             "verify": "Verify",
-            "copy": "Copy"
+            "copy": "Copy",
+            "connect": "Connect",
+            "authorize": "Authorize",
+            "approve": "Approve"
         },
         "nouns": {
             "amount": "Amount",
@@ -132,6 +135,17 @@
             "title": "dApp Authentication Request",
             "signature_prompt": "Authenticate by signing the words below to confirm your control of the private key associated with this account"
         },
+        "Beacon": {
+            "registrationModal": {
+                "title": "Beacon Connection Request"
+            },
+            "eventModal": {
+                "title": "Beacon Request"
+            },
+            "infoModal": {
+                "title": "Beacon Status"
+            }
+        },
         "interactModal": {
             "interact_contract": "Interact with Contracts",
             "invoke_contract": "Invoke an Existing Contract",
@@ -143,7 +157,7 @@
             "storage_limit": "Storage Limit",
             "gas_limit": "Gas Limit",
             "parameters": "Parameters",
-            "view_scan": "View on Mininax",
+            "view_scan": "View on Arronax",
             "initial_storage": "Initial Storage",
             "paste_micheline_code": "Paste in your smart contract {{format}} code",
             "entry_point": "Entry Point"
@@ -307,7 +321,7 @@
         },
         "messageBar": {
             "operation_id": "OPERATION ID",
-            "view_block_explorer": "View on Mininax",
+            "view_block_explorer": "View on Arronax",
             "messages": {
                 "amount_not_valid": "Amount is not valid.",
                 "address_begin": "Address must begin with tz1 or KT1.",
@@ -372,7 +386,7 @@
             "recipient_address": "Recipient Address",
             "holder_address": "Holder Address",
             "burn_tooltip_title": "Why is there a burn fee?",
-            "burn_tooltip_content": "The recipient address you entered has a zero balance. Sending funds to an empty Manager address (tz1,2,3) requires a one-time<1> 0.257 </1>XTZ burn fee.",
+            "burn_tooltip_content": "The recipient address you entered has a zero balance. Sending funds to an empty Manager address (tz1,2,3) requires a one-time<1> 0.06425 </1>XTZ burn fee.",
             "fee_tooltip_title": "Why are fees a bit higher for this transaction?",
             "fee_tooltip_content": "This address is not revealed on the blockchain. We have added<1> 0.001300 XTZ </1>for Public Key Reveal to your regular send operation fee.",
             "warnings": {

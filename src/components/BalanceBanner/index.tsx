@@ -34,6 +34,8 @@ import {
     BellIcon,
     TooltipContent,
     Gap,
+    LinkIcon,
+    LinkContainer,
 } from './style';
 
 interface Props {
@@ -89,9 +91,12 @@ function BalanceBanner(props: Props) {
         dispatch(syncWalletThunk());
     }
 
-    function openUrl() {
-        const newUrl = `https://t.me/TezosNotifierBot?start=mininax_${publicKeyHash}`;
-        openLink(newUrl);
+    function openNotifierUrl() {
+        openLink(`https://t.me/TezosNotifierBot?start=arronax_${publicKeyHash}`);
+    }
+
+    function openHarpoonUrl() {
+        openLink(`https://harpoon.arronax.io/${delegatedAddress}`);
     }
 
     return (
@@ -115,7 +120,7 @@ function BalanceBanner(props: Props) {
                         )}
                         {isManager && (
                             <Tooltip position="bottom" content={<TooltipContent>{t('components.balanceBanner.tooltip_content')}</TooltipContent>}>
-                                <IconButton size="small" color="primary" onClick={() => openUrl()}>
+                                <IconButton size="small" color="primary" onClick={() => openNotifierUrl()}>
                                     <BellIcon />
                                 </IconButton>
                             </Tooltip>
@@ -134,6 +139,10 @@ function BalanceBanner(props: Props) {
                     <DelegateContainer>
                         <Delegate>{t('components.balanceBanner.delegated_to')}</Delegate>
                         <TezosAddress address={delegatedAddress} color="white" size={ms(-1)} weight={300} />
+                        <LinkContainer onClick={() => openHarpoonUrl()}>
+                            view baker details on Harpoon
+                            <LinkIcon iconName="new-window" color="white" />
+                        </LinkContainer>
                     </DelegateContainer>
                 )}
             </BottomRow>

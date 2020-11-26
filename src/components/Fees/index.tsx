@@ -8,7 +8,7 @@ import Modal from '../CustomModal';
 import CustomSelect from '../CustomSelect';
 import usePrevious from '../../customHooks/usePrevious';
 
-import { formatAmount, tezToUtez } from '../../utils/currancy';
+import { formatAmount, tezToUtez } from '../../utils/currency';
 
 import { StyledSaveButton, ItemWrapper, ModalContent, MiniFeeTitle, BoldSpan, ErrorContainer, WarningIcon, FeeContentWrapper } from './style';
 
@@ -64,7 +64,7 @@ function Fee(props: Props) {
 
     function handleCustomChange(val) {
         const newVal = val.replace(/,/g, '.');
-        const newError = newVal < formatAmount(miniFee) ? renderError() : '';
+        const newError = tezToUtez(newVal) < (miniFee || 0) ? renderError() : '';
 
         setError(newError);
         setCustom(newVal);
@@ -96,7 +96,7 @@ function Fee(props: Props) {
                 label={t('general.nouns.fee')}
                 value={fee}
                 onChange={onFeeChange}
-                renderValue={value => {
+                renderValue={(value) => {
                     let feeTitle = 'components.fees.low_fee';
                     if (value === low) {
                         feeTitle = 'components.fees.low_fee';

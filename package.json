@@ -1,6 +1,6 @@
 {
   "name": "tezori",
-  "version": "1.1.5-beta",
+  "version": "1.1.7-beta",
   "description": "An open-source wallet framework for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
@@ -18,7 +18,6 @@
     "lint-styles-fix": "npm run --silent lint-styles --fix; exit 0",
     "package": "npm run build && electron-builder build --publish never",
     "package-debug": "npm run build-debug && electron-builder build --publish never",
-    "package-all": "npm run build && electron-builder build -mwl",
     "package-ci": "npm run postinstall && npm run build && electron-builder --publish always",
     "package-linux": "npm run build && electron-builder build --linux --publish never",
     "package-linux-debug": "npm run build-debug && electron-builder build --linux --publish never",
@@ -161,13 +160,15 @@
     "copy-webpack-plugin": "6.0.1",
     "cross-env": "7.0.2",
     "css-loader": "3.5.3",
+    "bs58check": "2.1.2",
     "detect-port": "1.3.0",
-    "electron": "8.5.2",
+    "electron": "8.5.3",
     "electron-builder": "22.8.0",
     "electron-debug": "3.1.0",
     "electron-devtools-installer": "3.1.1",
     "electron-notarize": "1.0.0",
     "electron-rebuild": "1.11.0",
+    "electron-windows-store": "2.1.0",
     "file-loader": "6.0.0",
     "husky": "4.2.5",
     "image-webpack-loader": "6.0.0",
@@ -200,6 +201,7 @@
     "webpack-merge": "4.2.2"
   },
   "dependencies": {
+    "@airgap/beacon-sdk": "2.0.0-beta.12",
     "@material-ui/core": "4.9.14",
     "@material-ui/icons": "4.9.1",
     "@material-ui/lab": "4.0.0-alpha.53",
@@ -233,7 +235,7 @@
     "zxcvbn": "4.4.2"
   },
   "engines": {
-    "node": "12.18.3",
-    "npm": "6.14.6"
+    "node": "12.19.1",
+    "npm": "6.14.8"
   }
 }

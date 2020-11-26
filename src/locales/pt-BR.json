@@ -142,7 +142,7 @@
             "storage_limit": "Limite de armazenamento",
             "gas_limit": "Limiste de Gas",
             "parameters": "Parâmetros",
-            "view_scan": "Ver no Mininax",
+            "view_scan": "Ver no Arronax",
             "initial_storage": "Armazenamento inicial",
             "paste_micheline_code": "Cole no código Micheline do seu contrato inteligente",
             "entry_point": "Entry Point"
@@ -364,7 +364,7 @@
             "recipient_address": "Endereço do destinatário",
             "holder_address": "Holder Address",
             "burn_tooltip_title": "Por que existe uma taxa de queima?",
-            "burn_tooltip_content": "O endereço do destinatário que você inseriu tem saldo zero. Enviar fundos para um endereço Gerente (tz1,2,3) requer uma taxa de queima não recorrente de <1> 0.257 </1>XTZ.",
+            "burn_tooltip_content": "O endereço do destinatário que você inseriu tem saldo zero. Enviar fundos para um endereço Gerente (tz1,2,3) requer uma taxa de queima não recorrente de <1> 0.06425 </1>XTZ.",
             "fee_tooltip_title": "Por que as taxas estão um pouco mais altas nesta transação?",
             "fee_tooltip_content": "Esta é sua primeira transação neste endereço, e isso requer que nós revelemos sua chave pública ao blockchain. Nós adicionamos<1> 0.001300 XTZ </1>para a Revelação da Chave Pública à sua taxa habitual de operação de envio.",
             "warnings": {

@@ -75,7 +75,7 @@ const Auth = (props: Props) => {
         try {
             setResult('Signature sent'); // TODO: localization
             setError(false);
-            const response = await fetch(`${req.callback}&sig=${new Buffer(signature).toString('base64')}`);
+            const response = await fetch(`${req.callback}&sig=${Buffer.from(signature).toString('base64')}`);
             if (!response.ok) {
                 throw new Error('Signature response rejected'); // TODO: localization
             }

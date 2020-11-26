@@ -149,7 +149,7 @@ function Send(props: Props) {
 
     async function handleToAddressChange(newAddress: string) {
         const isDisplayedBurn = await getIsImplicitAndEmptyThunk(newAddress, nodesList, selectedNode);
-        const burnFee = isDisplayedBurn ? 257000 : 0;
+        const burnFee = isDisplayedBurn ? 64250 : 0;
         const newAmount = amount || '0';
         const numAmount = parseFloat(newAmount) * utez;
         const newTotal = numAmount + fee + burnFee;
@@ -227,7 +227,7 @@ function Send(props: Props) {
                 <TooltipContent>
                     <Trans i18nKey="components.send.burn_tooltip_content">
                         The recipient address you entered has a zero balance. Sending funds to an empty Manager address (tz1,2,3) requires a one-time
-                        <BoldSpan>0.257</BoldSpan> XTZ burn fee.
+                        <BoldSpan>0.06425</BoldSpan> XTZ burn fee.
                     </Trans>
                 </TooltipContent>
             </TooltipContainer>
@@ -294,7 +294,7 @@ function Send(props: Props) {
                 </FeeContainer>
                 {isBurn && (
                     <BurnsContainer>
-                        <TextField disabled={true} label={t('components.transaction.burn')} defaultValue="0.257000" />
+                        <TextField disabled={true} label={t('components.transaction.burn')} defaultValue="0.06425" />
                         <TezosIconInput color="gray5" iconName="tezos" />
                         <Tooltip position="bottom" content={renderBurnToolTip()}>
                             <BurnTooltipBtn size="small">
