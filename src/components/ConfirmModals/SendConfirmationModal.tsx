@@ -66,7 +66,7 @@ const SendConfirmationModal = (props: Props) => {
                     <ItemContainer>
                         <ItemTitle>{t('general.nouns.burn')}</ItemTitle>
                         <ItemContent>
-                            0.257
+                            0.06425
                             <TezosIcon color="secondary" iconName="tezos" />
                         </ItemContent>
                     </ItemContainer>
