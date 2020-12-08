@@ -349,6 +349,7 @@
             "secret_key_15": "Clé secrète de 15 mots",
             "errors": {
                 "invalid_length": "La phrase de recovery ne doit pas comporter plus de 15 mots.",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Mot(s) invalide(s) détécté(s). Merci de vérifier."
             }
         },

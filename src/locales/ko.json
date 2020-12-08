@@ -349,6 +349,7 @@
             "secret_key_15": "15자리 비밀 키",
             "errors": {
                 "invalid_length": "시드 문구는 15자 이내여야 합니다.",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "잘못된 단어를 감지했습니다. 두 번 확인해주세요."
             }
         },

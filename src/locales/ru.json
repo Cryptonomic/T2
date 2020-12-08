@@ -349,6 +349,7 @@
             "secret_key_15": "Секретный Ключ из 15 Слов",
             "errors": {
                 "invalid_length": "Ключевые фразы должны состоять из не более чем 15 слов.",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": " Обнаружены неверные слово или слова. Пожалуйста перепроверьте данные."
             }
         },

@@ -112,6 +112,7 @@ function AddAddress() {
                             seeds={seeds}
                             onChange={(val) => setSeeds(val)}
                             onError={(err) => setIsError(err)}
+                            expectedWords={15}
                         />
                         <RowInputs>
                             <InputWithTooltip>

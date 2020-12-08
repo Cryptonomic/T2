@@ -455,6 +455,7 @@
             "restore_backup": "Wiederherstellen aus Sicherung",
             "errors": {
                 "invalid_length": "Seed phrases muss mehr als 15 Wörter enthalten",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Ungültige Wörter entdeckt. Bitte nochmal prüfen."
             }
         },

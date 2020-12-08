@@ -349,6 +349,7 @@
             "secret_key_15": "15語のシークレットキー",
             "errors": {
                 "invalid_length": "シードフェーズには最低15文字入れてください。",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "無効な文字を検出しました。ダブルチェックしてください。"
             }
         },

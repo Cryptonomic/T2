@@ -1,7 +1,7 @@
 {
     "name": "tezori",
     "productName": "Tezori Preview",
-    "version": "1.1.7-beta",
+    "version": "1.1.8-beta",
     "description": "An open-source wallet framework for the Tezos blockchain.",
     "main": "./main.prod.js",
     "author": {
@@ -16,10 +16,10 @@
     "license": "GPL-3.0-only",
     "dependencies": {
         "@ledgerhq/hw-transport-node-hid": "5.29.0",
-        "conseiljs": "5.0.6-beta.1",
+        "conseiljs": "5.0.6-beta.2",
         "conseiljs-ledgersigner": "5.0.4-beta.1",
-        "conseiljs-softsigner": "5.0.3",
-        "loglevel": "1.7.0",
+        "conseiljs-softsigner": "5.0.4-beta.1",
+        "loglevel": "1.7.1",
         "node-fetch": "2.6.1"
     },
     "engines": {
