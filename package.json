@@ -216,6 +216,7 @@
     "lodash": "4.17.20",
     "moment": "2.27.0",
     "polished": "3.6.5",
+    "qrcode": "1.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-i18next": "11.7.0",

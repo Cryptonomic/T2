@@ -456,6 +456,7 @@
             "restore_backup": "Restaurar à partir de Backup",
             "errors": {
                 "invalid_length": "As frases-senhas devem conter no máximo 15 palavras.",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Palavra(s) inválida(s) detectadas. Por favor, verifique novamente."
             }
         },

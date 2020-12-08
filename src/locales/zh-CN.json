@@ -455,6 +455,7 @@
             "restore_backup": "从备份中恢复",
             "errors": {
                 "invalid_length": "助记词必须包含不超过15个单词。",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "发现了无效单词。请再次检查。"
             }
         },

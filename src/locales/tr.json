@@ -455,6 +455,7 @@
             "restore_backup": "Yedekten Kurtararak",
             "errors": {
                 "invalid_length": "Anahtar Cümleler 15 kelimeden uzun olamaz.",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Hatalı kelime(ler) saptandı. Lütfen kontrol edin."
             }
         },

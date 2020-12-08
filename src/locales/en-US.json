@@ -480,6 +480,7 @@
             "restore_backup": "Restore from Backup",
             "errors": {
                 "invalid_length": "Seed phrases contain 12, 15, 18, 21 or 24 words.",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Detected invalid word(s). Please double check."
             }
         },

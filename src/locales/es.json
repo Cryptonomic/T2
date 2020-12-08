@@ -456,6 +456,7 @@
             "restore_backup": "Recuperar del Respaldo",
             "errors": {
                 "invalid_length": "La frase secreta debe contener 15 palabras.",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Palabra(s) inválida(s). Por favor revise."
             }
         },
