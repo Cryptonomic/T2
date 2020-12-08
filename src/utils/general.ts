@@ -110,15 +110,27 @@ export function isReady(addressStatus, storeType?, tab?) {
     );
 }
 
-export function openLink(link) {
+export function openLink(link: string) {
+    if (!link.startsWith('https://')) {
+        throw new Error('Invalid URL provided, only https scheme is accepted');
+    }
+
     shell.openExternal(link);
 }
 
 export function openBlockExplorerForOperation(operation: string, network: string = 'mainnet') {
+    if (!blockExplorerHost.startsWith('https://')) {
+        throw new Error('Invalid URL provided, only https scheme is accepted');
+    }
+
     shell.openExternal(`${blockExplorerHost}/${network}/operations/${operation}`);
 }
 
 export function openBlockExplorerForAccount(account: string, network: string = 'mainnet') {
+    if (!blockExplorerHost.startsWith('https://')) {
+        throw new Error('Invalid URL provided, only https scheme is accepted');
+    }
+
     shell.openExternal(`${blockExplorerHost}/${network}/accounts/${account}`);
 }
 

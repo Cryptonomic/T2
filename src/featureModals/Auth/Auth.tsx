@@ -106,7 +106,8 @@ const Auth = (props: Props) => {
             }
 
             if (req.prompt) {
-                let p = req.prompt.replace(/\n/g, '');
+                const stringPrompt = String(req.prompt);
+                let p = stringPrompt.replace(/\n/g, '');
                 p = p.slice(0, Math.min(100, p.length));
                 setPrompt(p);
             }
