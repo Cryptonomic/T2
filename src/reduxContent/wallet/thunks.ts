@@ -2,7 +2,7 @@ import path from 'path';
 import { ipcRenderer } from 'electron';
 import { push } from 'react-router-redux';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-import { TezosNodeWriter, KeyStoreType, Tzip7ReferenceTokenHelper, StakerDAOTokenHelper, TzbtcTokenHelper } from 'conseiljs';
+import { TezosNodeWriter, KeyStoreType, Tzip7ReferenceTokenHelper, StakerDAOTokenHelper, TzbtcTokenHelper, WrappedTezosHelper } from 'conseiljs';
 import { TezosConseilClient, ConseilQueryBuilder, ConseilOperator, ConseilDataClient } from 'conseiljs';
 import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { createMessageAction } from '../../reduxContent/message/actions';
@@ -44,6 +44,7 @@ import { Identity, Token, AddressType } from '../../types/general';
 
 import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
 import * as tzip7Util from '../../contracts/TokenContract/util';
+import * as wxtzUtil from '../../contracts/WrappedTezos/util';
 
 const { restoreIdentityFromFundraiser, restoreIdentityFromMnemonic, restoreIdentityFromSecretKey } = KeyStoreUtils;
 
@@ -172,7 +173,7 @@ export function syncTokenThunk(tokenAddress) {
             let balanceAsync;
             let transAsync;
             let detailsAsync;
-            if (tokens[tokenIndex].kind === 'tzip7' || tokens[tokenIndex].kind === 'usdtez') {
+            if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtez) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
@@ -183,14 +184,18 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].transactions,
                     tokens[tokenIndex].kind
                 );
-            } else if (tokens[tokenIndex].kind === 'stkr') {
+            } else if (tokens[tokenIndex].kind === TokenKind.stkr) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = StakerDAOTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
                 transAsync = [];
-            } else if (tokens[tokenIndex].kind === 'tzbtc') {
+            } else if (tokens[tokenIndex].kind === TokenKind.tzbtc) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
+            } else if (tokens[tokenIndex].kind === TokenKind.wxtz) {
+                const mapid = tokens[tokenIndex].mapid || 0;
+                balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
             }
 
@@ -320,6 +325,35 @@ export function syncWalletThunk() {
                     const transactions = await tzbtcUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions); /* TODO */
 
                     return { ...token, mapid, administrator, balance, transactions };
+                } else if (token.kind === TokenKind.wxtz) {
+                    try {
+                        const validCode = await WrappedTezosHelper.verifyDestination(mainNode.tezosUrl, token.address, '', ''); // TODO
+                        if (!validCode) {
+                            console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
+                        }
+                    } catch {
+                        console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
+                    }
+
+                    let mapid = token.mapid;
+                    const administrator = token.administrator || '';
+
+                    if (!mapid || mapid === -1) {
+                        const newStorage = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => {
+                            return { balanceMap: -1 };
+                        });
+                        mapid = newStorage.balanceMap;
+                    }
+
+                    if (mapid === -1) {
+                        console.log(`warning, could not process token: ${JSON.stringify(token)}`);
+                        return { ...token, mapid, administrator, balance: 0 };
+                    }
+
+                    const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
+                    const transactions = await wxtzUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions);
+
+                    return { ...token, mapid, administrator, balance, transactions };
                 } else {
                     console.log(`warning, unsupported token: ${JSON.stringify(token)}`);
                     return { ...token, mapid: -1, administrator: '', balance: 0, transactions: [] };
@@ -339,7 +373,12 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
     return async (dispatch) => {
         try {
             dispatch(setWalletIsSyncingAction(true));
-            if (addressType === AddressType.Token || addressType === AddressType.STKR || addressType === AddressType.TzBTC) {
+            if (
+                addressType === AddressType.Token ||
+                addressType === AddressType.STKR ||
+                addressType === AddressType.TzBTC ||
+                addressType === AddressType.wXTZ
+            ) {
                 await dispatch(syncTokenThunk(selectedAccountHash));
             } else if (selectedAccountHash === selectedParentHash) {
                 await dispatch(syncIdentityThunk(selectedAccountHash));
@@ -364,7 +403,7 @@ function setTokensThunk() {
     };
 }
 
-export function importAddressThunk(activeTab, seed, pkh?, activationCode?, username?, passPhrase?) {
+export function importAddressThunk(activeTab, seed, pkh?, activationCode?, username?, passPhrase?, derivationPath?: string) {
     return async (dispatch, state) => {
         const { walletLocation, walletFileName, walletPassword, identities } = state().wallet;
         const { selectedNode, nodesList } = state().settings;
@@ -418,7 +457,12 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     break;
                 }
                 case RESTORE: {
-                    identity = await restoreIdentityFromMnemonic(seed, passPhrase);
+                    let keyPath: string | undefined;
+                    if (derivationPath !== undefined && derivationPath.length > 0) {
+                        keyPath = derivationPath;
+                    }
+
+                    identity = await restoreIdentityFromMnemonic(seed, passPhrase, undefined, keyPath, false);
                     const storeTypesMap = {
                         0: KeyStoreType.Mnemonic,
                         1: KeyStoreType.Fundraiser,

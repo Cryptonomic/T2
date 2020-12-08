@@ -4,6 +4,7 @@ import { TRANSACTIONS, DETAILS } from './TabConstants';
 import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
 import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
+import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 
 export const knownTokenContracts: Token[] = [
     {
@@ -49,6 +50,20 @@ export const knownTokenContracts: Token[] = [
         round: 2,
     },
     {
+        network: 'delphinet',
+        address: 'KT1REPEBMQS3Be8ZybkQQfSwAv3g4pHJViuK',
+        displayName: 'USDtz',
+        symbol: 'USDtz',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: usdtzIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+    },
+    {
         network: 'carthagenet',
         address: 'KT1HzQofKBxzfiKoMzGbkxBgjis2mWnCtbC2',
         displayName: 'Token Sample',
@@ -62,8 +77,8 @@ export const knownTokenContracts: Token[] = [
         round: 6,
     },
     {
-        network: 'carthagenet',
-        address: 'KT1Lg8s7Z579xwpDB9aAYPtVeNfQv1QPsSM3',
+        network: 'delphinet',
+        address: 'KT1DMWDco6ZsBT1eLScx4d6iZUZuzbD4HLaZ',
         displayName: 'Security Exchange Token',
         symbol: 'SECT',
         balance: 0,
@@ -89,8 +104,8 @@ export const knownTokenContracts: Token[] = [
         round: 0,
     },
     {
-        network: 'carthagenet',
-        address: 'KT1Ahx2r6V76MLU5owfwZBJCiRpJa7EjL1YM',
+        network: 'delphinet',
+        address: 'KT1WhBK8hsji4YZtS6PwTWBAMX7cDbwtC7cZ',
         displayName: 'tzBTC',
         symbol: 'tzBTC',
         balance: 0,
@@ -101,5 +116,19 @@ export const knownTokenContracts: Token[] = [
         scale: 8,
         precision: 8,
         round: 8,
+    },
+    {
+        network: 'delphinet',
+        address: 'KT1JYf7xjCJAqFDfNpuump9woSMaapy1WcMY',
+        displayName: 'wXTZ',
+        symbol: 'wXTZ',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.wxtz,
+        icon: wxtzIcon,
+        scale: 0,
+        precision: 0,
+        round: 0,
     },
 ];

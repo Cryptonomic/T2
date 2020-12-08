@@ -34,7 +34,7 @@ import { getAddressType } from '../../utils/account';
 import { getLocalData, setLocalData } from '../../utils/localData';
 
 import { RootState } from '../../types/store';
-import { AddressType, Identity } from '../../types/general';
+import { AddressType, Identity, TokenKind } from '../../types/general';
 
 const { Mnemonic } = KeyStoreType;
 
@@ -323,11 +323,9 @@ function AddressBlock(props: Props) {
                 <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
             </AddDelegateLabel>
 
-            {/*
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
                 <DelegateTitle>{t('components.Beacon.infoModal.title')}</DelegateTitle>
             </AddDelegateLabel>
-            */}
 
             <AddDelegateLabel>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
@@ -339,11 +337,16 @@ function AddressBlock(props: Props) {
                 }
 
                 let tokenType = AddressType.Token; // TODO
-                if (token.kind === 'stkr') {
+                if (token.kind === TokenKind.stkr) {
                     tokenType = AddressType.STKR;
                 }
-                if (token.kind === 'tzbtc') {
+
+                if (token.kind === TokenKind.tzbtc) {
                     tokenType = AddressType.TzBTC;
+                }
+
+                if (token.kind === TokenKind.wxtz) {
+                    tokenType = AddressType.wXTZ;
                 }
 
                 return (

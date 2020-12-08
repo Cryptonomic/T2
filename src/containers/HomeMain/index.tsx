@@ -10,6 +10,7 @@ import TokenContract from '../../contracts/TokenContract';
 import ImplicitAccount from '../../contracts/ImplicitAccount';
 import StakerToken from '../../contracts/StakerToken';
 import TzBtcToken from '../../contracts/TzBtcToken';
+import WXTZToken from '../../contracts/WrappedTezos';
 import { initBeaconThunk } from '../../reduxContent/app/thunks';
 import { sortArr } from '../../utils/array';
 
@@ -18,7 +19,6 @@ import { Container, SideBarContainer, AccountItem } from './style';
 function HomeMain() {
     const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
     const addressType = useSelector((state: RootState) => state.app.selectedAccountType);
-    const signer = useSelector((state: RootState) => state.app.signer); // use Signer
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -37,6 +37,8 @@ function HomeMain() {
                 return <StakerToken />;
             case AddressType.TzBTC:
                 return <TzBtcToken />;
+            case AddressType.wXTZ:
+                return <WXTZToken />;
             default:
                 return <GenericContract />;
         }
