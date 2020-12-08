@@ -70,5 +70,30 @@ export function transferThunk(destination: string, amount: number, fee: number, 
 }
 
 export function listOvens() {
-    // get oven list, get oven details
+    console.log('[STAKERDAO] List Ovens');
+
+    return async (dispatch, state) => {
+        console.log('[STAKERDAO] Dispatch Async');
+
+        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { identities, walletPassword, tokens } = state().wallet;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
+        const mainNode = getMainNode(nodesList, selectedNode);
+        const { tezosUrl } = mainNode;
+
+        const mainPath = getMainPath(pathsList, selectedPath);
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
+
+        // TODO(keefertaylor): Do not hardcode these.
+        const coreContractAddress = 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8';
+        const ovenListBigMapId = 14569;
+
+        console.log('[STAKERDAO] Fetch Start');
+        const ovens = await WrappedTezosHelper.listOvens(tezosUrl, coreContractAddress, selectedParentHash, ovenListBigMapId);
+        console.log('[STAKERDAO] Fetched: ' + JSON.stringify(ovens));
+
+        // TODO(keefertaylor): Update redux here.
+
+        return true;
+    };
 }
