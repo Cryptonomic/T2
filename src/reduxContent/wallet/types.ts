@@ -1,4 +1,4 @@
-import { Token, Identity } from '../../types/general';
+import { Token, Identity, Oven } from '../../types/general';
 
 export const SET_WALLET = 'SET_WALLET';
 export const SET_WALLET_FILENAME = 'SET_WALLET_FILENAME';
@@ -8,6 +8,7 @@ export const SET_IDENTITIES = 'SET_IDENTITIES';
 export const ADD_NEW_IDENTITY = 'ADD_NEW_IDENTITY';
 export const UPDATE_IDENTITY = 'UPDATE_IDENTITY';
 export const UPDATE_TOKENS = 'UPDATE_TOKENS';
+export const UPDATE_OVENS = 'UPDATE_OVENS';
 
 export interface InitWallet {
     identities: Identity[];
@@ -54,6 +55,11 @@ export interface UpdateIdentityAction {
 export interface UpdateTokensAction {
     type: typeof UPDATE_TOKENS;
     tokens: Token[];
+}
+
+export interface UpdateOvensAction {
+    type: typeof UPDATE_OVENS;
+    ovens: Oven[];
 }
 
 export type WalletActionTypes =

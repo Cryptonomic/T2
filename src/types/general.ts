@@ -131,6 +131,11 @@ export interface Token {
     transactionFeeFloor?: number;
 }
 
+export interface Oven {
+    address: string;
+    owner: string;
+}
+
 export type BookMark = Account | Token;
 
 /**

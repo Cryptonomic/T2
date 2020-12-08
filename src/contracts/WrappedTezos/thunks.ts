@@ -1,6 +1,6 @@
 import { WrappedTezosHelper } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { updateTokensAction } from '../../reduxContent/wallet/actions';
+import { updateOvensAction, updateTokensAction } from '../../reduxContent/wallet/actions';
 
 import { createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
@@ -9,6 +9,7 @@ import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
 import { findTokenIndex } from '../../utils/token';
+import { Oven } from '../../types/general';
 
 export function transferThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
@@ -89,10 +90,17 @@ export function listOvens() {
         const ovenListBigMapId = 14569;
 
         console.log('[STAKERDAO] Fetch Start');
-        const ovens = await WrappedTezosHelper.listOvens(tezosUrl, coreContractAddress, selectedParentHash, ovenListBigMapId);
-        console.log('[STAKERDAO] Fetched: ' + JSON.stringify(ovens));
+        const ovenAddresses = await WrappedTezosHelper.listOvens(tezosUrl, coreContractAddress, selectedParentHash, ovenListBigMapId);
+        console.log('[STAKERDAO] Fetched: ' + JSON.stringify(ovenAddresses));
 
-        // TODO(keefertaylor): Update redux here.
+        const ovens: Oven[] = ovenAddresses.map((ovenAddress) => {
+            return {
+                address: ovenAddress,
+                owner: selectedParentHash,
+            };
+        });
+
+        dispatch(updateOvensAction(ovens));
 
         return true;
     };

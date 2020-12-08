@@ -9,12 +9,14 @@ import { TRANSACTIONS, SEND, MINT } from '../../constants/TabConstants';
 import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 
+import OvenItem from './components/Mint/OvenItem';
+
 import BalanceBanner from '../components/BalanceBanner';
 import Transactions from '../components/TransactionContainer';
 import Send from '../components/Send';
 import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
 import { getTokenSelector } from '../duck/selectors';
-import { transferThunk } from './thunks';
+import { transferThunk, listOvens } from './thunks';
 
 const ActionPanel = () => {
     const { t } = useTranslation();
@@ -23,7 +25,8 @@ const ActionPanel = () => {
     const { selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { activeTab, displayName, administrator, transactions } = selectedToken;
     const tabs = [TRANSACTIONS, SEND, MINT];
-    const list = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
+
+    const transactionList = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
 
     const onChangeTab = (newTab: string) => {
         dispatch(updateActiveTabThunk(newTab, true));
@@ -48,10 +51,21 @@ const ActionPanel = () => {
             </TabList>
             <SectionContainer>
                 {activeTab === SEND && <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />}
-                {activeTab === MINT && <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />}
+                {activeTab === MINT && (
+                    <PaginationList
+                        list={transactionList}
+                        ListComponent={OvenItem}
+                        // TODO(keefertaylor): Pass these properties down.
+                        listComponentProps={{ address: '', delegate: '', balance: '' }}
+                        componentListName="ovens"
+                        // TODO(keefertaylor): Wire empty state
+                        emptyState={transactionsEmptyState}
+                        emptyStateTitle={t('components.actionPanel.empty-title')}
+                    />
+                )}
                 {activeTab === TRANSACTIONS && (
                     <PaginationList
-                        list={list}
+                        list={transactionList}
                         ListComponent={Transactions}
                         listComponentProps={{ selectedParentHash, token: selectedToken }}
                         componentListName="transactions"

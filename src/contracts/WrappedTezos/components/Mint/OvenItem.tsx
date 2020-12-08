@@ -23,11 +23,18 @@ function OvenItem(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
-    // display oven address, balance, delegate
-    // modal to change delegate
-    // button to withdraw
+    const { address, delegate, balance } = props;
 
-    return <></>;
+    return (
+        <div>
+            Address: {address}
+            <br />
+            Delegate: {delegate}
+            <br />
+            Balance: {balance}
+            <br />
+        </div>
+    );
 }
 
 export default OvenItem;
