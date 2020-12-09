@@ -36,7 +36,7 @@ function DeployOvenModal(props: DeployOvenModalProps) {
 
     return (
         <Modal title="Deploy Oven" open={props.open} onClose={onCloseClick}>
-            Please note: deploying a new oven incurs fees.
+            <p>Please note: deploying a new oven incurs fees.</p>
             <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => deployOven()}>
                 {/* TODO(keefertaylor): Use translations here */}
                 Deploy Oven
