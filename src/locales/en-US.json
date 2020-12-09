@@ -358,6 +358,9 @@
                 "burn_operation_success": "Successfully started burn token."
             }
         },
+        "ovenList": {
+            "empty_list": "You don't have any ovens."
+        },
         "pdfReader": {
             "loading": "Loading ..."
         },
