@@ -292,7 +292,7 @@
             "contents": {
                 "content1": "You can always change the delegate at a later time.",
                 "content2": "There is a fee for changing the delegate.",
-                "content3": "You can only delegate to the Manager Address. Manager Addresses always starts with tz1, tz2 or tz3."
+                "content3": "You can only delegate to Manager Addresses. Manager Addresses always start with tz1, tz2 or tz3."
             },
             "errors": {
                 "send_address": "Addresses can only start tz1, tz2, tz3 or KT1",
