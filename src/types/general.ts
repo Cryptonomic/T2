@@ -131,6 +131,23 @@ export interface Token {
     transactionFeeFloor?: number;
 }
 
+/**
+ * Data about an Oven.
+ */
+export interface Oven {
+    /** Contract address of the Oven contract. */
+    ovenAddress: string;
+
+    /** Account of the Oven's owner. */
+    ovenOwner: string;
+
+    /** Balance of the Oven, in Mutez. */
+    ovenBalance: number;
+
+    /** Baker for the oven. */
+    baker: string;
+}
+
 export type BookMark = Account | Token;
 
 /**
