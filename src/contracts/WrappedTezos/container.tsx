@@ -18,6 +18,7 @@ import { transferThunk } from './thunks';
 
 import { Oven } from '../../types/general';
 import OvenList from './components/Mint/OvenList';
+import DeployOvenButtonWrapper from './components/Mint/DeployOvenButtonWrapper';
 
 const ActionPanel = () => {
     const { t } = useTranslation();
@@ -55,15 +56,17 @@ const ActionPanel = () => {
             <SectionContainer>
                 {activeTab === SEND && <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />}
                 {activeTab === MINT && (
-                    <PaginationList
-                        list={ovenList}
-                        ListComponent={OvenList}
-                        listComponentProps={{ ovens: ovenList }}
-                        componentListName="ovens"
-                        // TODO(keefertaylor): Fix empty state.
-                        emptyState={transactionsEmptyState}
-                        emptyStateTitle={t('components.actionPanel.empty-title')}
-                    />
+                    <DeployOvenButtonWrapper>
+                        <PaginationList
+                            list={ovenList}
+                            ListComponent={OvenList}
+                            listComponentProps={{ ovens: ovenList }}
+                            componentListName="ovens"
+                            // TODO(keefertaylor): Fix empty state.
+                            emptyState={transactionsEmptyState}
+                            emptyStateTitle={t('components.actionPanel.empty-title')}
+                        />
+                    </DeployOvenButtonWrapper>
                 )}
                 {activeTab === TRANSACTIONS && (
                     <PaginationList
