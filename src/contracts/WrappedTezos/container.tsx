@@ -63,7 +63,7 @@ const ActionPanel = () => {
                             listComponentProps={{ ovens: ovenList }}
                             componentListName="ovens"
                             emptyState={transactionsEmptyState}
-                            emptyStateTitle={t('components.ovenList.empty_list')}
+                            emptyStateTitle={t('components.actionPanel.empty-title')}
                         />
                     </DeployOvenButtonWrapper>
                 )}
