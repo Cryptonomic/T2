@@ -145,7 +145,7 @@ export interface Oven {
     ovenBalance: number;
 
     /** Baker for the oven. */
-    baker: string;
+    baker: string | undefined;
 }
 
 export type BookMark = Account | Token;

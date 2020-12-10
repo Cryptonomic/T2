@@ -18,6 +18,6 @@ export const InvokeButton = styled(Button)`
     width: 194px;
     height: 50px;
     margin-bottom: 0px;
-    margin-left: auto;
-    padding: 0;
+    margin-left: 20px;
+    padding: 30px;
 `;

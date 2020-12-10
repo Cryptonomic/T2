@@ -34,7 +34,43 @@ const ActionPanel = () => {
         {
             ovenAddress: 'KT19SAzLJSLK5bUiaZXTYwGM8uq52CCTU42q',
             ovenOwner: '',
-            baker: '',
+            baker: undefined,
+            ovenBalance: 20,
+        },
+        {
+            ovenAddress: 'KT19SAzLJSLK5bUiaZXTYwGM8uq52CCTU42q',
+            ovenOwner: '',
+            baker: 'tz1abmz7jiCV2GH2u81LRrGgAFFgvQgiDiaf',
+            ovenBalance: 20,
+        },
+        {
+            ovenAddress: 'KT19SAzLJSLK5bUiaZXTYwGM8uq52CCTU42q',
+            ovenOwner: '',
+            baker: undefined,
+            ovenBalance: 20,
+        },
+        {
+            ovenAddress: 'KT19SAzLJSLK5bUiaZXTYwGM8uq52CCTU42q',
+            ovenOwner: '',
+            baker: 'tz1abmz7jiCV2GH2u81LRrGgAFFgvQgiDiaf',
+            ovenBalance: 20,
+        },
+        {
+            ovenAddress: 'KT19SAzLJSLK5bUiaZXTYwGM8uq52CCTU42q',
+            ovenOwner: '',
+            baker: 'tz1abmz7jiCV2GH2u81LRrGgAFFgvQgiDiaf',
+            ovenBalance: 20,
+        },
+        {
+            ovenAddress: 'KT19SAzLJSLK5bUiaZXTYwGM8uq52CCTU42q',
+            ovenOwner: '',
+            baker: undefined,
+            ovenBalance: 20,
+        },
+        {
+            ovenAddress: 'KT19SAzLJSLK5bUiaZXTYwGM8uq52CCTU42q',
+            ovenOwner: '',
+            baker: undefined,
             ovenBalance: 20,
         },
     ];

@@ -4,11 +4,18 @@ import { Oven } from '../../../../types/general';
 
 import OvenItem from './OvenItem';
 
-import { Container } from '../style';
+// import { Container } from '../style';
 import { useSelector, useDispatch } from 'react-redux';
 import { setModalOpen, clearModal } from '../../../../reduxContent/modal/actions';
 import { RootState } from '../../../../types/store';
 import SetDelegateModal from './SetDelegateModal';
+import styled from 'styled-components';
+
+export const Container = styled.section`
+    height: 100%;
+    width: 100%;
+    padding-top: 20px;
+`;
 
 type OvenListProps = {
     ovens: Oven[];
