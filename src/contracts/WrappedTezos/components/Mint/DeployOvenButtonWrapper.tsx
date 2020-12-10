@@ -29,7 +29,9 @@ const DeployOvenButtonWrapper = (props) => {
 
     return (
         <Container>
-            {isAddOvenModalOpen && <DeployOvenModal open={isAddOvenModalOpen} onClose={() => setIsModalOpen(false, ADD_OVEN_MODAL_IDENTIFIER)} />}
+            {isAddOvenModalOpen && (
+                <DeployOvenModal open={isAddOvenModalOpen} onClose={() => setIsModalOpen(false, ADD_OVEN_MODAL_IDENTIFIER)} managerBalance={100000000000} />
+            )}
 
             <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))} />
             {children}
