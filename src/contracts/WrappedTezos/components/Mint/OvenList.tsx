@@ -22,7 +22,6 @@ const OvenList = (props: OvenListProps) => {
     const { ovens } = props;
 
     // The oven being operated on.
-    // TODO(keefertaylor): This should be typed as string or undefined. Not sure how to make that happen.
     const [activeOven, setActiveOven] = useState('');
 
     const dispatch = useDispatch();
