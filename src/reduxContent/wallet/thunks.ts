@@ -216,8 +216,6 @@ export function syncTokenThunk(tokenAddress) {
                     network: mainNode.network,
                 };
                 ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, ovenListBigMapId);
-
-                console.log('STAKERDAO: Fetced addresses...');
             }
 
             const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
@@ -225,8 +223,6 @@ export function syncTokenThunk(tokenAddress) {
 
             // Apply an optional update for OvenList
             if (ovenAddresses.length > 0) {
-                console.log('STAKERDAO: Finished addresses...' + JSON.stringify(ovenAddresses));
-
                 const ovenList: Oven[] = ovenAddresses.map((ovenAddress: string) => {
                     return {
                         ovenAddress,
@@ -237,7 +233,6 @@ export function syncTokenThunk(tokenAddress) {
                     };
                 });
 
-                console.log('STAKERDAO: Applying update...');
                 tokens[tokenIndex] = { ...tokens[tokenIndex], ovenList };
             }
 
