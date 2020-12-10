@@ -2,7 +2,15 @@ import path from 'path';
 import { ipcRenderer } from 'electron';
 import { push } from 'react-router-redux';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-import { TezosNodeWriter, KeyStoreType, Tzip7ReferenceTokenHelper, StakerDAOTokenHelper, TzbtcTokenHelper, WrappedTezosHelper } from 'conseiljs';
+import {
+    TezosNodeWriter,
+    KeyStoreType,
+    Tzip7ReferenceTokenHelper,
+    StakerDAOTokenHelper,
+    TzbtcTokenHelper,
+    WrappedTezosHelper,
+    ConseilServerInfo,
+} from 'conseiljs';
 import { TezosConseilClient, ConseilQueryBuilder, ConseilOperator, ConseilDataClient } from 'conseiljs';
 import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { createMessageAction } from '../../reduxContent/message/actions';
@@ -173,7 +181,7 @@ export function syncTokenThunk(tokenAddress) {
             let balanceAsync;
             let transAsync;
             let detailsAsync;
-            let ovenList: Oven[] | undefined;
+            let ovenAddresses: string[] = [];
             if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtez) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
@@ -198,15 +206,38 @@ export function syncTokenThunk(tokenAddress) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
-                // TODO(keefertaylor): Fetch data.
-                ovenList = [];
+
+                // TODO(keefertaylor): Stop hardcoding these.
+                const coreContractAddress = 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8';
+                const ovenListBigMapId = 14569;
+                const serverInfo: ConseilServerInfo = {
+                    url: mainNode.conseilUrl,
+                    apiKey: mainNode.apiKey,
+                    network: mainNode.network,
+                };
+                ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, ovenListBigMapId);
+
+                console.log('STAKERDAO: Fetced addresses...');
             }
 
             const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
             tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions, details };
 
             // Apply an optional update for OvenList
-            if (ovenList !== undefined) {
+            if (ovenAddresses.length > 0) {
+                console.log('STAKERDAO: Finished addresses...' + JSON.stringify(ovenAddresses));
+
+                const ovenList: Oven[] = ovenAddresses.map((ovenAddress: string) => {
+                    return {
+                        ovenAddress,
+                        ovenOwner: selectedParentHash,
+                        // TODO(keefertaylor): Fetch this data.
+                        ovenBalance: 0,
+                        baker: '',
+                    };
+                });
+
+                console.log('STAKERDAO: Applying update...');
                 tokens[tokenIndex] = { ...tokens[tokenIndex], ovenList };
             }
 
