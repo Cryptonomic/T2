@@ -30,7 +30,14 @@ const ActionPanel = () => {
     const transactionList = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
 
     // TODO(keefertaylor): Fetch real data here.
-    const ovenList: Oven[] = [];
+    const ovenList: Oven[] = [
+        {
+            ovenAddress: 'KT19SAzLJSLK5bUiaZXTYwGM8uq52CCTU42q',
+            ovenOwner: '',
+            baker: '',
+            ovenBalance: 20,
+        },
+    ];
 
     const onChangeTab = (newTab: string) => {
         dispatch(updateActiveTabThunk(newTab, true));
