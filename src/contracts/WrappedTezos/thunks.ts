@@ -1,4 +1,4 @@
-import { WrappedTezosHelper } from 'conseiljs';
+import { WrappedTezosHelper, OpenOvenResult } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
@@ -92,12 +92,26 @@ export function deployOven(fee: number, password: string) {
         const coreContractAddress = 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8';
 
         // TODO(keefertaylor): Rename this function when dependent PRs are merged into ConseilJS.
-        WrappedTezosHelper.openOven(tezosUrl, signer, keyStore, fee, coreContractAddress).catch((err) => {
+        const result = await WrappedTezosHelper.openOven(tezosUrl, signer, keyStore, fee, coreContractAddress).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`deployOven failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
             return false;
         });
+
+        if (!result) {
+            return false;
+        }
+
+        const openOvenResult = result as OpenOvenResult;
+        dispatch(
+            createMessageAction(
+                // TODO(keefertaylor): Use translations here.
+                `Successfully started deploy operation for ${openOvenResult.ovenAddress}`,
+                false,
+                openOvenResult.operationHash
+            )
+        );
 
         // TODO(keefertaylor): probably want to dispatch an action to list ovens.
 
