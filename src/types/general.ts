@@ -132,6 +132,17 @@ export interface Token {
 }
 
 /**
+ * A special token which is generated through XTZ in "ovens"
+ */
+export interface OveToken extends Token {
+    // Address of a contract which can originate Ovens
+    ovenCoreAddress: string;
+
+    // ID of a BigMap that contains the Oven Registry
+    ovenRegistryMapId: number;
+}
+
+/**
  * Data about an Oven.
  */
 export interface Oven {
