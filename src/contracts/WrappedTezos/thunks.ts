@@ -69,6 +69,8 @@ export function transferThunk(destination: string, amount: number, fee: number, 
     };
 }
 
+// TODO(keefertaylor): Need to pass a delegate here.
+// TODO(keefertaylor): Verify that we don't process amount.
 export function deployOven(fee: number, password: string) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
