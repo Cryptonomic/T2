@@ -1,6 +1,6 @@
-import { WrappedTezosHelper } from 'conseiljs';
+import { WrappedTezosHelper, TezosNodeReader } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { updateTokensAction } from '../../reduxContent/wallet/actions';
+import { updateOvensAction, updateTokensAction } from '../../reduxContent/wallet/actions';
 
 import { createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
@@ -9,6 +9,7 @@ import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
 import { findTokenIndex } from '../../utils/token';
+import { Oven } from '../../types/general';
 
 export function transferThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
@@ -99,12 +100,49 @@ export function deployOven(fee: number, password: string) {
             return false;
         });
 
-        // TODO(keefertaylor): probably want to dispatch an action to list ovens.
-
         return true;
     };
 }
 
 export function listOvens() {
-    // get oven list, get oven details
+    return async (dispatch, state) => {
+        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { identities, walletPassword, tokens } = state().wallet;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
+        const mainNode = getMainNode(nodesList, selectedNode);
+        const { tezosUrl } = mainNode;
+
+        const mainPath = getMainPath(pathsList, selectedPath);
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
+
+        // TODO(keefertaylor): Do not hardcode these.
+        const coreContractAddress = 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8';
+        const ovenListBigMapId = 14569;
+
+        const ovenAddresses = await WrappedTezosHelper.listOvens(tezosUrl, coreContractAddress, selectedParentHash, ovenListBigMapId);
+
+        const ovens: Oven[] = await Promise.all(
+            ovenAddresses.map(async (ovenAddress) => {
+                // TODO(keefertaylor): Fetch a baker when Conseil supports it.
+                const baker = '';
+                const ovenBalance = await TezosNodeReader.getSpendableBalanceForAccount(tezosUrl, ovenAddress);
+
+                return {
+                    ovenAddress,
+                    ovenOwner: selectedParentHash,
+                    baker,
+                    ovenBalance,
+                };
+            })
+        );
+
+        // Update the OvenList in the token implementation.
+        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+        if (tokenIndex > -1) {
+            tokens[tokenIndex].ovenList = ovens;
+        }
+        dispatch(updateTokensAction([...tokens]));
+
+        return true;
+    };
 }

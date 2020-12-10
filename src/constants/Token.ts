@@ -6,7 +6,7 @@ import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 
-export const knownTokenContracts: Token | OvenToken[] = [
+export const knownTokenContracts: (Token | OvenToken)[] = [
     {
         network: 'mainnet',
         address: 'KT1EctCuorV2NfVb1XTQgvzJ88MQtWP8cMMv',
@@ -132,5 +132,6 @@ export const knownTokenContracts: Token | OvenToken[] = [
         round: 0,
         ovenCoreAddress: '',
         ovenRegistryMapId: 0,
+        ovenList: [],
     },
 ];

@@ -10,7 +10,7 @@ import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
 import { CREATED } from '../../constants/StatusTypes';
 import { createTransaction } from '../../utils/transaction';
-import { TokenKind } from '../../types/general';
+import { TokenKind, Oven, OvenToken } from '../../types/general';
 
 import { findAccountIndex, getSyncAccount, syncAccountWithState } from '../../utils/account';
 
@@ -164,7 +164,7 @@ export function syncTokenThunk(tokenAddress) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList } = state().settings;
         const { selectedParentHash } = state().app;
-        const tokens: Token[] = state().wallet.tokens;
+        const tokens: (Token | OvenToken)[] = state().wallet.tokens;
 
         const mainNode = getMainNode(nodesList, selectedNode);
         const tokenIndex = findTokenIndex(tokens, tokenAddress);
@@ -173,6 +173,7 @@ export function syncTokenThunk(tokenAddress) {
             let balanceAsync;
             let transAsync;
             let detailsAsync;
+            let ovenList: Oven[] | undefined;
             if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtez) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
@@ -197,10 +198,17 @@ export function syncTokenThunk(tokenAddress) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
+                // TODO(keefertaylor): Fetch data.
+                ovenList = [];
             }
 
             const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
             tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions, details };
+
+            // Apply an optional update for OvenList
+            if (ovenList !== undefined) {
+                tokens[tokenIndex] = { ...tokens[tokenIndex], ovenList };
+            }
 
             dispatch(updateTokensAction([...tokens]));
         }
