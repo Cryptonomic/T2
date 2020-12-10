@@ -105,6 +105,74 @@ export function deployOven(fee: number, password: string) {
     };
 }
 
-export function listOvens() {
-    // get oven list, get oven details
+export function deposit(ovenAddress: string, amount: number, fee: number, password: string) {
+    return async (dispatch, state) => {
+        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { identities, walletPassword, tokens } = state().wallet;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
+        const mainNode = getMainNode(nodesList, selectedNode);
+        const { tezosUrl } = mainNode;
+
+        if (password !== walletPassword && !isLedger) {
+            const error = 'components.messageBar.messages.incorrect_password';
+            dispatch(createMessageAction(error, true));
+            return false;
+        }
+
+        const mainPath = getMainPath(pathsList, selectedPath);
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
+
+        const operationId: string | boolean = await WrappedTezosHelper.depositToOven(tezosUrl, signer, keyStore, ovenAddress, fee, amount).catch((err) => {
+            const errorObj = { name: err.message, ...err };
+            console.error(`deposit failed with ${JSON.stringify(errorObj)}`);
+            dispatch(createMessageAction(errorObj.name, true));
+            return false;
+        });
+
+        if (!operationId) {
+            return false;
+        }
+
+        dispatch(createMessageAction('Successfully started deposit transaction.', false, operationId));
+
+        // TODO(keefertaylor): dispatch an action to update oven.
+
+        return true;
+    };
+}
+
+export function withdraw(ovenAddress: string, amount: number, fee: number, password: string) {
+    return async (dispatch, state) => {
+        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { identities, walletPassword, tokens } = state().wallet;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
+        const mainNode = getMainNode(nodesList, selectedNode);
+        const { tezosUrl } = mainNode;
+
+        if (password !== walletPassword && !isLedger) {
+            const error = 'components.messageBar.messages.incorrect_password';
+            dispatch(createMessageAction(error, true));
+            return false;
+        }
+
+        const mainPath = getMainPath(pathsList, selectedPath);
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
+
+        const operationId: string | boolean = await WrappedTezosHelper.withdrawFromOven(tezosUrl, signer, keyStore, ovenAddress, fee, amount).catch((err) => {
+            const errorObj = { name: err.message, ...err };
+            console.error(`withdraw failed with ${JSON.stringify(errorObj)}`);
+            dispatch(createMessageAction(errorObj.name, true));
+            return false;
+        });
+
+        if (!operationId) {
+            return false;
+        }
+
+        dispatch(createMessageAction('Successfully started withdraw transaction.', false, operationId));
+
+        // TODO(keefertaylor): dispatch an action to update oven.
+
+        return true;
+    };
 }
