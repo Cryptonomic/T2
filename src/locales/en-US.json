@@ -135,6 +135,9 @@
             "title": "dApp Authentication Request",
             "signature_prompt": "Authenticate by signing the words below to confirm your control of the private key associated with this account"
         },
+        "wXTZ": {
+            // TODO(keefertaylor): Go nuts here!
+        },
         "Beacon": {
             "registrationModal": {
                 "title": "Beacon Connection Request"
