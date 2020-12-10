@@ -24,6 +24,7 @@ import { useFetchFees } from '../../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../../reduxContent/app/actions';
 
 import { RootState } from '../../../../types/store';
+import { MessageContainer, InfoIcon, RowContainer } from './style';
 
 const InputAddressContainer = styled.div`
     padding: 0 76px;
@@ -186,7 +187,6 @@ interface Props {
 }
 
 const defaultState = {
-    amount: '',
     fee: 2840,
     total: 0,
     balance: 0,
@@ -201,7 +201,7 @@ function DeployOvenModal(props: Props) {
     const [passPhrase, setPassPhrase] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [isDelegateIssue, setIsDelegateIssue] = useState(false);
-    const { amount, fee, total, balance } = state;
+    const { fee, total, balance } = state;
 
     const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(OperationKindType.Transaction, true, true);
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
@@ -225,50 +225,32 @@ function DeployOvenModal(props: Props) {
         });
     }
 
-    function onUseMax() {
-        const max = managerBalance - fee - GAS;
-        let newAmount = '0';
-        let newTotal = fee + GAS;
-        let newBalance = managerBalance - total;
-        if (max > 0) {
-            newAmount = (max / utez).toFixed(6);
-            newTotal = managerBalance;
-            newBalance = 0;
-        }
-        updateState({ amount: newAmount, total: newTotal, balance: newBalance });
-    }
-
-    function changeAmount(newAmount = '0') {
-        const commaReplacedAmount = newAmount.replace(',', '.');
-        const numAmount = parseFloat(commaReplacedAmount) * utez;
-        const newTotal = numAmount + fee + GAS;
-        const newBalance = managerBalance - total;
-        updateState({ amount: newAmount, total: newTotal, balance: newBalance });
-    }
-
     function changeFee(newFee) {
-        const newAmount = amount || '0';
-        const numAmount = parseFloat(newAmount) * utez;
-        const newTotal = numAmount + newFee + GAS;
+        const newTotal = newFee + GAS;
         const newBalance = managerBalance - total;
         updateState({ fee: newFee, total: newTotal, balance: newBalance });
     }
 
+    // TODO(keefertaylor): rename
     async function createAccount() {
         dispatch(setIsLoadingAction(true));
         if (isLedger) {
             setConfirmOpen(true);
         }
-        const isCreated = await dispatch(originateContractThunk(delegate, amount, Math.floor(fee), passPhrase, selectedParentHash));
+        // TODO(keefertaylor): Add a thunk here.
+        // const isCreated = await dispatch(
+        //     originateContractThunk(delegate, amount, Math.floor(fee), passPhrase, selectedParentHash)
+        // );
         setConfirmOpen(false);
         dispatch(setIsLoadingAction(false));
-        if (!!isCreated) {
-            onClose();
-        }
+        // if (!!isCreated) {
+        //     onClose();
+        // }
     }
 
     function renderGasToolTip() {
-        return <TooltipContainer>{t('components.addDelegateModal.gas_tool_tip', { gas: GAS / utez })}</TooltipContainer>;
+        // TODO(keefertaylor): Use translations.
+        return <TooltipContainer>{`${GAS / utez} XTZ is required by the network to create a new Oven contract`}</TooltipContainer>;
     }
 
     function onCloseClick() {
@@ -287,24 +269,11 @@ function DeployOvenModal(props: Props) {
             };
         }
 
-        if (amount) {
-            return {
-                isIssue: false,
-                warningMessage: '',
-                balanceColor: 'gray3',
-            };
-        }
         return {
             isIssue: false,
             warningMessage: '',
             balanceColor: 'gray8',
         };
-    }
-
-    function onEnterPress(keyVal) {
-        if (keyVal === 'Enter' && !isDisabled) {
-            createAccount();
-        }
     }
 
     function renderFeeToolTip() {
@@ -325,7 +294,13 @@ function DeployOvenModal(props: Props) {
     return (
         // TODO(keefertaylor): Use translations here.
         <Modal title={'Deploy Oven'} open={open} onClose={onCloseClick}>
-            <p>Ovens lock XTZ and mint WXTZ</p>
+            <MainContainer>
+                <MessageContainer>
+                    <InfoIcon color="info" iconName="info" />
+                    {/* TODO(keefertaylor): Use translations. */}
+                    Ovens lock XTZ and mint WXTZ.
+                </MessageContainer>
+            </MainContainer>
             <InputAddressContainer>
                 <InputAddress
                     // TODO(keefertaylor): Use translations here.
@@ -371,7 +346,7 @@ function DeployOvenModal(props: Props) {
                     <BalanceArrow />
                     <BalanceContent>
                         <BalanceTitle>{t('general.nouns.total')}</BalanceTitle>
-                        <TotalAmount weight="500" color={amount ? 'gray3' : 'gray8'} size={ms(0.65)} amount={total} />
+                        <TotalAmount weight="500" color={'gray3'} size={ms(0.65)} amount={total} />
                         <BalanceTitle>{t('general.nouns.remaining_balance')}</BalanceTitle>
                         <BalanceAmount weight="500" color={balanceColor} size={ms(-0.75)} amount={balance} />
                         {isIssue && (
@@ -400,16 +375,18 @@ function DeployOvenModal(props: Props) {
             </PasswordButtonContainer>
             {isLoading && <Loader />}
             {isLedger && open && (
-                <AddDelegateLedgerModal
-                    amount={amount}
-                    fee={fee}
-                    address={delegate}
-                    source={selectedParentHash}
-                    manager={selectedParentHash}
-                    open={confirmOpen}
-                    onClose={() => setConfirmOpen(false)}
-                    isLoading={isLoading}
-                />
+                <></>
+                // TODO(keefertaylor): Enable
+                // <AddDelegateLedgerModal
+                //     amount={amount}
+                //     fee={fee}
+                //     address={delegate}
+                //     source={selectedParentHash}
+                //     manager={selectedParentHash}
+                //     open={confirmOpen}
+                //     onClose={() => setConfirmOpen(false)}
+                //     isLoading={isLoading}
+                // />
             )}
         </Modal>
     );
