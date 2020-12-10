@@ -19,7 +19,7 @@ import InputAddress from '../../../../components/InputAddress';
 import TezosAmount from '../../../../components/TezosAmount';
 import AddDelegateLedgerModal from '../../../../components/ConfirmModals/AddDelegateLedgerModal';
 
-import { originateContractThunk } from '../../../../reduxContent/originate/thunks';
+import { deployOven } from '../../thunks';
 import { useFetchFees } from '../../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../../reduxContent/app/actions';
 
@@ -231,21 +231,21 @@ function DeployOvenModal(props: Props) {
         updateState({ fee: newFee, total: newTotal, balance: newBalance });
     }
 
-    // TODO(keefertaylor): rename
-    async function createAccount() {
+    async function deploy() {
         dispatch(setIsLoadingAction(true));
         if (isLedger) {
             setConfirmOpen(true);
         }
-        // TODO(keefertaylor): Add a thunk here.
-        // const isCreated = await dispatch(
-        //     originateContractThunk(delegate, amount, Math.floor(fee), passPhrase, selectedParentHash)
-        // );
+
+        // TODO(keefertaylor): Pass through delegate parameter to thunk when it is supported.
+        const delegateParam = delegate === '' ? undefined : delegate;
+        const isDeployed = await dispatch(deployOven(Math.floor(fee), passPhrase));
+
         setConfirmOpen(false);
         dispatch(setIsLoadingAction(false));
-        // if (!!isCreated) {
-        //     onClose();
-        // }
+        if (!!isDeployed) {
+            onClose();
+        }
     }
 
     function renderGasToolTip() {
@@ -368,7 +368,7 @@ function DeployOvenModal(props: Props) {
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => createAccount()}>
+                <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => deploy()}>
                     {/* TODO(keefertaylor): translations */}
                     Deploy Oven
                 </DelegateButton>
