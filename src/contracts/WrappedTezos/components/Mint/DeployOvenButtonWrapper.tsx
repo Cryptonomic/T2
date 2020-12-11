@@ -4,9 +4,26 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { setModalOpen, clearModal } from '../../../../reduxContent/modal/actions';
 import { RootState } from '../../../../types/store';
 import DeployOvenModal from './DeployOvenModal';
+import styled from 'styled-components';
 import { getAccountSelector } from '../../../duck/selectors';
 
 import { AddCircleWrapper } from './style';
+
+const BoldSpan = styled.span`
+    font-weight: 500;
+`;
+
+export const AddOvenContainer = styled.div`
+    display: flex;
+    align-items: center;
+    color: ${({ theme: { colors } }) => colors.primary};
+`;
+
+const MainContainer = styled.div`
+    padding: 30px 76px 56px 76px;
+`;
+
+export const SectionContainer = styled.div``;
 
 const ADD_OVEN_MODAL_IDENTIFIER = 'add_oven';
 
@@ -37,7 +54,13 @@ const DeployOvenButtonWrapper = (props) => {
                 <DeployOvenModal open={isAddOvenModalOpen} onClose={() => setIsModalOpen(false, ADD_OVEN_MODAL_IDENTIFIER)} managerBalance={balance} />
             )}
 
-            <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))} />
+            <AddOvenContainer>
+                <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))} />
+                <BoldSpan onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))}>
+                    {/* TODO(keefertaylor): Deploy new Oven */}
+                    Deploy New Oven
+                </BoldSpan>
+            </AddOvenContainer>
             {children}
         </Container>
     );
