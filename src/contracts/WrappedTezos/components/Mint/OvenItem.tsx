@@ -85,6 +85,7 @@ function OvenItem(props: Props) {
     const { address, delegate, balance } = props;
 
     return (
+
         <Container>
             <AddressContainer>{address}</AddressContainer>
             <OvenInfoBar>
