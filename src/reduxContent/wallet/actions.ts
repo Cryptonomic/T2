@@ -19,7 +19,7 @@ import {
     UpdateTokensAction,
 } from './types';
 
-import { Oven, Token } from '../../types/general';
+import { Vault, VaultToken, Token } from '../../types/general';
 
 export function setWalletAction(identities: any[], walletLocation: string, walletFileName: string, walletPassword: string): SetWalletAction {
     const payload = { identities, walletLocation, walletFileName, walletPassword };
@@ -71,14 +71,15 @@ export function updateIdentityAction(identity: any): UpdateIdentityAction {
     };
 }
 
-export function updateTokensAction(tokens: Token[]): UpdateTokensAction {
+export function updateTokensAction(tokens: (Token | VaultToken)[]): UpdateTokensAction {
     return {
         type: UPDATE_TOKENS,
         tokens,
     };
 }
 
-export function updateOvensAction(ovens: Oven[]): UpdateOvensAction {
+// TODO(keefertaylor): remove
+export function updateOvensAction(ovens: Vault[]): UpdateOvensAction {
     return {
         type: UPDATE_OVENS,
         ovens,

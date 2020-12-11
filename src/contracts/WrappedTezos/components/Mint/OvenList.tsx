@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Oven } from '../../../../types/general';
+import { Vault } from '../../../../types/general';
 
 import OvenItem from './OvenItem';
 
@@ -11,7 +11,7 @@ import { RootState } from '../../../../types/store';
 import SetDelegateModal from './SetDelegateModal';
 
 type OvenListProps = {
-    ovens: Oven[];
+    ovens: Vault[];
 };
 
 const DEPOSIT_MODAL_IDENTIFIER = 'deposit_modal';
@@ -22,7 +22,6 @@ const OvenList = (props: OvenListProps) => {
     const { ovens } = props;
 
     // The oven being operated on.
-    // TODO(keefertaylor): This should be typed as string or undefined. Not sure how to make that happen.
     const [activeOven, setActiveOven] = useState('');
 
     const dispatch = useDispatch();
