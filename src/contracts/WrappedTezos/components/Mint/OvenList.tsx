@@ -14,13 +14,14 @@ type OvenListProps = {
     ovens: Vault[];
 };
 
+const DEPOSIT_MODAL_IDENTIFIER = 'deposit_modal';
+const WITHDRAW_MODAL_IDENTIFIER = 'withdraw_modal';
 const SET_DELEGATE_MODAL_IDENTIFIER = 'set_delegate_modal';
 
 const OvenList = (props: OvenListProps) => {
     const { ovens } = props;
 
     // The oven being operated on.
-    // TODO(keefertaylor): This should be typed as string or undefined. Not sure how to make that happen.
     const [activeOven, setActiveOven] = useState('');
 
     const dispatch = useDispatch();
@@ -32,22 +33,36 @@ const OvenList = (props: OvenListProps) => {
         }
     };
 
-    const openSetDelegateModal = (ovenAddress: string) => {
+    const openModal = (ovenAddress: string, modalIdentifier: string) => {
         setActiveOven(ovenAddress);
-        dispatch(setModalOpen(true, SET_DELEGATE_MODAL_IDENTIFIER));
+        dispatch(setModalOpen(true, modalIdentifier));
     };
-    // TODO(keefertaylor): Add function to open a deposit modal.
-    // TODO(keefertaylor): Add function to open a withdraw modal.
+    const openDepositModal = (ovenAddress: string) => {
+        openModal(ovenAddress, DEPOSIT_MODAL_IDENTIFIER);
+    };
+    const openWithdrawModal = (ovenAddress: string) => {
+        openModal(ovenAddress, WITHDRAW_MODAL_IDENTIFIER);
+    };
+    const openSetDelegateModal = (ovenAddress: string) => {
+        openModal(ovenAddress, SET_DELEGATE_MODAL_IDENTIFIER);
+    };
 
     const activeModal = useSelector<RootState, string>((state) => state.modal.activeModal);
     const isModalOpen = useSelector<RootState, boolean>((state) => state.modal.open);
 
     const isSetDelegateModalOpen = isModalOpen && activeModal === SET_DELEGATE_MODAL_IDENTIFIER;
 
-    const ovenItems = ovens.map((oven: Vault) => {
-        // TODO(keefertaylor): add callbacks for deposit and withdraw to OvenItem
+    const ovenItems = ovens.map((oven: Oven) => {
         return (
-            <OvenItem key={oven.ovenAddress} address={oven.ovenAddress} delegate={oven.baker} balance={oven.ovenBalance} setDelegate={openSetDelegateModal} />
+            <OvenItem
+                key={oven.ovenAddress}
+                address={oven.ovenAddress}
+                delegate={oven.baker}
+                balance={oven.ovenBalance}
+                deposit={openDepositModal}
+                withdraw={openWithdrawModal}
+                setDelegate={openSetDelegateModal}
+            />
         );
     });
 
