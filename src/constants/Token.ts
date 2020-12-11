@@ -1,4 +1,4 @@
-import { OvenToken, Token, TokenKind } from '../types/general';
+import { VaultToken, Token, TokenKind } from '../types/general';
 import { TRANSACTIONS, DETAILS } from './TabConstants';
 
 import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
@@ -6,7 +6,7 @@ import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 
-export const knownTokenContracts: (Token | OvenToken)[] = [
+export const knownTokenContracts: (Token | VaultToken)[] = [
     {
         network: 'mainnet',
         address: 'KT1EctCuorV2NfVb1XTQgvzJ88MQtWP8cMMv',

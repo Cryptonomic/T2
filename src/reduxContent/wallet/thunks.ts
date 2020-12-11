@@ -18,7 +18,7 @@ import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
 import { CREATED } from '../../constants/StatusTypes';
 import { createTransaction } from '../../utils/transaction';
-import { TokenKind, Oven, OvenToken } from '../../types/general';
+import { TokenKind, Vault, VaultToken } from '../../types/general';
 
 import { findAccountIndex, getSyncAccount, syncAccountWithState } from '../../utils/account';
 
@@ -172,7 +172,7 @@ export function syncTokenThunk(tokenAddress) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList } = state().settings;
         const { selectedParentHash } = state().app;
-        const tokens: (Token | OvenToken)[] = state().wallet.tokens;
+        const tokens: (Token | VaultToken)[] = state().wallet.tokens;
 
         const mainNode = getMainNode(nodesList, selectedNode);
         const tokenIndex = findTokenIndex(tokens, tokenAddress);
@@ -223,7 +223,7 @@ export function syncTokenThunk(tokenAddress) {
 
             // Apply an optional update for OvenList
             if (ovenAddresses.length > 0) {
-                const ovenList: Oven[] = ovenAddresses.map((ovenAddress: string) => {
+                const ovenList: Vault[] = ovenAddresses.map((ovenAddress: string) => {
                     return {
                         ovenAddress,
                         ovenOwner: selectedParentHash,

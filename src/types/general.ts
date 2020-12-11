@@ -132,9 +132,11 @@ export interface Token {
 }
 
 /**
- * A special token which is generated through XTZ in "ovens"
+ * A special token which is generated through locking XTZ in "vaults"
  */
-export interface OvenToken extends Token {
+export interface VaultToken extends Token {
+    // TODO(keefertaylor): rename these vars
+
     // Address of a contract which can originate Ovens
     ovenCoreAddress: string;
 
@@ -142,13 +144,15 @@ export interface OvenToken extends Token {
     ovenRegistryMapId: number;
 
     // A list of Ovens owned by the user.
-    ovenList: Oven[];
+    ovenList: Vault[];
 }
 
 /**
- * Data about an Oven.
+ * Data about an Vault.
  */
-export interface Oven {
+export interface Vault {
+    // TODO(keefertaylor): rename these vars
+
     /** Contract address of the Oven contract. */
     ovenAddress: string;
 

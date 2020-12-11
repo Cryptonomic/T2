@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Oven } from '../../../../types/general';
+import { Vault } from '../../../../types/general';
 
 import OvenItem from './OvenItem';
 
@@ -11,7 +11,7 @@ import { RootState } from '../../../../types/store';
 import SetDelegateModal from './SetDelegateModal';
 
 type OvenListProps = {
-    ovens: Oven[];
+    ovens: Vault[];
 };
 
 const SET_DELEGATE_MODAL_IDENTIFIER = 'set_delegate_modal';
@@ -44,7 +44,7 @@ const OvenList = (props: OvenListProps) => {
 
     const isSetDelegateModalOpen = isModalOpen && activeModal === SET_DELEGATE_MODAL_IDENTIFIER;
 
-    const ovenItems = ovens.map((oven: Oven) => {
+    const ovenItems = ovens.map((oven: Vault) => {
         // TODO(keefertaylor): add callbacks for deposit and withdraw to OvenItem
         return (
             <OvenItem key={oven.ovenAddress} address={oven.ovenAddress} delegate={oven.baker} balance={oven.ovenBalance} setDelegate={openSetDelegateModal} />

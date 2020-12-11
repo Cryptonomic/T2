@@ -9,7 +9,7 @@ import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
 import { findTokenIndex } from '../../utils/token';
-import { Oven } from '../../types/general';
+import { Vault } from '../../types/general';
 
 export function transferThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
@@ -121,7 +121,7 @@ export function listOvens() {
 
         const ovenAddresses = await WrappedTezosHelper.listOvens(tezosUrl, coreContractAddress, selectedParentHash, ovenListBigMapId);
 
-        const ovens: Oven[] = await Promise.all(
+        const ovens: Vault[] = await Promise.all(
             ovenAddresses.map(async (ovenAddress) => {
                 // TODO(keefertaylor): Fetch a baker when Conseil supports it.
                 const baker = '';
