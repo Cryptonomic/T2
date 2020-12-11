@@ -5,6 +5,7 @@ import { setModalOpen, clearModal } from '../../../../reduxContent/modal/actions
 import { RootState } from '../../../../types/store';
 import DeployOvenModal from './DeployOvenModal';
 import styled from 'styled-components';
+import { getAccountSelector } from '../../../duck/selectors';
 
 import { AddCircleWrapper } from './style';
 
@@ -30,6 +31,9 @@ const ADD_OVEN_MODAL_IDENTIFIER = 'add_oven';
 const DeployOvenButtonWrapper = (props) => {
     const { children } = props;
 
+    const selectedAccount = useSelector(getAccountSelector);
+    const { balance } = selectedAccount;
+
     const dispatch = useDispatch();
 
     function setIsModalOpen(open, active) {
@@ -46,7 +50,9 @@ const DeployOvenButtonWrapper = (props) => {
 
     return (
         <Container>
-            {isAddOvenModalOpen && <DeployOvenModal open={isAddOvenModalOpen} onClose={() => setIsModalOpen(false, ADD_OVEN_MODAL_IDENTIFIER)} />}
+            {isAddOvenModalOpen && (
+                <DeployOvenModal open={isAddOvenModalOpen} onClose={() => setIsModalOpen(false, ADD_OVEN_MODAL_IDENTIFIER)} managerBalance={balance} />
+            )}
 
             <AddOvenContainer>
                 <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))} />

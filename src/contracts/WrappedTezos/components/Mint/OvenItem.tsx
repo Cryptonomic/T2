@@ -6,6 +6,7 @@ import AmountView from '../../../../components/AmountView';
 import { ms } from '../../../../styles/helpers';
 import Button from '../../../../components/Button';
 
+// TODO(keefertaylor): Lots of unused imports and vars, do a final pass over this codebase to clean up.
 import {
     // Container,
     FeeContainer,
@@ -71,7 +72,9 @@ interface Props {
     delegate: string | undefined;
     balance: number;
 
-    // Function to call to set the delegate.
+    // Functions to call to open action modals.
+    deposit: (ovenAddress: string) => void;
+    withdraw: (ovenAddress: string) => void;
     setDelegate: (ovenAddress: string) => void;
 }
 
@@ -109,70 +112,6 @@ function OvenItem(props: Props) {
             </ContentDiv>
         </Container>
     );
-
-    //     <div>
-    //         <div id="address"></div>
-    //         <div id="header"></div>
-    //         <div id="actions"></div>
-    //     </div>
-
-    // <TransactionContainer>
-    //         <Header>
-    //             <TransactionDate:</TransactionDate>
-    //             <AmountContainer color={color}>
-    //                 {sign}
-    //                 <AmountView
-    //                     color={color}
-    //                     size={ms(-1)}
-    //                     amount={transaction.amount}
-    //                     scale={token.scale}
-    //                     precision={token.precision}
-    //                     round={token.round}
-    //                     symbol={token.symbol}
-    //                 />
-    //             </AmountContainer>
-    //         </Header>
-    //         <Container>
-    //             <ContentDiv>
-    //                 <StateIcon iconName={icon} size={ms(-2)} color="accent" />
-    //                 <StateText>
-    //                     {state}
-    //                     {address ? <span>{preposition}</span> : null}
-    //                 </StateText>
-    //                 {transaction.entryPoint ? (
-    //                     <span>
-    //                         {transaction.entryPoint} of {address}
-    //                     </span>
-    //                 ) : (
-    //                     address
-    //                 )}
-    //                 <LinkIcon
-    //                     iconName="new-window"
-    //                     size={ms(0)}
-    //                     color="primary"
-    //                     onClick={() => openLink(transaction.operation_group_hash, nodesList, selectedNode)}
-    //                 />
-    //             </ContentDiv>
-
-    //             {isFee && (
-    //                 <Fee>
-    //                     <span>{t('general.nouns.fee')}: </span>
-    //                     <AmountView color="gray5" size={ms(-2)} amount={fee} precision={6} round={6} />
-    //                 </Fee>
-    //             )}
-    //         </Container>
-    //     </TransactionContainer >
-
-    //     <div>
-    //         Address: {address}
-    //         <br />
-    //         Delegate: {delegate}
-    //         <br />
-    //         Balance: {balance}
-    //         <br />
-
-    //     </div>
-    // );
 }
 
 export default OvenItem;

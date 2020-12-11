@@ -1,6 +1,6 @@
-import { WrappedTezosHelper } from 'conseiljs';
+import { WrappedTezosHelper, TezosNodeReader } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { updateTokensAction } from '../../reduxContent/wallet/actions';
+import { updateOvensAction, updateTokensAction } from '../../reduxContent/wallet/actions';
 
 import { createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
@@ -9,6 +9,7 @@ import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
 import { findTokenIndex } from '../../utils/token';
+import { Vault } from '../../types/general';
 
 export function transferThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
@@ -98,8 +99,6 @@ export function deployOven(fee: number, password: string) {
             dispatch(createMessageAction(errorObj.name, true));
             return false;
         });
-
-        // TODO(keefertaylor): probably want to dispatch an action to list ovens.
 
         return true;
     };

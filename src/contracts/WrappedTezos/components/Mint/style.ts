@@ -2,6 +2,7 @@ import AddCircle from '@material-ui/icons/AddCircle';
 import styled from 'styled-components';
 import { ms } from '../../../../styles/helpers';
 import Button from '../../../../components/Button';
+import TezosIcon from '../../../../components/TezosIcon';
 
 export const AddCircleWrapper = styled(AddCircle)<{ active: number }>`
     &&& {
@@ -20,4 +21,26 @@ export const InvokeButton = styled(Button)`
     margin-bottom: 0px;
     margin-left: 20px;
     padding: 30px;
+`;
+
+export const MessageContainer = styled.div`
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    height: 30px;
+    width: 100%;
+    color: #4e71ab;
+    font-weight: 300;
+`;
+
+export const InfoIcon = styled(TezosIcon)`
+    font-size: ${ms(2)};
+    padding: 1px 7px 0px 0px;
+`;
+
+export const RowContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 `;
