@@ -130,8 +130,9 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         scale: 0,
         precision: 0,
         round: 0,
-        ovenCoreAddress: '',
-        ovenRegistryMapId: 0,
+        // TODO(keefertaylor): rename these variables.
+        ovenCoreAddress: 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8',
+        ovenRegistryMapId: 14569,
         ovenList: [],
     },
 ];

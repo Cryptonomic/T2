@@ -203,19 +203,27 @@ export function syncTokenThunk(tokenAddress) {
                 balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
             } else if (tokens[tokenIndex].kind === TokenKind.wxtz) {
+                const vaultToken = tokens[tokenIndex] as VaultToken;
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
 
-                // TODO(keefertaylor): Stop hardcoding these.
-                const coreContractAddress = 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8';
-                const ovenListBigMapId = 14569;
+                const coreContractAddress = vaultToken.ovenCoreAddress;
+                console.log('STAKERDAO: ' + coreContractAddress);
+                console.log('STAKERDAO: TOKEN DUMP: ' + JSON.stringify(vaultToken));
+
+                const ovenListBigMapId = vaultToken.ovenRegistryMapId;
                 const serverInfo: ConseilServerInfo = {
                     url: mainNode.conseilUrl,
                     apiKey: mainNode.apiKey,
                     network: mainNode.network,
                 };
-                ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, ovenListBigMapId);
+                try {
+                    ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, ovenListBigMapId);
+                } catch (e) {
+                    console.log('STAKERDAO: ' + e);
+                }
+                console.log('[STAKERDAO] Got ovens');
             }
 
             const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
