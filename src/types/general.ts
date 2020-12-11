@@ -132,9 +132,27 @@ export interface Token {
 }
 
 /**
- * Data about an Oven.
+ * A special token which is generated through locking XTZ in "vaults"
  */
-export interface Oven {
+export interface VaultToken extends Token {
+    // TODO(keefertaylor): rename these vars
+
+    // Address of a contract which can originate Ovens
+    ovenCoreAddress: string;
+
+    // ID of a BigMap that contains the Oven Registry
+    ovenRegistryMapId: number;
+
+    // A list of Ovens owned by the user.
+    ovenList: Vault[];
+}
+
+/**
+ * Data about an Vault.
+ */
+export interface Vault {
+    // TODO(keefertaylor): rename these vars
+
     /** Contract address of the Oven contract. */
     ovenAddress: string;
 
@@ -145,7 +163,7 @@ export interface Oven {
     ovenBalance: number;
 
     /** Baker for the oven. */
-    baker: string;
+    baker: string | undefined;
 }
 
 export type BookMark = Account | Token;

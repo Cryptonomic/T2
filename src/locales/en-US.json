@@ -117,7 +117,7 @@
             "invoke_manager": "Manage Delegation"
         },
         "addDelegateModal": {
-            "gas_tool_tip": "{{gas}} tz is required by the network to create a delegated address",
+            "gas_tool_tip": "{{gas}} XTZ is required by the network to create a delegated address",
             "warning1": "Total exceeds available funds",
             "warning2": "Manager Addresses are not yet allowed to have less than 1 µtz",
             "add_delegate_title": "Delegation Contracts",
