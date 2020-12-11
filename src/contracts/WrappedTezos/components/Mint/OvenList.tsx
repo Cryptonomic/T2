@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setModalOpen, clearModal } from '../../../../reduxContent/modal/actions';
 import { RootState } from '../../../../types/store';
 import SetDelegateModal from './SetDelegateModal';
+import DepositModal from './DepositModal';
+import WithdrawModal from './WithdrawModal';
 
 type OvenListProps = {
     ovens: Oven[];
@@ -51,6 +53,8 @@ const OvenList = (props: OvenListProps) => {
     const isModalOpen = useSelector<RootState, boolean>((state) => state.modal.open);
 
     const isSetDelegateModalOpen = isModalOpen && activeModal === SET_DELEGATE_MODAL_IDENTIFIER;
+    const isDepositModalOpen = isModalOpen && activeModal == DEPOSIT_MODAL_IDENTIFIER;
+    const isWithdrawModalOpen = isModalOpen && activeModal == WITHDRAW_MODAL_IDENTIFIER;
 
     const ovenItems = ovens.map((oven: Oven) => {
         return (
@@ -72,6 +76,24 @@ const OvenList = (props: OvenListProps) => {
                 <SetDelegateModal
                     open={isSetDelegateModalOpen}
                     onClose={() => setIsModalOpen(false, SET_DELEGATE_MODAL_IDENTIFIER)}
+                    // TODO(keefertaylor): Remove these props
+                    managerBalance={0}
+                />
+            )}
+            {isDepositModalOpen && (
+                <DepositModal
+                    open={isDepositModalOpen}
+                    onClose={() => setIsModalOpen(false, DEPOSIT_MODAL_IDENTIFIER)}
+                    // TODO(keefertaylor): Remove these props
+                    managerBalance={0}
+                />
+            )}
+            {isWithdrawModalOpen && (
+                <WithdrawModal
+                    open={isWithdrawModalOpen}
+                    onClose={() => setIsModalOpen(false, WITHDRAW_MODAL_IDENTIFIER)}
+                    wrappedTezBalance={2000000}
+                    vaultBalance={30}
                     // TODO(keefertaylor): Remove these props
                     managerBalance={0}
                 />
