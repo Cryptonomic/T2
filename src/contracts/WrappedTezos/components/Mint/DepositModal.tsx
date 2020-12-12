@@ -22,7 +22,7 @@ import AddDelegateLedgerModal from '../../../../components/ConfirmModals/AddDele
 import { originateContractThunk } from '../../../../reduxContent/originate/thunks';
 import { useFetchFees } from '../../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../../reduxContent/app/actions';
-
+import { deposit } from '../../thunks';
 import { RootState } from '../../../../types/store';
 
 const InputAddressContainer = styled.div`
@@ -193,15 +193,23 @@ const InfoIcon = styled(TezosIcon)`
 
 const utez = 1000000;
 
+const FEES = {
+    low: 0,
+    medium: 60000,
+    high: 1000000,
+};
+
 interface Props {
     open: boolean;
     managerBalance: number;
+    ovenAddress: string;
     onClose: () => void;
 }
 
 const defaultState = {
     amount: '',
-    fee: 2840,
+    numAmount: 0,
+    fee: FEES.medium,
     total: 0,
     balance: 0,
 };
@@ -218,24 +226,13 @@ function DepositModal(props: Props) {
     const [passPhrase, setPassPhrase] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [isDelegateIssue, setIsDelegateIssue] = useState(false);
-    const { amount, fee, total, balance } = state;
+    const { amount, fee, total, balance, numAmount } = state;
 
-    const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(OperationKindType.Origination, true, true);
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-    const { open, managerBalance, onClose } = props;
+    const { open, managerBalance, ovenAddress, onClose } = props;
 
     // TODO(keefertaylor): Can we remove isDelegateIssue
-    const isDisabled = isLoading || !delegate || !amount || (!passPhrase && !isLedger) || balance < 0 || isDelegateIssue;
-
-    useEffect(() => {
-        setState((prevState) => {
-            return {
-                ...prevState,
-                fee: newFees.medium,
-                total: newFees.medium,
-            };
-        });
-    }, [isFeeLoaded]);
+    const isDisabled = isLoading || !amount || (!passPhrase && !isLedger) || balance < 0;
 
     function updateState(updatedValues) {
         setState((prevState) => {
@@ -253,7 +250,8 @@ function DepositModal(props: Props) {
             newTotal = managerBalance;
             newBalance = 0;
         }
-        updateState({ amount: newAmount, total: newTotal, balance: newBalance });
+        console.log('Stakerdao] num amount: ' + max);
+        updateState({ amount: newAmount, numAmount: max, total: newTotal, balance: newBalance });
     }
 
     function changeAmount(newAmount = '0') {
@@ -261,7 +259,8 @@ function DepositModal(props: Props) {
         const numAmount = parseFloat(commaReplacedAmount) * utez;
         const newTotal = numAmount + fee;
         const newBalance = managerBalance - total;
-        updateState({ amount: newAmount, total: newTotal, balance: newBalance });
+        console.log('Stakerdao] num amount: ' + numAmount);
+        updateState({ amount: newAmount, numAmount: numAmount, total: newTotal, balance: newBalance });
     }
 
     function changeFee(newFee) {
@@ -272,22 +271,27 @@ function DepositModal(props: Props) {
         updateState({ fee: newFee, total: newTotal, balance: newBalance });
     }
 
-    async function createAccount() {
-        // TODO(keefertaylor): Implement.
-        // dispatch(setIsLoadingAction(true));
-        // if (isLedger) {
-        //   setConfirmOpen(true);
-        // }
-        // const isCreated = await dispatch(originateContractThunk(delegate, amount, Math.floor(fee), passPhrase, selectedParentHash));
-        // setConfirmOpen(false);
-        // dispatch(setIsLoadingAction(false));
-        // if (!!isCreated) {
-        //   onClose();
-        // }
+    async function depositToOven() {
+        console.log('[stakerdao] num amount: ' + numAmount);
+
+        dispatch(setIsLoadingAction(true));
+        if (isLedger) {
+            setConfirmOpen(true);
+        }
+
+        console.log('[stakerdao] num amount: ' + numAmount);
+
+        const deposited = await dispatch(deposit(ovenAddress, numAmount, fee, passPhrase));
+
+        setConfirmOpen(false);
+        dispatch(setIsLoadingAction(false));
+        if (!!deposited) {
+            onClose();
+        }
     }
 
     function onCloseClick() {
-        const newFee = newFees.medium;
+        const newFee = FEES.medium;
         const newTotal = newFee;
         updateState({ fee: newFee, total: newTotal, balance: managerBalance - newTotal });
         onClose();
@@ -316,26 +320,6 @@ function DepositModal(props: Props) {
         };
     }
 
-    function onEnterPress(keyVal) {
-        if (keyVal === 'Enter' && !isDisabled) {
-            createAccount();
-        }
-    }
-
-    function renderFeeToolTip() {
-        return (
-            <TooltipContainer>
-                <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>
-                <TooltipContent>
-                    <Trans i18nKey="components.send.fee_tooltip_content">
-                        This address is not revealed on the blockchain. We have added
-                        <BoldSpan>0.001420 XTZ</BoldSpan> for Public Key Reveal to your regular send operation fee.
-                    </Trans>
-                </TooltipContent>
-            </TooltipContainer>
-        );
-    }
-
     const { isIssue, warningMessage, balanceColor } = getBalanceState();
     return (
         <Modal
@@ -346,10 +330,9 @@ function DepositModal(props: Props) {
         >
             <MainContainer>
                 <MessageContainer>
-                    {/* TODO(keefertaylor): Use Translations
-          TODO(keefertaylor): Add proper address */}
-                    <BoldSpan>Oven: KT1...</BoldSpan>
-                    <br />
+                    {/* TODO(keefertaylor): Use Translations */}
+                    <BoldSpan>Oven:</BoldSpan>
+                    {ovenAddress}
                 </MessageContainer>
             </MainContainer>
             <MainContainer>
@@ -371,23 +354,7 @@ function DepositModal(props: Props) {
                         <UseMax onClick={onUseMax}>{t('general.verbs.use_max')}</UseMax>
                     </AmountSendContainer>
                     <FeeContainer>
-                        <Fees
-                            low={newFees.low}
-                            medium={newFees.medium}
-                            high={newFees.high}
-                            fee={fee}
-                            miniFee={miniFee}
-                            onChange={changeFee}
-                            tooltip={
-                                !isRevealed ? (
-                                    <Tooltip position="bottom" content={renderFeeToolTip()}>
-                                        <IconButton size="small">
-                                            <TezosIcon iconName="help" size={ms(1)} color="gray5" />
-                                        </IconButton>
-                                    </Tooltip>
-                                ) : null
-                            }
-                        />
+                        <Fees low={FEES.low} medium={FEES.medium} high={FEES.high} fee={fee} miniFee={FEES.low} onChange={changeFee} />
                     </FeeContainer>
                 </AmountFeePassContainer>
                 <BalanceContainer>
@@ -416,7 +383,7 @@ function DepositModal(props: Props) {
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => createAccount()}>
+                <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => depositToOven()}>
                     {/* TODO(keefertaylor): Translations */}
                     Deposit
                 </DelegateButton>

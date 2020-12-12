@@ -31,8 +31,11 @@ const ADD_OVEN_MODAL_IDENTIFIER = 'add_oven';
 const DeployOvenButtonWrapper = (props) => {
     const { children } = props;
 
-    const selectedAccount = useSelector(getAccountSelector);
-    const { balance } = selectedAccount;
+    // T2 only supports one identity. This *WILL* break in the future if multiple identities are
+    // supported.
+    const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
+    const activeIdentity = identities[0];
+    const balance = activeIdentity.balance;
 
     const dispatch = useDispatch();
 
