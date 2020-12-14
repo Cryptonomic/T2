@@ -25,6 +25,9 @@ import TokenNav from '../TokenNav';
 import SignVerifyModal from '../../featureModals/SignVerify';
 import AuthModal from '../../featureModals/Auth';
 import BeaconRegistrationModal from '../../featureModals/Beacon/BeaconRegistrationModal';
+import BeaconConnectionRequest from '../../featureModals/Beacon/BeaconConnectionRequest';
+import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
+import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
 import BeaconEventModal from '../../featureModals/Beacon/BeaconEventModal';
 import BeaconInfoModal from '../../featureModals/Beacon/BeaconInfoModal';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
@@ -167,6 +170,7 @@ function AddressBlock(props: Props) {
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
     const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+    const [step, setStep] = useState(1);
     const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() => getLocalData('isHideDelegateTooltip'));
 
     const { publicKeyHash, balance, accounts, status, storeType } = accountBlock;
@@ -401,6 +405,19 @@ function AddressBlock(props: Props) {
             {isBeaconRegistrationModalOpen && (
                 <BeaconRegistrationModal open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
             )}
+            {/* {
+                step == 1 && <BeaconConnectionRequest open={true} onClose={() => setIsModalOpen(false, 'beaconRegistration')} onNext={() => setStep(2)}/>
+            }
+
+            {
+                step == 2 && <BeaconPermission open={true} onClose={() => setIsModalOpen(false, 'beaconRegistration')} onNext={() => setStep(3)}/>
+            }
+
+            {
+                step == 3 && <BeaconAuthorize open={true} onClose={() => setIsModalOpen(false, 'beaconRegistration')}/>
+            } */}
+            
+            
             {isBeaconEventModalOpen && <BeaconEventModal open={isBeaconEventModalOpen} onClose={() => setIsModalOpen(false, 'beaconEvent')} />}
             {isBeaconInfoModalOpen && <BeaconInfoModal open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />}
 
