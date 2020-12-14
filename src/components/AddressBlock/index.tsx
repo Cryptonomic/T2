@@ -336,21 +336,33 @@ function AddressBlock(props: Props) {
             </AddDelegateLabel>
 
             {tokens.map((token, index) => {
+                let tokenType = AddressType.Token; // TODO
+
+                // Always show wXTZ so that users can open the vaulting API.
+                // TODO(keefertaylor|anonymoussprocket): Determine how to correctly show an empty state.
+                if (token.kind === TokenKind.wxtz) {
+                    tokenType = AddressType.wXTZ;
+
+                    return (
+                        <TokenNav
+                            key={token.address}
+                            isActive={!isModalOpen && token.address === selectedAccountHash}
+                            token={token}
+                            onClick={() => goToAccount(token.address, index, tokenType)}
+                        />
+                    );
+                }
+
                 if (!token.balance) {
                     return null;
                 }
 
-                let tokenType = AddressType.Token; // TODO
                 if (token.kind === TokenKind.stkr) {
                     tokenType = AddressType.STKR;
                 }
 
                 if (token.kind === TokenKind.tzbtc) {
                     tokenType = AddressType.TzBTC;
-                }
-
-                if (token.kind === TokenKind.wxtz) {
-                    tokenType = AddressType.wXTZ;
                 }
 
                 return (
