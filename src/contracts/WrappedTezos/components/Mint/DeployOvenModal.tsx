@@ -237,9 +237,8 @@ function DeployOvenModal(props: Props) {
             setConfirmOpen(true);
         }
 
-        // TODO(keefertaylor): Pass through delegate parameter to thunk when it is supported.
         const delegateParam = delegate === '' ? undefined : delegate;
-        const isDeployed = await dispatch(deployOven(Math.floor(fee), passPhrase));
+        const isDeployed = await dispatch(deployOven(Math.floor(fee), passPhrase, delegateParam));
 
         setConfirmOpen(false);
         dispatch(setIsLoadingAction(false));
