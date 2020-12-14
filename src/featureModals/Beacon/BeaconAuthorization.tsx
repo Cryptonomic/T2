@@ -42,6 +42,7 @@ import {
     TitleContainer,
     TooltipContent,
 } from '../style';
+import { setModalOpen } from '../../reduxContent/modal/actions';
 
 export const PromptContainer = styled.div`
     align-items: center;
@@ -59,44 +60,80 @@ interface Props {
     onClose: () => void;
 }
 
-const BeaconAuthorize = (props: Props) => {
-    const { open, onClose } = props;
+const BeaconAuthorize = ({ open, onClose }: Props) => {
+    const dispatch = useDispatch();
     const { t } = useTranslation();
-    const { isLoading } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { selectedParentHash, isLedger, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
+    const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
+    const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
+    const modalValues = useSelector<RootState, ModalState>((state) => state.modal.values, shallowEqual);
+    const beaconClient = useSelector<RootState, WalletClient>((state: RootState) => state.app.beaconClient);
+    const [loading, setLoading] = useState(false);
+
+    const derivationPath = isLedger ? getMainPath(settings.pathsList, settings.selectedPath) : '';
+    const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
+    const connectedBlockchainNode = getMainNode(settings.nodesList, settings.selectedNode);
+
+    const onAuthorize = async () => {
+        setLoading(true);
+        const authorizationScope = modalValues[activeModal].scopes.join(', ');
+        const authorizationRequestId = modalValues[activeModal].id;
+        const response: PermissionResponseInput = {
+            type: BeaconMessageType.PermissionResponse,
+            network: { type: connectedBlockchainNode.network } as Network,
+            scopes: authorizationScope.split(', ') as PermissionScope[],
+            id: authorizationRequestId,
+            publicKey: keyStore.publicKey,
+        };
+
+        try {
+            await beaconClient.respond(response);
+        } catch (e) {
+            console.log('BeaconAuthorize error', e);
+            setLoading(false);
+        }
+    };
+
     return (
         <ModalWrapper open={open}>
             {open ? (
                 <ModalContainer>
-                    <CloseIconWrapper onClick={() => onClose()} />
+                    {/* <CloseIconWrapper onClick={() => onClose()} /> */}
                     {/* <ModalTitle>{t('components.Beacon.registrationModal.title')}</ModalTitle> */}
                     <Container>
-                    <div className="modal-holder">
-                        <h3>Authorize Operations</h3>
-                        <div>
-                        <img src={beaconReq} />
-                        {/* <span className="divider"></span>
+                        <div className="modal-holder">
+                            <h3>Authorize Operations</h3>
+                            <div>
+                                <img src={beaconReq} />
+                                {/* <span className="divider"></span>
                         <img src="./beaconRequest.svg" /> */}
+                            </div>
+                            <h4>Network: Mainnet</h4>
+                            <p className="linkAddress">https://app.dexter.exchange/</p>
+                            <p>
+                                Dexter is requesting to send a transaction of <strong>[amount]</strong> <strong>[unit]</strong> to{' '}
+                                <strong>tz1irJKkXS2DBWkU1NnmFQx1c1L7pbGg4yhk</strong> with the following parameters:{' '}
+                            </p>
+                            <ul>
+                                <li>Parameter 1</li>
+                                <li>Parameter 1</li>
+                            </ul>
+                            <p className="subtitleText">To see more parameters, view the operation details below</p>
+                            <p className="fontWeight400">Operations</p>
+                            <textarea className="inputField"/>
+                            <p className="subtitleText">
+                                Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
+                            </p>
                         </div>
-                        <h4>Network: Mainnet</h4>
-                        <p className="linkAddress">https://app.dexter.exchange/</p>
-                        <p>Dexter is requesting to send a transaction of <strong>[amount]</strong> <strong>[unit]</strong> to <strong>tz1irJKkXS2DBWkU1NnmFQx1c1L7pbGg4yhk</strong> with the following parameters: </p>
-                        <ul>
-                        <li>Parameter 1</li>
-                        <li>Parameter 1</li>
-                        </ul>
-                        <p className="subtitleText">To see more parameters, view the operation details below</p>
-                        <p className="fontWeight400">Operations</p>
-                        <textarea className="inputField"></textarea>
-                        <p className="subtitleText">Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.</p>
-                    </div>
                     </Container>
-                    {isLoading && <Loader />}
+                    {loading && <Loader />}
                     <Footer>
                         <ButtonContainer>
-                            <WhiteBtn buttonTheme="secondary">
+                            <WhiteBtn buttonTheme="secondary" onClick={onClose}>
                                 {t('general.verbs.cancel')}
                             </WhiteBtn>
-                            <InvokeButton buttonTheme="primary">
+                            <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
                                 {t('general.verbs.connect')}
                             </InvokeButton>
                         </ButtonContainer>
