@@ -297,7 +297,7 @@ function DeployOvenModal(props: Props) {
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use translations. */}
-                    Ovens lock XTZ and mint WXTZ.
+                    Ovens lock XTZ and mint wXTZ.
                 </MessageContainer>
             </MainContainer>
             <InputAddressContainer>
