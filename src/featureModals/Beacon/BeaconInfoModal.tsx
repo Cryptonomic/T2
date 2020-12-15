@@ -54,7 +54,7 @@ const BeaconInfoModal = (props: Props) => {
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
 
-    const beaconClient = useSelector<RootState, WalletClient>((state: RootState) => state.app.beaconClient);
+    // const beaconClient = useSelector<RootState, WalletClient>((state: RootState) => state.app.beaconClient);
 
     const { open, onClose } = props;
 
@@ -62,37 +62,37 @@ const BeaconInfoModal = (props: Props) => {
 
     useEffect(() => {
         const beaconInfo = {};
-        const readState = async () => {
-            const apps = await beaconClient.getAppMetadataList();
-            for (const app of apps) {
-                beaconInfo[app.senderId] = { name: app.name };
-            }
+        // const readState = async () => {
+        //     const apps = await beaconClient.getAppMetadataList();
+        //     for (const app of apps) {
+        //         beaconInfo[app.senderId] = { name: app.name };
+        //     }
 
-            const permissions = await beaconClient.getPermissions();
-            for (const p of permissions) {
-                try {
-                    beaconInfo[p.senderId].website = p.website;
-                    beaconInfo[p.senderId].publicKey = p.publicKey;
-                    beaconInfo[p.senderId].accountIdentifier = p.accountIdentifier;
-                    beaconInfo[p.senderId].network = p.network.type;
-                    beaconInfo[p.senderId].scopes = p.scopes;
-                    beaconInfo[p.senderId].connectedAt = new Date(p.connectedAt);
-                } catch (err) {
-                    //
-                }
-            }
+        //     const permissions = await beaconClient.getPermissions();
+        //     for (const p of permissions) {
+        //         try {
+        //             beaconInfo[p.senderId].website = p.website;
+        //             beaconInfo[p.senderId].publicKey = p.publicKey;
+        //             beaconInfo[p.senderId].accountIdentifier = p.accountIdentifier;
+        //             beaconInfo[p.senderId].network = p.network.type;
+        //             beaconInfo[p.senderId].scopes = p.scopes;
+        //             beaconInfo[p.senderId].connectedAt = new Date(p.connectedAt);
+        //         } catch (err) {
+        //             //
+        //         }
+        //     }
 
-            const peers = await beaconClient.getPeers();
-            for (const peer of peers) {
-                try {
-                    beaconInfo[peer.publicKey].relayServer = peer.relayServer;
-                } catch (err) {
-                    //
-                }
-            }
-            setBeaconState(beaconInfo);
-        };
-        readState();
+        //     const peers = await beaconClient.getPeers();
+        //     for (const peer of peers) {
+        //         try {
+        //             beaconInfo[peer.publicKey].relayServer = peer.relayServer;
+        //         } catch (err) {
+        //             //
+        //         }
+        //     }
+        //     setBeaconState(beaconInfo);
+        // };
+        // readState();
     }, []);
     // TODO: below needs a cancel button next to the connect button and a deny button next to the grant button
     return (
