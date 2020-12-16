@@ -2,10 +2,25 @@ import React from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import Modal from '../../../../components/CustomModal';
 import TezosAddress from '../../../../components/TezosAddress';
-import sendImg from '../../../resources/imgs/Send.svg';
-import confirmImg from '../../../resources/imgs/Confirm-Ledger.svg';
+import sendImg from '../../../../../resources/imgs/Send.svg';
+import confirmImg from '../../../../../resources/imgs/Confirm-Ledger.svg';
+import Loader from '../../../../components/Loader';
+import { formatAmount } from '../../../../utils/currency';
+import TezosIcon from '../../../../components/TezosIcon';
 
-import { MainContainer, DescriptionContainer, SendSvg, SendDes, ItemContainer, BottomContainer, ConfirmImg, ConfirmDes, ConfirmSpan, ItemTitle } from './style';
+import {
+    MainContainer,
+    DescriptionContainer,
+    SendSvg,
+    SendDes,
+    ItemContainer,
+    BottomContainer,
+    ConfirmImg,
+    ConfirmDes,
+    ConfirmSpan,
+    ItemTitle,
+    ItemContent,
+} from './style';
 
 interface Props {
     // Message to display.
@@ -16,6 +31,15 @@ interface Props {
 
     // Sender of the operation.
     source: string;
+
+    // The fee, specificed in mutez.
+    fee: number;
+
+    // The amount, specified in mutez.
+    amount: number;
+
+    // Whether the modal is loading.
+    isLoading: boolean;
 
     // Whether the modal is open.
     open: boolean;
@@ -41,6 +65,22 @@ const LedgerConfirmModal = (props: Props) => {
                     <TezosAddress address={props.source} size="16px" weight={300} color="primary" />
                 </ItemContainer>
 
+                <ItemContainer>
+                    <ItemTitle>{t('general.nouns.fee')}</ItemTitle>
+                    <ItemContent>
+                        {formatAmount(props.fee)}
+                        <TezosIcon color="secondary" iconName="tezos" />
+                    </ItemContent>
+                </ItemContainer>
+
+                <ItemContainer>
+                    <ItemTitle>{t('general.nouns.amount')}</ItemTitle>
+                    <ItemContent>
+                        {formatAmount(props.amount)}
+                        <TezosIcon color="secondary" iconName="tezos" />
+                    </ItemContent>
+                </ItemContainer>
+
                 {props.vaultAddress && (
                     <ItemContainer>
                         {/* TODO(keefertaylor): translations */}
@@ -58,6 +98,7 @@ const LedgerConfirmModal = (props: Props) => {
                 </ConfirmDes>
                 <ConfirmImg src={confirmImg} />
             </BottomContainer>
+            {props.isLoading && <Loader />}
         </Modal>
     );
 };

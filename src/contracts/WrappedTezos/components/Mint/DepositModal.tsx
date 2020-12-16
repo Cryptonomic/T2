@@ -6,6 +6,7 @@ import { OperationKindType } from 'conseiljs';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '../../../../components/TextField';
 import TezosNumericInput from '../../../../components/TezosNumericInput';
+import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';
 
 import Modal from '../../../../components/CustomModal';
 import Tooltip from '../../../../components/Tooltip/';
@@ -390,19 +391,19 @@ function DepositModal(props: Props) {
                 </DelegateButton>
             </PasswordButtonContainer>
             {isLoading && <Loader />}
-            {/* TODO(keefertaylor): Investigate ledger modal. */}
-            {/* {isLedger && open && (
-        <AddDelegateLedgerModal
-          amount={amount}
-          fee={fee}
-          address={delegate}
-          source={selectedParentHash}
-          manager={selectedParentHash}
-          open={confirmOpen}
-          onClose={() => setConfirmOpen(false)}
-          isLoading={isLoading}
-        />
-      )} */}
+            {isLedger && open && (
+                <LedgerConfirmModal
+                    // TODO(keefertaylor): translations
+                    message="Confirm the deposit operation"
+                    vaultAddress={ovenAddress}
+                    source={selectedParentHash}
+                    isLoading={isLoading}
+                    open={confirmOpen}
+                    onClose={() => setConfirmOpen(false)}
+                    fee={fee}
+                    amount={numAmount}
+                />
+            )}
         </Modal>
     );
 }

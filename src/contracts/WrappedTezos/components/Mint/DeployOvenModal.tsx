@@ -210,6 +210,9 @@ function DeployOvenModal(props: Props) {
     const [balance, setBalance] = useState(props.managerBalance - total);
 
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+
+    console.log('Stakerdao is ledger ' + isLedger);
+
     const { open, managerBalance, onClose } = props;
 
     const isDisabled = isLoading || (!passPhrase && !isLedger) || balance < 0 || isDelegateIssue;
@@ -338,6 +341,7 @@ function DeployOvenModal(props: Props) {
                     Deploy Oven
                 </DelegateButton>
             </PasswordButtonContainer>
+            {isLoading && <Loader />}
             {isLedger && open && (
                 <LedgerConfirmModal
                     // TODO(keefertaylor): translations
@@ -345,7 +349,10 @@ function DeployOvenModal(props: Props) {
                     vaultAddress={undefined}
                     source={selectedParentHash}
                     open={confirmOpen}
+                    isLoading={isLoading}
                     onClose={() => setConfirmOpen(false)}
+                    fee={fee}
+                    amount={0}
                 />
             )}
         </Modal>
