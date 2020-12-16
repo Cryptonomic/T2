@@ -261,7 +261,8 @@ function DepositModal(props: Props) {
         const numAmount = parseFloat(commaReplacedAmount) * utez;
         const newTotal = numAmount + fee;
         const newBalance = managerBalance - total;
-        updateState({ amount: newAmount, total: newTotal, balance: newBalance });
+        console.log('Stakerdao] num amount: ' + numAmount);
+        updateState({ amount: newAmount, numAmount, total: newTotal, balance: newBalance });
     }
 
     function changeFee(newFee) {

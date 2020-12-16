@@ -1,4 +1,4 @@
-import { WrappedTezosHelper, TezosNodeReader } from 'conseiljs';
+import { WrappedTezosHelper, OpenOvenResult, TezosNodeReader, TezosConseilClient, ConseilServerInfo } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateOvensAction, updateTokensAction } from '../../reduxContent/wallet/actions';
 
