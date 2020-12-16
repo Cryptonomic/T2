@@ -180,55 +180,46 @@ const BoldSpan = styled.span`
 const utez = 1000000;
 const GAS = 64250; // TODO: burn actually
 
+const FEES = {
+    low: 0,
+    medium: 60000,
+    high: 1000000,
+};
+
 interface Props {
     open: boolean;
     managerBalance: number;
     onClose: () => void;
 }
 
-const defaultState = {
-    fee: 2840,
-    total: 0,
-    balance: 0,
-};
-
 // TODO(keefertaylor): Investigate if we require the ledger variant as well.
 function DeployOvenModal(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [state, setState] = useState(defaultState);
     const [delegate, setDelegate] = useState('');
     const [passPhrase, setPassPhrase] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [isDelegateIssue, setIsDelegateIssue] = useState(false);
-    const { fee, total, balance } = state;
 
-    const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(OperationKindType.Transaction, true, true);
+    // Set up initial fees.
+    const [fee, setFee] = useState(FEES.medium);
+    // Total cost of the operation.
+    const [total, setTotal] = useState(fee + GAS);
+    // Remaining balance for user
+    const [balance, setBalance] = useState(props.managerBalance - total);
+
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { open, managerBalance, onClose } = props;
 
     const isDisabled = isLoading || (!passPhrase && !isLedger) || balance < 0 || isDelegateIssue;
 
-    useEffect(() => {
-        setState((prevState) => {
-            return {
-                ...prevState,
-                fee: newFees.medium,
-                total: newFees.medium + GAS,
-            };
-        });
-    }, [isFeeLoaded]);
-
-    function updateState(updatedValues) {
-        setState((prevState) => {
-            return { ...prevState, ...updatedValues };
-        });
-    }
-
     function changeFee(newFee) {
         const newTotal = newFee + GAS;
         const newBalance = managerBalance - total;
-        updateState({ fee: newFee, total: newTotal, balance: newBalance });
+
+        setFee(newFee);
+        setTotal(newTotal);
+        setBalance(newBalance);
     }
 
     async function deploy() {
@@ -253,9 +244,13 @@ function DeployOvenModal(props: Props) {
     }
 
     function onCloseClick() {
-        const newFee = newFees.medium;
+        const newFee = FEES.medium;
         const newTotal = newFee + GAS;
-        updateState({ fee: newFee, total: newTotal, balance: managerBalance - newTotal });
+
+        setFee(newFee);
+        setTotal(newTotal);
+        setBalance(managerBalance - newTotal);
+
         onClose();
     }
 
@@ -273,20 +268,6 @@ function DeployOvenModal(props: Props) {
             warningMessage: '',
             balanceColor: 'gray8',
         };
-    }
-
-    function renderFeeToolTip() {
-        return (
-            <TooltipContainer>
-                <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>
-                <TooltipContent>
-                    <Trans i18nKey="components.send.fee_tooltip_content">
-                        This address is not revealed on the blockchain. We have added
-                        <BoldSpan>0.001420 XTZ</BoldSpan> for Public Key Reveal to your regular send operation fee.
-                    </Trans>
-                </TooltipContent>
-            </TooltipContainer>
-        );
     }
 
     const { isIssue, warningMessage, balanceColor } = getBalanceState();
@@ -313,23 +294,7 @@ function DeployOvenModal(props: Props) {
             <MainContainer>
                 <AmountFeePassContainer>
                     <FeeContainer>
-                        <Fees
-                            low={newFees.low}
-                            medium={newFees.medium}
-                            high={newFees.high}
-                            fee={fee}
-                            miniFee={miniFee}
-                            onChange={changeFee}
-                            tooltip={
-                                !isRevealed ? (
-                                    <Tooltip position="bottom" content={renderFeeToolTip()}>
-                                        <IconButton size="small">
-                                            <TezosIcon iconName="help" size={ms(1)} color="gray5" />
-                                        </IconButton>
-                                    </Tooltip>
-                                ) : null
-                            }
-                        />
+                        <Fees low={FEES.low} medium={FEES.medium} high={FEES.high} fee={fee} miniFee={FEES.low} onChange={changeFee} />
                     </FeeContainer>
                     <GasInputContainer>
                         <TextField disabled={true} label={t('general.verbs.burn')} defaultValue="0.06425" />
