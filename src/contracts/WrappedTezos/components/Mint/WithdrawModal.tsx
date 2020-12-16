@@ -211,15 +211,6 @@ interface Props {
     onClose: () => void;
 }
 
-const defaultState = {
-    wxtzToWithdraw: '',
-    wxtzToWithdrawNumber: 0,
-    wxtzRemaining: 0,
-    fee: FEES.medium,
-    total: 0,
-    balance: 0,
-};
-
 // TODO(keefertaylor): Investigate if we require the ledger variant as well.
 // TODO(keefertaylor): Remove redundant information - gas, etc
 // TODO(keefertaylor): Include oven as a property.
@@ -227,14 +218,19 @@ const defaultState = {
 function DepositModal(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [state, setState] = useState(defaultState);
     // TODO(keefertaylor): Remove delegate code.
     const [delegate, setDelegate] = useState('');
     const [passPhrase, setPassPhrase] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [isDelegateIssue, setIsDelegateIssue] = useState(false);
-    const { wxtzToWithdraw, wxtzToWithdrawNumber, wxtzRemaining, fee, total, balance } = state;
     const selectedToken = useSelector(getTokenSelector);
+
+    const [wxtzToWithdraw, setWxtzToWithdraw] = useState('');
+    const [wxtzToWithdrawNumber, setWxtzToWithdrawNumber] = useState(0);
+    const [wxtzRemaining, setWxtzRemaining] = useState(props.wrappedTezBalance);
+    const [fee, setFee] = useState(FEES.medium);
+    const [total, setTotal] = useState(FEES.medium);
+    const [balance, setBalance] = useState(props.managerBalance - total);
 
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { open, managerBalance, ovenAddress, wrappedTezBalance, vaultBalance, onClose } = props;
@@ -250,19 +246,17 @@ function DepositModal(props: Props) {
         wxtzAmountWarningMessage,
         wxtzAmountColor,
     } = getBalanceState();
+
     const isDisabled =
         isLoading || !wxtzToWithdraw || (!passPhrase && !isLedger) || isXtzBalanceIssue || isWxtzBalanceIssue || isWxtzAmountIssue || isDelegateIssue;
-
-    function updateState(updatedValues) {
-        setState((prevState) => {
-            return { ...prevState, ...updatedValues };
-        });
-    }
 
     function onUseMax() {
         const max = wrappedTezBalance;
         const newWxtzToWithdraw = (max / utez).toFixed(6);
-        updateState({ wxtzToWithdraw: newWxtzToWithdraw, wxtzToWithdrawNumber: max, wxtzRemaining: 0 });
+
+        setWxtzToWithdraw(newWxtzToWithdraw);
+        setWxtzToWithdrawNumber(max);
+        setWxtzRemaining(0);
     }
 
     function changeWxtzToWithdraw(newWxtzToWithdraw = '0') {
@@ -271,12 +265,18 @@ function DepositModal(props: Props) {
         console.log('STAKERDAO: FOR THE LOVE OF GOD, my balance is ' + props.wrappedTezBalance);
 
         const numWxtzRemaining = props.wrappedTezBalance - numWxtzToWithdraw;
-        updateState({ wxtzToWithdraw: newWxtzToWithdraw, wxtzToWithdrawNumber: numWxtzToWithdraw, wxtzRemaining: numWxtzRemaining });
+
+        setWxtzToWithdraw(newWxtzToWithdraw);
+        setWxtzToWithdrawNumber(numWxtzToWithdraw);
+        setWxtzRemaining(numWxtzRemaining);
     }
 
     function changeFee(newFee) {
         const newBalance = managerBalance - newFee;
-        updateState({ fee: newFee, total: newFee, balance: newBalance });
+
+        setFee(newFee);
+        setTotal(newFee);
+        setBalance(newBalance);
     }
 
     async function withdrawFromOven() {
@@ -295,7 +295,11 @@ function DepositModal(props: Props) {
     function onCloseClick() {
         const newFee = FEES.medium;
         const newTotal = newFee;
-        updateState({ fee: newFee, total: newTotal, balance: managerBalance - newTotal });
+
+        setFee(newFee);
+        setTotal(newTotal);
+        setBalance(managerBalance - newTotal);
+
         onClose();
     }
 
