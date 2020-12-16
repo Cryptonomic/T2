@@ -242,7 +242,6 @@ function DepositModal(props: Props) {
             newTotal = managerBalance - MinBalance;
             newBalance = MinBalance;
         }
-        console.log('Stakerdao] num amount: ' + max);
 
         setAmount(newAmount);
         setNumAmount(max);

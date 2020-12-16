@@ -35,8 +35,6 @@ const ActionPanel = () => {
         dispatch(updateActiveTabThunk(newTab, true));
     };
 
-    console.log('STAKERDAO] Token Dump: ' + JSON.stringify(selectedToken));
-
     return (
         <Container>
             <BalanceBanner

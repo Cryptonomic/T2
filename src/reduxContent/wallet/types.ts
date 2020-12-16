@@ -57,11 +57,6 @@ export interface UpdateTokensAction {
     tokens: (VaultToken | Token)[];
 }
 
-export interface UpdateOvensAction {
-    type: typeof UPDATE_OVENS;
-    ovens: Vault[];
-}
-
 export type WalletActionTypes =
     | SetWalletAction
     | SetWalletFileNameAction
