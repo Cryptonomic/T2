@@ -3,6 +3,8 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { BeaconMessageType, OperationResponseInput } from '@airgap/beacon-sdk';
+import { BigNumber } from 'bignumber.js';
+import { TezosParameterFormat } from 'conseiljs';
 
 import { beaconClient } from './BeaconConnect';
 
@@ -49,13 +51,40 @@ const BeaconAuthorize = ({ open, onClose }: Props) => {
 
     const [password, setPassword] = useState('');
 
-    const { id, operationDetails } = modalValues[activeModal];
-    const isContract = operationDetails[0].destination === 'contract'; // TODO: // recognise contract call and simple transaction
+    const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
+    const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognise contract call and simple transaction
 
     const onAuthorize = async () => {
         try {
             dispatch(setBeaconLoading(true));
-            // TODO: make transaction
+
+            // const requiresBurn = await getIsImplicitAndEmptyThunk(operationDetails[0].destination, settings.nodesList, settings.selectedNode);
+
+            // TODO: validate fee against min
+            // TODO: validate burn+amount+fee against balance - 1xtz
+            // TODO: validate amount > 0 for
+            // TODO: validate destination != self
+
+            /*if (isContract) {
+                dispatch(invokeAddressThunk(
+                    operationDetails[0].destination,
+                    fee, 
+                    new BigNumber(operationDetails[0].amount)).dividedBy(1_000_000).toNumber()
+                    10_000,
+                    500_000,
+                    operationDetails[0].parameters.value,
+                    password,
+                    selectedParentHash,
+                    operationDetails[0].parameters.entrypoint,
+                    TezosParameterFormat.Micheline));
+                TODO: ledger
+            } else {
+                dispatch(sendTezThunk(password,
+                    operationDetails[0].destination,
+                    new BigNumber(operationDetails[0].amount)).dividedBy(1_000_000).toNumber(), Math.floor(fee)));
+                    // amount as fraction, fee as mutez – Ugh
+                TODO: ledger
+            }*/
 
             const response: OperationResponseInput = {
                 type: BeaconMessageType.OperationResponse,
@@ -69,16 +98,6 @@ const BeaconAuthorize = ({ open, onClose }: Props) => {
         } catch (e) {
             console.log('BeaconAuthorize error', e);
         }
-
-        // const requiresBurn = await getIsImplicitAndEmptyThunk(operationDetails[0].destination, settings.nodesList, settings.selectedNode);
-
-        // TODO: validate fee against min
-        // TODO: validate burn+amount+fee against balance - 1xtz
-        // TODO: validate amount > 0
-        // TODO: validate destination != self
-
-        // dispatch(sendTezThunk(password, target, amount, Math.floor(fee))); // amount as fraction, fee as mutez – Ugh
-        // dispatch(invokeAddressThunk(contractAddress, fee, amount, storage, gas, parameters, passPhrase, selectedInvokeAddress, entryPoint, codeFormat));
     };
 
     return (
@@ -91,23 +110,23 @@ const BeaconAuthorize = ({ open, onClose }: Props) => {
                             <div>
                                 <img src={beaconReq} />
                             </div>
-                            <h4>Network: Mainnet</h4>
-                            <p className="linkAddress">https://app.dexter.exchange/</p>
+                            <h4>Network: {network.type}</h4>
+                            <p className="linkAddress">{website}</p>
                             <p>
-                                Dexter is requesting to send a transaction of <strong>{operationDetails[0].amount}</strong> <strong>[unit]</strong> to{' '}
+                                {appMetadata.name} is requesting to send a transaction of{' '}
+                                <strong>{new BigNumber(operationDetails[0].amount).dividedBy(1_000_000).toNumber().toFixed(6)}</strong> <strong>XTZ</strong> to{' '}
                                 <strong>{operationDetails[0].destination}</strong> {`${isContract ? 'with the following parameters:' : ' '}`}
                             </p>
                             {isContract && (
                                 <div>
-                                    <ul>
-                                        <li>Parameter 1</li>
-                                        <li>Parameter 1</li>
-                                    </ul>
+                                    {operationDetails[0].parameters.entrypoint && <div>Contract Function: {operationDetails[0].parameters.entrypoint}</div>}
+                                    {operationDetails[0].parameters.value && <div>Parameters: {operationDetails[0].parameters.value}</div>}
                                     <p className="subtitleText">To see more parameters, view the operation details below</p>
                                     <p className="fontWeight400">Operations</p>
-                                    <textarea className="inputField" />
+                                    <textarea className="inputField">{JSON.stringify(operationDetails[0], null, 2)}</textarea>
                                 </div>
                             )}
+                            <p>Fee</p>
                             <p className="subtitleText">
                                 Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
                             </p>
