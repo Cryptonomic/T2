@@ -1,4 +1,4 @@
-import { Token, TokenKind } from '../types/general';
+import { VaultToken, Token, TokenKind } from '../types/general';
 import { TRANSACTIONS, DETAILS } from './TabConstants';
 
 import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
@@ -7,7 +7,7 @@ import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 import ethtzIcon from '../../resources/contracts/ethtz-icon.png';
 import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 
-export const knownTokenContracts: Token[] = [
+export const knownTokenContracts: (Token | VaultToken)[] = [
     {
         network: 'mainnet',
         address: 'KT1EctCuorV2NfVb1XTQgvzJ88MQtWP8cMMv',
@@ -129,9 +129,13 @@ export const knownTokenContracts: Token[] = [
         activeTab: TRANSACTIONS,
         kind: TokenKind.wxtz,
         icon: wxtzIcon,
-        scale: 0,
-        precision: 0,
-        round: 0,
+        scale: 6,
+        precision: 6,
+        round: 6,
+        // TODO(keefertaylor): rename these variables.
+        ovenCoreAddress: 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8',
+        ovenRegistryMapId: 14569,
+        ovenList: [],
     },
     {
         network: 'delphinet',

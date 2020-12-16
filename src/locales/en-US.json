@@ -117,7 +117,7 @@
             "invoke_manager": "Manage Delegation"
         },
         "addDelegateModal": {
-            "gas_tool_tip": "{{gas}} tz is required by the network to create a delegated address",
+            "gas_tool_tip": "{{gas}} XTZ is required by the network to create a delegated address",
             "warning1": "Total exceeds available funds",
             "warning2": "Manager Addresses are not yet allowed to have less than 1 µtz",
             "add_delegate_title": "Delegation Contracts",
@@ -292,7 +292,7 @@
             "contents": {
                 "content1": "You can always change the delegate at a later time.",
                 "content2": "There is a fee for changing the delegate.",
-                "content3": "You can only delegate to the Manager Address. Manager Addresses always starts with tz1, tz2 or tz3."
+                "content3": "You can only delegate to Manager Addresses. Manager Addresses always start with tz1, tz2 or tz3."
             },
             "errors": {
                 "send_address": "Addresses can only start tz1, tz2, tz3 or KT1",
