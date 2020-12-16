@@ -89,7 +89,7 @@ const BeaconAuthorize = (props: Props) => {
                             </ul>
                             <p className="subtitleText">To see more parameters, view the operation details below</p>
                             <p className="fontWeight400">Operations</p>
-                            <textarea className="inputField" />
+                            <textarea className="inputField"/>
                             <p className="subtitleText">
                                 Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
                             </p>
