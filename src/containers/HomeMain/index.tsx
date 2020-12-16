@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import React from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
 import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
+
+import { BeaconConnect } from '../../featureModals/Beacon/BeaconConnect';
 
 import AddressBlock from '../../components/AddressBlock';
 import BabylonDelegation from '../../contracts/BabylonDelegation';
@@ -11,7 +13,6 @@ import ImplicitAccount from '../../contracts/ImplicitAccount';
 import StakerToken from '../../contracts/StakerToken';
 import TzBtcToken from '../../contracts/TzBtcToken';
 import WXTZToken from '../../contracts/WrappedTezos';
-import { initBeaconThunk } from '../../reduxContent/app/thunks';
 import { sortArr } from '../../utils/array';
 
 import { Container, SideBarContainer, AccountItem } from './style';
@@ -19,11 +20,6 @@ import { Container, SideBarContainer, AccountItem } from './style';
 function HomeMain() {
     const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
     const addressType = useSelector((state: RootState) => state.app.selectedAccountType);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(initBeaconThunk());
-    }, []);
 
     function renderView() {
         switch (addressType) {
@@ -46,6 +42,7 @@ function HomeMain() {
 
     return (
         <Container>
+            <BeaconConnect />
             <SideBarContainer>
                 {identities.sort(sortArr({ sortOrder: 'asc', sortBy: 'order' })).map((accountBlock, index) => (
                     <AccountItem key={index}>

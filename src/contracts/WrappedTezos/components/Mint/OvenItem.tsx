@@ -69,8 +69,8 @@ const InvokeButton = styled(Button)`
 
 interface Props {
     address: string;
-    delegate: string | undefined;
     balance: number;
+    delegate?: string;
 
     // Functions to call to open action modals.
     deposit: (ovenAddress: string) => void;
@@ -100,15 +100,18 @@ function OvenItem(props: Props) {
                     {/* TODO(keefertaylor): Use translations here */}
                     Deposit
                 </InvokeButton>
-                <InvokeButton buttonTheme="primary" onClick={() => props.withdraw(address)}>
-                    {/* TODO(keefertaylor): Use translations here */}
-                    Withdraw
-                </InvokeButton>
-                {/* TODO(keefertaylor): Add buttons for deposit and withdraw */}
-                <InvokeButton buttonTheme="primary" onClick={() => props.setDelegate(address)}>
-                    {/* TODO(keefertaylor): Use translations here */}
-                    Set Delegate
-                </InvokeButton>
+                {balance > 0 && (
+                    <InvokeButton buttonTheme="primary" onClick={() => props.withdraw(address)}>
+                        {/* TODO(keefertaylor): Use translations here */}
+                        Withdraw
+                    </InvokeButton>
+                )}
+                {balance > 0 && (
+                    <InvokeButton buttonTheme="primary" onClick={() => props.setDelegate(address)}>
+                        {/* TODO(keefertaylor): Use translations here */}
+                        Set Delegate
+                    </InvokeButton>
+                )}
             </ContentDiv>
         </Container>
     );

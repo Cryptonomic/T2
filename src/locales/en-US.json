@@ -30,6 +30,7 @@
             "copy": "Copy",
             "connect": "Connect",
             "authorize": "Authorize",
+            "allow": "Allow",
             "approve": "Approve"
         },
         "nouns": {
@@ -136,14 +137,14 @@
             "signature_prompt": "Authenticate by signing the words below to confirm your control of the private key associated with this account"
         },
         "Beacon": {
-            "registrationModal": {
-                "title": "Beacon Connection Request"
+            "connection": {
+                "title": "Connection Request"
             },
-            "eventModal": {
-                "title": "Beacon Request"
+            "permission": {
+                "title": "Permission Request"
             },
-            "infoModal": {
-                "title": "Beacon Status"
+            "authorization": {
+                "title": "Authorize Operations"
             }
         },
         "interactModal": {

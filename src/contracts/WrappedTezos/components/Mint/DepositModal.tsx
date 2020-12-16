@@ -191,7 +191,8 @@ const InfoIcon = styled(TezosIcon)`
     padding: 1px 7px 0px 0px;
 `;
 
-const utez = 1000000;
+const utez = 1_000_000;
+const MinBalance = 3_000_001;
 
 const FEES = {
     low: 0,
@@ -241,14 +242,14 @@ function DepositModal(props: Props) {
     }
 
     function onUseMax() {
-        const max = managerBalance - fee;
+        const max = managerBalance - fee - MinBalance;
         let newAmount = '0';
         let newTotal = fee;
         let newBalance = managerBalance - total;
         if (max > 0) {
             newAmount = (max / utez).toFixed(6);
-            newTotal = managerBalance;
-            newBalance = 0;
+            newTotal = managerBalance - MinBalance;
+            newBalance = MinBalance;
         }
         console.log('Stakerdao] num amount: ' + max);
         updateState({ amount: newAmount, numAmount: max, total: newTotal, balance: newBalance });
@@ -264,8 +265,7 @@ function DepositModal(props: Props) {
     }
 
     function changeFee(newFee) {
-        const newAmount = amount || '0';
-        const parsedAmount = parseFloat(newAmount) * utez;
+        const parsedAmount = parseFloat(amount || '0') * utez;
         const newTotal = parsedAmount + newFee;
         const newBalance = managerBalance - total;
         updateState({ fee: newFee, total: newTotal, balance: newBalance });
@@ -331,7 +331,7 @@ function DepositModal(props: Props) {
             <MainContainer>
                 <MessageContainer>
                     {/* TODO(keefertaylor): Use Translations */}
-                    <BoldSpan>Oven:</BoldSpan>
+                    <BoldSpan>Oven: </BoldSpan>
                     {ovenAddress}
                 </MessageContainer>
             </MainContainer>
@@ -339,7 +339,7 @@ function DepositModal(props: Props) {
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use Translations */}
-                    Depositing XTZ to an Oven will mint your account WXTZ.
+                    Depositing XTZ to an Oven will mint your account wXTZ.
                 </MessageContainer>
             </MainContainer>
             <MainContainer>

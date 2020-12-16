@@ -26,6 +26,10 @@ import {
     SetSignerAction,
     SET_BEACON_CLIENT,
     SetBeaconClientAction,
+    SET_BEACON_MESSAGE,
+    SetBeaconMessageAction,
+    SetBeaconLoadingAction,
+    SET_BEACON_LOADING,
 } from './types';
 import { NodeStatus, AddressType } from '../../types/general';
 
@@ -109,6 +113,14 @@ export function setSignerAction(signer: Signer): SetSignerAction {
     return { type: SET_SIGNER, signer };
 }
 
-export function setBeaconClientAction(client: any): SetBeaconClientAction {
-    return { type: SET_BEACON_CLIENT, client };
+export function setBeaconClientAction(beaconClient: boolean = false): SetBeaconClientAction {
+    return { type: SET_BEACON_CLIENT, beaconClient };
+}
+
+export function setBeaconMessageAction(beaconMessage: any = null): SetBeaconMessageAction {
+    return { type: SET_BEACON_MESSAGE, beaconMessage };
+}
+
+export function setBeaconLoading(beaconLoading: any = null): SetBeaconLoadingAction {
+    return { type: SET_BEACON_LOADING, beaconLoading };
 }

@@ -5,11 +5,13 @@ import { Node } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
 
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[]) {
-    let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
-        console.log('-debug: Error in: getSyncAccount -> getTokenTransactions for:' + tokenAddress);
-        console.error(e);
-        return [];
-    });
+    let newTransactions: any[] = (
+        await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
+            console.log('-debug: Error in: getSyncAccount -> getTokenTransactions for:' + tokenAddress);
+            console.error(e);
+            return [];
+        })
+    ).filter((obj, pos, arr) => arr.map((o) => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
 
     const transferPattern = /Pair"([1-9A-Za-z^OIl]{36})"\(Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)\)/;
     const mintPattern = /Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)/;
