@@ -135,8 +135,6 @@ export interface Token {
  * A special token which is generated through locking XTZ in "vaults"
  */
 export interface VaultToken extends Token {
-    // TODO(keefertaylor): rename these vars
-
     // Address of a contract which can originate Ovens
     vaultCoreAddress: string;
 
