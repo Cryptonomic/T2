@@ -144,7 +144,12 @@ export const Container = styled.div`
         .fontWeight400 {
             font-weight: 400;
             color: #000;
-        },
+        }
+        ,
+        .fee {
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
     }
 `;
 
