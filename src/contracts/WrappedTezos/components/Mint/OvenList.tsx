@@ -52,10 +52,10 @@ const OvenList = (props: OvenListProps) => {
         }
     };
 
-    const ovenForAddress = (ovenAddress, ovenList): Vault | undefined => {
+    const ovenForAddress = (ovenAddress, vaultList): Vault | undefined => {
         // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < ovenList.length; i++) {
-            const oven = ovenList[i];
+        for (let i = 0; i < vaultList.length; i++) {
+            const oven = vaultList[i];
             if (oven.ovenAddress === ovenAddress) {
                 return oven;
             }

@@ -18,6 +18,7 @@ import PasswordInput from '../../../../components/PasswordInput';
 import InputAddress from '../../../../components/InputAddress';
 import TezosAmount from '../../../../components/TezosAmount';
 import AddDelegateLedgerModal from '../../../../components/ConfirmModals/AddDelegateLedgerModal';
+import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';
 
 import { deployOven } from '../../thunks';
 import { useFetchFees } from '../../../../reduxContent/app/thunks';
@@ -209,6 +210,9 @@ function DeployOvenModal(props: Props) {
     const [balance, setBalance] = useState(props.managerBalance - total);
 
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+
+    console.log('Stakerdao is ledger ' + isLedger);
+
     const { open, managerBalance, onClose } = props;
 
     const isDisabled = isLoading || (!passPhrase && !isLedger) || balance < 0 || isDelegateIssue;
@@ -339,18 +343,17 @@ function DeployOvenModal(props: Props) {
             </PasswordButtonContainer>
             {isLoading && <Loader />}
             {isLedger && open && (
-                <></>
-                // TODO(keefertaylor): Enable
-                // <AddDelegateLedgerModal
-                //     amount={amount}
-                //     fee={fee}
-                //     address={delegate}
-                //     source={selectedParentHash}
-                //     manager={selectedParentHash}
-                //     open={confirmOpen}
-                //     onClose={() => setConfirmOpen(false)}
-                //     isLoading={isLoading}
-                // />
+                <LedgerConfirmModal
+                    // TODO(keefertaylor): translations
+                    message="Confirm the deploy oven operation"
+                    vaultAddress={undefined}
+                    source={selectedParentHash}
+                    open={confirmOpen}
+                    isLoading={isLoading}
+                    onClose={() => setConfirmOpen(false)}
+                    fee={fee}
+                    amount={0}
+                />
             )}
         </Modal>
     );

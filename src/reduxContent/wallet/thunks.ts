@@ -215,7 +215,7 @@ export function syncTokenThunk(tokenAddress) {
 
                 const coreContractAddress = vaultToken.ovenCoreAddress;
 
-                const ovenListBigMapId = vaultToken.ovenRegistryMapId;
+                const vaultListBigMapId = vaultToken.vaultRegistryMapId;
                 const serverInfo: ConseilServerInfo = {
                     url: mainNode.conseilUrl,
                     apiKey: mainNode.apiKey,
@@ -232,7 +232,7 @@ export function syncTokenThunk(tokenAddress) {
                 console.log('awaitError', awaitError);
             }
 
-            // Apply an optional update for OvenList
+            // Apply an optional update for vaultList
             if (ovenAddresses.length > 0) {
                 const ovenPromises = ovenAddresses.map(async (ovenAddress: string) => {
                     const ovenBalance = await TezosNodeReader.getSpendableBalanceForAccount(mainNode.tezosUrl, ovenAddress);
@@ -246,9 +246,9 @@ export function syncTokenThunk(tokenAddress) {
                         baker,
                     };
                 });
-                const ovenList = await Promise.all(ovenPromises);
+                const vaultList = await Promise.all(ovenPromises);
 
-                tokens[tokenIndex] = { ...tokens[tokenIndex], ovenList };
+                tokens[tokenIndex] = { ...tokens[tokenIndex], vaultList };
             }
 
             dispatch(updateTokensAction([...tokens]));
