@@ -16,7 +16,9 @@ export interface AppState {
     selectedAccountIndex: number;
     selectedAccountType: AddressType;
     signer: Signer | null;
-    beaconClient: any | null;
+    beaconClient: boolean;
+    beaconMessage: any | null;
+    beaconLoading: boolean;
 }
 
 export interface WalletState {

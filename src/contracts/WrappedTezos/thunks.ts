@@ -183,7 +183,7 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
                 return false;
             }
 
-            // Increment oven balance and WXTZ balance.
+            // Increment oven balance and wXTZ balance.
             token.balance = token.balance += amount;
             token.ovenList[ovenIndex].ovenBalance = token.ovenList[ovenIndex].ovenBalance += amount;
             tokens[tokenIndex] = token;
@@ -243,7 +243,7 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
                 return false;
             }
 
-            // Increment oven balance and WXTZ balance.
+            // Increment oven balance and wXTZ balance.
             token.balance = token.balance -= amount;
             token.ovenList[ovenIndex].ovenBalance = token.ovenList[ovenIndex].ovenBalance -= amount;
             tokens[tokenIndex] = token;
@@ -304,7 +304,7 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
                 return false;
             }
 
-            // Increment oven balance and WXTZ balance.
+            // Increment oven balance and wXTZ balance.
             token.ovenList[ovenIndex].baker = newDelegate;
             tokens[tokenIndex] = token;
 

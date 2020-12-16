@@ -4,6 +4,7 @@ import { TRANSACTIONS, DETAILS } from './TabConstants';
 import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
 import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
+import ethtzIcon from '../../resources/contracts/ethtz-icon.png';
 import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 
 export const knownTokenContracts: (Token | VaultToken)[] = [
@@ -50,6 +51,20 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         round: 2,
     },
     {
+        network: 'mainnet',
+        address: 'KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8',
+        displayName: 'ETHtz',
+        symbol: 'ETHtz',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: ethtzIcon,
+        scale: 18,
+        precision: 18,
+        round: 6,
+    },
+    {
         network: 'delphinet',
         address: 'KT1REPEBMQS3Be8ZybkQQfSwAv3g4pHJViuK',
         displayName: 'USDtz',
@@ -62,19 +77,6 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         scale: 6,
         precision: 6,
         round: 2,
-    },
-    {
-        network: 'carthagenet',
-        address: 'KT1HzQofKBxzfiKoMzGbkxBgjis2mWnCtbC2',
-        displayName: 'Token Sample',
-        symbol: 'TKS',
-        balance: 0,
-        transactions: [],
-        activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7,
-        scale: 6,
-        precision: 6,
-        round: 6,
     },
     {
         network: 'delphinet',
@@ -134,5 +136,18 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         ovenCoreAddress: 'KT1EZrujecyZqJnySZYvb7JxYknrtTWrVjn6',
         ovenRegistryMapId: 25903,
         ovenList: [],
+    },
+    {
+        network: 'delphinet',
+        address: 'KT1TVMrbibvGTxHZ7ttCDFAx3XGoh2zp2iDQ',
+        displayName: 'Hungry Hungry Bhaskar Token',
+        symbol: 'HHBt',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        scale: 6,
+        precision: 6,
+        round: 6,
     },
 ];
