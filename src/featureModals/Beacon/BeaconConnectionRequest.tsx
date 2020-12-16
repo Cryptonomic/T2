@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import beaconReq from '../../../resources/imgs/beaconRequest.svg';
 
 import { setBeaconLoading } from '../../reduxContent/app/actions';
+import { createMessageAction } from '../../reduxContent/message/actions';
+
 import { beaconClient } from './BeaconConnect';
 import Loader from '../../components/Loader';
 import { RootState, ModalState } from '../../types/store';
@@ -41,7 +43,8 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
             await beaconClient.addPeer(beaconRequest);
         } catch (e) {
             console.log('BeaconConnectionRequestError', e);
-            dispatch(setBeaconLoading(true));
+            dispatch(setBeaconLoading());
+            dispatch(createMessageAction('Beacon: connection request fails', true));
         }
     };
 

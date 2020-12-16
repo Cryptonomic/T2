@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { beaconClient } from './BeaconConnect';
 import { setBeaconLoading } from '../../reduxContent/app/actions';
+import { createMessageAction } from '../../reduxContent/message/actions';
 
 import beaconIntegration from '../../../resources/imgs/beacon-integration.svg';
 import beaconDexter from '../../../resources/imgs/beacon-dexter.svg';
@@ -69,7 +70,9 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                     setBeaconState(list);
                 }
             } catch (e) {
+                console.log('BeaconInfoError', e);
                 dispatch(setBeaconLoading());
+                dispatch(createMessageAction('Beacon: informations fails', true));
             }
         };
         readState();

@@ -18,6 +18,7 @@ import { sendTezThunk, getIsImplicitAndEmptyThunk } from '../../contracts/duck/t
 import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';
 import { setModalOpen } from '../../reduxContent/modal/actions';
 import { setBeaconLoading } from '../../reduxContent/app/actions';
+import { createMessageAction } from '../../reduxContent/message/actions';
 
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
 
@@ -68,7 +69,7 @@ const BeaconAuthorize = ({ open, onClose }: Props) => {
             /*if (isContract) {
                 dispatch(invokeAddressThunk(
                     operationDetails[0].destination,
-                    fee, 
+                    fee,
                     new BigNumber(operationDetails[0].amount)).dividedBy(1_000_000).toNumber()
                     10_000,
                     500_000,
@@ -97,6 +98,8 @@ const BeaconAuthorize = ({ open, onClose }: Props) => {
             dispatch(setModalOpen(false, activeModal));
         } catch (e) {
             console.log('BeaconAuthorize error', e);
+            dispatch(setBeaconLoading());
+            dispatch(createMessageAction('Beacon: authorization fails', true));
         }
     };
 

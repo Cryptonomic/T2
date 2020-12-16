@@ -4,6 +4,7 @@ import { WalletClient, BeaconMessageType, BeaconRequestOutputMessage } from '@ai
 
 import { setBeaconMessageAction, setBeaconLoading, setBeaconClientAction } from '../../reduxContent/app/actions';
 import { setModalOpen, setModalValue } from '../../reduxContent/modal/actions';
+import { createMessageAction } from '../../reduxContent/message/actions';
 
 import { getMainNode } from '../../utils/settings';
 
@@ -24,11 +25,13 @@ export const BeaconConnect = () => {
         if (message.type === BeaconMessageType.PermissionRequest) {
             console.log('Beacon.PermissionRequest', message);
             if (connectedBlockchainNode.network !== message.network.type) {
-                // TODO: error network mismatch
+                dispatch(createMessageAction('Beacon: network not match', true));
+                return;
             }
 
             if (modalValues.beaconRegistration.publicKey !== message.appMetadata.senderId) {
-                // TODO: error requestor key mismatch
+                dispatch(createMessageAction('Beacon: key not match', true));
+                return;
             }
 
             dispatch(setBeaconLoading());
@@ -41,11 +44,13 @@ export const BeaconConnect = () => {
             console.log('Beacon.OperationRequest', message);
 
             if (connectedBlockchainNode.network !== message.network.type) {
-                // TODO: error network mismatch
+                dispatch(createMessageAction('Beacon: network not match', true));
+                return;
             }
 
             if (!message.operationDetails.length) {
-                // TODO: error no transactions
+                dispatch(createMessageAction('Beacon: key not match', true));
+                return;
             }
 
             dispatch(setModalValue(message, 'beaconAuthorize'));

@@ -10,8 +10,8 @@ import { getMainNode, getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
 import { RootState, ModalState } from '../../types/store';
 
-
 import { setBeaconLoading } from '../../reduxContent/app/actions';
+import { createMessageAction } from '../../reduxContent/message/actions';
 import { beaconClient } from './BeaconConnect';
 
 import { ModalWrapper, ModalContainer, CloseIconWrapper, Container, ButtonContainer, InvokeButton, Footer, WhiteBtn } from '../style';
@@ -68,6 +68,7 @@ const BeaconPermission = ({ open, onClose }: Props) => {
         } catch (e) {
             console.log('BeaconPermissionError', e);
             dispatch(setBeaconLoading());
+            dispatch(createMessageAction('Beacon: permission fails', true));
         }
     };
 
