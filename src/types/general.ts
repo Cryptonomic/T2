@@ -107,7 +107,7 @@ export interface TokenTransaction {
 export enum TokenKind {
     tzip7 = 'tzip7',
     stkr = 'stkr',
-    usdtez = 'usdtez',
+    usdtz = 'usdtz',
     tzbtc = 'tzbtc',
     wxtz = 'wxtz',
 }

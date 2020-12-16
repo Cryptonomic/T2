@@ -260,7 +260,6 @@ function DepositModal(props: Props) {
     }
 
     function onUseMax() {
-        const { wrappedTezBalance } = props;
         const max = wrappedTezBalance;
         const newWxtzToWithdraw = (max / utez).toFixed(6);
         updateState({ wxtzToWithdraw: newWxtzToWithdraw, wxtzToWithdrawNumber: max, wxtzRemaining: 0 });
@@ -302,34 +301,34 @@ function DepositModal(props: Props) {
 
     function getBalanceState() {
         // Ensure there is adequate WXTZ balance
-        const isWxtzBalanceIssue = wxtzRemaining < 0;
+        const newIsWxtzBalanceIssue = wxtzRemaining < 0;
         // TODO(keefertaylor): Translations
-        const wxtzWarningMessage = isWxtzBalanceIssue ? 'Insuffient WXTZ' : '';
-        const wxtzBalanceColor = isWxtzBalanceIssue ? 'error1' : 'gray8';
+        const newWxtzWarningMessage = isWxtzBalanceIssue ? 'Insufficient WXTZ' : '';
+        const newWxtzBalanceColor = isWxtzBalanceIssue ? 'error1' : 'gray8';
 
         // Ensure the user is not repaying more XTZ than is in the vault.
-        const isWxtzAmountIssue = wxtzToWithdrawNumber > vaultBalance;
+        const newIsWxtzAmountIssue = wxtzToWithdrawNumber > vaultBalance;
         // TODO(keefertaylor): Translations
-        const wxtzAmountWarningMessage = isWxtzAmountIssue ? 'Withdrawing more than available balance.' : '';
-        const wxtzAmountColor = isWxtzAmountIssue ? 'error1' : 'gray8';
+        const newWxtzAmountWarningMessage = isWxtzAmountIssue ? 'Withdrawing more than available balance.' : '';
+        const newWxtzAmountColor = isWxtzAmountIssue ? 'error1' : 'gray8';
 
         // Ensure there is adequate XTZ balance
-        const isXtzBalanceIssue = balance < 0;
-        const xtzWarningMessage = isXtzBalanceIssue ? t('components.addDelegateModal.warning1') : '';
-        const xtzBalanceColor = isXtzBalanceIssue ? 'error1' : 'gray8';
+        const newIsXtzBalanceIssue = balance < 0;
+        const newXtzWarningMessage = isXtzBalanceIssue ? t('components.addDelegateModal.warning1') : '';
+        const newXtzBalanceColor = isXtzBalanceIssue ? 'error1' : 'gray8';
 
         return {
-            isWxtzBalanceIssue,
-            wxtzWarningMessage,
-            wxtzBalanceColor,
+            isWxtzBalanceIssue: newIsWxtzBalanceIssue,
+            wxtzWarningMessage: newWxtzWarningMessage,
+            wxtzBalanceColor: newWxtzBalanceColor,
 
-            isWxtzAmountIssue,
-            wxtzAmountWarningMessage,
-            wxtzAmountColor,
+            isWxtzAmountIssue: newIsWxtzAmountIssue,
+            wxtzAmountWarningMessage: newWxtzAmountWarningMessage,
+            wxtzAmountColor: newWxtzAmountColor,
 
-            isXtzBalanceIssue,
-            xtzWarningMessage,
-            xtzBalanceColor,
+            isXtzBalanceIssue: newIsXtzBalanceIssue,
+            xtzWarningMessage: newXtzWarningMessage,
+            xtzBalanceColor: newXtzBalanceColor,
         };
     }
 

@@ -75,11 +75,13 @@ function SeedInput(props: Props) {
         if (inputWords.length > 1 && inputWords.length > invalidWords.length) {
             // paste multiple
             onChange([...seeds, ...inputWords.filter((w) => !w.match(/[0-9]{1,2}\./))]);
+            // TODO: may not set/or clear error correctly
         }
 
         const matchingWords = seedJson.filter((w) => w.startsWith(inputWords[0]));
         if (inputWords.length === 1 && matchingWords.length === 1) {
             onChange([...seeds, matchingWords[0]]);
+            // TODO: may not set/or clear error correctly
         }
 
         if (invalidWords.length > 0) {
@@ -101,6 +103,8 @@ function SeedInput(props: Props) {
             } else {
                 newError = t('containers.homeAddAddress.errors.invalid_length');
             }
+        } else {
+            newError = '';
         }
 
         setBadWords([...newBadWords]);

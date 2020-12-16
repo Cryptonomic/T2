@@ -53,9 +53,10 @@ const OvenList = (props: OvenListProps) => {
     };
 
     const ovenForAddress = (ovenAddress, ovenList): Vault | undefined => {
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < ovenList.length; i++) {
             const oven = ovenList[i];
-            if (oven.ovenAddress == ovenAddress) {
+            if (oven.ovenAddress === ovenAddress) {
                 return oven;
             }
         }
@@ -80,8 +81,8 @@ const OvenList = (props: OvenListProps) => {
     const isModalOpen = useSelector<RootState, boolean>((state) => state.modal.open);
 
     const isSetDelegateModalOpen = isModalOpen && activeModal === SET_DELEGATE_MODAL_IDENTIFIER;
-    const isDepositModalOpen = isModalOpen && activeModal == DEPOSIT_MODAL_IDENTIFIER;
-    const isWithdrawModalOpen = isModalOpen && activeModal == WITHDRAW_MODAL_IDENTIFIER;
+    const isDepositModalOpen = isModalOpen && activeModal === DEPOSIT_MODAL_IDENTIFIER;
+    const isWithdrawModalOpen = isModalOpen && activeModal === WITHDRAW_MODAL_IDENTIFIER;
 
     const ovenItems = ovens.map((oven: Vault) => {
         return (

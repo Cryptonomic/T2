@@ -85,10 +85,10 @@ export const Container = styled.div`
             color: #123262;
         }
         .text-center {
-            text-align: center !important
+            text-align: center !important;
         }
         .mr-t-100 {
-            margin-top: 100px
+            margin-top: 100px;
         }
         .divider {
             height: 2px;
@@ -101,7 +101,7 @@ export const Container = styled.div`
         h4 {
             font-size: 16px;
             font-weight: 500;
-            color: #5571A7;
+            color: #5571a7;
             margin: 25px 0 8px;
         }
         p {
@@ -121,7 +121,7 @@ export const Container = styled.div`
         }
         ul {
             padding-left: 16px;
-            margin-bottom: 10px;;
+            margin-bottom: 10px;
         }
         li {
             font-size: 14px;
@@ -132,13 +132,13 @@ export const Container = styled.div`
         .subtitleText {
             font-size: 14px;
             font-weight: 300;
-            color: #5571A7;
+            color: #5571a7;
         }
         .inputField {
             width: 100%;
             height: 40px;
             resize: none;
-            border: 1px solid #E0E0E0;
+            border: 1px solid #e0e0e0;
             margin-bottom: 10px;
         }
         .fontWeight400 {
@@ -203,7 +203,7 @@ export const WhiteBtn = styled(Button)`
     cursor: default;
     background: #fff !important;
     color: #2c7df7 !important;
-    border: 2px solid #2C7DF7 !important;
+    border: 2px solid #2c7df7 !important;
     font-weight: 400;
 `;
 
@@ -234,7 +234,7 @@ export const ContentSubtitle = styled.div`
 `;
 
 export const Footer = styled.div`
-    background: #F7F9FB;
+    background: #f7f9fb;
     margin: auto 0 0;
     padding: 25px 0;
     display: flex;
