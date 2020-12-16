@@ -27,8 +27,7 @@ import AuthModal from '../../featureModals/Auth';
 import BeaconConnectionRequest from '../../featureModals/Beacon/BeaconConnectionRequest';
 import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
 import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
-import BeaconEventModal from '../../featureModals/Beacon/BeaconEventModal';
-import BeaconInfoModal from '../../featureModals/Beacon/BeaconInfoModal';
+import BeaconInfo from '../../featureModals/Beacon/BeaconInfo';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
@@ -268,7 +267,6 @@ function AddressBlock(props: Props) {
     const isBeaconAuthorizeModalOpen = isModalOpen && activeModal === 'beaconAuthorize';
     const isBeaconPermissionModalOpen = isModalOpen && activeModal === 'beaconPermission';
     const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
-    const isBeaconEventModalOpen = isModalOpen && activeModal === 'beaconEvent';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
 
     return (
@@ -329,7 +327,7 @@ function AddressBlock(props: Props) {
             </AddDelegateLabel>
 
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
-                <DelegateTitle>{t('components.Beacon.infoModal.title')}</DelegateTitle>
+                <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
             </AddDelegateLabel>
 
             <AddDelegateLabel>
@@ -418,14 +416,12 @@ function AddressBlock(props: Props) {
             {isBeaconRegistrationModalOpen && (
                 <BeaconConnectionRequest open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
             )}
-            {isBeaconAuthorizeModalOpen && <BeaconAuthorize open={isBeaconAuthorizeModalOpen} onClose={() => setIsModalOpen(false, 'beaconAuthorize')} />}
+            {isBeaconAuthorizeModalOpen && (
+                <BeaconAuthorize open={isBeaconAuthorizeModalOpen} onClose={() => setIsModalOpen(false, 'beaconAuthorize')} managerBalance={balance} />
+            )}
             {isBeaconPermissionModalOpen && <BeaconPermission open={isBeaconPermissionModalOpen} onClose={() => setIsModalOpen(false, 'beaconPermission')} />}
 
-            {/* {isBeaconEventModalOpen && <BeaconEventModal open={isBeaconEventModalOpen} onClose={() => setIsModalOpen(false, 'beaconEvent')} />} */}
-            {/* {isBeaconRegistrationModalOpen && (
-                <BeaconRegistrationModal open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
-            )} */}
-            {/* {isBeaconInfoModalOpen && <BeaconInfoModal open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />} */}
+            {isBeaconInfoModalOpen && <BeaconInfo open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />}
 
             {isInteractModalOpen && (
                 <InteractContractModal open={isInteractModalOpen} onClose={() => setIsInteractModalOpen(false)} addresses={regularAddresses} />
