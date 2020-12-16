@@ -213,9 +213,7 @@ export function syncTokenThunk(tokenAddress) {
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
 
-                const coreContractAddress = vaultToken.vaultCoreAddress;
-                console.log('STAKERDAO: ' + coreContractAddress);
-                console.log('STAKERDAO: TOKEN DUMP: ' + JSON.stringify(vaultToken));
+                const coreContractAddress = vaultToken.ovenCoreAddress;
 
                 const vaultListBigMapId = vaultToken.vaultRegistryMapId;
                 const serverInfo: ConseilServerInfo = {
@@ -223,12 +221,8 @@ export function syncTokenThunk(tokenAddress) {
                     apiKey: mainNode.apiKey,
                     network: mainNode.network,
                 };
-                try {
-                    ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
-                } catch (e) {
-                    console.log('STAKERDAO: ' + e);
-                }
-                console.log('[STAKERDAO] Got ovens');
+
+                ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, ovenListBigMapId);
             }
 
             try {
@@ -240,17 +234,10 @@ export function syncTokenThunk(tokenAddress) {
 
             // Apply an optional update for vaultList
             if (ovenAddresses.length > 0) {
-                console.log('[STAKERDAO] applying optional update...');
-
                 const ovenPromises = ovenAddresses.map(async (ovenAddress: string) => {
-                    console.log('[STAKERDAO] mapping oven...');
-
                     const ovenBalance = await TezosNodeReader.getSpendableBalanceForAccount(mainNode.tezosUrl, ovenAddress);
-                    console.log('[STAKERDAO] GOT BALANCE ' + ovenBalance);
-
                     const block: any = await TezosNodeReader.getAccountForBlock(mainNode.tezosUrl, 'head', ovenAddress);
                     const baker = block.delegate as string;
-                    console.log('[STAKERDAO] BAKER ' + baker);
 
                     return {
                         ovenAddress,
