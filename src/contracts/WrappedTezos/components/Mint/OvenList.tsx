@@ -19,7 +19,7 @@ export const Container = styled.section`
     padding-top: 20px;
 `;
 
-type vaultListProps = {
+type OvenListProps = {
     ovens: Vault[];
     managerBalance: number;
 };
@@ -28,7 +28,7 @@ const DEPOSIT_MODAL_IDENTIFIER = 'deposit_modal';
 const WITHDRAW_MODAL_IDENTIFIER = 'withdraw_modal';
 const SET_DELEGATE_MODAL_IDENTIFIER = 'set_delegate_modal';
 
-const vaultList = (props: vaultListProps) => {
+const OvenList = (props: OvenListProps) => {
     const { ovens } = props;
 
     // The oven being operated on.
@@ -131,4 +131,4 @@ const vaultList = (props: vaultListProps) => {
     );
 };
 
-export default vaultList;
+export default OvenList;
