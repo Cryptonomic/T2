@@ -145,6 +145,13 @@
             },
             "authorization": {
                 "title": "Authorize Operations"
+            },
+            "info": {
+                "title": "Beacon Status",
+                "permissions": {
+                    "operation_request": "Operation Request",
+                    "sign": "Sign"
+                }
             }
         },
         "interactModal": {

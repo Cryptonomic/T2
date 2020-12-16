@@ -144,7 +144,7 @@ export const Container = styled.div`
         .fontWeight400 {
             font-weight: 400;
             color: #000;
-        }
+        },
     }
 `;
 
@@ -307,4 +307,68 @@ export const InfoIcon = styled(TezosIcon)`
 export const SuccessIcon = styled(TezosIcon)`
     font-size: ${ms(1)};
     margin-right: 5px;
+`;
+
+export const BeaconNotConnected = styled.div`
+    display: flex;
+    flex-direction: column;
+    .message {
+        font-weight: 300;
+        font-size: 18px;
+        line-height: 11px;
+        color: #123262;
+        opacity: 0.78;
+        margin-top: 40px;
+    }
+    .info {
+        line-height: 22px;
+        color: #333333;
+        margin-top: 16px;
+    }
+    .img {
+        margin-top: 50px;
+        margin-bottom: 120px;
+        flex-align: center;
+    }
+`;
+
+export const BeaconConnected = styled.div`
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    margin-top: 17px;
+    padding-bottom: 40px;
+    .img {
+        width: 64px;
+        height: 64px;
+        border: 1px solid #000000;
+        border-radius: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .list {
+        margin-left: 24px;
+    }
+    .name {
+        font-weight: 500;
+        line-height: 19px;
+    }
+    .item {
+        line-height: 19px;
+        margin-top: 8px;
+    }
+`;
+
+export const BeaconInfoContainer = styled.div`
+    padding: 0 32px;
+    .title {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 21px;
+        margin-top: 24px;
+    }
+    .items {
+        margin-top: 32px;
+        margin-bottom: 100px;
+    }
 `;
