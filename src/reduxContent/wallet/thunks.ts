@@ -231,8 +231,12 @@ export function syncTokenThunk(tokenAddress) {
                 console.log('[STAKERDAO] Got ovens');
             }
 
-            const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
-            tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions, details };
+            try {
+                const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
+                tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions, details };
+            } catch (awaitError) {
+                console.log('awaitError', awaitError);
+            }
 
             // Apply an optional update for OvenList
             if (ovenAddresses.length > 0) {
@@ -386,10 +390,10 @@ export function syncWalletThunk() {
                     return { ...token, mapid, administrator, balance, transactions };
                 } else if (token.kind === TokenKind.wxtz) {
                     try {
-                        const validCode = await WrappedTezosHelper.verifyDestination(mainNode.tezosUrl, token.address, '', ''); // TODO
-                        if (!validCode) {
-                            console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
-                        }
+                        // const validCode = await WrappedTezosHelper.verifyDestination(mainNode.tezosUrl, token.address, '', ''); // TODO
+                        // if (!validCode) {
+                        //     console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
+                        // }
                     } catch {
                         console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
                     }

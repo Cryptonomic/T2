@@ -290,6 +290,9 @@ function AddDelegateModal(props: Props) {
     }
 
     const { isIssue, warningMessage, balanceColor } = getBalanceState();
+
+    // TODO: if delegate is set, show it and validate against it
+    // TODO: if delegate is set, title should be Change Delegate
     return (
         // TODO(keefertaylor): Use translations here.
         <Modal title={'Set Delegate'} open={open} onClose={onCloseClick}>

@@ -88,8 +88,12 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        // TODO(keefertaylor): Do not hardcode.
-        const coreContractAddress = 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8';
+        let coreContractAddress = '';
+        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+        if (tokenIndex > -1) {
+            const token = tokens[tokenIndex] as VaultToken;
+            coreContractAddress = token.ovenCoreAddress;
+        }
 
         console.log('STAKERDAO - initial delegate: ' + initialDelegate);
         const result = await WrappedTezosHelper.deployOven(tezosUrl, signer, keyStore, fee, coreContractAddress, initialDelegate).catch((err) => {
@@ -122,7 +126,6 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
             )
         );
 
-        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
             const token = tokens[tokenIndex] as VaultToken;
             token.ovenList.unshift({

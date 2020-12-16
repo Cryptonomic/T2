@@ -16,7 +16,6 @@ import { Container, Tab, TabList, TabText, SectionContainer } from '../component
 import { getTokenSelector } from '../duck/selectors';
 import { transferThunk } from './thunks';
 
-import { Vault } from '../../types/general';
 import { VaultToken } from '../../types/general';
 import OvenList from './components/Mint/OvenList';
 import DeployOvenButtonWrapper from './components/Mint/DeployOvenButtonWrapper';
@@ -26,7 +25,7 @@ const ActionPanel = () => {
     const dispatch = useDispatch();
     const selectedToken = useSelector(getTokenSelector);
     const { selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-    const { activeTab, displayName, administrator, transactions, ovenList } = selectedToken as VaultToken;
+    const { activeTab, displayName, transactions, ovenList } = selectedToken as VaultToken;
     const tabs = [TRANSACTIONS, SEND, MINT];
     const transactionList = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
 
