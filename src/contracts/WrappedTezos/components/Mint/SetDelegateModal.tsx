@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import TextField from '../../../../components/TextField';
 import TezosNumericInput from '../../../../components/TezosNumericInput';
 import { setDelegateForOven } from '../../thunks';
+import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';
 
 import Modal from '../../../../components/CustomModal';
 import Tooltip from '../../../../components/Tooltip/';
@@ -334,19 +335,19 @@ function AddDelegateModal(props: Props) {
                 </DelegateButton>
             </PasswordButtonContainer>
             {isLoading && <Loader />}
-            {/* TODO(keefertaylor): Enable ledger support */}
-            {/* {isLedger && open && (
-                <AddDelegateLedgerModal
-                    amount={amount}
-                    fee={fee}
-                    address={delegate}
+            {isLedger && open && (
+                <LedgerConfirmModal
+                    // TODO(keefertaylor): translations
+                    message="Confirm the delegation operation"
+                    vaultAddress={ovenAddress}
                     source={selectedParentHash}
-                    manager={selectedParentHash}
+                    isLoading={isLoading}
                     open={confirmOpen}
                     onClose={() => setConfirmOpen(false)}
-                    isLoading={isLoading}
+                    fee={fee}
+                    amount={0}
                 />
-            )} */}
+            )}
         </Modal>
     );
 }
