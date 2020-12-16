@@ -132,7 +132,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 );
                 // TODO: leadger
             } else {
-                dispatch(sendTezThunk(password, destination, formattedAmount, fee));
+                dispatch(sendTezThunk(password, destination, formattedAmount, operationState.fee));
                 // TODO: leadger
             }
         } catch (e) {
