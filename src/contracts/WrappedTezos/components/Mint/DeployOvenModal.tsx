@@ -18,6 +18,7 @@ import PasswordInput from '../../../../components/PasswordInput';
 import InputAddress from '../../../../components/InputAddress';
 import TezosAmount from '../../../../components/TezosAmount';
 import AddDelegateLedgerModal from '../../../../components/ConfirmModals/AddDelegateLedgerModal';
+import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';
 
 import { deployOven } from '../../thunks';
 import { useFetchFees } from '../../../../reduxContent/app/thunks';
@@ -337,20 +338,15 @@ function DeployOvenModal(props: Props) {
                     Deploy Oven
                 </DelegateButton>
             </PasswordButtonContainer>
-            {isLoading && <Loader />}
             {isLedger && open && (
-                <></>
-                // TODO(keefertaylor): Enable
-                // <AddDelegateLedgerModal
-                //     amount={amount}
-                //     fee={fee}
-                //     address={delegate}
-                //     source={selectedParentHash}
-                //     manager={selectedParentHash}
-                //     open={confirmOpen}
-                //     onClose={() => setConfirmOpen(false)}
-                //     isLoading={isLoading}
-                // />
+                <LedgerConfirmModal
+                    // TODO(keefertaylor): translations
+                    message="Confirm the deploy oven operation"
+                    vaultAddress={undefined}
+                    source={selectedParentHash}
+                    open={confirmOpen}
+                    onClose={() => setConfirmOpen(false)}
+                />
             )}
         </Modal>
     );
