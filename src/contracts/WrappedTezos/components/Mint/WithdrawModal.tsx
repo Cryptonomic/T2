@@ -262,7 +262,6 @@ function DepositModal(props: Props) {
     function changeWxtzToWithdraw(newWxtzToWithdraw = '0') {
         const commaReplacedAmount = newWxtzToWithdraw.replace(',', '.');
         const numWxtzToWithdraw = parseFloat(commaReplacedAmount) * utez;
-        console.log('STAKERDAO: FOR THE LOVE OF GOD, my balance is ' + props.wrappedTezBalance);
 
         const numWxtzRemaining = props.wrappedTezBalance - numWxtzToWithdraw;
 

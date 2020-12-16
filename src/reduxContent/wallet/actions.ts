@@ -77,11 +77,3 @@ export function updateTokensAction(tokens: (Token | VaultToken)[]): UpdateTokens
         tokens,
     };
 }
-
-// TODO(keefertaylor): remove
-export function updateOvensAction(ovens: Vault[]): UpdateOvensAction {
-    return {
-        type: UPDATE_OVENS,
-        ovens,
-    };
-}

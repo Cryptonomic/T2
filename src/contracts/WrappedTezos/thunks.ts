@@ -95,7 +95,6 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
             coreContractAddress = token.ovenCoreAddress;
         }
 
-        console.log('STAKERDAO - initial delegate: ' + initialDelegate);
         const result = await WrappedTezosHelper.deployOven(tezosUrl, signer, keyStore, fee, coreContractAddress, initialDelegate).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`deployOven failed with ${JSON.stringify(errorObj)}`);
@@ -190,9 +189,6 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
             token.balance = token.balance += amount;
             token.ovenList[ovenIndex].ovenBalance = token.ovenList[ovenIndex].ovenBalance += amount;
             tokens[tokenIndex] = token;
-
-            console.log('[Stakerdao] New user balance: ' + tokens[tokenIndex].balance);
-            console.log('[Stakerdao] new ovenbalance: ' + tokens[tokenIndex].ovenList[ovenIndex].balance);
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -250,10 +246,6 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
             token.balance = token.balance -= amount;
             token.ovenList[ovenIndex].ovenBalance = token.ovenList[ovenIndex].ovenBalance -= amount;
             tokens[tokenIndex] = token;
-
-            // TODO(keefertaylor): clean up stakerdao's logging.
-            console.log('[Stakerdao] New user balance: ' + tokens[tokenIndex].balance);
-            console.log('[Stakerdao] new ovenbalance: ' + tokens[tokenIndex].ovenList[ovenIndex].balance);
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -310,9 +302,6 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
             // Increment oven balance and wXTZ balance.
             token.ovenList[ovenIndex].baker = newDelegate;
             tokens[tokenIndex] = token;
-
-            // TODO(keefertaylor): clean up stakerdao's logging.
-            console.log('[Stakerdao] New deleaget balance: ' + tokens[tokenIndex].ovenList[ovenIndex].baker);
         }
         dispatch(updateTokensAction([...tokens]));
 
