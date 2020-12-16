@@ -132,10 +132,9 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         scale: 6,
         precision: 6,
         round: 6,
-        // TODO(keefertaylor): rename these variables.
-        ovenCoreAddress: 'KT1EZrujecyZqJnySZYvb7JxYknrtTWrVjn6',
-        ovenRegistryMapId: 25903,
-        ovenList: [],
+        vaultCoreAddress: 'KT1EZrujecyZqJnySZYvb7JxYknrtTWrVjn6',
+        vaultRegistryMapId: 25903,
+        vaultList: [],
     },
     {
         network: 'delphinet',

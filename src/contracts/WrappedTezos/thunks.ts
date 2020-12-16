@@ -92,7 +92,7 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
             const token = tokens[tokenIndex] as VaultToken;
-            coreContractAddress = token.ovenCoreAddress;
+            coreContractAddress = token.vaultCoreAddress;
         }
 
         console.log('STAKERDAO - initial delegate: ' + initialDelegate);
@@ -128,7 +128,7 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
 
         if (tokenIndex > -1) {
             const token = tokens[tokenIndex] as VaultToken;
-            token.ovenList.unshift({
+            token.vaultList.unshift({
                 ovenAddress: openOvenResult.ovenAddress,
                 ovenOwner: keyStore.publicKeyHash,
                 ovenBalance: 0,
@@ -181,18 +181,18 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
             const token = tokens[tokenIndex] as VaultToken;
-            const ovenIndex = findOvenIndex(ovenAddress, token.ovenList);
+            const ovenIndex = findOvenIndex(ovenAddress, token.vaultList);
             if (ovenIndex === -1) {
                 return false;
             }
 
             // Increment oven balance and wXTZ balance.
             token.balance = token.balance += amount;
-            token.ovenList[ovenIndex].ovenBalance = token.ovenList[ovenIndex].ovenBalance += amount;
+            token.vaultList[ovenIndex].ovenBalance = token.vaultList[ovenIndex].ovenBalance += amount;
             tokens[tokenIndex] = token;
 
             console.log('[Stakerdao] New user balance: ' + tokens[tokenIndex].balance);
-            console.log('[Stakerdao] new ovenbalance: ' + tokens[tokenIndex].ovenList[ovenIndex].balance);
+            console.log('[Stakerdao] new ovenbalance: ' + tokens[tokenIndex].vaultList[ovenIndex].balance);
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -241,19 +241,19 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
             const token = tokens[tokenIndex] as VaultToken;
-            const ovenIndex = findOvenIndex(ovenAddress, token.ovenList);
+            const ovenIndex = findOvenIndex(ovenAddress, token.vaultList);
             if (ovenIndex === -1) {
                 return false;
             }
 
             // Increment oven balance and wXTZ balance.
             token.balance = token.balance -= amount;
-            token.ovenList[ovenIndex].ovenBalance = token.ovenList[ovenIndex].ovenBalance -= amount;
+            token.vaultList[ovenIndex].ovenBalance = token.vaultList[ovenIndex].ovenBalance -= amount;
             tokens[tokenIndex] = token;
 
             // TODO(keefertaylor): clean up stakerdao's logging.
             console.log('[Stakerdao] New user balance: ' + tokens[tokenIndex].balance);
-            console.log('[Stakerdao] new ovenbalance: ' + tokens[tokenIndex].ovenList[ovenIndex].balance);
+            console.log('[Stakerdao] new ovenbalance: ' + tokens[tokenIndex].vaultList[ovenIndex].balance);
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -302,17 +302,17 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
             const token = tokens[tokenIndex] as VaultToken;
-            const ovenIndex = findOvenIndex(ovenAddress, token.ovenList);
+            const ovenIndex = findOvenIndex(ovenAddress, token.vaultList);
             if (ovenIndex === -1) {
                 return false;
             }
 
             // Increment oven balance and wXTZ balance.
-            token.ovenList[ovenIndex].baker = newDelegate;
+            token.vaultList[ovenIndex].baker = newDelegate;
             tokens[tokenIndex] = token;
 
             // TODO(keefertaylor): clean up stakerdao's logging.
-            console.log('[Stakerdao] New deleaget balance: ' + tokens[tokenIndex].ovenList[ovenIndex].baker);
+            console.log('[Stakerdao] New deleaget balance: ' + tokens[tokenIndex].vaultList[ovenIndex].baker);
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -322,9 +322,9 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
     };
 }
 
-function findOvenIndex(ovenAddress: string, ovenList: Vault[]) {
-    for (let i = 0; i < ovenList.length; i++) {
-        if (ovenList[i].ovenAddress === ovenAddress) {
+function findOvenIndex(ovenAddress: string, vaultList: Vault[]) {
+    for (let i = 0; i < vaultList.length; i++) {
+        if (vaultList[i].ovenAddress === ovenAddress) {
             return i;
         }
     }

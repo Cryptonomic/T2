@@ -19,7 +19,7 @@ export const Container = styled.section`
     padding-top: 20px;
 `;
 
-type OvenListProps = {
+type vaultListProps = {
     ovens: Vault[];
     managerBalance: number;
 };
@@ -28,7 +28,7 @@ const DEPOSIT_MODAL_IDENTIFIER = 'deposit_modal';
 const WITHDRAW_MODAL_IDENTIFIER = 'withdraw_modal';
 const SET_DELEGATE_MODAL_IDENTIFIER = 'set_delegate_modal';
 
-const OvenList = (props: OvenListProps) => {
+const vaultList = (props: vaultListProps) => {
     const { ovens } = props;
 
     // The oven being operated on.
@@ -52,10 +52,10 @@ const OvenList = (props: OvenListProps) => {
         }
     };
 
-    const ovenForAddress = (ovenAddress, ovenList): Vault | undefined => {
+    const ovenForAddress = (ovenAddress, vaultList): Vault | undefined => {
         // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < ovenList.length; i++) {
-            const oven = ovenList[i];
+        for (let i = 0; i < vaultList.length; i++) {
+            const oven = vaultList[i];
             if (oven.ovenAddress === ovenAddress) {
                 return oven;
             }
@@ -131,4 +131,4 @@ const OvenList = (props: OvenListProps) => {
     );
 };
 
-export default OvenList;
+export default vaultList;

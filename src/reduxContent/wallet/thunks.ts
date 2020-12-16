@@ -213,18 +213,18 @@ export function syncTokenThunk(tokenAddress) {
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
 
-                const coreContractAddress = vaultToken.ovenCoreAddress;
+                const coreContractAddress = vaultToken.vaultCoreAddress;
                 console.log('STAKERDAO: ' + coreContractAddress);
                 console.log('STAKERDAO: TOKEN DUMP: ' + JSON.stringify(vaultToken));
 
-                const ovenListBigMapId = vaultToken.ovenRegistryMapId;
+                const vaultListBigMapId = vaultToken.vaultRegistryMapId;
                 const serverInfo: ConseilServerInfo = {
                     url: mainNode.conseilUrl,
                     apiKey: mainNode.apiKey,
                     network: mainNode.network,
                 };
                 try {
-                    ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, ovenListBigMapId);
+                    ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
                 } catch (e) {
                     console.log('STAKERDAO: ' + e);
                 }
@@ -238,7 +238,7 @@ export function syncTokenThunk(tokenAddress) {
                 console.log('awaitError', awaitError);
             }
 
-            // Apply an optional update for OvenList
+            // Apply an optional update for vaultList
             if (ovenAddresses.length > 0) {
                 console.log('[STAKERDAO] applying optional update...');
 
@@ -259,9 +259,9 @@ export function syncTokenThunk(tokenAddress) {
                         baker,
                     };
                 });
-                const ovenList = await Promise.all(ovenPromises);
+                const vaultList = await Promise.all(ovenPromises);
 
-                tokens[tokenIndex] = { ...tokens[tokenIndex], ovenList };
+                tokens[tokenIndex] = { ...tokens[tokenIndex], vaultList };
             }
 
             dispatch(updateTokensAction([...tokens]));

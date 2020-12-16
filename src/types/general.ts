@@ -138,13 +138,13 @@ export interface VaultToken extends Token {
     // TODO(keefertaylor): rename these vars
 
     // Address of a contract which can originate Ovens
-    ovenCoreAddress: string;
+    vaultCoreAddress: string;
 
     // ID of a BigMap that contains the Oven Registry
-    ovenRegistryMapId: number;
+    vaultRegistryMapId: number;
 
     // A list of Ovens owned by the user.
-    ovenList: Vault[];
+    vaultList: Vault[];
 }
 
 /**

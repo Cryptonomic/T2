@@ -25,7 +25,7 @@ const ActionPanel = () => {
     const dispatch = useDispatch();
     const selectedToken = useSelector(getTokenSelector);
     const { selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-    const { activeTab, displayName, transactions, ovenList } = selectedToken as VaultToken;
+    const { activeTab, displayName, transactions, vaultList } = selectedToken as VaultToken;
     const tabs = [TRANSACTIONS, SEND, MINT];
     const transactionList = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
 
@@ -59,9 +59,9 @@ const ActionPanel = () => {
                 {activeTab === MINT && (
                     <DeployOvenButtonWrapper>
                         <PaginationList
-                            list={ovenList}
+                            list={vaultList}
                             ListComponent={OvenList}
-                            listComponentProps={{ ovens: ovenList }}
+                            listComponentProps={{ ovens: vaultList }}
                             componentListName="ovens"
                             // TODO(keefertaylor): Fix empty state.
                             emptyState={transactionsEmptyState}
