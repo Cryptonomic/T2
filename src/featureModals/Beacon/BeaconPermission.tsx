@@ -10,6 +10,7 @@ import { getMainNode, getMainPath } from '../../utils/settings';
 import Loader from '../../components/Loader';
 import { RootState, ModalState } from '../../types/store';
 
+
 import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { beaconClient } from './BeaconConnect';
 

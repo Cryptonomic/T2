@@ -55,13 +55,13 @@ function Deposit(props: Props) {
         if (max <= 0 || max < realAmount) {
             return {
                 isIssue: true,
-                warningMessage: t('components.send.warnings.total_exceeds')
+                warningMessage: t('components.send.warnings.total_exceeds'),
             };
         }
 
         return {
             isIssue: false,
-            warningMessage: ''
+            warningMessage: '',
         };
     }
 
@@ -93,23 +93,23 @@ function Deposit(props: Props) {
     const error = isIssue ? <InputError error={warningMessage} /> : '';
 
     const warningTxt = t('components.withdrawDeposit.deposit_warning', {
-        managerAddress: selectedParentHash
+        managerAddress: selectedParentHash,
     });
 
     return (
-        <Container onKeyDown={event => onEnterPress(event.key, isDisabled)}>
+        <Container onKeyDown={(event) => onEnterPress(event.key, isDisabled)}>
             <AmountContainer>
                 <TezosNumericInput
                     decimalSeparator={t('general.decimal_separator')}
                     label={t('general.nouns.amount')}
                     amount={amount}
-                    onChange={val => setAmount(val)}
+                    onChange={(val) => setAmount(val)}
                     errorText={error}
                 />
                 <UseMax onClick={onGetMax}>{t('general.verbs.use_max')}</UseMax>
             </AmountContainer>
             <FeeContainer>
-                <Fees low={newFees.low} medium={newFees.medium} high={newFees.high} fee={fee} miniFee={OPERATIONFEE} onChange={val => setFee(val)} />
+                <Fees low={newFees.low} medium={newFees.medium} high={newFees.high} fee={fee} miniFee={OPERATIONFEE} onChange={(val) => setFee(val)} />
             </FeeContainer>
             <WarningContainer>
                 <TezosIcon iconName="info" size={ms(5)} color="info" />
@@ -121,7 +121,7 @@ function Deposit(props: Props) {
                     <PasswordInput
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
-                        onChange={val => setPassPhrase(val)}
+                        onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}

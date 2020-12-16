@@ -257,16 +257,17 @@ function DepositModal(props: Props) {
 
     function changeAmount(newAmount = '0') {
         const commaReplacedAmount = newAmount.replace(',', '.');
-        const parsedAmount = parseFloat(commaReplacedAmount) * utez;
-        const newTotal = parsedAmount + fee;
+        const newNumAmount = parseFloat(commaReplacedAmount) * utez;
+        const newTotal = newNumAmount + fee;
         const newBalance = managerBalance - total;
-        console.log('Stakerdao] num amount: ' + parsedAmount);
-        updateState({ amount: newAmount, numAmount: parsedAmount, total: newTotal, balance: newBalance });
+        console.log('Stakerdao] num amount: ' + newNumAmount);
+        updateState({ amount: newAmount, numAmount: newNumAmount, total: newTotal, balance: newBalance });
     }
 
     function changeFee(newFee) {
-        const parsedAmount = parseFloat(amount || '0') * utez;
-        const newTotal = parsedAmount + newFee;
+        const newAmount = amount || '0';
+        const newNumAmount = parseFloat(newAmount) * utez;
+        const newTotal = newNumAmount + newFee;
         const newBalance = managerBalance - total;
         updateState({ fee: newFee, total: newTotal, balance: newBalance });
     }

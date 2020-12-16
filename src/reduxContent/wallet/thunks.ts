@@ -10,9 +10,12 @@ import {
     TzbtcTokenHelper,
     WrappedTezosHelper,
     ConseilServerInfo,
+    TezosConseilClient,
+    ConseilQueryBuilder,
+    ConseilOperator,
+    ConseilDataClient,
     TezosNodeReader,
 } from 'conseiljs';
-import { TezosConseilClient, ConseilQueryBuilder, ConseilOperator, ConseilDataClient } from 'conseiljs';
 import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';

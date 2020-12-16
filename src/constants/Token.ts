@@ -121,7 +121,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
     },
     {
         network: 'delphinet',
-        address: 'KT1JYf7xjCJAqFDfNpuump9woSMaapy1WcMY',
+        address: 'KT1WBBkHyD1FPebLgtVjCsfYRFsSPvZQChqo',
         displayName: 'wXTZ',
         symbol: 'wXTZ',
         balance: 0,
@@ -133,8 +133,8 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         precision: 6,
         round: 6,
         // TODO(keefertaylor): rename these variables.
-        ovenCoreAddress: 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8',
-        ovenRegistryMapId: 14569,
+        ovenCoreAddress: 'KT1EZrujecyZqJnySZYvb7JxYknrtTWrVjn6',
+        ovenRegistryMapId: 25903,
         ovenList: [],
     },
     {
