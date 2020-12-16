@@ -8,14 +8,14 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 
 import { getMainNode } from '../../utils/settings';
 
-import { RootState, ModalState } from '../../types/store';
+import { RootState } from '../../types/store';
 
 export const beaconClient = new WalletClient({ name: 'Beacon Wallet Client' });
 
 export const BeaconConnect = () => {
     const dispatch = useDispatch();
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
-    const modalValues = useSelector<RootState, ModalState>((state) => state.modal.values);
+    const modalValues = useSelector<RootState, any>((state) => state.modal.values);
     const beaconMessage = useSelector((state: RootState) => state.app.beaconMessage);
     const beaconClientLoaded = useSelector((state: RootState) => state.app.beaconClient);
 
