@@ -88,8 +88,8 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        // TODO(keefertaylor): Do not hardcode.
-        const coreContractAddress = 'KT1S98ELFTo6mdMBqhAVbGgKAVgLbdPP3AX8';
+        // TODO(keefertaylor): Do not hardwire.
+        const coreContractAddress = 'KT1EZrujecyZqJnySZYvb7JxYknrtTWrVjn6';
 
         console.log('STAKERDAO - initial delegate: ' + initialDelegate);
         const result = await WrappedTezosHelper.deployOven(tezosUrl, signer, keyStore, fee, coreContractAddress, initialDelegate).catch((err) => {
