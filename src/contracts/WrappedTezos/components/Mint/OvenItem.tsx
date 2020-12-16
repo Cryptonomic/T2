@@ -85,7 +85,6 @@ function OvenItem(props: Props) {
     const { address, delegate, balance } = props;
 
     return (
-
         <Container>
             <AddressContainer>{address}</AddressContainer>
             <OvenInfoBar>
@@ -97,11 +96,11 @@ function OvenItem(props: Props) {
                 </AmountContainer>
             </OvenInfoBar>
             <ContentDiv>
-                <InvokeButton buttonTheme="primary" onClick={() => props.setDelegate(address)}>
+                <InvokeButton buttonTheme="primary" onClick={() => props.deposit(address)}>
                     {/* TODO(keefertaylor): Use translations here */}
                     Deposit
                 </InvokeButton>
-                <InvokeButton buttonTheme="primary" onClick={() => props.setDelegate(address)}>
+                <InvokeButton buttonTheme="primary" onClick={() => props.withdraw(address)}>
                     {/* TODO(keefertaylor): Use translations here */}
                     Withdraw
                 </InvokeButton>

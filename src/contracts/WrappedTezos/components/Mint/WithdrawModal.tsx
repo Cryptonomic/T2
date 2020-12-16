@@ -22,6 +22,9 @@ import AddDelegateLedgerModal from '../../../../components/ConfirmModals/AddDele
 import { originateContractThunk } from '../../../../reduxContent/originate/thunks';
 import { useFetchFees } from '../../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../../reduxContent/app/actions';
+import { withdraw } from '../../thunks';
+import AmountView from '../../../../components/AmountView';
+import { getTokenSelector } from '../../../duck/selectors';
 
 import { RootState } from '../../../../types/store';
 
@@ -193,11 +196,18 @@ const InfoIcon = styled(TezosIcon)`
 
 const utez = 1000000;
 
+const FEES = {
+    low: 0,
+    medium: 60000,
+    high: 1000000,
+};
+
 interface Props {
     open: boolean;
     managerBalance: number;
     wrappedTezBalance: number;
     vaultBalance: number;
+    ovenAddress: string;
     onClose: () => void;
 }
 
@@ -205,7 +215,7 @@ const defaultState = {
     wxtzToWithdraw: '',
     wxtzToWithdrawNumber: 0,
     wxtzRemaining: 0,
-    fee: 2840,
+    fee: FEES.medium,
     total: 0,
     balance: 0,
 };
@@ -224,10 +234,10 @@ function DepositModal(props: Props) {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [isDelegateIssue, setIsDelegateIssue] = useState(false);
     const { wxtzToWithdraw, wxtzToWithdrawNumber, wxtzRemaining, fee, total, balance } = state;
+    const selectedToken = useSelector(getTokenSelector);
 
-    const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(OperationKindType.Origination, true, true);
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-    const { open, managerBalance, wrappedTezBalance, vaultBalance, onClose } = props;
+    const { open, managerBalance, ovenAddress, wrappedTezBalance, vaultBalance, onClose } = props;
 
     const {
         isWxtzBalanceIssue,
@@ -243,16 +253,6 @@ function DepositModal(props: Props) {
     const isDisabled =
         isLoading || !wxtzToWithdraw || (!passPhrase && !isLedger) || isXtzBalanceIssue || isWxtzBalanceIssue || isWxtzAmountIssue || isDelegateIssue;
 
-    useEffect(() => {
-        setState((prevState) => {
-            return {
-                ...prevState,
-                fee: newFees.medium,
-                total: newFees.medium,
-            };
-        });
-    }, [isFeeLoaded]);
-
     function updateState(updatedValues) {
         setState((prevState) => {
             return { ...prevState, ...updatedValues };
@@ -260,7 +260,6 @@ function DepositModal(props: Props) {
     }
 
     function onUseMax() {
-        const { wrappedTezBalance } = props;
         const max = wrappedTezBalance;
         const newWxtzToWithdraw = (max / utez).toFixed(6);
         updateState({ wxtzToWithdraw: newWxtzToWithdraw, wxtzToWithdrawNumber: max, wxtzRemaining: 0 });
@@ -269,6 +268,8 @@ function DepositModal(props: Props) {
     function changeWxtzToWithdraw(newWxtzToWithdraw = '0') {
         const commaReplacedAmount = newWxtzToWithdraw.replace(',', '.');
         const numWxtzToWithdraw = parseFloat(commaReplacedAmount) * utez;
+        console.log('STAKERDAO: FOR THE LOVE OF GOD, my balance is ' + props.wrappedTezBalance);
+
         const numWxtzRemaining = props.wrappedTezBalance - numWxtzToWithdraw;
         updateState({ wxtzToWithdraw: newWxtzToWithdraw, wxtzToWithdrawNumber: numWxtzToWithdraw, wxtzRemaining: numWxtzRemaining });
     }
@@ -278,22 +279,21 @@ function DepositModal(props: Props) {
         updateState({ fee: newFee, total: newFee, balance: newBalance });
     }
 
-    async function createAccount() {
-        // TODO(keefertaylor): Implement.
-        // dispatch(setIsLoadingAction(true));
-        // if (isLedger) {
-        //   setConfirmOpen(true);
-        // }
-        // const isCreated = await dispatch(originateContractThunk(delegate, amount, Math.floor(fee), passPhrase, selectedParentHash));
-        // setConfirmOpen(false);
-        // dispatch(setIsLoadingAction(false));
-        // if (!!isCreated) {
-        //   onClose();
-        // }
+    async function withdrawFromOven() {
+        dispatch(setIsLoadingAction(true));
+        if (isLedger) {
+            setConfirmOpen(true);
+        }
+        const isWithdrawn = await dispatch(withdraw(ovenAddress, wxtzToWithdrawNumber, fee, passPhrase));
+        setConfirmOpen(false);
+        dispatch(setIsLoadingAction(false));
+        if (!!isWithdrawn) {
+            onClose();
+        }
     }
 
     function onCloseClick() {
-        const newFee = newFees.medium;
+        const newFee = FEES.medium;
         const newTotal = newFee;
         updateState({ fee: newFee, total: newTotal, balance: managerBalance - newTotal });
         onClose();
@@ -301,49 +301,35 @@ function DepositModal(props: Props) {
 
     function getBalanceState() {
         // Ensure there is adequate WXTZ balance
-        const isWxtzBalanceIssue = wxtzRemaining < 0;
+        const newIsWxtzBalanceIssue = wxtzRemaining < 0;
         // TODO(keefertaylor): Translations
-        const wxtzWarningMessage = isWxtzBalanceIssue ? 'Insuffient WXTZ' : '';
-        const wxtzBalanceColor = isWxtzBalanceIssue ? 'error1' : 'gray8';
+        const newWxtzWarningMessage = isWxtzBalanceIssue ? 'Insuffient WXTZ' : '';
+        const newWxtzBalanceColor = isWxtzBalanceIssue ? 'error1' : 'gray8';
 
         // Ensure the user is not repaying more XTZ than is in the vault.
-        const isWxtzAmountIssue = wxtzToWithdrawNumber > vaultBalance;
+        const newIsWxtzAmountIssue = wxtzToWithdrawNumber > vaultBalance;
         // TODO(keefertaylor): Translations
-        const wxtzAmountWarningMessage = isWxtzAmountIssue ? 'Withdrawing more than available balance.' : '';
-        const wxtzAmountColor = isWxtzAmountIssue ? 'error1' : 'gray8';
+        const newWxtzAmountWarningMessage = isWxtzAmountIssue ? 'Withdrawing more than available balance.' : '';
+        const newWxtzAmountColor = isWxtzAmountIssue ? 'error1' : 'gray8';
 
         // Ensure there is adequate XTZ balance
-        const isXtzBalanceIssue = balance < 0;
-        const xtzWarningMessage = isXtzBalanceIssue ? t('components.addDelegateModal.warning1') : '';
-        const xtzBalanceColor = isXtzBalanceIssue ? 'error1' : 'gray8';
+        const newIsXtzBalanceIssue = balance < 0;
+        const newXtzWarningMessage = isXtzBalanceIssue ? t('components.addDelegateModal.warning1') : '';
+        const newXtzBalanceColor = isXtzBalanceIssue ? 'error1' : 'gray8';
 
         return {
-            isWxtzBalanceIssue,
-            wxtzWarningMessage,
-            wxtzBalanceColor,
+            isWxtzBalanceIssue: newIsWxtzBalanceIssue,
+            wxtzWarningMessage: newWxtzWarningMessage,
+            wxtzBalanceColor: newWxtzBalanceColor,
 
-            isWxtzAmountIssue,
-            wxtzAmountWarningMessage,
-            wxtzAmountColor,
+            isWxtzAmountIssue: newIsWxtzAmountIssue,
+            wxtzAmountWarningMessage: newWxtzAmountWarningMessage,
+            wxtzAmountColor: newWxtzAmountColor,
 
-            isXtzBalanceIssue,
-            xtzWarningMessage,
-            xtzBalanceColor,
+            isXtzBalanceIssue: newIsXtzBalanceIssue,
+            xtzWarningMessage: newXtzWarningMessage,
+            xtzBalanceColor: newXtzBalanceColor,
         };
-    }
-
-    function renderFeeToolTip() {
-        return (
-            <TooltipContainer>
-                <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>
-                <TooltipContent>
-                    <Trans i18nKey="components.send.fee_tooltip_content">
-                        This address is not revealed on the blockchain. We have added
-                        <BoldSpan>0.001420 XTZ</BoldSpan> for Public Key Reveal to your regular send operation fee.
-                    </Trans>
-                </TooltipContent>
-            </TooltipContainer>
-        );
     }
 
     return (
@@ -355,16 +341,26 @@ function DepositModal(props: Props) {
         >
             <MainContainer>
                 <MessageContainer>
-                    {/* TODO(keefertaylor): Use Translations
-          TODO(keefertaylor): Add proper address */}
-                    <BoldSpan>Oven:</BoldSpan>KT1...
+                    {/* TODO(keefertaylor): Use Translations */}
+                    <BoldSpan>Oven:</BoldSpan>
+                    {ovenAddress}
                 </MessageContainer>
             </MainContainer>
             <MainContainer>
                 <MessageContainer>
-                    {/* TODO(keefertaylor): Use Translations
-          TODO(keefertaylor): Add proper address */}
-                    <BoldSpan>Borrowed WXTZ: </BoldSpan> 20
+                    {/* TODO(keefertaylor): Use Translations */}
+                    <BoldSpan>Borrowed WXTZ: </BoldSpan>
+                    <AmountView
+                        color="black"
+                        size={ms(0.5)}
+                        amount={vaultBalance}
+                        weight="light"
+                        symbol={'WXTZ'}
+                        showTooltip={true}
+                        scale={6}
+                        precision={6}
+                        round={6}
+                    />
                 </MessageContainer>
             </MainContainer>
             <MainContainer>
@@ -377,7 +373,7 @@ function DepositModal(props: Props) {
             <MainContainer>
                 <AmountFeePassContainer>
                     <AmountSendContainer>
-                        {/* TODO(keefertaylor): Use another type that doesn't have XTZ and lable appropriately */}
+                        {/* TODO(keefertaylor): Use another type that doesn't have XTZ and label appropriately */}
                         <TezosNumericInput
                             decimalSeparator={t('general.decimal_separator')}
                             label={t('general.nouns.amount')}
@@ -416,23 +412,7 @@ function DepositModal(props: Props) {
             <MainContainer>
                 <AmountFeePassContainer>
                     <FeeContainer>
-                        <Fees
-                            low={newFees.low}
-                            medium={newFees.medium}
-                            high={newFees.high}
-                            fee={fee}
-                            miniFee={miniFee}
-                            onChange={changeFee}
-                            tooltip={
-                                !isRevealed ? (
-                                    <Tooltip position="bottom" content={renderFeeToolTip()}>
-                                        <IconButton size="small">
-                                            <TezosIcon iconName="help" size={ms(1)} color="gray5" />
-                                        </IconButton>
-                                    </Tooltip>
-                                ) : null
-                            }
-                        />
+                        <Fees low={FEES.low} medium={FEES.medium} high={FEES.high} fee={fee} miniFee={FEES.low} onChange={changeFee} />
                     </FeeContainer>
                 </AmountFeePassContainer>
                 <BalanceContainer>
@@ -464,7 +444,7 @@ function DepositModal(props: Props) {
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => createAccount()}>
+                <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => withdrawFromOven()}>
                     {/* TODO(keefertaylor): Translations */}
                     Withdraw
                 </DelegateButton>

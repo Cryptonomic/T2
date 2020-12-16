@@ -127,9 +127,9 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         activeTab: TRANSACTIONS,
         kind: TokenKind.wxtz,
         icon: wxtzIcon,
-        scale: 0,
-        precision: 0,
-        round: 0,
+        scale: 6,
+        precision: 6,
+        round: 6,
         // TODO(keefertaylor): rename these variables.
         ovenCoreAddress: 'KT1EZrujecyZqJnySZYvb7JxYknrtTWrVjn6',
         ovenRegistryMapId: 25903,

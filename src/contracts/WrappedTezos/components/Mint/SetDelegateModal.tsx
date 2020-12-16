@@ -6,6 +6,7 @@ import { OperationKindType } from 'conseiljs';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '../../../../components/TextField';
 import TezosNumericInput from '../../../../components/TezosNumericInput';
+import { setDelegateForOven } from '../../thunks';
 
 import Modal from '../../../../components/CustomModal';
 import Tooltip from '../../../../components/Tooltip/';
@@ -176,18 +177,36 @@ const BoldSpan = styled.span`
     font-weight: 500;
 `;
 
+const MessageContainer = styled.div`
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    height: 30px;
+    width: 100%;
+    color: #4e71ab;
+    font-weight: 300;
+`;
+
 const utez = 1000000;
-const GAS = 64250; // TODO: burn actually
+
+const FEES = {
+    low: 0,
+    medium: 60000,
+    high: 1000000,
+};
 
 interface Props {
+    ovenAddress: string;
     open: boolean;
     managerBalance: number;
     onClose: () => void;
 }
 
 const defaultState = {
+    // Needed?
     amount: '',
-    fee: 2840,
+    fee: FEES.medium,
+    // TODO(keefertaylor): Needed?
     total: 0,
     balance: 0,
 };
@@ -204,23 +223,13 @@ function AddDelegateModal(props: Props) {
     const [passPhrase, setPassPhrase] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [isDelegateIssue, setIsDelegateIssue] = useState(false);
-    const { amount, fee, total, balance } = state;
+    const [balance, setBalance] = useState(props.managerBalance - defaultState.fee);
+    const { amount, fee, total } = state;
 
-    const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(OperationKindType.Origination, true, true);
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-    const { open, managerBalance, onClose } = props;
+    const { open, managerBalance, ovenAddress, onClose } = props;
 
-    const isDisabled = isLoading || !delegate || !amount || (!passPhrase && !isLedger) || balance < 0 || isDelegateIssue;
-
-    useEffect(() => {
-        setState((prevState) => {
-            return {
-                ...prevState,
-                fee: newFees.medium,
-                total: newFees.medium + GAS,
-            };
-        });
-    }, [isFeeLoaded]);
+    const isDisabled = isLoading || !delegate || (!passPhrase && !isLedger) || isDelegateIssue;
 
     function updateState(updatedValues) {
         setState((prevState) => {
@@ -228,56 +237,24 @@ function AddDelegateModal(props: Props) {
         });
     }
 
-    function onUseMax() {
-        const max = managerBalance - fee - GAS;
-        let newAmount = '0';
-        let newTotal = fee + GAS;
-        let newBalance = managerBalance - total;
-        if (max > 0) {
-            newAmount = (max / utez).toFixed(6);
-            newTotal = managerBalance;
-            newBalance = 0;
-        }
-        updateState({ amount: newAmount, total: newTotal, balance: newBalance });
-    }
-
-    function changeAmount(newAmount = '0') {
-        const commaReplacedAmount = newAmount.replace(',', '.');
-        const numAmount = parseFloat(commaReplacedAmount) * utez;
-        const newTotal = numAmount + fee + GAS;
-        const newBalance = managerBalance - total;
-        updateState({ amount: newAmount, total: newTotal, balance: newBalance });
-    }
-
-    function changeFee(newFee) {
-        const newAmount = amount || '0';
-        const numAmount = parseFloat(newAmount) * utez;
-        const newTotal = numAmount + newFee + GAS;
-        const newBalance = managerBalance - total;
-        updateState({ fee: newFee, total: newTotal, balance: newBalance });
-    }
-
-    async function createAccount() {
+    async function updateDelegate() {
         dispatch(setIsLoadingAction(true));
         if (isLedger) {
             setConfirmOpen(true);
         }
-        const isCreated = await dispatch(originateContractThunk(delegate, amount, Math.floor(fee), passPhrase, selectedParentHash));
+
+        const delegateSet = await dispatch(setDelegateForOven(ovenAddress, delegate, fee, passPhrase));
+
         setConfirmOpen(false);
         dispatch(setIsLoadingAction(false));
-        if (!!isCreated) {
+        if (!!delegateSet) {
             onClose();
         }
     }
 
-    function renderGasToolTip() {
-        return <TooltipContainer>{t('components.addDelegateModal.gas_tool_tip', { gas: GAS / utez })}</TooltipContainer>;
-    }
-
     function onCloseClick() {
-        const newFee = newFees.medium;
-        const newTotal = newFee + GAS;
-        updateState({ fee: newFee, total: newTotal, balance: managerBalance - newTotal });
+        const newTotal = FEES.medium;
+        updateState({ fee: FEES.medium, total: newTotal, balance: managerBalance - newTotal });
         onClose();
     }
 
@@ -304,30 +281,25 @@ function AddDelegateModal(props: Props) {
         };
     }
 
-    function onEnterPress(keyVal) {
-        if (keyVal === 'Enter' && !isDisabled) {
-            createAccount();
-        }
-    }
-
-    function renderFeeToolTip() {
-        return (
-            <TooltipContainer>
-                <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>
-                <TooltipContent>
-                    <Trans i18nKey="components.send.fee_tooltip_content">
-                        This address is not revealed on the blockchain. We have added
-                        <BoldSpan>0.001420 XTZ</BoldSpan> for Public Key Reveal to your regular send operation fee.
-                    </Trans>
-                </TooltipContent>
-            </TooltipContainer>
-        );
+    function changeFee(newFee) {
+        const newAmount = amount || '0';
+        const numAmount = parseFloat(newAmount) * utez;
+        const newTotal = numAmount + newFee;
+        const newBalance = managerBalance - total;
+        updateState({ fee: newFee, total: newTotal, balance: newBalance });
     }
 
     const { isIssue, warningMessage, balanceColor } = getBalanceState();
     return (
         // TODO(keefertaylor): Use translations here.
         <Modal title={'Set Delegate'} open={open} onClose={onCloseClick}>
+            <MainContainer>
+                <MessageContainer>
+                    {/* TODO(keefertaylor): Use Translations */}
+                    <BoldSpan>Oven:</BoldSpan>
+                    {ovenAddress}
+                </MessageContainer>
+            </MainContainer>
             <InputAddressContainer>
                 <InputAddress
                     label={t('general.nouns.delegate_address')}
@@ -340,33 +312,8 @@ function AddDelegateModal(props: Props) {
             <MainContainer>
                 <AmountFeePassContainer>
                     <FeeContainer>
-                        <Fees
-                            low={newFees.low}
-                            medium={newFees.medium}
-                            high={newFees.high}
-                            fee={fee}
-                            miniFee={miniFee}
-                            onChange={changeFee}
-                            tooltip={
-                                !isRevealed ? (
-                                    <Tooltip position="bottom" content={renderFeeToolTip()}>
-                                        <IconButton size="small">
-                                            <TezosIcon iconName="help" size={ms(1)} color="gray5" />
-                                        </IconButton>
-                                    </Tooltip>
-                                ) : null
-                            }
-                        />
+                        <Fees low={FEES.low} medium={FEES.medium} high={FEES.high} fee={fee} miniFee={FEES.low} onChange={changeFee} />
                     </FeeContainer>
-                    <GasInputContainer>
-                        <TextField disabled={true} label={t('general.verbs.burn')} defaultValue="0.06425" />
-                        <TezosIconInput color="gray5" iconName="tezos" />
-                        <Tooltip position="bottom" content={renderGasToolTip()}>
-                            <BurnTooltip size="small">
-                                <TezosIcon iconName="help" size={ms(1)} color="gray5" />
-                            </BurnTooltip>
-                        </Tooltip>
-                    </GasInputContainer>
                 </AmountFeePassContainer>
                 <BalanceContainer>
                     <BalanceArrow />
@@ -394,7 +341,7 @@ function AddDelegateModal(props: Props) {
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => createAccount()}>
+                <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => updateDelegate()}>
                     {/* TODO(keefertaylor): translations */}
                     Set Oven Delegate
                 </DelegateButton>

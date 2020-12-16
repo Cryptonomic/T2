@@ -45,6 +45,7 @@ interface Props {
     onClose: () => void;
 }
 
+// TODO(keefertaylor): Dead code.
 const DeployOvenModal = (props: Props) => {
     const { t } = useTranslation();
     const { isLoading, selectedParentHash, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);

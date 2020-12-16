@@ -14,6 +14,7 @@ import {
     ConseilQueryBuilder,
     ConseilOperator,
     ConseilDataClient,
+    TezosNodeReader,
 } from 'conseiljs';
 import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { createMessageAction } from '../../reduxContent/message/actions';
@@ -234,15 +235,26 @@ export function syncTokenThunk(tokenAddress) {
 
             // Apply an optional update for OvenList
             if (ovenAddresses.length > 0) {
-                const ovenList: Vault[] = ovenAddresses.map((ovenAddress: string) => {
+                console.log('[STAKERDAO] applying optional update...');
+
+                const ovenPromises = ovenAddresses.map(async (ovenAddress: string) => {
+                    console.log('[STAKERDAO] mapping oven...');
+
+                    const ovenBalance = await TezosNodeReader.getSpendableBalanceForAccount(mainNode.tezosUrl, ovenAddress);
+                    console.log('[STAKERDAO] GOT BALANCE ' + ovenBalance);
+
+                    const block: any = await TezosNodeReader.getAccountForBlock(mainNode.tezosUrl, 'head', ovenAddress);
+                    const baker = block.delegate as string;
+                    console.log('[STAKERDAO] BAKER ' + baker);
+
                     return {
                         ovenAddress,
                         ovenOwner: selectedParentHash,
-                        // TODO(keefertaylor): Fetch this data.
-                        ovenBalance: 0,
-                        baker: '',
+                        ovenBalance,
+                        baker,
                     };
                 });
+                const ovenList = await Promise.all(ovenPromises);
 
                 tokens[tokenIndex] = { ...tokens[tokenIndex], ovenList };
             }
