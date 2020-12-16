@@ -24,7 +24,6 @@ import TokenNav from '../TokenNav';
 
 import SignVerifyModal from '../../featureModals/SignVerify';
 import AuthModal from '../../featureModals/Auth';
-import BeaconRegistrationModal from '../../featureModals/Beacon/BeaconRegistrationModal';
 import BeaconConnectionRequest from '../../featureModals/Beacon/BeaconConnectionRequest';
 import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
 import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
@@ -266,6 +265,8 @@ function AddressBlock(props: Props) {
     const isSignModalOpen = isModalOpen && activeModal === 'sign';
     const isAuthModalOpen = isModalOpen && activeModal === 'auth';
     const isBeaconRegistrationModalOpen = isModalOpen && activeModal === 'beaconRegistration';
+    const isBeaconAuthorizeModalOpen = isModalOpen && activeModal === 'beaconAuthorize';
+    const isBeaconPermissionModalOpen = isModalOpen && activeModal === 'beaconPermission';
     const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
     const isBeaconEventModalOpen = isModalOpen && activeModal === 'beaconEvent';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
@@ -415,22 +416,16 @@ function AddressBlock(props: Props) {
             {isSignModalOpen && <SignVerifyModal open={isSignModalOpen} onClose={() => setIsModalOpen(false, 'sign')} />}
             {isAuthModalOpen && <AuthModal open={isAuthModalOpen} onClose={() => setIsModalOpen(false, 'auth')} />}
             {isBeaconRegistrationModalOpen && (
-                <BeaconRegistrationModal open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
+                <BeaconConnectionRequest open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
             )}
-            {/* {
-                step == 1 && <BeaconConnectionRequest open={true} onClose={() => setIsModalOpen(false, 'beaconRegistration')} onNext={() => setStep(2)}/>
-            }
+            {isBeaconAuthorizeModalOpen && <BeaconAuthorize open={isBeaconAuthorizeModalOpen} onClose={() => setIsModalOpen(false, 'beaconAuthorize')} />}
+            {isBeaconPermissionModalOpen && <BeaconPermission open={isBeaconPermissionModalOpen} onClose={() => setIsModalOpen(false, 'beaconPermission')} />}
 
-            {
-                step == 2 && <BeaconPermission open={true} onClose={() => setIsModalOpen(false, 'beaconRegistration')} onNext={() => setStep(3)}/>
-            }
-
-            {
-                step == 3 && <BeaconAuthorize open={true} onClose={() => setIsModalOpen(false, 'beaconRegistration')}/>
-            } */}
-
-            {isBeaconEventModalOpen && <BeaconEventModal open={isBeaconEventModalOpen} onClose={() => setIsModalOpen(false, 'beaconEvent')} />}
-            {isBeaconInfoModalOpen && <BeaconInfoModal open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />}
+            {/* {isBeaconEventModalOpen && <BeaconEventModal open={isBeaconEventModalOpen} onClose={() => setIsModalOpen(false, 'beaconEvent')} />} */}
+            {/* {isBeaconRegistrationModalOpen && (
+                <BeaconRegistrationModal open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
+            )} */}
+            {/* {isBeaconInfoModalOpen && <BeaconInfoModal open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />} */}
 
             {isInteractModalOpen && (
                 <InteractContractModal open={isInteractModalOpen} onClose={() => setIsInteractModalOpen(false)} addresses={regularAddresses} />

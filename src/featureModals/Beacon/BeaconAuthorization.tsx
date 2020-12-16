@@ -1,47 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import {
-    WalletClient,
-    BeaconMessageType,
-    Network,
-    PermissionScope,
-    PermissionResponseInput,
-    OperationResponseInput,
-    TezosTransactionOperation,
-} from '@airgap/beacon-sdk';
-import beaconReq from '../../../resources/imgs/beaconRequest.svg';
+import { BeaconMessageType, OperationResponseInput } from '@airgap/beacon-sdk';
 
-import { connectBeaconThunk } from '../../reduxContent/app/thunks';
-import { getSelectedKeyStore } from '../../utils/general';
-import { getMainNode, getMainPath } from '../../utils/settings';
-import { ms } from '../../styles/helpers';
-import { openLink } from '../../utils/general';
+import { beaconClient } from './BeaconConnect';
+
+import beaconReq from '../../../resources/imgs/beaconRequest.svg';
 import Loader from '../../components/Loader';
-import Tooltip from '../../components/Tooltip';
+import PasswordInput from '../../components/PasswordInput';
+
 import { RootState, ModalState } from '../../types/store';
 
-import {
-    ModalWrapper,
-    ModalContainer,
-    CloseIconWrapper,
-    ModalTitle,
-    Container,
-    MainContainer,
-    ButtonContainer,
-    ResultContainer,
-    InvokeButton,
-    WhiteBtn,
-    Result,
-    LinkIcon,
-    LinkContainer,
-    ContentTitle,
-    ContentSubtitle,
-    Footer,
-    TitleContainer,
-    TooltipContent,
-} from '../style';
+import { sendTezThunk, getIsImplicitAndEmptyThunk } from '../../contracts/duck/thunks';
+import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';
+import { setModalOpen } from '../../reduxContent/modal/actions';
+import { setBeaconLoading } from '../../reduxContent/app/actions';
+
+import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
 
 export const PromptContainer = styled.div`
     align-items: center;
@@ -54,52 +30,103 @@ export const PromptContainer = styled.div`
     width: 100%;
 `;
 
+const WrapPassword = styled.div`
+    margin-top: 26px;
+`;
+
 interface Props {
     open: boolean;
     onClose: () => void;
 }
 
-const BeaconAuthorize = (props: Props) => {
-    const { open, onClose } = props;
+const BeaconAuthorize = ({ open, onClose }: Props) => {
     const { t } = useTranslation();
-    const { isLoading } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const dispatch = useDispatch();
+    const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
+    const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
+    const modalValues = useSelector<RootState, ModalState>((state) => state.modal.values, shallowEqual);
+    const beaconLoading = useSelector((state: RootState) => state.app.beaconLoading);
+
+    const [password, setPassword] = useState('');
+
+    const { id, operationDetails } = modalValues[activeModal];
+    const isContract = operationDetails[0].destination === 'contract'; // TODO: // recognise contract call and simple transaction
+
+    const onAuthorize = async () => {
+        try {
+            dispatch(setBeaconLoading(true));
+            // TODO: make transaction
+
+            const response: OperationResponseInput = {
+                type: BeaconMessageType.OperationResponse,
+                id,
+                transactionHash: '', // TODO: add transaction hash
+            };
+            await beaconClient.respond(response);
+
+            dispatch(setBeaconLoading());
+            dispatch(setModalOpen(false, activeModal));
+        } catch (e) {
+            console.log('BeaconAuthorize error', e);
+        }
+
+        // const requiresBurn = await getIsImplicitAndEmptyThunk(operationDetails[0].destination, settings.nodesList, settings.selectedNode);
+
+        // TODO: validate fee against min
+        // TODO: validate burn+amount+fee against balance - 1xtz
+        // TODO: validate amount > 0
+        // TODO: validate destination != self
+
+        // dispatch(sendTezThunk(password, target, amount, Math.floor(fee))); // amount as fraction, fee as mutez – Ugh
+        // dispatch(invokeAddressThunk(contractAddress, fee, amount, storage, gas, parameters, passPhrase, selectedInvokeAddress, entryPoint, codeFormat));
+    };
+
     return (
         <ModalWrapper open={open}>
             {open ? (
                 <ModalContainer>
-                    <CloseIconWrapper onClick={() => onClose()} />
-                    {/* <ModalTitle>{t('components.Beacon.registrationModal.title')}</ModalTitle> */}
                     <Container>
                         <div className="modal-holder">
-                            <h3>Authorize Operations</h3>
+                            <h3>{t('components.Beacon.authorization.title')}</h3>
                             <div>
                                 <img src={beaconReq} />
-                                {/* <span className="divider"></span>
-                        <img src="./beaconRequest.svg" /> */}
                             </div>
                             <h4>Network: Mainnet</h4>
                             <p className="linkAddress">https://app.dexter.exchange/</p>
                             <p>
-                                Dexter is requesting to send a transaction of <strong>[amount]</strong> <strong>[unit]</strong> to{' '}
-                                <strong>tz1irJKkXS2DBWkU1NnmFQx1c1L7pbGg4yhk</strong> with the following parameters:{' '}
+                                Dexter is requesting to send a transaction of <strong>{operationDetails[0].amount}</strong> <strong>[unit]</strong> to{' '}
+                                <strong>{operationDetails[0].destination}</strong> {`${isContract ? 'with the following parameters:' : ' '}`}
                             </p>
-                            <ul>
-                                <li>Parameter 1</li>
-                                <li>Parameter 1</li>
-                            </ul>
-                            <p className="subtitleText">To see more parameters, view the operation details below</p>
-                            <p className="fontWeight400">Operations</p>
-                            <textarea className="inputField"/>
+                            {isContract && (
+                                <div>
+                                    <ul>
+                                        <li>Parameter 1</li>
+                                        <li>Parameter 1</li>
+                                    </ul>
+                                    <p className="subtitleText">To see more parameters, view the operation details below</p>
+                                    <p className="fontWeight400">Operations</p>
+                                    <textarea className="inputField" />
+                                </div>
+                            )}
                             <p className="subtitleText">
                                 Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
                             </p>
+                            {isContract && (
+                                <WrapPassword>
+                                    <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
+                                </WrapPassword>
+                            )}
                         </div>
                     </Container>
-                    {isLoading && <Loader />}
+                    {beaconLoading && <Loader />}
                     <Footer>
                         <ButtonContainer>
-                            <WhiteBtn buttonTheme="secondary">{t('general.verbs.cancel')}</WhiteBtn>
-                            <InvokeButton buttonTheme="primary">{t('general.verbs.connect')}</InvokeButton>
+                            <WhiteBtn buttonTheme="secondary" onClick={onClose}>
+                                {t('general.verbs.cancel')}
+                            </WhiteBtn>
+                            <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
+                                {t('general.verbs.authorize')}
+                            </InvokeButton>
                         </ButtonContainer>
                     </Footer>
                 </ModalContainer>

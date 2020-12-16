@@ -186,7 +186,8 @@ export function syncTokenThunk(tokenAddress) {
             let transAsync;
             let detailsAsync;
             let ovenAddresses: string[] = [];
-            if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtez) {
+
+            if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtz) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
@@ -230,8 +231,12 @@ export function syncTokenThunk(tokenAddress) {
                 console.log('[STAKERDAO] Got ovens');
             }
 
-            const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
-            tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions, details };
+            try {
+                const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
+                tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions, details };
+            } catch (awaitError) {
+                console.log('awaitError', awaitError);
+            }
 
             // Apply an optional update for OvenList
             if (ovenAddresses.length > 0) {
@@ -297,7 +302,8 @@ export function syncWalletThunk() {
 
         const newTokens = await Promise.all(
             tokens.map(async (token) => {
-                if (token.kind === TokenKind.tzip7 || token.kind === TokenKind.usdtez) {
+                console.log('processing token', token);
+                if (token.kind === TokenKind.tzip7 || token.kind === TokenKind.usdtz) {
                     try {
                         const validCode = await Tzip7ReferenceTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
                         if (!validCode) {
@@ -383,14 +389,14 @@ export function syncWalletThunk() {
 
                     return { ...token, mapid, administrator, balance, transactions };
                 } else if (token.kind === TokenKind.wxtz) {
-                    // try {
-                    //     const validCode = await WrappedTezosHelper.verifyDestination(mainNode.tezosUrl, token.address, '', ''); // TODO
-                    //     if (!validCode) {
-                    //         console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
-                    //     }
-                    // } catch {
-                    //     console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
-                    // }
+                    try {
+                        // const validCode = await WrappedTezosHelper.verifyDestination(mainNode.tezosUrl, token.address, '', ''); // TODO
+                        // if (!validCode) {
+                        //     console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
+                        // }
+                    } catch {
+                        console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
+                    }
 
                     let mapid = token.mapid;
                     const administrator = token.administrator || '';

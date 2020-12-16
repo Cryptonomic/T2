@@ -1,47 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import {
-    WalletClient,
-    BeaconMessageType,
-    Network,
-    PermissionScope,
-    PermissionResponseInput,
-    OperationResponseInput,
-    TezosTransactionOperation,
-} from '@airgap/beacon-sdk';
+import { BeaconMessageType, Network, PermissionScope, PermissionResponseInput } from '@airgap/beacon-sdk';
 import beaconReq from '../../../resources/imgs/beaconRequest.svg';
 
-import { connectBeaconThunk } from '../../reduxContent/app/thunks';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
-import { ms } from '../../styles/helpers';
-import { openLink } from '../../utils/general';
 import Loader from '../../components/Loader';
-import Tooltip from '../../components/Tooltip';
 import { RootState, ModalState } from '../../types/store';
 
-import {
-    ModalWrapper,
-    ModalContainer,
-    CloseIconWrapper,
-    ModalTitle,
-    Container,
-    MainContainer,
-    ButtonContainer,
-    ResultContainer,
-    InvokeButton,
-    Result,
-    LinkIcon,
-    LinkContainer,
-    ContentTitle,
-    ContentSubtitle,
-    Footer,
-    TitleContainer,
-    TooltipContent,
-    WhiteBtn,
-} from '../style';
+import { setBeaconLoading } from '../../reduxContent/app/actions';
+import { beaconClient } from './BeaconConnect';
+
+import { ModalWrapper, ModalContainer, CloseIconWrapper, Container, ButtonContainer, InvokeButton, Footer, WhiteBtn } from '../style';
 
 export const PromptContainer = styled.div`
     align-items: center;
@@ -57,26 +29,57 @@ export const PromptContainer = styled.div`
 interface Props {
     open: boolean;
     onClose: () => void;
-    onNext: () => void;
 }
 
-const BeaconPermission = (props: Props) => {
-    const { open, onClose, onNext } = props;
+const BeaconPermission = ({ open, onClose }: Props) => {
     const { t } = useTranslation();
-    const { isLoading } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const dispatch = useDispatch();
+    const { selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
+    const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
+    const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
+    const modalValues = useSelector<RootState, ModalState>((state) => state.modal.values, shallowEqual);
+    const beaconLoading = useSelector((state: RootState) => state.app.beaconLoading);
+
+    const derivationPath = isLedger ? getMainPath(settings.pathsList, settings.selectedPath) : '';
+    const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
+    const connectedBlockchainNode = getMainNode(settings.nodesList, settings.selectedNode);
+
+    const onAllow = async () => {
+        try {
+            dispatch(setBeaconLoading(true));
+            const authorizationScope = modalValues[activeModal].scopes.join(', ');
+            const authorizationRequestId = modalValues[activeModal].id;
+            const response: PermissionResponseInput = {
+                type: BeaconMessageType.PermissionResponse,
+                network: { type: connectedBlockchainNode.network } as Network,
+                scopes: authorizationScope.split(', ') as PermissionScope[],
+                id: authorizationRequestId,
+                publicKey: keyStore.publicKey,
+            };
+            await beaconClient.respond(response);
+            const permissions = await beaconClient.getPermissions();
+            dispatch(setBeaconLoading());
+            if (!permissions.length && !permissions.find((p) => p.address === keyStore.publicKeyHash)) {
+                throw Error('No permission');
+            }
+            onClose();
+        } catch (e) {
+            console.log('BeaconPermissionError', e);
+            dispatch(setBeaconLoading());
+        }
+    };
+
     return (
         <ModalWrapper open={open}>
             {open ? (
                 <ModalContainer>
                     <CloseIconWrapper onClick={() => onClose()} />
-                    {/* <ModalTitle>{t('components.Beacon.registrationModal.title')}</ModalTitle> */}
                     <Container>
                         <div className="modal-holder">
-                            <h3>Permission Request</h3>
+                            <h3>{t('components.Beacon.permission.title')}</h3>
                             <div>
                                 <img src={beaconReq} />
-                                {/* <span className="divider"></span>
-                        <img src="./beaconRequest.svg" /> */}
                             </div>
                             <h4>Network: Mainnet</h4>
                             <p className="linkAddress">https://app.dexter.exchange/</p>
@@ -87,12 +90,14 @@ const BeaconPermission = (props: Props) => {
                             <p className="subtitleText mr-t-100 text-center">Always make sure you trust the sites you interact with..</p>
                         </div>
                     </Container>
-                    {isLoading && <Loader />}
+                    {beaconLoading && <Loader />}
                     <Footer>
                         <ButtonContainer>
-                            <WhiteBtn buttonTheme="secondary">{t('general.verbs.cancel')}</WhiteBtn>
-                            <InvokeButton buttonTheme="primary" onClick={() => onNext()}>
-                                {t('general.verbs.authorize')}
+                            <WhiteBtn buttonTheme="secondary" onClick={() => !beaconLoading && onClose()}>
+                                {t('general.verbs.cancel')}
+                            </WhiteBtn>
+                            <InvokeButton buttonTheme="primary" onClick={() => !beaconLoading && onAllow()}>
+                                {t('general.verbs.allow')}
                             </InvokeButton>
                         </ButtonContainer>
                     </Footer>

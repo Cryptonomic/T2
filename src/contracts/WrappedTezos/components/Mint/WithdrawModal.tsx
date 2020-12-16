@@ -307,7 +307,7 @@ function DepositModal(props: Props) {
         // Ensure there is adequate WXTZ balance
         const newIsWxtzBalanceIssue = wxtzRemaining < 0;
         // TODO(keefertaylor): Translations
-        const newWxtzWarningMessage = isWxtzBalanceIssue ? 'Insuffient WXTZ' : '';
+        const newWxtzWarningMessage = isWxtzBalanceIssue ? 'Insufficient WXTZ' : '';
         const newWxtzBalanceColor = isWxtzBalanceIssue ? 'error1' : 'gray8';
 
         // Ensure the user is not repaying more XTZ than is in the vault.

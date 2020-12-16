@@ -5,11 +5,13 @@ import { Node, TokenKind } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
 
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
-    let newTransactions: any[] = await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
-        console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
-        console.error(e);
-        return [];
-    });
+    let newTransactions: any[] = (
+        await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
+            console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
+            console.error(e);
+            return [];
+        })
+    ).filter((obj, pos, arr) => arr.map((o) => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
 
     const addressPattern = '([1-9A-Za-z^OIl]{36})';
     const amountPattern = '([0-9]+)';
@@ -17,6 +19,8 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
     const transferPattern = new RegExp(`Left[(]Left[(]Left[(]Pair"${addressPattern}"[(]Pair"${addressPattern}"([0-9]+)[))))]`);
     const mintPattern = new RegExp(`Right[(]Right[(]Right[(]Left[(]Pair"${addressPattern}"${amountPattern}[))))]`);
     const burnPattern = new RegExp(`Right[(]Right[(]Right[(]Right[(]Pair"${addressPattern}"${amountPattern}[))))]`);
+    const pausePatternFalse = new RegExp('Right[(]Left[(]LeftFalse[))]');
+    const pausePatternTrue = new RegExp('Right[(]Left[(]LeftTrue[))]');
 
     newTransactions = newTransactions.map((transaction) => {
         const params = transaction.parameters.replace(/\s/g, '');
@@ -37,7 +41,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
         } else if (mintPattern.test(params)) {
             try {
                 const parts = params.match(mintPattern);
-
+                console.log(`added mint as: `, transaction);
                 return createTokenTransaction({
                     ...transaction,
                     status: transaction.status !== 'applied' ? status.FAILED : status.READY,
@@ -64,8 +68,19 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
             } catch (e) {
                 /* */
             }
+        } else if (pausePatternFalse.test(params) || pausePatternTrue.test(params)) {
+            const parts = params.match(burnPattern);
+            console.log(`added pause as: `, transaction);
+            return createTokenTransaction({
+                ...transaction,
+                status: transaction.status !== 'applied' ? status.FAILED : status.READY,
+                source: managerAddress,
+                destination: tokenAddress,
+                entryPoint: 'setPause',
+            });
         } else {
             // TODO
+            console.log(`cannot render unsupported transaction: "${params}"`);
         }
     });
 

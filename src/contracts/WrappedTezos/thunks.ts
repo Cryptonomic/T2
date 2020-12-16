@@ -88,8 +88,12 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        // TODO(keefertaylor): Do not hardwire.
-        const coreContractAddress = 'KT1EZrujecyZqJnySZYvb7JxYknrtTWrVjn6';
+        let coreContractAddress = '';
+        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+        if (tokenIndex > -1) {
+            const token = tokens[tokenIndex] as VaultToken;
+            coreContractAddress = token.ovenCoreAddress;
+        }
 
         console.log('STAKERDAO - initial delegate: ' + initialDelegate);
         const result = await WrappedTezosHelper.deployOven(tezosUrl, signer, keyStore, fee, coreContractAddress, initialDelegate).catch((err) => {
@@ -122,7 +126,6 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
             )
         );
 
-        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
             const token = tokens[tokenIndex] as VaultToken;
             token.ovenList.unshift({
@@ -183,7 +186,7 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
                 return false;
             }
 
-            // Increment oven balance and WXTZ balance.
+            // Increment oven balance and wXTZ balance.
             token.balance = token.balance += amount;
             token.ovenList[ovenIndex].ovenBalance = token.ovenList[ovenIndex].ovenBalance += amount;
             tokens[tokenIndex] = token;
@@ -243,7 +246,7 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
                 return false;
             }
 
-            // Increment oven balance and WXTZ balance.
+            // Increment oven balance and wXTZ balance.
             token.balance = token.balance -= amount;
             token.ovenList[ovenIndex].ovenBalance = token.ovenList[ovenIndex].ovenBalance -= amount;
             tokens[tokenIndex] = token;
@@ -304,7 +307,7 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
                 return false;
             }
 
-            // Increment oven balance and WXTZ balance.
+            // Increment oven balance and wXTZ balance.
             token.ovenList[ovenIndex].baker = newDelegate;
             tokens[tokenIndex] = token;
 
