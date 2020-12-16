@@ -202,15 +202,6 @@ interface Props {
     onClose: () => void;
 }
 
-const defaultState = {
-    // Needed?
-    amount: '',
-    fee: FEES.medium,
-    // TODO(keefertaylor): Needed?
-    total: 0,
-    balance: 0,
-};
-
 // TODO(keefertaylor): Investigate if we require the ledger variant as well.
 // TODO(keefertaylor): Remove redundant information - gas, etc
 // TODO(keefertaylor): Include oven as a property.
@@ -218,24 +209,19 @@ const defaultState = {
 function AddDelegateModal(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [state, setState] = useState(defaultState);
     const [delegate, setDelegate] = useState('');
     const [passPhrase, setPassPhrase] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [isDelegateIssue, setIsDelegateIssue] = useState(false);
-    const [balance, setBalance] = useState(props.managerBalance - defaultState.fee);
-    const { amount, fee, total } = state;
+
+    const [fee, setFee] = useState(FEES.medium);
+    const [total, setTotal] = useState(FEES.medium);
+    const [balance, setBalance] = useState(props.managerBalance - total);
 
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { open, managerBalance, ovenAddress, onClose } = props;
 
     const isDisabled = isLoading || !delegate || (!passPhrase && !isLedger) || isDelegateIssue;
-
-    function updateState(updatedValues) {
-        setState((prevState) => {
-            return { ...prevState, ...updatedValues };
-        });
-    }
 
     async function updateDelegate() {
         dispatch(setIsLoadingAction(true));
@@ -254,7 +240,11 @@ function AddDelegateModal(props: Props) {
 
     function onCloseClick() {
         const newTotal = FEES.medium;
-        updateState({ fee: FEES.medium, total: newTotal, balance: managerBalance - newTotal });
+
+        setFee(FEES.medium);
+        setTotal(newTotal);
+        setBalance(managerBalance - newTotal);
+
         onClose();
     }
 
@@ -267,13 +257,6 @@ function AddDelegateModal(props: Props) {
             };
         }
 
-        if (amount) {
-            return {
-                isIssue: false,
-                warningMessage: '',
-                balanceColor: 'gray3',
-            };
-        }
         return {
             isIssue: false,
             warningMessage: '',
@@ -282,11 +265,12 @@ function AddDelegateModal(props: Props) {
     }
 
     function changeFee(newFee) {
-        const newAmount = amount || '0';
-        const numAmount = parseFloat(newAmount) * utez;
-        const newTotal = numAmount + newFee;
+        const newTotal = newFee;
         const newBalance = managerBalance - total;
-        updateState({ fee: newFee, total: newTotal, balance: newBalance });
+
+        setFee(newFee);
+        setTotal(newTotal);
+        setBalance(newBalance);
     }
 
     const { isIssue, warningMessage, balanceColor } = getBalanceState();
@@ -322,7 +306,7 @@ function AddDelegateModal(props: Props) {
                     <BalanceArrow />
                     <BalanceContent>
                         <BalanceTitle>{t('general.nouns.total')}</BalanceTitle>
-                        <TotalAmount weight="500" color={amount ? 'gray3' : 'gray8'} size={ms(0.65)} amount={total} />
+                        <TotalAmount weight="500" color={'gray8'} size={ms(0.65)} amount={total} />
                         <BalanceTitle>{t('general.nouns.remaining_balance')}</BalanceTitle>
                         <BalanceAmount weight="500" color={balanceColor} size={ms(-0.75)} amount={balance} />
                         {isIssue && (
@@ -350,7 +334,8 @@ function AddDelegateModal(props: Props) {
                 </DelegateButton>
             </PasswordButtonContainer>
             {isLoading && <Loader />}
-            {isLedger && open && (
+            {/* TODO(keefertaylor): Enable ledger support */}
+            {/* {isLedger && open && (
                 <AddDelegateLedgerModal
                     amount={amount}
                     fee={fee}
@@ -361,7 +346,7 @@ function AddDelegateModal(props: Props) {
                     onClose={() => setConfirmOpen(false)}
                     isLoading={isLoading}
                 />
-            )}
+            )} */}
         </Modal>
     );
 }

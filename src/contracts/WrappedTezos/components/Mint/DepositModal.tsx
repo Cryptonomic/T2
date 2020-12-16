@@ -207,14 +207,6 @@ interface Props {
     onClose: () => void;
 }
 
-const defaultState = {
-    amount: '',
-    numAmount: 0,
-    fee: FEES.medium,
-    total: 0,
-    balance: 0,
-};
-
 // TODO(keefertaylor): Investigate if we require the ledger variant as well.
 // TODO(keefertaylor): Remove redundant information - gas, etc
 // TODO(keefertaylor): Include oven as a property.
@@ -222,24 +214,23 @@ const defaultState = {
 function DepositModal(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [state, setState] = useState(defaultState);
     const [delegate, setDelegate] = useState('');
     const [passPhrase, setPassPhrase] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [isDelegateIssue, setIsDelegateIssue] = useState(false);
-    const { amount, fee, total, balance, numAmount } = state;
+
+    const [amount, setAmount] = useState('');
+    const [numAmount, setNumAmount] = useState(0);
+
+    const [fee, setFee] = useState(FEES.medium);
+    const [total, setTotal] = useState(FEES.medium);
+    const [balance, setBalance] = useState(props.managerBalance - total);
 
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { open, managerBalance, ovenAddress, onClose } = props;
 
     // TODO(keefertaylor): Can we remove isDelegateIssue
     const isDisabled = isLoading || !amount || (!passPhrase && !isLedger) || balance < 0;
-
-    function updateState(updatedValues) {
-        setState((prevState) => {
-            return { ...prevState, ...updatedValues };
-        });
-    }
 
     function onUseMax() {
         const max = managerBalance - fee - MinBalance;
@@ -252,7 +243,11 @@ function DepositModal(props: Props) {
             newBalance = MinBalance;
         }
         console.log('Stakerdao] num amount: ' + max);
-        updateState({ amount: newAmount, numAmount: max, total: newTotal, balance: newBalance });
+
+        setAmount(newAmount);
+        setNumAmount(max);
+        setTotal(newTotal);
+        setBalance(newBalance);
     }
 
     function changeAmount(newAmount = '0') {
@@ -260,8 +255,11 @@ function DepositModal(props: Props) {
         const newNumAmount = parseFloat(commaReplacedAmount) * utez;
         const newTotal = newNumAmount + fee;
         const newBalance = managerBalance - total;
-        console.log('Stakerdao] num amount: ' + newNumAmount);
-        updateState({ amount: newAmount, numAmount: newNumAmount, total: newTotal, balance: newBalance });
+
+        setAmount(newAmount);
+        setNumAmount(newNumAmount);
+        setTotal(newTotal);
+        setBalance(newBalance);
     }
 
     function changeFee(newFee) {
@@ -269,18 +267,17 @@ function DepositModal(props: Props) {
         const newNumAmount = parseFloat(newAmount) * utez;
         const newTotal = newNumAmount + newFee;
         const newBalance = managerBalance - total;
-        updateState({ fee: newFee, total: newTotal, balance: newBalance });
+
+        setFee(newFee);
+        setTotal(newTotal);
+        setBalance(newBalance);
     }
 
     async function depositToOven() {
-        console.log('[stakerdao] num amount: ' + numAmount);
-
         dispatch(setIsLoadingAction(true));
         if (isLedger) {
             setConfirmOpen(true);
         }
-
-        console.log('[stakerdao] num amount: ' + numAmount);
 
         const deposited = await dispatch(deposit(ovenAddress, numAmount, fee, passPhrase));
 
@@ -294,7 +291,10 @@ function DepositModal(props: Props) {
     function onCloseClick() {
         const newFee = FEES.medium;
         const newTotal = newFee;
-        updateState({ fee: newFee, total: newTotal, balance: managerBalance - newTotal });
+
+        setFee(newFee);
+        setTotal(newTotal);
+        setBalance(managerBalance - newTotal);
         onClose();
     }
 
