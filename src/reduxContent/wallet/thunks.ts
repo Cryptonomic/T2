@@ -383,14 +383,14 @@ export function syncWalletThunk() {
 
                     return { ...token, mapid, administrator, balance, transactions };
                 } else if (token.kind === TokenKind.wxtz) {
-                    try {
-                        const validCode = await WrappedTezosHelper.verifyDestination(mainNode.tezosUrl, token.address, '', ''); // TODO
-                        if (!validCode) {
-                            console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
-                        }
-                    } catch {
-                        console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
-                    }
+                    // try {
+                    //     const validCode = await WrappedTezosHelper.verifyDestination(mainNode.tezosUrl, token.address, '', ''); // TODO
+                    //     if (!validCode) {
+                    //         console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
+                    //     }
+                    // } catch {
+                    //     console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
+                    // }
 
                     let mapid = token.mapid;
                     const administrator = token.administrator || '';
