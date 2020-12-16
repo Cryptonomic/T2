@@ -32,6 +32,7 @@ interface Props {
 const BeaconInfoModal = ({ open, onClose }: Props) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const selectedAccountHash = useSelector((state: RootState) => state.app.selectedAccountHash);
     const { beaconLoading } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
     const [connected, setConnected] = useState(false);
@@ -48,6 +49,12 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                 }
 
                 const permissions = await beaconClient.getPermissions();
+                const isValid = permissions.filter((p) => p.address === selectedAccountHash).length;
+
+                if (!isValid) {
+                    return;
+                }
+
                 for (const p of permissions) {
                     beaconInfo[p.senderId].website = p.website;
                     beaconInfo[p.senderId].publicKey = p.publicKey;
@@ -99,8 +106,8 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                         )}
                         {connected && (
                             <div className="items">
-                                {beaconState.map((i: Record<string, string>) => (
-                                    <BeaconConnected key={i.index}>
+                                {beaconState.map((i: Record<string, string>, index: number) => (
+                                    <BeaconConnected key={index}>
                                         <div className="img">
                                             <img src={i.icon} />
                                         </div>

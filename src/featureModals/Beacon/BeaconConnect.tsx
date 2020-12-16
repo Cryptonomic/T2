@@ -17,6 +17,7 @@ export const BeaconConnect = () => {
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
     const modalValues = useSelector<RootState, any>((state) => state.modal.values);
     const beaconMessage = useSelector((state: RootState) => state.app.beaconMessage);
+    const selectedAccountHash = useSelector((state: RootState) => state.app.selectedAccountHash);
     const beaconClientLoaded = useSelector((state: RootState) => state.app.beaconClient);
 
     const connectedBlockchainNode = getMainNode(settings.nodesList, settings.selectedNode);
@@ -42,6 +43,11 @@ export const BeaconConnect = () => {
 
         if (message.type === BeaconMessageType.OperationRequest) {
             console.log('Beacon.OperationRequest', message);
+
+            if (message.sourceAddress !== selectedAccountHash) {
+                dispatch(createMessageAction('Beacon: address not match', true));
+                return;
+            }
 
             if (connectedBlockchainNode.network !== message.network.type) {
                 dispatch(createMessageAction('Beacon: network not match', true));
