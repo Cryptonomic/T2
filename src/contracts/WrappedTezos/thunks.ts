@@ -1,6 +1,6 @@
 import { WrappedTezosHelper, OpenOvenResult, TezosNodeReader, TezosConseilClient, ConseilServerInfo } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { updateOvensAction, updateTokensAction } from '../../reduxContent/wallet/actions';
+import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
 import { createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';

@@ -15,7 +15,6 @@ import {
     SetIdentitiesAction,
     AddNewIdentityAction,
     UpdateIdentityAction,
-    UpdateOvensAction,
     UpdateTokensAction,
 } from './types';
 
