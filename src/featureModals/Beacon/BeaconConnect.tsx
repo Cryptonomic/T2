@@ -65,6 +65,12 @@ export const BeaconConnect = () => {
                 return;
             }
 
+            // temporary accept transactions only
+            if (!message.operationDetails.filter((o) => o.kind === 'transaction').length) {
+                dispatch(createMessageAction('Beacon: transactions only', true));
+                return;
+            }
+
             dispatch(setModalValue(message, 'beaconAuthorize'));
             dispatch(setModalOpen(true, 'beaconAuthorize'));
         }
