@@ -6,6 +6,8 @@ import { OperationKindType } from 'conseiljs';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '../../../../components/TextField';
 import TezosNumericInput from '../../../../components/TezosNumericInput';
+import NumericInput from '../../../../components/NumericInput';
+import { BigNumber } from 'bignumber.js';
 import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';
 
 import Modal from '../../../../components/CustomModal';
@@ -383,6 +385,16 @@ function DepositModal(props: Props) {
                             label={t('general.nouns.amount')}
                             amount={wxtzToWithdraw}
                             onChange={changeWxtzToWithdraw}
+                        />
+                        <NumericInput
+                            label={t('general.nouns.amount')}
+                            amount={wxtzToWithdraw}
+                            onChange={changeWxtzToWithdraw}
+                            symbol={'wXTZ'}
+                            scale={6}
+                            precision={6}
+                            maxValue={new BigNumber(wrappedTezBalance).dividedBy(10 ** (6 || 0)).toNumber()}
+                            minValue={new BigNumber(1).dividedBy(10 ** (6 || 0)).toNumber()}
                         />
                         <UseMax onClick={onUseMax}>{t('general.verbs.use_max')}</UseMax>
                     </AmountSendContainer>
