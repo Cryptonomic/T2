@@ -213,7 +213,7 @@ export function syncTokenThunk(tokenAddress) {
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
 
-                const coreContractAddress = vaultToken.ovenCoreAddress;
+                const coreContractAddress = vaultToken.vaultCoreAddress;
 
                 const vaultListBigMapId = vaultToken.vaultRegistryMapId;
                 const serverInfo: ConseilServerInfo = {
@@ -222,7 +222,7 @@ export function syncTokenThunk(tokenAddress) {
                     network: mainNode.network,
                 };
 
-                ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, ovenListBigMapId);
+                ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
             }
 
             try {
