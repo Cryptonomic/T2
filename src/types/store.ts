@@ -1,4 +1,5 @@
 import { Signer } from 'conseiljs';
+import { BeaconRequestOutputMessage, ConnectionContext } from '@airgap/beacon-sdk';
 
 import { Path, Node, NodeStatus, Identity, Token, AddressType } from './general';
 
@@ -17,8 +18,8 @@ export interface AppState {
     selectedAccountType: AddressType;
     signer: Signer | null;
     beaconClient: boolean;
-    beaconMessage: any | null;
-    beaconConnection: any | null;
+    beaconMessage: BeaconRequestOutputMessage | null;
+    beaconConnection: ConnectionContext | null;
     beaconLoading: boolean;
 }
 
