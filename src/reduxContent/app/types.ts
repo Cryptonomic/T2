@@ -21,6 +21,7 @@ export interface SetBeaconClientAction {
     type: typeof SET_BEACON_CLIENT;
     beaconClient: boolean;
 }
+
 export interface SetBeaconMessageAction {
     type: typeof SET_BEACON_MESSAGE;
     beaconMessage: BeaconRequestOutputMessage | null;

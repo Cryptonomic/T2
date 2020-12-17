@@ -59,10 +59,10 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                     beaconInfo[p.senderId].website = p.website;
                     beaconInfo[p.senderId].publicKey = p.publicKey;
                     beaconInfo[p.senderId].accountIdentifier = p.accountIdentifier;
-                    beaconInfo[p.senderId].network = p.network.type.toLocaleUpperCase();
+                    beaconInfo[p.senderId].network = p.network.type;
                     beaconInfo[p.senderId].scopes = p.scopes.map((s) => t(`components.Beacon.info.permissions.${s}`)).join(', ');
                     beaconInfo[p.senderId].connectedAt = new Date(p.connectedAt).toLocaleDateString();
-                    beaconInfo[p.senderId].icon = beaconDexter; // TODO: add icon based on id
+                    // beaconInfo[p.senderId].icon = beaconDexter; // TODO: add icon based on id
                 }
 
                 const list: Record<string, string>[] = Object.values(beaconInfo);
@@ -88,7 +88,7 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                     <CloseIconWrapper onClick={() => onClose()} />
                     <ModalTitle>{t('components.Beacon.info.title')}</ModalTitle>
                     <BeaconInfoContainer>
-                        <h4 className="title">DApps connected using Beacon</h4>
+                        <h4 className="title">dApps connected using Beacon</h4>
                         {!connected && (
                             <BeaconNotConnected>
                                 <p className="message">You haven’t connected to any dApps yet.</p>
@@ -103,15 +103,15 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                             <div className="items">
                                 {beaconState.map((i: Record<string, string>, index: number) => (
                                     <BeaconConnected key={index}>
-                                        <div className="img">
-                                            <img src={i.icon} />
-                                        </div>
+                                        {/*<div className="img"> <img src={i.icon} /> </div>*/}
                                         <div className="list">
-                                            <div className="name">{i.name}</div>
+                                            <div className="name">
+                                                {i.name} on {i.network}
+                                            </div>
                                             <div className="item">{i.website}</div>
-                                            <div className="item">{i.network}</div>
-                                            <div className="item">{i.connectedAt}</div>
-                                            <div className="item">{i.scopes}</div>
+                                            <div className="item">Connected on {i.connectedAt}</div>
+                                            <div className="item">Permissions: {i.scopes}</div>
+                                            {/*<div> removeAppMetadata(senderId: string): Promise<void>;*/}
                                         </div>
                                     </BeaconConnected>
                                 ))}

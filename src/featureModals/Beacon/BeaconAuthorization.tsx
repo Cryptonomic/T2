@@ -130,13 +130,13 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                         TezosParameterFormat.Micheline
                     )
                 );
-                // TODO: leadger
+                // TODO: ledger
             } else {
                 dispatch(sendTezThunk(password, destination, formattedAmount, operationState.fee));
-                // TODO: leadger
+                // TODO: ledger
             }
         } catch (e) {
-            console.log('Transacion.Error', e);
+            console.log('Transaction.Error', e);
             dispatch(setBeaconLoading());
         }
     };
@@ -198,7 +198,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 <ModalContainer>
                     <Container>
                         <div className="modal-holder">
-                            <h3>{t('components.Beacon.authorization.title')}</h3>
+                            {operationDetails.length === 1 && <h3>{t('components.Beacon.authorization.title')}</h3>}
+                            {operationDetails.length > 1 && <h3>{t('components.Beacon.authorization.title_plural')}</h3>}
                             <h4>Network: {network.type}</h4>
                             <p className="linkAddress">{website}</p>
                             <p>

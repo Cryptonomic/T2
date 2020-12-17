@@ -144,7 +144,8 @@
                 "title": "Permission Request"
             },
             "authorization": {
-                "title": "Authorize Operations"
+                "title": "Authorize Operation",
+                "title_plural": "Authorize Operations"
             },
             "info": {
                 "title": "Beacon Status",
