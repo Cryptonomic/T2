@@ -38,6 +38,7 @@ const initState: AppState = {
     beaconMessage: null,
     beaconLoading: false,
     beaconClient: false,
+    beaconConnection: null,
 };
 
 export function appReducer(state: AppState = initState, action: AppActionTypes) {
@@ -65,7 +66,7 @@ export function appReducer(state: AppState = initState, action: AppActionTypes) 
         case SET_BEACON_CLIENT:
             return { ...state, beaconClient: action.beaconClient };
         case SET_BEACON_MESSAGE:
-            return { ...state, beaconMessage: action.beaconMessage };
+            return { ...state, beaconMessage: action.beaconMessage, beaconConnection: action.beaconConnection };
         case SET_BEACON_LOADING:
             return { ...state, beaconLoading: action.beaconLoading };
         default:

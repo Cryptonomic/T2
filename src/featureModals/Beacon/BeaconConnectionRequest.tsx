@@ -2,7 +2,6 @@ import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import beaconReq from '../../../resources/imgs/beaconRequest.svg';
 
 import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
@@ -44,7 +43,7 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
         } catch (e) {
             console.log('BeaconConnectionRequestError', e);
             dispatch(setBeaconLoading());
-            dispatch(createMessageAction('Beacon: connection request fails', true));
+            dispatch(createMessageAction('Beacon connection request fails', true));
         }
     };
 
@@ -55,12 +54,9 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
                     <Container>
                         <div className="modal-holder">
                             <h3>{t('components.Beacon.connection.title')}</h3>
-                            <div>
-                                <img src={beaconReq} />
-                            </div>
-                            <h4>Network: Mainnet</h4>
-                            <p className="linkAddress">https://app.dexter.exchange/</p>
-                            <p className="text-center">Dexter would like to connect to your wallet </p>
+                            {/*<h4>Network: Mainnet</h4>*/}
+                            {/*<p className="linkAddress">https://app.dexter.exchange/</p>*/}
+                            <p className="text-center">{`${modalValues[activeModal].name} would like to connect to your wallet`}</p>
                             <p className="subtitleText text-center mr-t-100">
                                 This site is requesting access to view your account address. Always make sure you trust the sites you interact with.
                             </p>
@@ -69,7 +65,7 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
                     {beaconLoading && <Loader />}
                     <Footer>
                         <ButtonContainer>
-                            <WhiteBtn buttonTheme="secondary" onClick={() => !beaconLoading && onClose()}>
+                            <WhiteBtn buttonTheme="secondary" onClick={() => onClose()}>
                                 {t('general.verbs.cancel')}
                             </WhiteBtn>
                             <InvokeButton buttonTheme="primary" onClick={() => !beaconLoading && onConnect()}>

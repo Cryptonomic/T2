@@ -3,7 +3,6 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { BeaconMessageType, Network, PermissionScope, PermissionResponseInput } from '@airgap/beacon-sdk';
-import beaconReq from '../../../resources/imgs/beaconRequest.svg';
 
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
@@ -68,7 +67,7 @@ const BeaconPermission = ({ open, onClose }: Props) => {
         } catch (e) {
             console.log('BeaconPermissionError', e);
             dispatch(setBeaconLoading());
-            dispatch(createMessageAction('Beacon: permission fails', true));
+            dispatch(createMessageAction('Beacon permission fails', true));
         }
     };
 
@@ -80,22 +79,21 @@ const BeaconPermission = ({ open, onClose }: Props) => {
                     <Container>
                         <div className="modal-holder">
                             <h3>{t('components.Beacon.permission.title')}</h3>
-                            <div>
-                                <img src={beaconReq} />
-                            </div>
-                            <h4>Network: Mainnet</h4>
-                            <p className="linkAddress">https://app.dexter.exchange/</p>
-                            <p>Dexter is requesting the following permissions: </p>
+                            <h4>{`Network: ${modalValues[activeModal].network.type}`}</h4>
+                            {/*<p className="linkAddress">https://app.dexter.exchange/</p>*/}
+                            <p>{`${modalValues[activeModal].appMetadata.name} is requesting the following permissions:`}</p>
                             <ul>
-                                <li>Operation_ Sign Request</li>
+                                {modalValues[activeModal].scopes.map((s: string) => {
+                                    return <li key={s}>{t(`components.Beacon.info.permissions.${s}`)}</li>;
+                                })}
                             </ul>
-                            <p className="subtitleText mr-t-100 text-center">Always make sure you trust the sites you interact with..</p>
+                            <p className="subtitleText mr-t-100 text-center">Always make sure you trust the sites you interact with.</p>
                         </div>
                     </Container>
                     {beaconLoading && <Loader />}
                     <Footer>
                         <ButtonContainer>
-                            <WhiteBtn buttonTheme="secondary" onClick={() => !beaconLoading && onClose()}>
+                            <WhiteBtn buttonTheme="secondary" onClick={() => onClose()}>
                                 {t('general.verbs.cancel')}
                             </WhiteBtn>
                             <InvokeButton buttonTheme="primary" onClick={() => !beaconLoading && onAllow()}>

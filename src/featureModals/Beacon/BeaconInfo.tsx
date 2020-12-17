@@ -65,11 +65,6 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                     beaconInfo[p.senderId].icon = beaconDexter; // TODO: add icon based on id
                 }
 
-                const peers = await beaconClient.getPeers();
-                for (const peer of peers) {
-                    beaconInfo[peer.publicKey].relayServer = peer.relayServer;
-                }
-
                 const list: Record<string, string>[] = Object.values(beaconInfo);
 
                 if (list.length) {
@@ -79,7 +74,7 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
             } catch (e) {
                 console.log('BeaconInfoError', e);
                 dispatch(setBeaconLoading());
-                dispatch(createMessageAction('Beacon: informations fails', true));
+                dispatch(createMessageAction('Beacon informations fails', true));
             }
         };
         readState();

@@ -1,5 +1,6 @@
 import { NodeStatus, AddressType } from '../../types/general';
 import { Signer } from 'conseiljs';
+import { BeaconRequestOutputMessage, ConnectionContext } from '@airgap/beacon-sdk';
 
 export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_LEDGER = 'SET_LEDGER';
@@ -22,7 +23,8 @@ export interface SetBeaconClientAction {
 }
 export interface SetBeaconMessageAction {
     type: typeof SET_BEACON_MESSAGE;
-    beaconMessage: any | null;
+    beaconMessage: BeaconRequestOutputMessage | null;
+    beaconConnection: ConnectionContext | null;
 }
 
 export interface SetBeaconLoadingAction {
