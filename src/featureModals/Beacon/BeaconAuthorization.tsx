@@ -9,7 +9,6 @@ import { TezosParameterFormat, OperationKindType } from 'conseiljs';
 
 import { beaconClient } from './BeaconConnect';
 
-import beaconReq from '../../../resources/imgs/beaconRequest.svg';
 import Loader from '../../components/Loader';
 import PasswordInput from '../../components/PasswordInput';
 import Fees from '../../components/Fees';
@@ -200,9 +199,6 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     <Container>
                         <div className="modal-holder">
                             <h3>{t('components.Beacon.authorization.title')}</h3>
-                            <div>
-                                <img src={beaconReq} />
-                            </div>
                             <h4>Network: {network.type}</h4>
                             <p className="linkAddress">{website}</p>
                             <p>

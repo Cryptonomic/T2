@@ -18,6 +18,7 @@ export interface AppState {
     signer: Signer | null;
     beaconClient: boolean;
     beaconMessage: any | null;
+    beaconConnection: any | null;
     beaconLoading: boolean;
 }
 
