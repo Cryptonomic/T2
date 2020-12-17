@@ -29,17 +29,17 @@ export const BeaconConnect = () => {
         if (message.type === BeaconMessageType.PermissionRequest) {
             console.log('Beacon.PermissionRequest', message);
             if (connectedBlockchainNode.network !== message.network.type) {
-                dispatch(createMessageAction('Beacon: network not match', true));
+                dispatch(createMessageAction('Beacon network not match', true));
                 return;
             }
 
             if (!Object.keys(modalValues).length || !Object.keys(modalValues).includes('beaconRegistration')) {
-                dispatch(createMessageAction('Beacon: registration request not exist', true));
+                dispatch(createMessageAction('Beacon registration request not exist', true));
                 return;
             }
 
             if (connection.id !== modalValues.beaconRegistration.publicKey) {
-                dispatch(createMessageAction('Beacon: connection not match', true));
+                dispatch(createMessageAction('Beacon connection not match', true));
                 return;
             }
 
@@ -51,23 +51,23 @@ export const BeaconConnect = () => {
             console.log('Beacon.OperationRequest', message);
 
             if (message.sourceAddress !== selectedAccountHash) {
-                dispatch(createMessageAction('Beacon: address not match', true));
+                dispatch(createMessageAction('Beacon address not match', true));
                 return;
             }
 
             if (connectedBlockchainNode.network !== message.network.type) {
-                dispatch(createMessageAction(`Beacon: unexpected network: ${message.network.type}`, true));
+                dispatch(createMessageAction(`Beacon unexpected network: ${message.network.type}`, true));
                 return;
             }
 
             if (!message.operationDetails.length) {
-                dispatch(createMessageAction('Beacon: key not match', true));
+                dispatch(createMessageAction('Beacon key not match', true));
                 return;
             }
 
             // temporary accept transactions only
             if (!message.operationDetails.filter((o) => o.kind === 'transaction').length) {
-                dispatch(createMessageAction('Beacon: transactions only', true));
+                dispatch(createMessageAction('Beacon transactions only', true));
                 return;
             }
 

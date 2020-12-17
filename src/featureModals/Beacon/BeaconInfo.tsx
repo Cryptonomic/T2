@@ -74,7 +74,7 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
             } catch (e) {
                 console.log('BeaconInfoError', e);
                 dispatch(setBeaconLoading());
-                dispatch(createMessageAction('Beacon: informations fails', true));
+                dispatch(createMessageAction('Beacon informations fails', true));
             }
         };
         readState();

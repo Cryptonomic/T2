@@ -43,7 +43,7 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
         } catch (e) {
             console.log('BeaconConnectionRequestError', e);
             dispatch(setBeaconLoading());
-            dispatch(createMessageAction('Beacon: connection request fails', true));
+            dispatch(createMessageAction('Beacon connection request fails', true));
         }
     };
 

@@ -171,7 +171,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 dispatch(setBeaconLoading());
                 dispatch(setModalOpen(false, activeModal));
             } catch (e) {
-                dispatch(createMessageAction('Beacon: authorization fails', true));
+                dispatch(createMessageAction('Beacon authorization fails', true));
             }
         };
 
