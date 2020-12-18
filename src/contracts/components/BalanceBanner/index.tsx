@@ -12,7 +12,9 @@ import { Token } from '../../../types/general';
 
 import { RootState } from '../../../types/store';
 
-import { AddressInfo, AddressInfoLink, AddressTitle, Container, TopRow, BottomRow, Breadcrumbs, Gap } from './style';
+import { AddressInfo, AddressInfoLink, AddressTitle, Container, LinkIcon, TopRow, BottomRow, Breadcrumbs, Gap } from './style';
+
+import { openLink } from '../../../utils/general';
 
 interface Props {
     isReady: boolean;
@@ -74,9 +76,12 @@ function BalanceBanner(props: Props) {
                     {token.details && token.details.paused === false && 'Token is active.'}{' '}
                     {token.details && token.details.supply && 'Total supply is ' + formatAmount(token.details.supply) + '.'}
                     {token.details && token.details.helpLink && (
-                        <AddressInfoLink href={token.details.helpLink} target="_blank" color="white">
-                            Learn more about {token.displayName}
-                        </AddressInfoLink>
+                        <>
+                            <AddressInfoLink href="#" onClick={() => openLink(token.details.helpLink)}>
+                                Learn more about {token.displayName}
+                            </AddressInfoLink>
+                            <LinkIcon iconName="new-window" size={ms(0)} color="white" onClick={() => openLink(token.details.helpLink)} />
+                        </>
                     )}
                 </AddressInfo>
             </BottomRow>

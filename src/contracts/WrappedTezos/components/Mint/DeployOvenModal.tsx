@@ -26,6 +26,7 @@ import { setIsLoadingAction } from '../../../../reduxContent/app/actions';
 
 import { RootState } from '../../../../types/store';
 import { MessageContainer, MessageContainerLink, InfoIcon, RowContainer } from './style';
+import { openLink } from '../../../../utils/general';
 
 const InputAddressContainer = styled.div`
     padding: 0 76px;
@@ -178,6 +179,13 @@ const BoldSpan = styled.span`
     font-weight: 500;
 `;
 
+export const LinkIcon = styled(TezosIcon)`
+    margin-left: 6px;
+    cursor: pointer;
+`;
+
+const HELP_LINK = 'https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs';
+
 const utez = 1000000;
 const GAS = 64250; // TODO: burn actually
 
@@ -281,9 +289,10 @@ function DeployOvenModal(props: Props) {
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use translations. */}
                     Vaults lock XTZ and mint wXTZ.&nbsp;
-                    <MessageContainerLink href="https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs" target="_blank">
+                    <MessageContainerLink href="#" onClick={() => openLink(HELP_LINK)}>
                         Learn more
                     </MessageContainerLink>
+                    <LinkIcon iconName="new-window" size={ms(1)} color="#4e71ab" onClick={() => openLink(HELP_LINK)} />
                 </MessageContainer>
             </MainContainer>
             <InputAddressContainer>
