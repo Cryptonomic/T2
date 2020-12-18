@@ -277,18 +277,18 @@ function DeployOvenModal(props: Props) {
     const { isIssue, warningMessage, balanceColor } = getBalanceState();
     return (
         // TODO(keefertaylor): Use translations here.
-        <Modal title={'Deploy Oven'} open={open} onClose={onCloseClick}>
+        <Modal title={'Deploy Vault'} open={open} onClose={onCloseClick}>
             <MainContainer>
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use translations. */}
-                    Ovens lock XTZ and mint wXTZ.
+                    Vaults lock XTZ and mint wXTZ.&nbsp;<a href="#">Learn more</a>
                 </MessageContainer>
             </MainContainer>
             <InputAddressContainer>
                 <InputAddress
                     // TODO(keefertaylor): Use translations here.
-                    label={'Initial Delegate (optional)'}
+                    label={'Baker (optional)'}
                     operationType="delegate"
                     tooltip={true}
                     onChange={(val) => setDelegate(val)}
@@ -338,14 +338,14 @@ function DeployOvenModal(props: Props) {
                 )}
                 <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => deploy()}>
                     {/* TODO(keefertaylor): translations */}
-                    Deploy Oven
+                    Deploy Vault
                 </DelegateButton>
             </PasswordButtonContainer>
             {isLoading && <Loader />}
             {isLedger && open && (
                 <LedgerConfirmModal
                     // TODO(keefertaylor): translations
-                    message="Confirm the deploy oven operation"
+                    message="Confirm the deploy vault operation"
                     vaultAddress={undefined}
                     source={selectedParentHash}
                     open={confirmOpen}

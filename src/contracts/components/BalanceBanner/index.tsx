@@ -73,6 +73,7 @@ function BalanceBanner(props: Props) {
                 <AddressInfo>
                     {token.details && token.details.paused !== true && 'Token is active.'}{' '}
                     {token.details && token.details.supply && 'Total supply is ' + formatAmount(token.details.supply) + '.'}
+                    {'[Learn more about wXTZ]'}
                 </AddressInfo>
             </BottomRow>
         </Container>
