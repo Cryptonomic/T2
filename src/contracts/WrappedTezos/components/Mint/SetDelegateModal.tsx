@@ -332,7 +332,7 @@ function AddDelegateModal(props: Props) {
                 )}
                 <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => updateDelegate()}>
                     {/* TODO(keefertaylor): translations */}
-                    Set Vaulwt Delegate
+                    Set Vault Delegate
                 </DelegateButton>
             </PasswordButtonContainer>
             {isLoading && <Loader />}
