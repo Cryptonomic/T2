@@ -25,7 +25,7 @@ import { useFetchFees } from '../../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../../reduxContent/app/actions';
 
 import { RootState } from '../../../../types/store';
-import { MessageContainer, InfoIcon, RowContainer } from './style';
+import { MessageContainer, MessageContainerLink, InfoIcon, RowContainer } from './style';
 
 const InputAddressContainer = styled.div`
     padding: 0 76px;
@@ -211,8 +211,6 @@ function DeployOvenModal(props: Props) {
 
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
-    console.log('Stakerdao is ledger ' + isLedger);
-
     const { open, managerBalance, onClose } = props;
 
     const isDisabled = isLoading || (!passPhrase && !isLedger) || balance < 0 || isDelegateIssue;
@@ -282,7 +280,10 @@ function DeployOvenModal(props: Props) {
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use translations. */}
-                    Vaults lock XTZ and mint wXTZ.&nbsp;<a href="#">Learn more</a>
+                    Vaults lock XTZ and mint wXTZ.&nbsp;
+                    <MessageContainerLink href="https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs" target="_blank">
+                        Learn more
+                    </MessageContainerLink>
                 </MessageContainer>
             </MainContainer>
             <InputAddressContainer>

@@ -47,6 +47,10 @@ export const AddressInfo = styled.div`
     flex-wrap: wrap;
 `;
 
+export const AddressInfoLink = styled.a`
+    color: white;
+`;
+
 export const Gap = styled.div`
     width: 10px;
 `;

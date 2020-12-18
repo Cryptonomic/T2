@@ -212,6 +212,11 @@ export function syncTokenThunk(tokenAddress) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
+                detailsAsync = new Promise((resolve) => {
+                    resolve({
+                        helpLink: 'https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs',
+                    });
+                });
 
                 const coreContractAddress = vaultToken.vaultCoreAddress;
 
