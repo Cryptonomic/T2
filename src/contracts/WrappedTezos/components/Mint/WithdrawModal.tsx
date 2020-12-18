@@ -254,7 +254,7 @@ function DepositModal(props: Props) {
         isLoading || !wxtzToWithdraw || (!passPhrase && !isLedger) || isXtzBalanceIssue || isWxtzBalanceIssue || isWxtzAmountIssue || isDelegateIssue;
 
     function onUseMax() {
-        const max = wrappedTezBalance;
+        const max = wrappedTezBalance < vaultBalance ? wrappedTezBalance : vaultBalance;
         const newWxtzToWithdraw = (max / utez).toFixed(6);
 
         setWxtzToWithdraw(newWxtzToWithdraw);
@@ -263,8 +263,8 @@ function DepositModal(props: Props) {
     }
 
     function changeWxtzToWithdraw(newWxtzToWithdraw = '0') {
-        const commaReplacedAmount = newWxtzToWithdraw.replace(',', '.');
-        const numWxtzToWithdraw = parseFloat(commaReplacedAmount) * utez;
+        const float = Number.isNaN(parseFloat(newWxtzToWithdraw)) ? 0.0 : parseFloat(newWxtzToWithdraw);
+        const numWxtzToWithdraw = float * utez;
 
         const numWxtzRemaining = props.wrappedTezBalance - numWxtzToWithdraw;
 
@@ -380,12 +380,6 @@ function DepositModal(props: Props) {
                 <AmountFeePassContainer>
                     <AmountSendContainer>
                         {/* TODO(keefertaylor): Use another type that doesn't have XTZ and label appropriately */}
-                        <TezosNumericInput
-                            decimalSeparator={t('general.decimal_separator')}
-                            label={t('general.nouns.amount')}
-                            amount={wxtzToWithdraw}
-                            onChange={changeWxtzToWithdraw}
-                        />
                         <NumericInput
                             label={t('general.nouns.amount')}
                             amount={wxtzToWithdraw}
@@ -396,7 +390,7 @@ function DepositModal(props: Props) {
                             maxValue={new BigNumber(wrappedTezBalance).dividedBy(10 ** (6 || 0)).toNumber()}
                             minValue={new BigNumber(1).dividedBy(10 ** (6 || 0)).toNumber()}
                         />
-                        <UseMax onClick={onUseMax}>{t('general.verbs.use_max')}</UseMax>
+                        <UseMax onClick={onUseMax}>{t('general.verbs.use_max')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</UseMax>
                     </AmountSendContainer>
                 </AmountFeePassContainer>
                 <BalanceContainer>
