@@ -251,10 +251,11 @@ function DepositModal(props: Props) {
     }
 
     function changeAmount(newAmount = '0') {
-        const commaReplacedAmount = newAmount.replace(',', '.');
-        const newNumAmount = parseFloat(commaReplacedAmount) * utez;
+        const float = Number.isNaN(parseFloat(newAmount)) ? 0.0 : parseFloat(newAmount);
+        const newNumAmount = float * utez;
         const newTotal = newNumAmount + fee;
-        const newBalance = managerBalance - total;
+
+        const newBalance = managerBalance - newTotal;
 
         setAmount(newAmount);
         setNumAmount(newNumAmount);
