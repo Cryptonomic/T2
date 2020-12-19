@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
 import PaginationList from '../../components/PaginationList';
-import { TRANSACTIONS, SEND, MINT } from '../../constants/TabConstants';
+import { TRANSACTIONS, SEND, VAULTS } from '../../constants/TabConstants';
 import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 
@@ -26,7 +26,7 @@ const ActionPanel = () => {
     const selectedToken = useSelector(getTokenSelector);
     const { selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { activeTab, displayName, transactions, vaultList } = selectedToken as VaultToken;
-    const tabs = [TRANSACTIONS, SEND, MINT];
+    const tabs = [TRANSACTIONS, SEND, VAULTS];
     const transactionList = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
 
     // TODO(keefertaylor): Sort ovens in a deterministic way.
@@ -41,7 +41,7 @@ const ActionPanel = () => {
                 isReady={true}
                 balance={selectedToken.balance}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
-                displayName={displayName}
+                displayName={'Wrapped Tezos (wXTZ)'}
                 token={selectedToken}
             />
 
@@ -54,7 +54,7 @@ const ActionPanel = () => {
             </TabList>
             <SectionContainer>
                 {activeTab === SEND && <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />}
-                {activeTab === MINT && (
+                {activeTab === VAULTS && (
                     <DeployOvenButtonWrapper>
                         <PaginationList
                             list={vaultList}

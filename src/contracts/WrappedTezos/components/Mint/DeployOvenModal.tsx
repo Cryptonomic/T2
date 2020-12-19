@@ -25,7 +25,8 @@ import { useFetchFees } from '../../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../../reduxContent/app/actions';
 
 import { RootState } from '../../../../types/store';
-import { MessageContainer, InfoIcon, RowContainer } from './style';
+import { MessageContainer, MessageContainerLink, InfoIcon, RowContainer } from './style';
+import { openLink } from '../../../../utils/general';
 
 const InputAddressContainer = styled.div`
     padding: 0 76px;
@@ -178,6 +179,13 @@ const BoldSpan = styled.span`
     font-weight: 500;
 `;
 
+export const LinkIcon = styled(TezosIcon)`
+    margin-left: 6px;
+    cursor: pointer;
+`;
+
+const HELP_LINK = 'https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs';
+
 const utez = 1000000;
 const GAS = 64250; // TODO: burn actually
 
@@ -210,8 +218,6 @@ function DeployOvenModal(props: Props) {
     const [balance, setBalance] = useState(props.managerBalance - total);
 
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-
-    console.log('Stakerdao is ledger ' + isLedger);
 
     const { open, managerBalance, onClose } = props;
 
@@ -277,18 +283,22 @@ function DeployOvenModal(props: Props) {
     const { isIssue, warningMessage, balanceColor } = getBalanceState();
     return (
         // TODO(keefertaylor): Use translations here.
-        <Modal title={'Deploy Oven'} open={open} onClose={onCloseClick}>
+        <Modal title={'Deploy Vault'} open={open} onClose={onCloseClick}>
             <MainContainer>
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use translations. */}
-                    Ovens lock XTZ and mint wXTZ.
+                    Vaults lock XTZ and mint wXTZ.&nbsp;
+                    <MessageContainerLink href="#" onClick={() => openLink(HELP_LINK)}>
+                        Learn more
+                    </MessageContainerLink>
+                    <LinkIcon iconName="new-window" size={ms(1)} color="#4e71ab" onClick={() => openLink(HELP_LINK)} />
                 </MessageContainer>
             </MainContainer>
             <InputAddressContainer>
                 <InputAddress
                     // TODO(keefertaylor): Use translations here.
-                    label={'Initial Delegate (optional)'}
+                    label={'Baker (optional)'}
                     operationType="delegate"
                     tooltip={true}
                     onChange={(val) => setDelegate(val)}
@@ -338,14 +348,14 @@ function DeployOvenModal(props: Props) {
                 )}
                 <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => deploy()}>
                     {/* TODO(keefertaylor): translations */}
-                    Deploy Oven
+                    Deploy Vault
                 </DelegateButton>
             </PasswordButtonContainer>
             {isLoading && <Loader />}
             {isLedger && open && (
                 <LedgerConfirmModal
                     // TODO(keefertaylor): translations
-                    message="Confirm the deploy oven operation"
+                    message="Confirm the deploy vault operation"
                     vaultAddress={undefined}
                     source={selectedParentHash}
                     open={confirmOpen}

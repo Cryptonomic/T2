@@ -33,6 +33,10 @@ export const MessageContainer = styled.div`
     font-weight: 300;
 `;
 
+export const MessageContainerLink = styled.a`
+    color: #4e71ab;
+`;
+
 export const InfoIcon = styled(TezosIcon)`
     font-size: ${ms(2)};
     padding: 1px 7px 0px 0px;

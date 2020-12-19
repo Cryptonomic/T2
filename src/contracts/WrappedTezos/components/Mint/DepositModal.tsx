@@ -325,14 +325,14 @@ function DepositModal(props: Props) {
     return (
         <Modal
             // TODO(keefertaylor): Translations
-            title={'Deposit to Oven'}
+            title={'Deposit to Vault'}
             open={open}
             onClose={onCloseClick}
         >
             <MainContainer>
                 <MessageContainer>
                     {/* TODO(keefertaylor): Use Translations */}
-                    <BoldSpan>Oven: </BoldSpan>
+                    <BoldSpan>Vault:&nbsp;</BoldSpan>
                     {ovenAddress}
                 </MessageContainer>
             </MainContainer>
@@ -340,7 +340,7 @@ function DepositModal(props: Props) {
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use Translations */}
-                    Depositing XTZ to an Oven will mint your account wXTZ.
+                    Depositing XTZ to a vault will mint your account wXTZ.
                 </MessageContainer>
             </MainContainer>
             <MainContainer>
