@@ -191,9 +191,9 @@ const MessageContainer = styled.div`
 const utez = 1000000;
 
 const FEES = {
-    low: 0,
-    medium: 60000,
-    high: 1000000,
+    low: 12000,
+    medium: 15000,
+    high: 18000,
 };
 
 interface Props {

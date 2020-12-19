@@ -196,9 +196,9 @@ const utez = 1_000_000;
 const MinBalance = 3_000_001;
 
 const FEES = {
-    low: 0,
-    medium: 60000,
-    high: 1000000,
+    low: 18000,
+    medium: 21000,
+    high: 24000,
 };
 
 interface Props {
