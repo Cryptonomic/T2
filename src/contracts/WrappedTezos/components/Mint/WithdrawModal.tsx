@@ -306,10 +306,10 @@ function DepositModal(props: Props) {
     }
 
     function getBalanceState() {
-        // Ensure there is adequate WXTZ balance
+        // Ensure there is adequate wXTZ balance
         const newIsWxtzBalanceIssue = wxtzRemaining < 0;
         // TODO(keefertaylor): Translations
-        const newWxtzWarningMessage = isWxtzBalanceIssue ? 'Insufficient WXTZ' : '';
+        const newWxtzWarningMessage = isWxtzBalanceIssue ? 'Insufficient wXTZ' : '';
         const newWxtzBalanceColor = isWxtzBalanceIssue ? 'error1' : 'gray8';
 
         // Ensure the user is not repaying more XTZ than is in the vault.
@@ -341,27 +341,27 @@ function DepositModal(props: Props) {
     return (
         <Modal
             // TODO(keefertaylor): Translations
-            title={'Withdraw from Oven'}
+            title={'Withdraw from Vault'}
             open={open}
             onClose={onCloseClick}
         >
             <MainContainer>
                 <MessageContainer>
                     {/* TODO(keefertaylor): Use Translations */}
-                    <BoldSpan>Oven:</BoldSpan>
+                    <BoldSpan>Vault:&nbsp;</BoldSpan>
                     {ovenAddress}
                 </MessageContainer>
             </MainContainer>
             <MainContainer>
                 <MessageContainer>
                     {/* TODO(keefertaylor): Use Translations */}
-                    <BoldSpan>Borrowed WXTZ: </BoldSpan>
+                    <BoldSpan>Borrowed wXTZ:&nbsp;</BoldSpan>
                     <AmountView
                         color="black"
                         size={ms(0.5)}
                         amount={vaultBalance}
                         weight="light"
-                        symbol={'WXTZ'}
+                        symbol={'wXTZ'}
                         showTooltip={true}
                         scale={6}
                         precision={6}
@@ -373,7 +373,7 @@ function DepositModal(props: Props) {
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use Translations */}
-                    Withdrawing from an Oven will burn your account's WXTZ and return your XTZ
+                    Withdrawing from a vault will burn your account's wXTZ and return your XTZ
                 </MessageContainer>
             </MainContainer>
             <MainContainer>
@@ -398,7 +398,7 @@ function DepositModal(props: Props) {
                     <BalanceContent>
                         <BalanceTitle>
                             {/* TODO(keefertaylor): Translations */}
-                            WXTZ
+                            wXTZ
                         </BalanceTitle>
                         {/* // TODO(keefertaylor): Change labels */}
                         <TotalAmount weight="500" color={wxtzAmountColor} size={ms(0.65)} amount={wxtzToWithdrawNumber} />

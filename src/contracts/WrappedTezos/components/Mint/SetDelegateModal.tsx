@@ -284,13 +284,14 @@ function AddDelegateModal(props: Props) {
             <MainContainer>
                 <MessageContainer>
                     {/* TODO(keefertaylor): Use Translations */}
-                    <BoldSpan>Oven:</BoldSpan>
+                    <BoldSpan>Vault:&nbsp;</BoldSpan>
                     {ovenAddress}
                 </MessageContainer>
             </MainContainer>
             <InputAddressContainer>
                 <InputAddress
-                    label={t('general.nouns.delegate_address')}
+                    // TODO(keefertaylor): translations
+                    label={'Baker'}
                     operationType="delegate"
                     tooltip={true}
                     onChange={(val) => setDelegate(val)}
@@ -331,7 +332,7 @@ function AddDelegateModal(props: Props) {
                 )}
                 <DelegateButton buttonTheme="primary" disabled={isDisabled} onClick={() => updateDelegate()}>
                     {/* TODO(keefertaylor): translations */}
-                    Set Oven Delegate
+                    Set Vault Delegate
                 </DelegateButton>
             </PasswordButtonContainer>
             {isLoading && <Loader />}

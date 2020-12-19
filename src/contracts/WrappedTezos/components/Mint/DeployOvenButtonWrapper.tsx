@@ -27,7 +27,7 @@ export const SectionContainer = styled.div``;
 
 const ADD_OVEN_MODAL_IDENTIFIER = 'add_oven';
 
-/** Renders a wrapper around a component that includes a "Deploy Oven" button */
+/** Renders a wrapper around a component that includes a "Deploy Vault" button */
 const DeployOvenButtonWrapper = (props) => {
     const { children } = props;
 
@@ -61,7 +61,7 @@ const DeployOvenButtonWrapper = (props) => {
                 <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))} />
                 <BoldSpan onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))}>
                     {/* TODO(keefertaylor): Deploy new Oven */}
-                    Deploy New Oven
+                    Deploy New Vault
                 </BoldSpan>
             </AddOvenContainer>
             {children}

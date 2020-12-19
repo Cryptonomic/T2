@@ -122,7 +122,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
     {
         network: 'delphinet',
         address: 'KT1U5mixvsmaSrnqUuVfRQDdWoND3iERquCJ',
-        displayName: 'wXTZ',
+        displayName: 'Wrapped Tezos',
         symbol: 'wXTZ',
         balance: 0,
         transactions: [],
