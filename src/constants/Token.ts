@@ -67,7 +67,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1U7SesyKQSh6T9fuktXigqVDDZabVKean3',
+        address: 'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH',
         displayName: 'Wrapped Tezos',
         symbol: 'wXTZ',
         balance: 0,
@@ -78,8 +78,8 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         scale: 6,
         precision: 6,
         round: 6,
-        vaultCoreAddress: 'KT1QhF6CRJjHJAS4RXWQ9NWV1LpdhCgBZ2Vp',
-        vaultRegistryMapId: 249,
+        vaultCoreAddress: 'KT1V4Vp7zhynCNuaBjWMpNU535Xm2sgqkz6M',
+        vaultRegistryMapId: 260,
         vaultList: [],
     },
     {
@@ -153,7 +153,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
     },
     {
         network: 'delphinet',
-        address: 'KT1R2xv3pv7iK7GusqCSvijiDqqwqTPB59s4',
+        address: 'KT1TDHL9ipKL8WW3TMPvutbLh9uZBdY9BU59',
         displayName: 'Wrapped Tezos',
         symbol: 'wXTZ',
         balance: 0,
@@ -164,8 +164,8 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         scale: 6,
         precision: 6,
         round: 6,
-        vaultCoreAddress: 'KT1U92AvbHAhMnhixxDXyQW6mjUEsVxionDu',
-        vaultRegistryMapId: 30002,
+        vaultCoreAddress: 'KT1AZ6Kuj6FpbVJdoizwUxVqTSF2nYbTFzeQ',
+        vaultRegistryMapId: 30147,
         vaultList: [],
     },
     {
