@@ -6,6 +6,7 @@ import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 import ethtzIcon from '../../resources/contracts/ethtz-icon.png';
 import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
+import uteIcon from '../../resources/contracts/ute-aspen-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken)[] = [
     {

@@ -119,7 +119,7 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
         dispatch(
             createMessageAction(
                 // TODO(keefertaylor): Use translations here.
-                `Successfully started deploy operation for ${openOvenResult.ovenAddress}`,
+                `Completed vault deployment at ${openOvenResult.ovenAddress}`,
                 false,
                 openOvenResult.operationHash
             )
@@ -192,7 +192,7 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
         }
         dispatch(updateTokensAction([...tokens]));
 
-        dispatch(createMessageAction('Successfully started deposit transaction.', false, operationId as string));
+        dispatch(createMessageAction('Completed deposit operation.', false, operationId as string));
 
         return true;
     };
@@ -249,7 +249,7 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
         }
         dispatch(updateTokensAction([...tokens]));
 
-        dispatch(createMessageAction('Successfully started withdraw transaction.', false, operationId as string));
+        dispatch(createMessageAction('Completed withdraw operation.', false, operationId as string));
 
         return true;
     };
@@ -305,7 +305,7 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
         }
         dispatch(updateTokensAction([...tokens]));
 
-        dispatch(createMessageAction('Successfully started set delegate transation', false, operationId as string));
+        dispatch(createMessageAction('Completed set delegate operation', false, operationId as string));
 
         return true;
     };
