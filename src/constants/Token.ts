@@ -6,6 +6,7 @@ import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 import ethtzIcon from '../../resources/contracts/ethtz-icon.png';
 import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
+import uteIcon from '../../resources/contracts/ute-aspen-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken)[] = [
     {
@@ -63,6 +64,37 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         scale: 18,
         precision: 18,
         round: 6,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1U7SesyKQSh6T9fuktXigqVDDZabVKean3',
+        displayName: 'Wrapped Tezos',
+        symbol: 'wXTZ',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.wxtz,
+        icon: wxtzIcon,
+        scale: 6,
+        precision: 6,
+        round: 6,
+        vaultCoreAddress: 'KT1QhF6CRJjHJAS4RXWQ9NWV1LpdhCgBZ2Vp',
+        vaultRegistryMapId: 249,
+        vaultList: [],
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1PzkxU8UC4Py85VxbbrHyiJ57Bknjom3r2',
+        displayName: 'UTE Token by Aspen Collective Trust',
+        symbol: 'UTE',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: uteIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
     },
     {
         network: 'delphinet',

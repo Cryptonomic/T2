@@ -38,8 +38,7 @@ const OvenList = (props: OvenListProps) => {
 
     const selectedToken = useSelector(getTokenSelector);
 
-    // T2 only supports one identity. This *WILL* break in the future if multiple identities are
-    // supported.
+    // T2 only supports one identity. This *WILL* break in the future if multiple identities are supported.
     const activeIdentity = identities[0];
     const balance = activeIdentity.balance;
 
@@ -60,6 +59,7 @@ const OvenList = (props: OvenListProps) => {
                 return oven;
             }
         }
+
         return undefined;
     };
 

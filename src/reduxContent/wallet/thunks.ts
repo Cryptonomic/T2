@@ -227,7 +227,11 @@ export function syncTokenThunk(tokenAddress) {
                     network: mainNode.network,
                 };
 
-                ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
+                try {
+                    ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
+                } catch {
+                    // ignore empty list
+                }
             }
 
             try {
@@ -239,6 +243,7 @@ export function syncTokenThunk(tokenAddress) {
 
             // Apply an optional update for vaultList
             if (ovenAddresses.length > 0) {
+                // TODO: move up
                 const ovenPromises = ovenAddresses.map(async (ovenAddress: string) => {
                     const ovenBalance = await TezosNodeReader.getSpendableBalanceForAccount(mainNode.tezosUrl, ovenAddress);
                     const block: any = await TezosNodeReader.getAccountForBlock(mainNode.tezosUrl, 'head', ovenAddress);
@@ -381,17 +386,8 @@ export function syncWalletThunk() {
 
                     return { ...token, mapid, administrator, balance, transactions };
                 } else if (token.kind === TokenKind.wxtz) {
-                    try {
-                        // const validCode = await WrappedTezosHelper.verifyDestination(mainNode.tezosUrl, token.address, '', ''); // TODO
-                        // if (!validCode) {
-                        //     console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
-                        // }
-                    } catch {
-                        console.log(`warning, wxtz fingerprint mismatch for token: ${JSON.stringify(token)}`);
-                    }
-
-                    let mapid = token.mapid;
-                    const administrator = token.administrator || '';
+                    const vaultToken = token as VaultToken;
+                    let mapid = vaultToken.mapid || 0;
 
                     if (!mapid || mapid === -1) {
                         const newStorage = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => {
@@ -400,15 +396,41 @@ export function syncWalletThunk() {
                         mapid = newStorage.balanceMap;
                     }
 
-                    if (mapid === -1) {
-                        console.log(`warning, could not process token: ${JSON.stringify(token)}`);
-                        return { ...token, mapid, administrator, balance: 0 };
-                    }
-
                     const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
                     const transactions = await wxtzUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions);
 
-                    return { ...token, mapid, administrator, balance, transactions };
+                    const coreContractAddress = vaultToken.vaultCoreAddress;
+
+                    const vaultListBigMapId = vaultToken.vaultRegistryMapId;
+                    const serverInfo: ConseilServerInfo = {
+                        url: mainNode.conseilUrl,
+                        apiKey: mainNode.apiKey,
+                        network: mainNode.network,
+                    };
+
+                    let vaultList: any = {};
+                    try {
+                        const ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
+                        if (ovenAddresses.length > 0) {
+                            const ovenPromises = ovenAddresses.map(async (ovenAddress: string) => {
+                                const ovenBalance = await TezosNodeReader.getSpendableBalanceForAccount(mainNode.tezosUrl, ovenAddress);
+                                const block: any = await TezosNodeReader.getAccountForBlock(mainNode.tezosUrl, 'head', ovenAddress);
+                                const baker = block.delegate as string;
+
+                                return {
+                                    ovenAddress,
+                                    ovenOwner: selectedParentHash,
+                                    ovenBalance,
+                                    baker,
+                                };
+                            });
+                            vaultList = await Promise.all(ovenPromises);
+                        }
+                    } catch {
+                        // ignore empty list
+                    }
+
+                    return { ...token, mapid, administrator: '', balance, transactions, vaultList };
                 } else {
                     console.log(`warning, unsupported token: ${JSON.stringify(token)}`);
                     return { ...token, mapid: -1, administrator: '', balance: 0, transactions: [] };

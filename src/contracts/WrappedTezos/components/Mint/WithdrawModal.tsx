@@ -355,11 +355,25 @@ function DepositModal(props: Props) {
             <MainContainer>
                 <MessageContainer>
                     {/* TODO(keefertaylor): Use Translations */}
-                    <BoldSpan>Borrowed wXTZ:&nbsp;</BoldSpan>
+                    <BoldSpan>Locked balance:&nbsp;</BoldSpan>
                     <AmountView
                         color="black"
                         size={ms(0.5)}
                         amount={vaultBalance}
+                        weight="light"
+                        symbol={'wXTZ'}
+                        showTooltip={true}
+                        scale={6}
+                        precision={6}
+                        round={6}
+                    />
+                </MessageContainer>
+                <MessageContainer>
+                    <BoldSpan>Available balance:&nbsp;</BoldSpan>
+                    <AmountView
+                        color="black"
+                        size={ms(0.5)}
+                        amount={wrappedTezBalance}
                         weight="light"
                         symbol={'wXTZ'}
                         showTooltip={true}
