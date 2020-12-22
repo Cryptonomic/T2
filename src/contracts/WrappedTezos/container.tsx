@@ -41,7 +41,7 @@ const ActionPanel = () => {
                 isReady={true}
                 balance={selectedToken.balance}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
-                displayName={selectedToken.displayName}
+                displayName={displayName}
                 token={selectedToken}
             />
 

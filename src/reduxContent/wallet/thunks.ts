@@ -408,7 +408,7 @@ export function syncWalletThunk() {
                         network: mainNode.network,
                     };
 
-                    let vaultList: any = {};
+                    let vaultList: any[] = [];
                     try {
                         const ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
                         if (ovenAddresses.length > 0) {

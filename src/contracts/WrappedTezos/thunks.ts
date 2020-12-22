@@ -29,7 +29,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | boolean = await WrappedTezosHelper.transferBalance(
+        const operationId: string | undefined = await WrappedTezosHelper.transferBalance(
             tezosUrl,
             signer,
             keyStore,
@@ -42,10 +42,10 @@ export function transferThunk(destination: string, amount: number, fee: number, 
             const errorObj = { name: err.message, ...err };
             console.error(`transferBalance failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
-            return false;
+            return undefined;
         });
 
-        if (!operationId) {
+        if (operationId === undefined) {
             return false;
         }
 
@@ -158,14 +158,14 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | boolean = await WrappedTezosHelper.depositToOven(tezosUrl, signer, keyStore, ovenAddress, fee, amount).catch((err) => {
+        const operationId: string | undefined = await WrappedTezosHelper.depositToOven(tezosUrl, signer, keyStore, ovenAddress, fee, amount).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`deposit failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
-            return false;
+            return undefined;
         });
 
-        if (!operationId) {
+        if (operationId === undefined) {
             return false;
         }
 
@@ -175,7 +175,7 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId as string, 5, 60);
+        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
@@ -192,7 +192,7 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
         }
         dispatch(updateTokensAction([...tokens]));
 
-        dispatch(createMessageAction('Completed deposit operation.', false, operationId as string));
+        dispatch(createMessageAction('Completed deposit operation.', false, operationId));
 
         return true;
     };
@@ -215,14 +215,14 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | boolean = await WrappedTezosHelper.withdrawFromOven(tezosUrl, signer, keyStore, ovenAddress, fee, amount).catch((err) => {
+        const operationId: string | undefined = await WrappedTezosHelper.withdrawFromOven(tezosUrl, signer, keyStore, ovenAddress, fee, amount).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`withdraw failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
-            return false;
+            return undefined;
         });
 
-        if (!operationId) {
+        if (operationId === undefined) {
             return false;
         }
 
@@ -232,7 +232,7 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId as string, 5, 60);
+        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
@@ -249,7 +249,7 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
         }
         dispatch(updateTokensAction([...tokens]));
 
-        dispatch(createMessageAction('Completed withdraw operation.', false, operationId as string));
+        dispatch(createMessageAction('Completed withdraw operation.', false, operationId));
 
         return true;
     };
@@ -272,14 +272,16 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | boolean = await WrappedTezosHelper.setOvenBaker(tezosUrl, signer, keyStore, fee, ovenAddress, newDelegate).catch((err) => {
-            const errorObj = { name: err.message, ...err };
-            console.error(`withdraw failed with ${JSON.stringify(errorObj)}`);
-            dispatch(createMessageAction(errorObj.name, true));
-            return false;
-        });
+        const operationId: string | undefined = await WrappedTezosHelper.setOvenBaker(tezosUrl, signer, keyStore, fee, ovenAddress, newDelegate).catch(
+            (err) => {
+                const errorObj = { name: err.message, ...err };
+                console.error(`withdraw failed with ${JSON.stringify(errorObj)}`);
+                dispatch(createMessageAction(errorObj.name, true));
+                return undefined;
+            }
+        );
 
-        if (!operationId) {
+        if (operationId === undefined) {
             return false;
         }
 
@@ -289,7 +291,7 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId as string, 5, 60);
+        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
@@ -305,7 +307,7 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
         }
         dispatch(updateTokensAction([...tokens]));
 
-        dispatch(createMessageAction('Completed set delegate operation', false, operationId as string));
+        dispatch(createMessageAction('Completed set delegate operation', false, operationId));
 
         return true;
     };

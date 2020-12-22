@@ -5,7 +5,6 @@ import { setModalOpen, clearModal } from '../../../../reduxContent/modal/actions
 import { RootState } from '../../../../types/store';
 import DeployOvenModal from './DeployOvenModal';
 import styled from 'styled-components';
-import { getAccountSelector } from '../../../duck/selectors';
 
 import { AddCircleWrapper } from './style';
 
@@ -59,10 +58,7 @@ const DeployOvenButtonWrapper = (props) => {
 
             <AddOvenContainer>
                 <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))} />
-                <BoldSpan onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))}>
-                    {/* TODO(keefertaylor): Deploy new Oven */}
-                    Deploy New Vault
-                </BoldSpan>
+                <BoldSpan onClick={() => dispatch(setModalOpen(true, ADD_OVEN_MODAL_IDENTIFIER))}>Deploy New Vault</BoldSpan>
             </AddOvenContainer>
             {children}
         </Container>

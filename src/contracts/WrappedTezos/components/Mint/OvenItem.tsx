@@ -1,20 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import AmountView from '../../../../components/AmountView';
 import { ms } from '../../../../styles/helpers';
 import Button from '../../../../components/Button';
-
-// TODO(keefertaylor): Lots of unused imports and vars, do a final pass over this codebase to clean up.
-import {
-    // Container,
-    FeeContainer,
-    PasswordButtonContainer,
-    RowContainer,
-    MessageContainer,
-    InfoIcon,
-} from '../../../components/style';
 
 const Container = styled.div`
     width: 100%;
