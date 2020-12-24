@@ -51,11 +51,14 @@ function TokenNav(props: Props) {
 
     const icon = token.icon ? token.icon : defaultIcon;
 
+    const shortName = token.displayName.substring(0, 24);
+    const displayName = shortName.length < token.displayName.length ? shortName + '...' : token.displayName;
+
     return (
         <Container isActive={isActive} onClick={onClick}>
             <SideImg src={icon} />
             <MainContainer>
-                <TokenTitle isActive={isActive}>{token.displayName}</TokenTitle>
+                <TokenTitle isActive={isActive}>{displayName}</TokenTitle>
                 <TokenBalance isActive={isActive}>
                     <AmountView
                         color={isActive ? '#FFFFFF' : 'primary'}

@@ -75,6 +75,82 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     padding-bottom: 50px 50px 0px;
+    .modal-holder {
+        text-align: center !important;
+        padding: 40px 48px;
+        h3 {
+            font-size: 24px;
+            font-weight: 300;
+            margin: 0 0 20px;
+            color: #123262;
+        }
+        .text-center {
+            text-align: center !important;
+        }
+        .mr-t-100 {
+            margin-top: 100px;
+        }
+        .divider {
+            height: 2px;
+            background-color: #ccc;
+            margin: 0 10px;
+            width: 60px;
+            display: inline-block;
+            vertical-align: super;
+        }
+        h4 {
+            font-size: 16px;
+            font-weight: 500;
+            color: #5571a7;
+            margin: 25px 0 8px;
+        }
+        p {
+            font-size: 16px;
+            color: #123262;
+            font-weight: 300;
+            text-align: left;
+            margin: 0 0 10px;
+        }
+        .linkAddress {
+            font-size: 16px;
+            font-weight: 600;
+            color: #123262;
+            margin-bottom: 16px;
+            margin-top: 0;
+            text-align: center;
+        }
+        ul {
+            padding-left: 16px;
+            margin-bottom: 10px;
+        }
+        li {
+            font-size: 14px;
+            font-weight: 300;
+            color: #000;
+            text-align: left;
+        }
+        .subtitleText {
+            font-size: 14px;
+            font-weight: 300;
+            color: #5571a7;
+        }
+        .inputField {
+            width: 100%;
+            height: 40px;
+            resize: none;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 10px;
+        }
+        .fontWeight400 {
+            font-weight: 400;
+            color: #000;
+        }
+        ,
+        .fee {
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+    }
 `;
 
 export const MainContainer = styled.div`
@@ -121,6 +197,19 @@ export const InvokeButton = styled(Button)`
     margin-left: auto;
     padding: 0;
     cursor: default;
+    margin-right: auto;
+`;
+
+export const WhiteBtn = styled(Button)`
+    width: 194px;
+    height: 50px;
+    margin-left: auto;
+    padding: 0;
+    cursor: default;
+    background: #fff !important;
+    color: #2c7df7 !important;
+    border: 2px solid #2c7df7 !important;
+    font-weight: 400;
 `;
 
 export const LinkIcon = styled(TezosIcon)`
@@ -150,7 +239,7 @@ export const ContentSubtitle = styled.div`
 `;
 
 export const Footer = styled.div`
-    background: ${({ theme: { colors } }) => colors.gray2};
+    background: #f7f9fb;
     margin: auto 0 0;
     padding: 25px 0;
     display: flex;
@@ -223,4 +312,68 @@ export const InfoIcon = styled(TezosIcon)`
 export const SuccessIcon = styled(TezosIcon)`
     font-size: ${ms(1)};
     margin-right: 5px;
+`;
+
+export const BeaconNotConnected = styled.div`
+    display: flex;
+    flex-direction: column;
+    .message {
+        font-weight: 300;
+        font-size: 18px;
+        line-height: 11px;
+        color: #123262;
+        opacity: 0.78;
+        margin-top: 40px;
+    }
+    .info {
+        line-height: 22px;
+        color: #333333;
+        margin-top: 16px;
+    }
+    .img {
+        margin-top: 50px;
+        margin-bottom: 120px;
+        flex-align: center;
+    }
+`;
+
+export const BeaconConnected = styled.div`
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    margin-top: 17px;
+    padding-bottom: 40px;
+    .img {
+        width: 64px;
+        height: 64px;
+        border: 1px solid #000000;
+        border-radius: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .list {
+        margin-left: 24px;
+    }
+    .name {
+        font-weight: 500;
+        line-height: 19px;
+    }
+    .item {
+        line-height: 19px;
+        margin-top: 8px;
+    }
+`;
+
+export const BeaconInfoContainer = styled.div`
+    padding: 0 32px;
+    .title {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 21px;
+        margin-top: 24px;
+    }
+    .items {
+        margin-top: 32px;
+        margin-bottom: 100px;
+    }
 `;

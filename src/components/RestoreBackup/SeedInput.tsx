@@ -49,10 +49,11 @@ interface Props {
     placeholder: string;
     onChange: (seeds: string[]) => void;
     onError: (isError: boolean) => void;
+    expectedWords: number;
 }
 
 function SeedInput(props: Props) {
-    const { seeds, placeholder, onChange, onError } = props;
+    const { seeds, placeholder, onChange, onError, expectedWords } = props;
     const { t } = useTranslation();
     const [error, setError] = useState('');
     const [badWords, setBadWords] = useState<string[]>([]);
@@ -74,11 +75,13 @@ function SeedInput(props: Props) {
         if (inputWords.length > 1 && inputWords.length > invalidWords.length) {
             // paste multiple
             onChange([...seeds, ...inputWords.filter((w) => !w.match(/[0-9]{1,2}\./))]);
+            // TODO: may not set/or clear error correctly
         }
 
         const matchingWords = seedJson.filter((w) => w.startsWith(inputWords[0]));
         if (inputWords.length === 1 && matchingWords.length === 1) {
             onChange([...seeds, matchingWords[0]]);
+            // TODO: may not set/or clear error correctly
         }
 
         if (invalidWords.length > 0) {
@@ -95,7 +98,13 @@ function SeedInput(props: Props) {
         if (newBadWords.length > 0) {
             newError = t('containers.homeAddAddress.errors.invalid_words');
         } else if (![12, 15, 18, 21, 24].includes(items.length)) {
-            newError = t('containers.homeAddAddress.errors.invalid_length');
+            if (expectedWords > 0) {
+                newError = t(`containers.homeAddAddress.errors.invalid_length_${expectedWords}`);
+            } else {
+                newError = t('containers.homeAddAddress.errors.invalid_length');
+            }
+        } else {
+            newError = '';
         }
 
         setBadWords([...newBadWords]);

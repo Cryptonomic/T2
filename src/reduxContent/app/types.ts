@@ -1,5 +1,6 @@
 import { NodeStatus, AddressType } from '../../types/general';
 import { Signer } from 'conseiljs';
+import { BeaconRequestOutputMessage, ConnectionContext } from '@airgap/beacon-sdk';
 
 export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_LEDGER = 'SET_LEDGER';
@@ -12,11 +13,24 @@ export const CHANGE_ACCOUNT_HASH = 'CHANGE_ACCOUNT_HASH';
 export const SHOW_SIGN_VERIFY = 'SHOW_SIGN_VERIFY';
 export const LOGOUT = 'LOGOUT';
 export const SET_SIGNER = 'SET_SIGNER';
+export const SET_BEACON_MESSAGE = 'SET_BEACON_MESSAGE';
+export const SET_BEACON_LOADING = 'SET_BEACON_LOADING';
 export const SET_BEACON_CLIENT = 'SET_BEACON_CLIENT';
 
 export interface SetBeaconClientAction {
     type: typeof SET_BEACON_CLIENT;
-    client: any;
+    beaconClient: boolean;
+}
+
+export interface SetBeaconMessageAction {
+    type: typeof SET_BEACON_MESSAGE;
+    beaconMessage: BeaconRequestOutputMessage | null;
+    beaconConnection: ConnectionContext | null;
+}
+
+export interface SetBeaconLoadingAction {
+    type: typeof SET_BEACON_LOADING;
+    beaconLoading: boolean;
 }
 
 export interface SetSignerAction {
@@ -96,4 +110,6 @@ export type AppActionTypes =
     | ChangeAccountAction
     | ShowSignVerifyAction
     | SetSignerAction
-    | SetBeaconClientAction;
+    | SetBeaconClientAction
+    | SetBeaconMessageAction
+    | SetBeaconLoadingAction;

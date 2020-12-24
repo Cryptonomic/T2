@@ -49,13 +49,13 @@ function Send(props: Props) {
         if (token.balance < realAmount) {
             return {
                 isIssue: true,
-                warningMessage: t('components.send.warnings.total_exceeds')
+                warningMessage: t('components.send.warnings.total_exceeds'),
             };
         }
 
         return {
             isIssue: false,
-            warningMessage: ''
+            warningMessage: '',
         };
     }
 
@@ -81,14 +81,14 @@ function Send(props: Props) {
     const error = isIssue ? <InputError error={warningMessage} /> : '';
 
     return (
-        <Container onKeyDown={event => onEnterPress(event.key)}>
+        <Container onKeyDown={(event) => onEnterPress(event.key)}>
             <RowContainer>
                 <InputAddress
                     label={t('components.send.recipient_address')}
                     operationType="send"
                     tooltip={false}
-                    onChange={val => setAddress(val)}
-                    onIssue={val => setIsAddressIssue(val)}
+                    onChange={(val) => setAddress(val)}
+                    onIssue={(val) => setIsAddressIssue(val)}
                 />
             </RowContainer>
             <RowContainer>
@@ -96,7 +96,7 @@ function Send(props: Props) {
                     <NumericInput
                         label={t('general.nouns.amount')}
                         amount={amount}
-                        onChange={val => setAmount(val)}
+                        onChange={(val) => setAmount(val)}
                         errorText={error}
                         symbol={token.symbol}
                         scale={token.scale || 0}
@@ -106,7 +106,7 @@ function Send(props: Props) {
                     />
                 </AmountContainer>
                 <FeeContainer>
-                    <Fees low={newFees.low} medium={newFees.medium} high={newFees.high} fee={fee} miniFee={miniFee} onChange={val => setFee(val)} />
+                    <Fees low={newFees.low} medium={newFees.medium} high={newFees.high} fee={fee} miniFee={miniFee} onChange={(val) => setFee(val)} />
                 </FeeContainer>
             </RowContainer>
 
@@ -115,7 +115,7 @@ function Send(props: Props) {
                     <PasswordInput
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
-                        onChange={val => setPassPhrase(val)}
+                        onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '47%', marginTop: '10px' }}
                     />
                 )}

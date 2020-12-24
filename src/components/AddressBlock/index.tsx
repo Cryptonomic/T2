@@ -24,9 +24,10 @@ import TokenNav from '../TokenNav';
 
 import SignVerifyModal from '../../featureModals/SignVerify';
 import AuthModal from '../../featureModals/Auth';
-import BeaconRegistrationModal from '../../featureModals/Beacon/BeaconRegistrationModal';
-import BeaconEventModal from '../../featureModals/Beacon/BeaconEventModal';
-import BeaconInfoModal from '../../featureModals/Beacon/BeaconInfoModal';
+import BeaconConnectionRequest from '../../featureModals/Beacon/BeaconConnectionRequest';
+import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
+import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
+import BeaconInfo from '../../featureModals/Beacon/BeaconInfo';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
@@ -34,7 +35,7 @@ import { getAddressType } from '../../utils/account';
 import { getLocalData, setLocalData } from '../../utils/localData';
 
 import { RootState } from '../../types/store';
-import { AddressType, Identity } from '../../types/general';
+import { AddressType, Identity, TokenKind } from '../../types/general';
 
 const { Mnemonic } = KeyStoreType;
 
@@ -167,6 +168,7 @@ function AddressBlock(props: Props) {
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
     const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+    const [step, setStep] = useState(1);
     const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() => getLocalData('isHideDelegateTooltip'));
 
     const { publicKeyHash, balance, accounts, status, storeType } = accountBlock;
@@ -262,8 +264,9 @@ function AddressBlock(props: Props) {
     const isSignModalOpen = isModalOpen && activeModal === 'sign';
     const isAuthModalOpen = isModalOpen && activeModal === 'auth';
     const isBeaconRegistrationModalOpen = isModalOpen && activeModal === 'beaconRegistration';
+    const isBeaconAuthorizeModalOpen = isModalOpen && activeModal === 'beaconAuthorize';
+    const isBeaconPermissionModalOpen = isModalOpen && activeModal === 'beaconPermission';
     const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
-    const isBeaconEventModalOpen = isModalOpen && activeModal === 'beaconEvent';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
 
     return (
@@ -323,26 +326,41 @@ function AddressBlock(props: Props) {
                 <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
             </AddDelegateLabel>
 
-            {/*
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
-                <DelegateTitle>{t('components.Beacon.infoModal.title')}</DelegateTitle>
+                <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
             </AddDelegateLabel>
-            */}
 
             <AddDelegateLabel>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
             </AddDelegateLabel>
 
             {tokens.map((token, index) => {
+                let tokenType = AddressType.Token; // TODO
+
+                // Always show wXTZ so that users can open the vaulting API.
+                // TODO(keefertaylor|anonymoussprocket): Determine how to correctly show an empty state.
+                if (token.kind === TokenKind.wxtz) {
+                    tokenType = AddressType.wXTZ;
+
+                    return (
+                        <TokenNav
+                            key={token.address}
+                            isActive={!isModalOpen && token.address === selectedAccountHash}
+                            token={token}
+                            onClick={() => goToAccount(token.address, index, tokenType)}
+                        />
+                    );
+                }
+
                 if (!token.balance) {
                     return null;
                 }
 
-                let tokenType = AddressType.Token; // TODO
-                if (token.kind === 'stkr') {
+                if (token.kind === TokenKind.stkr) {
                     tokenType = AddressType.STKR;
                 }
-                if (token.kind === 'tzbtc') {
+
+                if (token.kind === TokenKind.tzbtc) {
                     tokenType = AddressType.TzBTC;
                 }
 
@@ -396,10 +414,14 @@ function AddressBlock(props: Props) {
             {isSignModalOpen && <SignVerifyModal open={isSignModalOpen} onClose={() => setIsModalOpen(false, 'sign')} />}
             {isAuthModalOpen && <AuthModal open={isAuthModalOpen} onClose={() => setIsModalOpen(false, 'auth')} />}
             {isBeaconRegistrationModalOpen && (
-                <BeaconRegistrationModal open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
+                <BeaconConnectionRequest open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
             )}
-            {isBeaconEventModalOpen && <BeaconEventModal open={isBeaconEventModalOpen} onClose={() => setIsModalOpen(false, 'beaconEvent')} />}
-            {isBeaconInfoModalOpen && <BeaconInfoModal open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />}
+            {isBeaconAuthorizeModalOpen && (
+                <BeaconAuthorize open={isBeaconAuthorizeModalOpen} onClose={() => setIsModalOpen(false, 'beaconAuthorize')} managerBalance={balance} />
+            )}
+            {isBeaconPermissionModalOpen && <BeaconPermission open={isBeaconPermissionModalOpen} onClose={() => setIsModalOpen(false, 'beaconPermission')} />}
+
+            {isBeaconInfoModalOpen && <BeaconInfo open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />}
 
             {isInteractModalOpen && (
                 <InteractContractModal open={isInteractModalOpen} onClose={() => setIsInteractModalOpen(false)} addresses={regularAddresses} />

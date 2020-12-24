@@ -14,6 +14,8 @@ import {
     AppActionTypes,
     SET_SIGNER,
     SET_BEACON_CLIENT,
+    SET_BEACON_MESSAGE,
+    SET_BEACON_LOADING,
 } from './types';
 
 const initState: AppState = {
@@ -33,7 +35,10 @@ const initState: AppState = {
     selectedAccountIndex: 0,
     selectedAccountType: AddressType.Manager,
     signer: null,
-    beaconClient: null,
+    beaconMessage: null,
+    beaconLoading: false,
+    beaconClient: false,
+    beaconConnection: null,
 };
 
 export function appReducer(state: AppState = initState, action: AppActionTypes) {
@@ -59,7 +64,11 @@ export function appReducer(state: AppState = initState, action: AppActionTypes) 
         case SET_SIGNER:
             return { ...state, signer: action.signer };
         case SET_BEACON_CLIENT:
-            return { ...state, beaconClient: action.client };
+            return { ...state, beaconClient: action.beaconClient };
+        case SET_BEACON_MESSAGE:
+            return { ...state, beaconMessage: action.beaconMessage, beaconConnection: action.beaconConnection };
+        case SET_BEACON_LOADING:
+            return { ...state, beaconLoading: action.beaconLoading };
         default:
             return state;
     }

@@ -349,6 +349,7 @@
             "secret_key_15": "15 Wort Geheim Schlüssel",
             "errors": {
                 "invalid_length": "Seed phrases müssen mehr als 15 Wörter beinhalten",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Ungültige Wörter festgestellt. Bitte nochmal nachprüfen."
             }
         },
@@ -455,6 +456,7 @@
             "restore_backup": "Wiederherstellen aus Sicherung",
             "errors": {
                 "invalid_length": "Seed phrases muss mehr als 15 Wörter enthalten",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Ungültige Wörter entdeckt. Bitte nochmal prüfen."
             }
         },

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import * as bip39 from 'bip39';
 
 import { ms } from '../../styles/helpers';
 import { openLink } from '../../utils/general';
@@ -106,8 +107,20 @@ const Auth = (props: Props) => {
             }
 
             if (req.prompt) {
-                let p = req.prompt.replace(/\n/g, '');
+                const stringPrompt = String(req.prompt);
+                let p = stringPrompt.replace(/\n/g, '');
                 p = p.slice(0, Math.min(100, p.length));
+
+                if (
+                    !p
+                        .split(' ')
+                        .map((w) => bip39.wordlists[bip39.getDefaultWordlist()].includes(w))
+                        .reduce((r, b) => r && b)
+                ) {
+                    setError(true);
+                    setResult('Prompt contains invalid data'); // TODO: localization
+                }
+
                 setPrompt(p);
             }
 
@@ -155,9 +168,11 @@ const Auth = (props: Props) => {
                         </ResultContainer>
                         <Footer>
                             <ButtonContainer>
-                                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onAuth}>
-                                    {t('general.verbs.authenticate')}
-                                </InvokeButton>
+                                {!error && (
+                                    <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onAuth}>
+                                        {t('general.verbs.authenticate')}
+                                    </InvokeButton>
+                                )}
                             </ButtonContainer>
                         </Footer>
                     </Container>

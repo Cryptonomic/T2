@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import React from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
 import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
+
+import { BeaconConnect } from '../../featureModals/Beacon/BeaconConnect';
 
 import AddressBlock from '../../components/AddressBlock';
 import BabylonDelegation from '../../contracts/BabylonDelegation';
@@ -10,7 +12,7 @@ import TokenContract from '../../contracts/TokenContract';
 import ImplicitAccount from '../../contracts/ImplicitAccount';
 import StakerToken from '../../contracts/StakerToken';
 import TzBtcToken from '../../contracts/TzBtcToken';
-import { initBeaconThunk } from '../../reduxContent/app/thunks';
+import WXTZToken from '../../contracts/WrappedTezos';
 import { sortArr } from '../../utils/array';
 
 import { Container, SideBarContainer, AccountItem } from './style';
@@ -18,12 +20,6 @@ import { Container, SideBarContainer, AccountItem } from './style';
 function HomeMain() {
     const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
     const addressType = useSelector((state: RootState) => state.app.selectedAccountType);
-    const signer = useSelector((state: RootState) => state.app.signer); // use Signer
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(initBeaconThunk());
-    }, []);
 
     function renderView() {
         switch (addressType) {
@@ -37,6 +33,8 @@ function HomeMain() {
                 return <StakerToken />;
             case AddressType.TzBTC:
                 return <TzBtcToken />;
+            case AddressType.wXTZ:
+                return <WXTZToken />;
             default:
                 return <GenericContract />;
         }
@@ -44,6 +42,7 @@ function HomeMain() {
 
     return (
         <Container>
+            <BeaconConnect />
             <SideBarContainer>
                 {identities.sort(sortArr({ sortOrder: 'asc', sortBy: 'order' })).map((accountBlock, index) => (
                     <AccountItem key={index}>

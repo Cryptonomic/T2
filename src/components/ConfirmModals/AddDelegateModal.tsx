@@ -238,8 +238,8 @@ function AddDelegateModal(props: Props) {
     }
 
     function changeAmount(newAmount = '0') {
-        const commaReplacedAmount = newAmount.replace(',', '.');
-        const numAmount = parseFloat(commaReplacedAmount) * utez;
+        const float = Number.isNaN(parseFloat(newAmount)) ? 0.0 : parseFloat(newAmount);
+        const numAmount = float * utez;
         const newTotal = numAmount + fee + GAS;
         const newBalance = managerBalance - total;
         updateState({ amount: newAmount, total: newTotal, balance: newBalance });

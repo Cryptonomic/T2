@@ -117,7 +117,7 @@ function InputAddress(props: Props) {
         return { firstCharactersRegEx, regErrorTxt };
     };
 
-    const onValidateAddress = async addressText => {
+    const onValidateAddress = async (addressText) => {
         const charMatch = /[1-9A-HJ-NP-Za-km-z]{36}/;
         const { firstCharactersRegEx, regErrorTxt } = getRegExState();
         let errorState = true;
@@ -168,7 +168,7 @@ function InputAddress(props: Props) {
 
     return (
         <DelegateContainer>
-            <TextField label={label} onChange={value => inputDebounce(value)} errorText={error} />
+            <TextField label={label} onChange={(value) => inputDebounce(value)} errorText={error} />
             {tooltip && (
                 <Tooltip position="bottom" content={renderToolTipComponent()}>
                     <TextfieldTooltip size="small">

@@ -30,6 +30,7 @@
             "copy": "Copy",
             "connect": "Connect",
             "authorize": "Authorize",
+            "allow": "Allow",
             "approve": "Approve"
         },
         "nouns": {
@@ -117,7 +118,7 @@
             "invoke_manager": "Manage Delegation"
         },
         "addDelegateModal": {
-            "gas_tool_tip": "{{gas}} tz is required by the network to create a delegated address",
+            "gas_tool_tip": "{{gas}} XTZ is required by the network to create a delegated address",
             "warning1": "Total exceeds available funds",
             "warning2": "Manager Addresses are not yet allowed to have less than 1 µtz",
             "add_delegate_title": "Delegation Contracts",
@@ -136,14 +137,22 @@
             "signature_prompt": "Authenticate by signing the words below to confirm your control of the private key associated with this account"
         },
         "Beacon": {
-            "registrationModal": {
-                "title": "Beacon Connection Request"
+            "connection": {
+                "title": "Connection Request"
             },
-            "eventModal": {
-                "title": "Beacon Request"
+            "permission": {
+                "title": "Permission Request"
             },
-            "infoModal": {
-                "title": "Beacon Status"
+            "authorization": {
+                "title": "Authorize Operation",
+                "title_plural": "Authorize Operations"
+            },
+            "info": {
+                "title": "Beacon Status",
+                "permissions": {
+                    "operation_request": "Operation Request",
+                    "sign": "Sign"
+                }
             }
         },
         "interactModal": {
@@ -292,7 +301,7 @@
             "contents": {
                 "content1": "You can always change the delegate at a later time.",
                 "content2": "There is a fee for changing the delegate.",
-                "content3": "You can only delegate to the Manager Address. Manager Addresses always starts with tz1, tz2 or tz3."
+                "content3": "You can only delegate to Manager Addresses. Manager Addresses always start with tz1, tz2 or tz3."
             },
             "errors": {
                 "send_address": "Addresses can only start tz1, tz2, tz3 or KT1",
@@ -365,12 +374,15 @@
             "restore_from": "Restore from ",
             "seed_encrypted_label": "This seed phrase is encrypted with a password",
             "seed_phrase_password": "Seed Phrase Password",
+            "seed_phrase_derived": "Use a derivation path",
+            "seed_phrase_path": "Seed Phrase Derivation Path",
             "enter_private_key": "Enter your private key",
             "seed_phrase": "Seed Phrase",
             "private_key": "Private Key",
             "secret_key_15": "15 - 24 Word Mnemonic",
             "errors": {
                 "invalid_length": "Seed phrases contain 12, 15, 18, 21 or 24 words.",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Detected invalid word(s). Please double check."
             }
         },
@@ -477,6 +489,7 @@
             "restore_backup": "Restore from Backup",
             "errors": {
                 "invalid_length": "Seed phrases contain 12, 15, 18, 21 or 24 words.",
+                "invalid_length_15": "Fundraiser seed phrase contains 15 words.",
                 "invalid_words": "Detected invalid word(s). Please double check."
             }
         },

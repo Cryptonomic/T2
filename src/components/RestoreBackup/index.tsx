@@ -93,13 +93,15 @@ function RestoreBackup() {
     const [type, setType] = useState('phrase');
     const [seeds, setSeeds] = useState<string[]>([]);
     const [password, setPassword] = useState('');
-    const [isPassword, setIsPassword] = useState(false);
+    const [hasPassword, setHasPassword] = useState(false);
+    const [derivationPath, setDerivationPath] = useState('');
+    const [hasDerivationPath, setHasDerivationPath] = useState(false);
     const [key, setKey] = useState('');
     const [error, setError] = useState(false);
 
     const importAddress = () => {
         if (type === 'phrase') {
-            dispatch(importAddressThunk(ADD_ADDRESS_TYPES.RESTORE, seeds.join(' '), '', '', '', password));
+            dispatch(importAddressThunk(ADD_ADDRESS_TYPES.RESTORE, seeds.join(' '), '', '', '', password, derivationPath));
         } else if (type === 'key') {
             dispatch(importSecretKeyThunk(key));
         }
@@ -120,36 +122,50 @@ function RestoreBackup() {
         isdisabled = !key;
     }
     return (
-        <MainContainer onKeyDown={event => onEnterPress(event.key, isdisabled)}>
+        <MainContainer onKeyDown={(event) => onEnterPress(event.key, isdisabled)}>
             <RestoreHeader>
                 {t('components.restoreBackup.restore_from')}
-                <RestoreTabs type={type} t={t} changeFunc={val => setType(val)} />
+                <RestoreTabs type={type} t={t} changeFunc={(val) => setType(val)} />
             </RestoreHeader>
             {type === 'phrase' && (
                 <Fragment>
                     <SeedInput
                         placeholder={t('containers.homeAddAddress.restore_mnemonic')}
                         seeds={seeds}
-                        onChange={val => setSeeds(val)}
-                        onError={err => setError(err)}
+                        onChange={(val) => setSeeds(val)}
+                        onError={(err) => setError(err)}
+                        expectedWords={0}
                     />
 
                     <ToggleContainer>
                         <ToggleLabel>{t('components.restoreBackup.seed_encrypted_label')}</ToggleLabel>
-                        <Switch color="secondary" onChange={() => setIsPassword(!isPassword)} />
+                        <Switch color="secondary" onChange={() => setHasPassword(!hasPassword)} />
                     </ToggleContainer>
 
-                    {isPassword && (
+                    {hasPassword && (
                         <PasswordInput
                             label={t('components.restoreBackup.seed_phrase_password')}
                             password={password}
-                            onChange={val => setPassword(val)}
+                            onChange={(val) => setPassword(val)}
                             containerStyle={{ width: '60%' }}
                         />
                     )}
+
+                    <ToggleContainer>
+                        <ToggleLabel>{t('components.restoreBackup.seed_phrase_derived')}</ToggleLabel>
+                        <Switch color="secondary" onChange={() => setHasDerivationPath(!hasDerivationPath)} />
+                    </ToggleContainer>
+
+                    {hasDerivationPath && (
+                        <div style={{ width: '60%' }}>
+                            <TextField label="Derivation Path (e.g m/44'/1729'/0'/0'/0')" value={derivationPath} onChange={(val) => setDerivationPath(val)} />
+                        </div>
+                    )}
                 </Fragment>
             )}
-            {type === 'key' && <TextField label={t('components.restoreBackup.enter_private_key')} value={key} onChange={val => setKey(val)} />}
+
+            {type === 'key' && <TextField label={t('components.restoreBackup.enter_private_key')} value={key} onChange={(val) => setKey(val)} />}
+
             <RestoreFooter>
                 <RestoreButton buttonTheme="primary" disabled={isdisabled} onClick={importAddress}>
                     {t('general.verbs.restore')}

@@ -140,6 +140,9 @@ app.on('ready', async () => {
             {
                 label: 'Learn More',
                 click: async () => {
+                    if (!helpUrl.startsWith('https://')) {
+                        throw new Error('Invalid URL provided, only https scheme is accepted');
+                    }
                     await electron.shell.openExternal(helpUrl);
                 },
             },

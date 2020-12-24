@@ -1,4 +1,5 @@
 import { Signer } from 'conseiljs';
+import { BeaconRequestOutputMessage, ConnectionContext } from '@airgap/beacon-sdk';
 
 import {
     SET_IS_LOADING,
@@ -26,6 +27,10 @@ import {
     SetSignerAction,
     SET_BEACON_CLIENT,
     SetBeaconClientAction,
+    SET_BEACON_MESSAGE,
+    SetBeaconMessageAction,
+    SetBeaconLoadingAction,
+    SET_BEACON_LOADING,
 } from './types';
 import { NodeStatus, AddressType } from '../../types/general';
 
@@ -109,6 +114,17 @@ export function setSignerAction(signer: Signer): SetSignerAction {
     return { type: SET_SIGNER, signer };
 }
 
-export function setBeaconClientAction(client: any): SetBeaconClientAction {
-    return { type: SET_BEACON_CLIENT, client };
+export function setBeaconClientAction(beaconClient: boolean = false): SetBeaconClientAction {
+    return { type: SET_BEACON_CLIENT, beaconClient };
+}
+
+export function setBeaconMessageAction(
+    beaconMessage: BeaconRequestOutputMessage | null = null,
+    beaconConnection: ConnectionContext | null = null
+): SetBeaconMessageAction {
+    return { type: SET_BEACON_MESSAGE, beaconMessage, beaconConnection };
+}
+
+export function setBeaconLoading(beaconLoading: any = null): SetBeaconLoadingAction {
+    return { type: SET_BEACON_LOADING, beaconLoading };
 }

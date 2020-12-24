@@ -28,7 +28,7 @@ import {
     TooltipTitle,
     TooltipContent,
     BoldSpan,
-    FeeTooltipBtn
+    FeeTooltipBtn,
 } from './style';
 
 interface Props {
@@ -84,14 +84,14 @@ function Delegate(props: Props) {
     };
 
     return (
-        <Container onKeyDown={event => onEnterPress(event.key)}>
+        <Container onKeyDown={(event) => onEnterPress(event.key)}>
             <AmountContainer>
                 <InputAddress
                     label={t('components.delegateConfirmationModal.new_address_label')}
                     operationType="delegate"
                     tooltip={false}
-                    onChange={val => setAddress(val)}
-                    onIssue={val => setIsAddressIssue(val)}
+                    onChange={(val) => setAddress(val)}
+                    onIssue={(val) => setIsAddressIssue(val)}
                 />
             </AmountContainer>
             <FeeContainer>
@@ -101,7 +101,7 @@ function Delegate(props: Props) {
                     high={newFees.high}
                     fee={fee}
                     miniFee={miniFee}
-                    onChange={val => setFee(val)}
+                    onChange={(val) => setFee(val)}
                     tooltip={
                         !isRevealed && (
                             <Tooltip position="bottom" content={renderFeeToolTip}>
@@ -124,7 +124,7 @@ function Delegate(props: Props) {
                     <PasswordInput
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
-                        onChange={val => setPassPhrase(val)}
+                        onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
