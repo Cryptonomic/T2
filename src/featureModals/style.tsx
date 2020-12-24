@@ -377,3 +377,5 @@ export const BeaconInfoContainer = styled.div`
         margin-bottom: 100px;
     }
 `;
+
+export const AddressInfoLink = styled.a``;

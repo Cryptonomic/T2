@@ -29,12 +29,12 @@ export const BeaconConnect = () => {
         if (message.type === BeaconMessageType.PermissionRequest) {
             console.log('Beacon.PermissionRequest', message);
             if (connectedBlockchainNode.network !== message.network.type) {
-                dispatch(createMessageAction('Beacon network not match', true));
+                dispatch(createMessageAction('Beacon network mismatch', true));
                 return;
             }
 
             if (!Object.keys(modalValues).length || !Object.keys(modalValues).includes('beaconRegistration')) {
-                dispatch(createMessageAction('Beacon registration request not exist', true));
+                dispatch(createMessageAction('Received malformed Beacon request', true));
                 return;
             }
 
@@ -67,6 +67,7 @@ export const BeaconConnect = () => {
 
             // temporary accept transactions only
             if (!message.operationDetails.filter((o) => o.kind === 'transaction').length) {
+                // TODO: add delegation
                 dispatch(createMessageAction('Beacon transactions only', true));
                 return;
             }

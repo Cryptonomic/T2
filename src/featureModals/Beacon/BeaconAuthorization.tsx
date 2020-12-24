@@ -101,7 +101,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognise contract call and simple transaction
     const { destination, amount, parameters } = operationDetails[0];
-    const operationParameters = parameters || { value: '', entrypoint: '' };
+    const operationParameters = parameters || { value: '{prim: "Unit"}', entrypoint: 'default' };
 
     const onAuthorize = async () => {
         try {
@@ -116,20 +116,25 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
             const formattedAmount = new BigNumber(amount).dividedBy(1_000_000).toString();
             if (isContract) {
-                dispatch(
+                const operationResult = await dispatch(
                     invokeAddressThunk(
                         destination,
                         operationState.fee,
                         formattedAmount,
                         10_000,
                         500_000,
-                        operationParameters.value,
+                        JSON.stringify(operationParameters.value),
                         password,
                         selectedParentHash,
                         operationParameters.entrypoint,
                         TezosParameterFormat.Micheline
                     )
                 );
+
+                if (!!operationResult) {
+                    onClose();
+                }
+
                 // TODO: ledger
             } else {
                 dispatch(sendTezThunk(password, destination, formattedAmount, operationState.fee));
@@ -137,7 +142,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             }
         } catch (e) {
             console.log('Transaction.Error', e);
-            dispatch(setBeaconLoading());
+            dispatch(setBeaconLoading(false));
         }
     };
 
@@ -210,7 +215,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {isContract && (
                                 <div>
                                     {operationParameters.entrypoint && <div>Contract Function: {operationParameters.entrypoint}</div>}
-                                    {operationParameters.value && <div>Parameters: {operationParameters.value}</div>}
+                                    {operationParameters.value && <div>Parameters: {JSON.stringify(operationParameters.value)}</div>}
                                     <p className="subtitleText">To see more parameters, view the operation details below</p>
                                     <p className="fontWeight400">Operations</p>
                                     <textarea className="inputField">{JSON.stringify(operationDetails[0], null, 2)}</textarea>
