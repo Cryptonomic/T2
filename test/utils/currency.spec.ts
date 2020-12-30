@@ -1,4 +1,4 @@
-import { formatAmount, tezToUtez } from '../../src/utils/currancy';
+import { formatAmount, tezToUtez } from '../../src/utils/currency';
 
 describe('currency utils', () => {
     const MILLION = 1000000;
