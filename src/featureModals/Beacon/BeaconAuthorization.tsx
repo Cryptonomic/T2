@@ -39,7 +39,7 @@ export const PromptContainer = styled.div`
 `;
 
 const WrapPassword = styled.div`
-    margin-top: 26px;
+    margin-top: 3px;
 `;
 
 const TooltipContainer = styled.div`
@@ -99,7 +99,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Origination, true, true);
 
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
-    const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognise contract call and simple transaction
+    const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
     const { destination, amount, parameters } = operationDetails[0];
     const operationParameters = parameters || { value: '{prim: "Unit"}', entrypoint: 'default' };
 
@@ -207,21 +207,36 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {operationDetails.length > 1 && <h3>{t('components.Beacon.authorization.title_plural')}</h3>}
                             <h4>Network: {network.type}</h4>
                             <p className="linkAddress">{website}</p>
-                            <p>
-                                {appMetadata.name} is requesting to send a transaction of{' '}
-                                <strong>{new BigNumber(operationDetails[0].amount).dividedBy(1_000_000).toNumber().toFixed(6)}</strong> <strong>XTZ</strong> to{' '}
-                                <strong>{operationDetails[0].destination}</strong> {`${isContract ? 'with the following parameters:' : ' '}`}
-                            </p>
+                            {!isContract && (
+                                <p>
+                                    {appMetadata.name} is requesting a transaction of{' '}
+                                    <strong>{new BigNumber(operationDetails[0].amount).dividedBy(1_000_000).toNumber().toFixed(6)}</strong>
+                                    <strong>XTZ</strong> to <strong>{operationDetails[0].destination}</strong>
+                                </p>
+                            )}
+                            {isContract && (
+                                <p>
+                                    {appMetadata.name} is requesting a contract call to the <strong>{operationParameters.entrypoint}</strong> function of{' '}
+                                    <strong>{operationDetails[0].destination}</strong>
+                                    {new BigNumber(operationDetails[0].amount).toNumber() !== 0 && (
+                                        <span>
+                                            {' '}
+                                            with <strong>{new BigNumber(operationDetails[0].amount).dividedBy(1_000_000).toNumber().toFixed(6)}</strong>{' '}
+                                            <strong>XTZ</strong> and{' '}
+                                        </span>
+                                    )}
+                                    {new BigNumber(operationDetails[0].amount).toNumber() === 0 && <span> with </span>}
+                                    the following parameters: <strong>{JSON.stringify(operationParameters.value)}</strong>
+                                </p>
+                            )}
+
                             {isContract && (
                                 <div>
-                                    {operationParameters.entrypoint && <div>Contract Function: {operationParameters.entrypoint}</div>}
-                                    {operationParameters.value && <div>Parameters: {JSON.stringify(operationParameters.value)}</div>}
-                                    <p className="subtitleText">To see more parameters, view the operation details below</p>
-                                    <p className="fontWeight400">Operations</p>
+                                    <p className="inputLabel">Raw Operation Content</p>
                                     <textarea className="inputField">{JSON.stringify(operationDetails[0], null, 2)}</textarea>
                                 </div>
                             )}
-                            <div className="fee">
+                            <div className="feeContainer">
                                 <Fees
                                     low={newFees.low}
                                     medium={newFees.medium}

@@ -77,11 +77,11 @@ export const Container = styled.div`
     padding-bottom: 50px 50px 0px;
     .modal-holder {
         text-align: center !important;
-        padding: 40px 48px;
+        padding: 40px 48px 3px 48px;
         h3 {
             font-size: 24px;
             font-weight: 300;
-            margin: 0 0 20px;
+            margin: 0 0 10px;
             color: #123262;
         }
         .text-center {
@@ -102,7 +102,7 @@ export const Container = styled.div`
             font-size: 16px;
             font-weight: 500;
             color: #5571a7;
-            margin: 25px 0 8px;
+            margin: 5px 0 8px 0;
         }
         p {
             font-size: 16px;
@@ -136,19 +136,20 @@ export const Container = styled.div`
         }
         .inputField {
             width: 100%;
-            height: 40px;
+            height: 120px;
             resize: none;
             border: 1px solid #e0e0e0;
-            margin-bottom: 10px;
+            margin-bottom: 1px;
         }
-        .fontWeight400 {
+        .inputLabel {
             font-weight: 400;
-            color: #000;
+            color: rgba(0, 0, 0, 0.38);
+            font-size: 12px;
         }
         ,
-        .fee {
-            margin-top: 40px;
-            margin-bottom: 30px;
+        .feeContainer {
+            margin-top: 3px;
+            margin-bottom: 3px;
         }
     }
 `;
