@@ -110,6 +110,7 @@ export enum TokenKind {
     usdtz = 'usdtz',
     tzbtc = 'tzbtc',
     wxtz = 'wxtz',
+    ethtz = 'ethtz',
 }
 
 export interface Token {
@@ -129,6 +130,7 @@ export interface Token {
     precision?: number;
     round?: number;
     transactionFeeFloor?: number;
+    helpLink?: string;
 }
 
 /**

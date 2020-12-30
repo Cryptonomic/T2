@@ -56,9 +56,19 @@ function BalanceBanner(props: Props) {
                 <Update onClick={onSyncWallet} time={time} isReady={isReady} isWalletSyncing={isWalletSyncing} />
             </TopRow>
             <BottomRow isReady={isReady}>
-                <AddressTitle>{displayName}</AddressTitle>
                 <AddressInfo>
-                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} />
+                    <AddressTitle>{displayName}</AddressTitle>{' '}
+                    {token.helpLink && (
+                        <>
+                            <AddressInfoLink onClick={() => openLink(token.details.helpLink)}>
+                                Learn more
+                                <LinkIcon iconName="new-window" size={ms(0)} color="white" onClick={() => openLink(token.details.helpLink)} />
+                            </AddressInfoLink>
+                        </>
+                    )}
+                </AddressInfo>
+                <AddressInfo>
+                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
                     <Gap />
                     <AmountView
                         color="white"
@@ -75,14 +85,6 @@ function BalanceBanner(props: Props) {
                 <AddressInfo>
                     {token.details && token.details.paused === false && 'Token is active.'}{' '}
                     {token.details && token.details.supply && 'Total supply is ' + formatAmount(token.details.supply) + '.'}
-                    {token.details && token.details.helpLink && (
-                        <>
-                            <AddressInfoLink href="#" onClick={() => openLink(token.details.helpLink)}>
-                                Learn more about {token.displayName}
-                            </AddressInfoLink>
-                            <LinkIcon iconName="new-window" size={ms(0)} color="white" onClick={() => openLink(token.details.helpLink)} />
-                        </>
-                    )}
                 </AddressInfo>
             </BottomRow>
         </Container>
