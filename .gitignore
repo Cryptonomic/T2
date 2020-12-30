@@ -5,6 +5,7 @@ dist/
 release/
 assets/
 dll/
+coverage/
 
 src/dist/
 src/main.prod.js
