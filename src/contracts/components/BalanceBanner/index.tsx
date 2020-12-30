@@ -36,7 +36,7 @@ function BalanceBanner(props: Props) {
 
     const addressLabel = `${t('general.nouns.token_contract')} ${addressIndex}`;
 
-    const breadcrumbs = t('components.balanceBanner.breadcrumbs', { parentIndex, addressLabel });
+    const breadcrumbs = t('components.balanceBanner.breadcrumbs', { parentIndex, addressLabel: displayName });
 
     function onSyncWallet() {
         dispatch(syncWalletThunk());
