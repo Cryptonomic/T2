@@ -15,11 +15,11 @@ import Fees from '../../components/Fees';
 import Tooltip from '../../components/Tooltip';
 import TezosIcon from '../../components/TezosIcon';
 import { ms } from '../../styles/helpers';
-import { useFetchFees } from '../../reduxContent/app/thunks';
+import { useFetchFees, estimateContractCall } from '../../reduxContent/app/thunks';
 
 import { RootState, ModalState } from '../../types/store';
 
-import { sendTezThunk, getIsImplicitAndEmptyThunk } from '../../contracts/duck/thunks';
+import { sendTezThunk } from '../../contracts/duck/thunks';
 import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';
 import { setModalOpen } from '../../reduxContent/modal/actions';
 import { setBeaconLoading } from '../../reduxContent/app/actions';
@@ -70,13 +70,13 @@ const BoldSpan = styled.span`
 
 const defaultState = {
     amount: '',
-    fee: 2840,
+    fee: 2_840,
     total: 0,
     balance: 0,
 };
 
-const utez = 1000000;
-const GAS = 64250;
+const utez = 1_000_000;
+const GAS = 64_250;
 
 interface Props {
     open: boolean;
@@ -96,12 +96,19 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const [password, setPassword] = useState('');
     const [operationState, setOperationState] = useState(defaultState);
 
-    const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Origination, true, true);
-
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
     const { destination, amount, parameters } = operationDetails[0];
     const operationParameters = parameters || { value: '{prim: "Unit"}', entrypoint: 'default' };
+
+    const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Transaction, true, true);
+    const { fee } = estimateContractCall(
+        selectedParentHash,
+        destination,
+        new BigNumber(amount).toNumber(),
+        operationParameters.entrypoint,
+        JSON.stringify(operationParameters.value)
+    );
 
     const onAuthorize = async () => {
         try {
@@ -114,7 +121,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             // TODO: validate amount > 0 for
             // TODO: validate destination != self
 
-            const formattedAmount = new BigNumber(amount).dividedBy(1_000_000).toString();
+            const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
             if (isContract) {
                 const operationResult = await dispatch(
                     invokeAddressThunk(
@@ -210,7 +217,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {!isContract && (
                                 <p>
                                     {appMetadata.name} is requesting a transaction of{' '}
-                                    <strong>{new BigNumber(operationDetails[0].amount).dividedBy(1_000_000).toNumber().toFixed(6)}</strong>
+                                    <strong>{new BigNumber(operationDetails[0].amount).dividedBy(utez).toNumber().toFixed(6)}</strong>
                                     <strong>XTZ</strong> to <strong>{operationDetails[0].destination}</strong>
                                 </p>
                             )}
@@ -221,7 +228,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                     {new BigNumber(operationDetails[0].amount).toNumber() !== 0 && (
                                         <span>
                                             {' '}
-                                            with <strong>{new BigNumber(operationDetails[0].amount).dividedBy(1_000_000).toNumber().toFixed(6)}</strong>{' '}
+                                            with <strong>{new BigNumber(operationDetails[0].amount).dividedBy(utez).toNumber().toFixed(6)}</strong>{' '}
                                             <strong>XTZ</strong> and{' '}
                                         </span>
                                     )}
@@ -238,7 +245,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             )}
                             <div className="feeContainer">
                                 <Fees
-                                    low={newFees.low}
+                                    low={isContract ? fee : newFees.low}
                                     medium={newFees.medium}
                                     high={newFees.high}
                                     fee={operationState.fee}
