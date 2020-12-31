@@ -150,7 +150,7 @@ export const estimateContractCall = (
 
         estimateInvocation();
     }, []);
-    console.log('calling estimate H');
+
     return { gas, storage, fee };
 };
 
