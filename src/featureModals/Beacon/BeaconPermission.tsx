@@ -67,7 +67,7 @@ const BeaconPermission = ({ open, onClose }: Props) => {
         } catch (e) {
             console.log('BeaconPermissionError', e);
             dispatch(setBeaconLoading());
-            dispatch(createMessageAction('Beacon permission fails', true));
+            dispatch(createMessageAction('Beacon permission failure', true));
         }
     };
 

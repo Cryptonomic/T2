@@ -15,11 +15,11 @@ import Fees from '../../components/Fees';
 import Tooltip from '../../components/Tooltip';
 import TezosIcon from '../../components/TezosIcon';
 import { ms } from '../../styles/helpers';
-import { useFetchFees } from '../../reduxContent/app/thunks';
+import { useFetchFees, estimateContractCall } from '../../reduxContent/app/thunks';
 
 import { RootState, ModalState } from '../../types/store';
 
-import { sendTezThunk, getIsImplicitAndEmptyThunk } from '../../contracts/duck/thunks';
+import { sendTezThunk } from '../../contracts/duck/thunks';
 import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';
 import { setModalOpen } from '../../reduxContent/modal/actions';
 import { setBeaconLoading } from '../../reduxContent/app/actions';
@@ -39,7 +39,7 @@ export const PromptContainer = styled.div`
 `;
 
 const WrapPassword = styled.div`
-    margin-top: 26px;
+    margin-top: 3px;
 `;
 
 const TooltipContainer = styled.div`
@@ -70,13 +70,13 @@ const BoldSpan = styled.span`
 
 const defaultState = {
     amount: '',
-    fee: 2840,
+    fee: 2_840,
     total: 0,
     balance: 0,
 };
 
-const utez = 1000000;
-const GAS = 64250;
+const utez = 1_000_000;
+const GAS = 64_250;
 
 interface Props {
     open: boolean;
@@ -96,12 +96,19 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const [password, setPassword] = useState('');
     const [operationState, setOperationState] = useState(defaultState);
 
-    const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Origination, true, true);
-
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
-    const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognise contract call and simple transaction
+    const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
     const { destination, amount, parameters } = operationDetails[0];
-    const operationParameters = parameters || { value: '', entrypoint: '' };
+    const operationParameters = parameters || { value: '{prim: "Unit"}', entrypoint: 'default' };
+
+    const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Transaction, true, true);
+    const { fee } = estimateContractCall(
+        selectedParentHash,
+        destination,
+        new BigNumber(amount).toNumber(),
+        operationParameters.entrypoint,
+        JSON.stringify(operationParameters.value)
+    );
 
     const onAuthorize = async () => {
         try {
@@ -114,22 +121,27 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             // TODO: validate amount > 0 for
             // TODO: validate destination != self
 
-            const formattedAmount = new BigNumber(amount).dividedBy(1_000_000).toString();
+            const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
             if (isContract) {
-                dispatch(
+                const operationResult = await dispatch(
                     invokeAddressThunk(
                         destination,
                         operationState.fee,
                         formattedAmount,
                         10_000,
                         500_000,
-                        operationParameters.value,
+                        JSON.stringify(operationParameters.value),
                         password,
                         selectedParentHash,
                         operationParameters.entrypoint,
                         TezosParameterFormat.Micheline
                     )
                 );
+
+                if (!!operationResult) {
+                    onClose();
+                }
+
                 // TODO: ledger
             } else {
                 dispatch(sendTezThunk(password, destination, formattedAmount, operationState.fee));
@@ -137,7 +149,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             }
         } catch (e) {
             console.log('Transaction.Error', e);
-            dispatch(setBeaconLoading());
+            dispatch(setBeaconLoading(false));
         }
     };
 
@@ -202,23 +214,38 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {operationDetails.length > 1 && <h3>{t('components.Beacon.authorization.title_plural')}</h3>}
                             <h4>Network: {network.type}</h4>
                             <p className="linkAddress">{website}</p>
-                            <p>
-                                {appMetadata.name} is requesting to send a transaction of{' '}
-                                <strong>{new BigNumber(operationDetails[0].amount).dividedBy(1_000_000).toNumber().toFixed(6)}</strong> <strong>XTZ</strong> to{' '}
-                                <strong>{operationDetails[0].destination}</strong> {`${isContract ? 'with the following parameters:' : ' '}`}
-                            </p>
+                            {!isContract && (
+                                <p>
+                                    {appMetadata.name} is requesting a transaction of{' '}
+                                    <strong>{new BigNumber(operationDetails[0].amount).dividedBy(utez).toNumber().toFixed(6)}</strong>
+                                    <strong>XTZ</strong> to <strong>{operationDetails[0].destination}</strong>
+                                </p>
+                            )}
+                            {isContract && (
+                                <p>
+                                    {appMetadata.name} is requesting a contract call to the <strong>{operationParameters.entrypoint}</strong> function of{' '}
+                                    <strong>{operationDetails[0].destination}</strong>
+                                    {new BigNumber(operationDetails[0].amount).toNumber() !== 0 && (
+                                        <span>
+                                            {' '}
+                                            with <strong>{new BigNumber(operationDetails[0].amount).dividedBy(utez).toNumber().toFixed(6)}</strong>{' '}
+                                            <strong>XTZ</strong> and{' '}
+                                        </span>
+                                    )}
+                                    {new BigNumber(operationDetails[0].amount).toNumber() === 0 && <span> with </span>}
+                                    the following parameters: <strong>{JSON.stringify(operationParameters.value)}</strong>
+                                </p>
+                            )}
+
                             {isContract && (
                                 <div>
-                                    {operationParameters.entrypoint && <div>Contract Function: {operationParameters.entrypoint}</div>}
-                                    {operationParameters.value && <div>Parameters: {operationParameters.value}</div>}
-                                    <p className="subtitleText">To see more parameters, view the operation details below</p>
-                                    <p className="fontWeight400">Operations</p>
+                                    <p className="inputLabel">Raw Operation Content</p>
                                     <textarea className="inputField">{JSON.stringify(operationDetails[0], null, 2)}</textarea>
                                 </div>
                             )}
-                            <div className="fee">
+                            <div className="feeContainer">
                                 <Fees
-                                    low={newFees.low}
+                                    low={isContract ? fee : newFees.low}
                                     medium={newFees.medium}
                                     high={newFees.high}
                                     fee={operationState.fee}

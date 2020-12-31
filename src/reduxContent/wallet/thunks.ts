@@ -187,7 +187,7 @@ export function syncTokenThunk(tokenAddress) {
             let detailsAsync;
             let ovenAddresses: string[] = [];
 
-            if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtz) {
+            if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtz || tokens[tokenIndex].kind === TokenKind.ethtz) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
@@ -212,14 +212,9 @@ export function syncTokenThunk(tokenAddress) {
                 const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
-                detailsAsync = new Promise((resolve) => {
-                    resolve({
-                        helpLink: 'https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs',
-                    });
-                });
+                detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
 
                 const coreContractAddress = vaultToken.vaultCoreAddress;
-
                 const vaultListBigMapId = vaultToken.vaultRegistryMapId;
                 const serverInfo: ConseilServerInfo = {
                     url: mainNode.conseilUrl,
@@ -300,7 +295,7 @@ export function syncWalletThunk() {
         const newTokens = await Promise.all(
             tokens.map(async (token) => {
                 console.log('processing token', token);
-                if (token.kind === TokenKind.tzip7 || token.kind === TokenKind.usdtz) {
+                if (token.kind === TokenKind.tzip7 || token.kind === TokenKind.usdtz || token.kind === TokenKind.ethtz) {
                     try {
                         const validCode = await Tzip7ReferenceTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
                         if (!validCode) {

@@ -1,13 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
-import { TezosConseilClient, TezosNodeReader, OperationKindType, Signer, TezosMessageUtils } from 'conseiljs';
+import {
+    TezosConseilClient,
+    TezosNodeReader,
+    TezosNodeWriter,
+    OperationKindType,
+    TezosMessageUtils,
+    TezosParameterFormat,
+    KeyStore,
+    KeyStoreCurve,
+    KeyStoreType,
+} from 'conseiljs';
 import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
 import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
-import { WalletClient } from '@airgap/beacon-sdk';
 
-import { setModalOpen, setModalValue } from '../../reduxContent/modal/actions';
-import { AppState } from '../../types/store';
-import { changeAccountAction, addNewVersionAction, showSignVerifyAction, setSignerAction } from './actions';
+import { changeAccountAction, addNewVersionAction, setSignerAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
 import { getVersionFromApi } from '../../utils/general';
@@ -24,12 +31,20 @@ interface FetchFees {
     isRevealed: boolean;
 }
 
+interface OperationEstimate {
+    gas: number;
+    storage: number;
+    fee: number;
+}
+
 const initialFeesState: FetchFees = {
     newFees: AVERAGEFEES,
     isFeeLoaded: false,
     miniFee: OPERATIONFEE,
     isRevealed: true,
 };
+
+const minimumOperationEstimate: OperationEstimate = { gas: 20_000, storage: 0, fee: 2_500 };
 
 export const useFetchFees = (operationKind: OperationKindType, isReveal: boolean = false, isManager: boolean = false): FetchFees => {
     const [state, setState] = useState<FetchFees>(initialFeesState);
@@ -79,6 +94,64 @@ export const useFetchFees = (operationKind: OperationKindType, isReveal: boolean
         fetchFeesData();
     }, []);
     return { newFees, isFeeLoaded, miniFee, isRevealed };
+};
+
+/**
+ * Calls the dry_run RPC endpoint to estimate a contract invocation operation.
+ *
+ * @param contractAddress Address of the contract to be called, KT1...
+ * @param amount Amount in µtz to include in the operation
+ * @param entryPoint Contract entry point to call
+ * @param parameters Parameters to pass to the contract
+ * @param parameterFormat Parameter format
+ */
+export const estimateContractCall = (
+    accountAddress: string,
+    contractAddress: string,
+    amount: number,
+    entryPoint: string,
+    parameters: string,
+    parameterFormat: TezosParameterFormat = TezosParameterFormat.Micheline
+): OperationEstimate => {
+    const store = useStore<RootState>();
+    const [state, setState] = useState<OperationEstimate>(minimumOperationEstimate);
+    const { gas, storage, fee } = state;
+    const emptyKeyStore: KeyStore = { publicKey: '', secretKey: '', publicKeyHash: '', curve: KeyStoreCurve.ED25519, storeType: KeyStoreType.Mnemonic };
+
+    useEffect(() => {
+        const estimateInvocation = async () => {
+            try {
+                const { selectedNode, nodesList } = store.getState().settings;
+                const { tezosUrl } = getMainNode(nodesList, selectedNode);
+
+                const estimate = await TezosNodeWriter.testContractInvocationOperation(
+                    tezosUrl,
+                    'main',
+                    { ...emptyKeyStore, publicKeyHash: accountAddress },
+                    contractAddress,
+                    amount,
+                    500_000,
+                    20_000,
+                    1_040_000,
+                    entryPoint,
+                    parameters,
+                    parameterFormat
+                );
+
+                setState({
+                    gas: estimate.gas,
+                    storage: estimate.storageCost,
+                    fee: Math.ceil(estimate.gas / 10 + 500), // TODO: 500 should be a settings item – "bakerVig"
+                });
+            } catch (e) {
+                console.log('estimateContractCall failed with ', e);
+            }
+        };
+
+        estimateInvocation();
+    }, []);
+
+    return { gas, storage, fee };
 };
 
 export function changeAccountThunk(accountHash: string, parentHash: string, accountIndex: number, parentIndex: number, addressType: AddressType) {

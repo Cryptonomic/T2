@@ -130,7 +130,6 @@ function BalanceBanner(props: Props) {
                 <AddressInfo>
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} />
                     <Gap />
-
                     {isReady || storeType === Mnemonic ? (
                         <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
                     ) : null}

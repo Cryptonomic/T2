@@ -1,12 +1,7 @@
-const electron = require('electron');
+const { app, ipcMain, Menu, BrowserWindow, protocol } = require('electron');
 const os = require('os');
 
 const { helpUrl } = require('./config.json');
-
-const { ipcMain } = electron;
-const app = electron.app;
-const Menu = electron.Menu;
-const BrowserWindow = electron.BrowserWindow;
 
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
@@ -69,7 +64,8 @@ app.on('open-url', (event, url) => {
     openCustomProtocol(url, mainWindow);
 });
 
-app.setAsDefaultProtocolClient('galleon');
+app.setAsDefaultProtocolClient('tezori');
+app.setAsDefaultProtocolClient('tezos');
 
 app.on('ready', async () => {
     if (isDevelopment) {

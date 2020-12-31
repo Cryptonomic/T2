@@ -8,10 +8,20 @@ import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
 
 import beaconIntegration from '../../../resources/imgs/beacon-integration.svg';
-import beaconDexter from '../../../resources/imgs/beacon-dexter.svg';
 import Loader from '../../components/Loader';
 import { RootState } from '../../types/store';
-import { ModalWrapper, ModalContainer, CloseIconWrapper, ModalTitle, BeaconNotConnected, BeaconConnected, BeaconInfoContainer } from '../style';
+import {
+    AddressInfoLink,
+    ModalWrapper,
+    ModalContainer,
+    CloseIconWrapper,
+    ModalTitle,
+    BeaconNotConnected,
+    BeaconConnected,
+    BeaconInfoContainer,
+} from '../style';
+
+import { openLink } from '../../utils/general';
 
 export const PromptContainer = styled.div`
     align-items: center;
@@ -94,7 +104,10 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                                 <p className="message">You haven’t connected to any dApps yet.</p>
                                 <p className="info">
                                     Beacon allows you interact with web-based dApps using your Tezos account. Once you start making connections with dApps that
-                                    support Beacon, they will show up here! Learn More
+                                    support Beacon, they will show up here!{' '}
+                                    <AddressInfoLink href="#" onClick={() => openLink('https://www.walletbeacon.io/')}>
+                                        Learn more
+                                    </AddressInfoLink>
                                 </p>
                                 <img className="img" src={beaconIntegration} />
                             </BeaconNotConnected>

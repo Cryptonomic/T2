@@ -33,20 +33,28 @@ interface Props {
     size: string;
     text?: string;
     color2?: string;
+    shorten?: boolean;
+    displayName?: string;
 }
 
 const TezosAddress = (props: Props) => {
-    const { address, weight, size, color, text, color2 } = props;
+    const { address, weight, size, color, text, color2, shorten } = props;
 
     if (!address) {
-        return  <span/>;
+        return <span />;
+    }
+
+    const addressType = address.slice(0, 3);
+    let addressTail = address.slice(3);
+    if (shorten) {
+        addressTail = `${address.slice(3, 6)}...${address.slice(address.length - 6, address.length)}`;
     }
 
     return (
         <Address weight={weight} color={color} size={size}>
             <span>
-                <FirstPart color={color2 || color}>{address.slice(0, 3)}</FirstPart>
-                <SecondPart>{address.slice(3)}</SecondPart>
+                <FirstPart color={color2 || color}>{addressType}</FirstPart>
+                <SecondPart>{addressTail}</SecondPart>
             </span>
             {text && <CopyIcon text={text} color={color} />}
         </Address>

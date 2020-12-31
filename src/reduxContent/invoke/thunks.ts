@@ -45,6 +45,20 @@ export function invokeAddressThunk(
 
         const realEntryPoint = entryPoint !== '' ? entryPoint : undefined;
 
+        const estimate = await TezosNodeWriter.testContractInvocationOperation(
+            tezosUrl,
+            'main',
+            keyStore,
+            contractAddress,
+            parsedAmount,
+            fee,
+            storage,
+            gas,
+            realEntryPoint,
+            parameters,
+            parameterFormat
+        );
+
         const res: any = await sendContractInvocationOperation(
             tezosUrl,
             signer,
@@ -52,8 +66,8 @@ export function invokeAddressThunk(
             contractAddress,
             parsedAmount,
             fee,
-            storage,
-            gas,
+            estimate.storageCost,
+            estimate.gas,
             realEntryPoint,
             parameters,
             parameterFormat

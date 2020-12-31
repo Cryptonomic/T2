@@ -41,7 +41,6 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
         } else if (mintPattern.test(params)) {
             try {
                 const parts = params.match(mintPattern);
-                console.log(`added mint as: `, transaction);
                 return createTokenTransaction({
                     ...transaction,
                     status: transaction.status !== 'applied' ? status.FAILED : status.READY,
@@ -70,7 +69,6 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
             }
         } else if (pausePatternFalse.test(params) || pausePatternTrue.test(params)) {
             const parts = params.match(burnPattern);
-            console.log(`added pause as: `, transaction);
             return createTokenTransaction({
                 ...transaction,
                 status: transaction.status !== 'applied' ? status.FAILED : status.READY,
