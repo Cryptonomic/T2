@@ -20,7 +20,8 @@ const NumericInput = (props: Props) => {
     const { symbol, amount, label, errorText, onChange, precision, maxValue, minValue } = props;
 
     function validateInput(text: string) {
-        const n = new BigNumber(text).toNumber();
+        const b = new BigNumber(text);
+        const n = b.toNumber();
 
         if (minValue !== undefined && minValue > n) {
             // TODO: show error
@@ -32,12 +33,12 @@ const NumericInput = (props: Props) => {
             return;
         }
 
-        onChange(n.toFixed(precision));
+        onChange(b.toFormat(precision));
     }
 
     return (
         <NumericInputContainer>
-            <TextField label={label} value={amount} onChange={t => validateInput(t)} type="number" errorText={errorText} />
+            <TextField label={label} value={amount} onChange={(t) => validateInput(t)} type="number" errorText={errorText} />
             {!symbol ? <TezosIconInput color="secondary" iconName="tezos" /> : <SymbolTxt>{symbol}</SymbolTxt>}
         </NumericInputContainer>
     );
