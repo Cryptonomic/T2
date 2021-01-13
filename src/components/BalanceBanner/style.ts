@@ -51,15 +51,15 @@ export const Gap = styled.div`
     width: 10px;
 `;
 
-export const Delegate = styled.span`
-    color: ${({ theme: { colors } }) => colors.white};
-    font-size: ${ms(-1)};
-    font-weight: 100;
-    margin-right: 6px;
+export const DelegateName = styled.span`
+    font-weight: 500;
+    margin-left: 3px;
+    margin-right: 3px;
 `;
 
 export const DelegateContainer = styled.div`
     display: flex;
+    font-weight: 100;
 `;
 
 export const Breadcrumbs = styled.div`
@@ -162,12 +162,8 @@ export const TooltipContent = styled.div`
 `;
 
 export const LinkContainer = styled.div`
-    color: ${({ theme: { colors } }) => colors.white};
-    font-size: ${ms(-1)};
-    font-weight: 100;
     cursor: pointer;
     display: inline-block;
-    margin-left: 6px;
 `;
 
 export const LinkIcon = styled(TezosIcon)`
