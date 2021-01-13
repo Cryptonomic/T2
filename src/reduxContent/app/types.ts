@@ -16,6 +16,7 @@ export const SET_SIGNER = 'SET_SIGNER';
 export const SET_BEACON_MESSAGE = 'SET_BEACON_MESSAGE';
 export const SET_BEACON_LOADING = 'SET_BEACON_LOADING';
 export const SET_BEACON_CLIENT = 'SET_BEACON_CLIENT';
+export const SET_LAUNCH_URL = 'SET_LAUNCH_URL';
 
 export interface SetBeaconClientAction {
     type: typeof SET_BEACON_CLIENT;
@@ -81,6 +82,11 @@ export interface UpdateFetchedTimeAction {
     time: any;
 }
 
+export interface SetLaunchUrlAction {
+    type: typeof SET_LAUNCH_URL;
+    url: string;
+}
+
 export interface ChangeAccountType {
     selectedAccountHash: string;
     selectedParentHash: string;
@@ -112,4 +118,5 @@ export type AppActionTypes =
     | SetSignerAction
     | SetBeaconClientAction
     | SetBeaconMessageAction
-    | SetBeaconLoadingAction;
+    | SetBeaconLoadingAction
+    | SetLaunchUrlAction;

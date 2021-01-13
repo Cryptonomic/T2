@@ -11,7 +11,7 @@ const openCustomProtocol = (url, appWindow) => {
     }
 
     if (currentURL[1] === '/login') {
-        appWindow.webContents.send('login', 'Please open a wallet and try the request again');
+        appWindow.webContents.send('login', 'Please open a wallet to continue', url); // TODO: localization
         return;
     }
 
@@ -22,6 +22,10 @@ const openCustomProtocol = (url, appWindow) => {
 
 ipcMain.on('os-platform', (event) => {
     event.returnValue = os.platform();
+});
+
+ipcMain.on('wallet', (event, data) => {
+    event.sender.send('wallet', data);
 });
 
 let mainWindow = null;
@@ -64,6 +68,7 @@ app.on('open-url', (event, url) => {
     openCustomProtocol(url, mainWindow);
 });
 
+app.setAsDefaultProtocolClient('galleon');
 app.setAsDefaultProtocolClient('tezori');
 app.setAsDefaultProtocolClient('tezos');
 

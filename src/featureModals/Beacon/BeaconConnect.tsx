@@ -39,7 +39,7 @@ export const BeaconConnect = () => {
             }
 
             if (connection.id !== modalValues.beaconRegistration.publicKey) {
-                dispatch(createMessageAction('Beacon connection not match', true));
+                dispatch(createMessageAction('Beacon connection id did not match', true));
                 return;
             }
 
@@ -51,7 +51,7 @@ export const BeaconConnect = () => {
             console.log('Beacon.OperationRequest', message);
 
             if (message.sourceAddress !== selectedAccountHash) {
-                dispatch(createMessageAction('Beacon address not match', true));
+                dispatch(createMessageAction('Beacon address did not match', true));
                 return;
             }
 
@@ -61,7 +61,7 @@ export const BeaconConnect = () => {
             }
 
             if (!message.operationDetails.length) {
-                dispatch(createMessageAction('Beacon key not match', true));
+                dispatch(createMessageAction('Beacon key did not match', true));
                 return;
             }
 
