@@ -51,6 +51,14 @@ function App() {
             console.log('ipcRenderer/login', args);
             if (Array.isArray(args)) {
                 console.log(`ipcRenderer/login parsed`, args[1]);
+            } else if (args.split(',').length > 1) {
+                console.log(
+                    `ipcRenderer/login split`,
+                    args
+                        .split(',')
+                        .map((s) => s.trim())
+                        .map((ss) => `"${ss}"`)
+                );
             } else {
                 console.log(`ipcRenderer/login unparsed`, args);
             }
