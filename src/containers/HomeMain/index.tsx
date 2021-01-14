@@ -27,6 +27,7 @@ function HomeMain() {
     const launchUrl = useSelector((state: RootState) => state.app.launchUrl);
 
     useEffect(() => {
+        console.log('HomeMain', launchUrl);
         if (launchUrl) {
             ipcRenderer.send('wallet', launchUrl);
             dispatch(setLaunchUrl(''));
