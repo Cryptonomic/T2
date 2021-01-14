@@ -48,9 +48,11 @@ function App() {
         ipcRenderer.on('login', (event, msg, args) => {
             dispatch(createMessageAction(msg, true));
 
+            let param = '';
             console.log('ipcRenderer/login', args);
             if (Array.isArray(args)) {
                 console.log(`ipcRenderer/login parsed`, args[1]);
+                param = args[1];
             } else if (args.split(',').length > 1) {
                 console.log(
                     `ipcRenderer/login split`,
@@ -59,12 +61,14 @@ function App() {
                         .map((s) => s.trim())
                         .map((ss) => `"${ss}"`)
                 );
+                param = args.split(',').map((s) => s.trim())[1];
             } else {
                 console.log(`ipcRenderer/login unparsed`, args);
+                param = args;
             }
 
-            if (args !== undefined) {
-                dispatch(setLaunchUrl(args));
+            if (param.length > 0) {
+                dispatch(setLaunchUrl(param));
             }
         });
 
