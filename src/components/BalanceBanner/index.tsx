@@ -14,6 +14,7 @@ import { AddressType } from '../../types/general';
 import keyIconSvg from '../../../resources/imgs/Key_Icon.svg';
 import { ms } from '../../styles/helpers';
 import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
+import { getBakerDetails } from '../../reduxContent/app/thunks';
 
 import { RootState } from '../../types/store';
 
@@ -26,7 +27,7 @@ import {
     AddressTitle,
     AddressTitleIcon,
     AddressInfo,
-    Delegate,
+    DelegateName,
     DelegateContainer,
     Breadcrumbs,
     KeyIconButton,
@@ -62,6 +63,8 @@ function BalanceBanner(props: Props) {
     const parentIndex = selectedParentIndex + 1;
 
     const [isShowKey, setIsShowKey] = useState(false);
+
+    const { name } = getBakerDetails(String(delegatedAddress));
 
     let addressLabel = '';
     switch (selectedAccountType) {
@@ -136,8 +139,9 @@ function BalanceBanner(props: Props) {
                 </AddressInfo>
                 {delegatedAddress && (
                     <DelegateContainer>
-                        <Delegate>{t('components.balanceBanner.delegated_to')}</Delegate>
-                        <TezosAddress address={delegatedAddress} color="white" size={ms(-1)} weight={300} />
+                        <>{t('components.balanceBanner.delegated_to')}</>
+                        {name && <DelegateName>{name}</DelegateName>}
+                        {!name && <TezosAddress address={delegatedAddress} color="white" size={ms(-1)} weight={300} />}
                         <LinkContainer onClick={() => openHarpoonUrl()}>
                             view baker details on Harpoon
                             <LinkIcon iconName="new-window" color="white" />

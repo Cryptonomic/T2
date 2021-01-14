@@ -51,12 +51,6 @@ export const Gap = styled.div`
     width: 10px;
 `;
 
-export const Delegate = styled.span`
-    font-weight: 500;
-    margin-left: 3px;
-    margin-right: 3px;
-`;
-
 export const DelegateName = styled.span`
     font-weight: 500;
     margin-left: 3px;

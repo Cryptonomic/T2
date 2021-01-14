@@ -46,6 +46,7 @@ function App() {
         dispatch(getNewVersionThunk());
 
         ipcRenderer.on('login', (event, msg, args) => {
+            console.log('ipcRenderer/login', args);
             dispatch(createMessageAction(msg, true));
             if (args !== undefined) {
                 dispatch(setLaunchUrl(args));

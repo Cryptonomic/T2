@@ -1,4 +1,4 @@
-const { app, ipcMain, Menu, BrowserWindow, protocol } = require('electron');
+const { app, ipcMain, Menu, BrowserWindow, protocol, shell } = require('electron');
 const os = require('os');
 
 const { helpUrl } = require('./config.json');
@@ -144,7 +144,7 @@ app.on('ready', async () => {
                     if (!helpUrl.startsWith('https://')) {
                         throw new Error('Invalid URL provided, only https scheme is accepted');
                     }
-                    await electron.shell.openExternal(helpUrl);
+                    await shell.openExternal(helpUrl);
                 },
             },
         ],
