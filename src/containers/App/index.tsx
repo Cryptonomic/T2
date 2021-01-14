@@ -46,8 +46,15 @@ function App() {
         dispatch(getNewVersionThunk());
 
         ipcRenderer.on('login', (event, msg, args) => {
-            console.log('ipcRenderer/login', args);
             dispatch(createMessageAction(msg, true));
+
+            console.log('ipcRenderer/login', args);
+            if (Array.isArray(args)) {
+                console.log(`ipcRenderer/login parsed`, args[1]);
+            } else {
+                console.log(`ipcRenderer/login unparsed`, args);
+            }
+
             if (args !== undefined) {
                 dispatch(setLaunchUrl(args));
             }
