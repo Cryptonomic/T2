@@ -12,5 +12,6 @@
     "ledgerAppUrl": "https://support.ledger.com/hc/en-us/articles/360016057774-Tezos-XTZ-",
     "ledgerReferral": "",
     "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/master/version.json",
-    "logLevel": "debug"
+    "logLevel": "debug",
+    "customProtocols": ["tezori", "tezos"]
 }

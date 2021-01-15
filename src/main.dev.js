@@ -1,21 +1,16 @@
-const { app, ipcMain, Menu, BrowserWindow, protocol, shell } = require('electron');
+const { app, ipcMain, Menu, BrowserWindow, shell } = require('electron');
 const os = require('os');
 
-const { helpUrl } = require('./config.json');
+const { helpUrl, customProtocols } = require('./config.json');
 
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
 
     if (!currentURL) {
         return;
-    }
-
-    if (currentURL[1] === '/login') {
+    } else if (currentURL[1] === '/login') {
         appWindow.webContents.send('login', 'Please open a wallet to continue', url); // TODO: localization
-        return;
-    }
-
-    if (currentURL[1] === '/home/main') {
+    } else if (currentURL[1] === '/home/main') {
         appWindow.webContents.send('wallet', url);
     }
 };
@@ -36,6 +31,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const isMac = process.platform === 'darwin';
+const isWindows = process.platform === 'win32';
 const isDevelopment = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDevelopment) {
@@ -50,16 +46,8 @@ const installExtensions = async () => {
     return Promise.all(extensions.map((name) => installer.default(installer[name], forceDownload))).catch();
 };
 
-/**
- * Add event listeners...
- */
-
 app.on('window-all-closed', () => {
-    // Respect the OSX convention of having the application in memory even
-    // after all windows have been closed
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
+    app.quit();
 });
 
 app.on('open-url', (event, url) => {
@@ -68,9 +56,7 @@ app.on('open-url', (event, url) => {
     openCustomProtocol(url, mainWindow);
 });
 
-app.setAsDefaultProtocolClient('galleon');
-app.setAsDefaultProtocolClient('tezori');
-app.setAsDefaultProtocolClient('tezos');
+customProtocols.map((s) => app.setAsDefaultProtocolClient(s));
 
 app.on('ready', async () => {
     if (isDevelopment) {
@@ -163,10 +149,27 @@ app.on('ready', async () => {
         width: 1120,
     });
 
+    if (!app.requestSingleInstanceLock()) {
+        app.quit();
+    } else {
+        app.on('second-instance', (event, argv) => {
+            if (mainWindow) {
+                if (mainWindow.isMinimized()) {
+                    mainWindow.restore();
+                }
+                mainWindow.focus();
+
+                const protocolUrls = argv.filter((s) => customProtocols.map((p) => s.startsWith(p)).reduce((a, c) => a || c));
+                if (protocolUrls && protocolUrls.length > 0) {
+                    openCustomProtocol(protocolUrls[0], mainWindow);
+                }
+            }
+        });
+    }
+
     mainWindow.loadURL(`file://${__dirname}/app.html`);
 
     // @TODO: Use 'ready-to-show' event
-    //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
     mainWindow.webContents.on('did-finish-load', () => {
         if (!mainWindow) {
             throw new Error('"mainWindow" is not defined');
@@ -180,8 +183,15 @@ app.on('ready', async () => {
         }
     });
 
-    if (process.platform === 'win32') {
+    if (isMac) {
+        //
+    } else if (isWindows) {
         openCustomProtocol(process.argv.slice(1), mainWindow);
+    } else {
+        const protocolUrls = process.argv.filter((s) => customProtocols.map((p) => s.startsWith(p)).reduce((a, c) => a || c));
+        if (protocolUrls && protocolUrls.length > 0) {
+            openCustomProtocol(protocolUrls[0], mainWindow);
+        }
     }
 
     mainWindow.on('closed', () => {
