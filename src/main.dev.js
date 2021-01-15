@@ -9,7 +9,7 @@ const openCustomProtocol = (url, appWindow) => {
     if (!currentURL) {
         return;
     } else if (currentURL[1] === '/login') {
-        appWindow.webContents.send('login', 'Please open a wallet to continue', url); // TODO: localization
+        appWindow.webContents.send('login', 'Please open a wallet and retry the operation', url); // TODO: localization
     } else if (currentURL[1] === '/home/main') {
         appWindow.webContents.send('wallet', url);
     }
