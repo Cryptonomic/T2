@@ -141,7 +141,10 @@ function BalanceBanner(props: Props) {
                     <DelegateContainer>
                         <>{t('components.balanceBanner.delegated_to')}</>
                         {name && <DelegateName>{name}</DelegateName>}
-                        {!name && <TezosAddress address={delegatedAddress} color="white" size={ms(-1)} weight={300} />}
+                        {!name && 
+                            <span style={{marginLeft: "3px", marginRight: "3px"}}>
+                                <TezosAddress address={delegatedAddress} color="white" size={ms(0)} weight={400} />
+                            </span>}
                         <LinkContainer onClick={() => openHarpoonUrl()}>
                             view baker details on Harpoon
                             <LinkIcon iconName="new-window" color="white" />
