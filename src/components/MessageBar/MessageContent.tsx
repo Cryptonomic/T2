@@ -141,7 +141,7 @@ const MessageContent = (props: Props) => {
                         width: '15px',
                         height: '15px',
                         position: 'relative',
-                        top: '3px',
+                        top: '0px',
                     }}
                 />
             </MessageHeader>

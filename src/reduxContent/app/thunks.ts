@@ -182,10 +182,16 @@ const queryBakingBad = async (address: string): Promise<BakingBadInfo> => {
         const responseJSON = await response.json();
 
         if (responseJSON.error !== undefined && responseJSON.error.length > 0) {
-            throw new Error('');
+            throw new Error(`BakingBad failed with ${responseJSON.error} for ${address}`);
         }
 
-        return { address, name: responseJSON.name, fee: responseJSON.fee, logoUrl: responseJSON.logo || '', estimatedRoi: responseJSON.estimatedRoi };
+        return {
+            address,
+            name: responseJSON.name,
+            fee: responseJSON.fee,
+            logoUrl: responseJSON.logo || '',
+            estimatedRoi: responseJSON.estimatedRoi,
+        };
         // TODO: freeSpace, minDelegation, fee
     } catch (e) {
         console.log('queryBakingBad failed with ', e);
@@ -212,11 +218,15 @@ const queryHarpoon = async (accountAddress: string): Promise<HarpoonInfo> => {
         });
         const responseJSON = await response.json();
 
-        return {
-            address: accountAddress,
-            grade: String(responseJSON[0].grade),
-            cycle: Number(responseJSON[0].cycle),
-        };
+        if (Array.isArray(responseJSON) && responseJSON.length > 0) {
+            return {
+                address: accountAddress,
+                grade: String(responseJSON[0].grade),
+                cycle: Number(responseJSON[0].cycle),
+            };
+        } else {
+            throw new Error(`Empty response from Harpoon for ${JSON.stringify(query)}`);
+        }
     } catch (e) {
         console.log('queryHarpoon failed with ', e);
         return { address: accountAddress, grade: '', cycle: 0 };
@@ -229,13 +239,13 @@ export const getBakerDetails = (accountAddress: string): BakerInfo => {
 
     useEffect(() => {
         const getData = async () => {
-            const harpoonResponse = await queryHarpoon(accountAddress);
+            // const harpoonResponse = await queryHarpoon(accountAddress);
             const bakingbadResponse = await queryBakingBad(accountAddress);
 
             setState({
                 address: accountAddress,
                 name: bakingbadResponse.name,
-                grade: harpoonResponse.grade,
+                grade: '', // harpoonResponse.grade,
             });
         };
 
