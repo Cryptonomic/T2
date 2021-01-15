@@ -81,7 +81,7 @@ function App() {
             const pathname = urlProps.pathname.slice(2);
             const searchParams = urlProps.searchParams;
 
-            if (pathname.length === 0 && searchParams.has('type') && searchParams.get('type') === 'tzip10') {
+            if (searchParams.has('type') && searchParams.get('type') === 'tzip10') {
                 const beaconRequest = searchParams.get('data') || '';
                 dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconRegistration'));
                 dispatch(setModalOpen(true, 'beaconRegistration'));
