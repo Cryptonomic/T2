@@ -45,6 +45,10 @@ function App() {
     useEffect(() => {
         dispatch(getNewVersionThunk());
 
+        ipcRenderer.on('showMessage', (event, msg) => {
+            dispatch(createMessageAction(msg, false));
+        });
+
         ipcRenderer.on('login', (event, msg, args) => {
             dispatch(createMessageAction(msg, true));
 
