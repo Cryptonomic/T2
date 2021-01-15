@@ -1,10 +1,12 @@
-import React from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+const { ipcRenderer } = require('electron');
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+
 import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
 
 import { BeaconConnect } from '../../featureModals/Beacon/BeaconConnect';
-
+import { setLaunchUrl } from '../../reduxContent/app/actions';
 import AddressBlock from '../../components/AddressBlock';
 import BabylonDelegation from '../../contracts/BabylonDelegation';
 import GenericContract from '../../contracts/GenericContract';
@@ -18,8 +20,19 @@ import { sortArr } from '../../utils/array';
 import { Container, SideBarContainer, AccountItem } from './style';
 
 function HomeMain() {
+    const dispatch = useDispatch();
+
     const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
     const addressType = useSelector((state: RootState) => state.app.selectedAccountType);
+    const launchUrl = useSelector((state: RootState) => state.app.launchUrl);
+
+    useEffect(() => {
+        console.log('HomeMain', launchUrl);
+        if (launchUrl) {
+            ipcRenderer.send('wallet', launchUrl);
+            dispatch(setLaunchUrl(''));
+        }
+    }, []);
 
     function renderView() {
         switch (addressType) {

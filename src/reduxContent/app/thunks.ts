@@ -24,6 +24,8 @@ import { LocalVersionIndex } from '../../config.json';
 import { AverageFees, AddressType } from '../../types/general';
 import { RootState } from '../../types/store';
 
+import { fetchWithTimeout } from '../../utils/network';
+
 interface FetchFees {
     newFees: AverageFees;
     isFeeLoaded: boolean;
@@ -43,6 +45,26 @@ const initialFeesState: FetchFees = {
     miniFee: OPERATIONFEE,
     isRevealed: true,
 };
+
+export interface BakingBadInfo {
+    address: string;
+    name: string;
+    fee: number;
+    logoUrl: string;
+    estimatedRoi: number;
+}
+
+export interface HarpoonInfo {
+    address: string;
+    grade: string;
+    cycle: number;
+}
+
+export interface BakerInfo {
+    address: string;
+    name: string;
+    grade: string;
+}
 
 const minimumOperationEstimate: OperationEstimate = { gas: 20_000, storage: 0, fee: 2_500 };
 
@@ -141,7 +163,7 @@ export const estimateContractCall = (
                 setState({
                     gas: estimate.gas,
                     storage: estimate.storageCost,
-                    fee: Math.ceil(estimate.gas / 10 + 500), // TODO: 500 should be a settings item – "bakerVig"
+                    fee: Math.ceil(estimate.gas / 10 + 500), // TODO: 500 should be a settings item – "bakerVig", account for operation size
                 });
             } catch (e) {
                 console.log('estimateContractCall failed with ', e);
@@ -152,6 +174,85 @@ export const estimateContractCall = (
     }, []);
 
     return { gas, storage, fee };
+};
+
+const queryBakingBad = async (address: string): Promise<BakingBadInfo> => {
+    try {
+        const response = await fetchWithTimeout(`https://api.baking-bad.org/v2/bakers/${address}`, { timeout: 5000 });
+        const responseJSON = await response.json();
+
+        if (responseJSON.error !== undefined && responseJSON.error.length > 0) {
+            throw new Error(`BakingBad failed with ${responseJSON.error} for ${address}`);
+        }
+
+        return {
+            address,
+            name: responseJSON.name,
+            fee: responseJSON.fee,
+            logoUrl: responseJSON.logo || '',
+            estimatedRoi: responseJSON.estimatedRoi,
+        };
+        // TODO: freeSpace, minDelegation, fee
+    } catch (e) {
+        console.log('queryBakingBad failed with ', e);
+        return { address, name: '', fee: 0, logoUrl: '', estimatedRoi: 0 };
+    }
+};
+
+const queryHarpoon = async (accountAddress: string): Promise<HarpoonInfo> => {
+    try {
+        const harpoonUrl = 'https://harpoon.arronax.io/info'; // TODO: settings
+
+        const query = {
+            table: 'baker_performance',
+            fields: ['baker', 'cycle', 'grade'],
+            predicates: [{ field: 'baker', op: 'eq', value: [accountAddress] }],
+            orderby: { field: 'cycle', dir: 'desc' },
+        };
+
+        const response = await fetchWithTimeout(harpoonUrl, {
+            method: 'POST',
+            body: JSON.stringify(query),
+            headers: { 'Content-Type': 'application/json' },
+            timeout: 5000,
+        });
+        const responseJSON = await response.json();
+
+        if (Array.isArray(responseJSON) && responseJSON.length > 0) {
+            return {
+                address: accountAddress,
+                grade: String(responseJSON[0].grade),
+                cycle: Number(responseJSON[0].cycle),
+            };
+        } else {
+            throw new Error(`Empty response from Harpoon for ${JSON.stringify(query)}`);
+        }
+    } catch (e) {
+        console.log('queryHarpoon failed with ', e);
+        return { address: accountAddress, grade: '', cycle: 0 };
+    }
+};
+
+export const getBakerDetails = (accountAddress: string): BakerInfo => {
+    const [state, setState] = useState<BakerInfo>({ address: accountAddress, name: '', grade: '' });
+    const { name, grade } = state;
+
+    useEffect(() => {
+        const getData = async () => {
+            // const harpoonResponse = await queryHarpoon(accountAddress);
+            const bakingbadResponse = await queryBakingBad(accountAddress);
+
+            setState({
+                address: accountAddress,
+                name: bakingbadResponse.name,
+                grade: '', // harpoonResponse.grade,
+            });
+        };
+
+        getData();
+    }, []);
+
+    return { address: accountAddress, name, grade };
 };
 
 export function changeAccountThunk(accountHash: string, parentHash: string, accountIndex: number, parentIndex: number, addressType: AddressType) {

@@ -99,7 +99,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
     const { destination, amount, parameters } = operationDetails[0];
-    const operationParameters = parameters || { value: '{prim: "Unit"}', entrypoint: 'default' };
+    const operationParameters = parameters || { value: { prim: 'Unit' }, entrypoint: 'default' };
 
     const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Transaction, true, true);
     const { fee } = estimateContractCall(
@@ -160,8 +160,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     };
 
     const changeFee = (newFee) => {
-        const newAmount = operationState.amount || '0';
-        const numAmount = parseFloat(newAmount) * utez;
+        const float = Number.isNaN(parseFloat(operationState.amount)) ? 0.0 : parseFloat(operationState.amount);
+        const numAmount = float * utez;
         const newTotal = numAmount + newFee + GAS;
         const newBalance = managerBalance - operationState.total;
         updateState({ fee: newFee, total: newTotal, balance: newBalance });

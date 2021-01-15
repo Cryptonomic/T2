@@ -31,6 +31,8 @@ import {
     SetBeaconMessageAction,
     SetBeaconLoadingAction,
     SET_BEACON_LOADING,
+    SET_LAUNCH_URL,
+    SetLaunchUrlAction,
 } from './types';
 import { NodeStatus, AddressType } from '../../types/general';
 
@@ -127,4 +129,11 @@ export function setBeaconMessageAction(
 
 export function setBeaconLoading(beaconLoading: any = null): SetBeaconLoadingAction {
     return { type: SET_BEACON_LOADING, beaconLoading };
+}
+
+export function setLaunchUrl(url: string): SetLaunchUrlAction {
+    return {
+        type: SET_LAUNCH_URL,
+        url,
+    };
 }

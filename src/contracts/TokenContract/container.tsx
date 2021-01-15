@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { BigNumber } from 'bignumber.js';
 
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
@@ -53,7 +52,7 @@ function ActionPanel() {
                     return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
 
-                const processedTransactions = transactions.sort((a, b) => b.timestamp - a.timestamp).filter(e => e);
+                const processedTransactions = transactions.sort((a, b) => b.timestamp - a.timestamp).filter((e) => e);
                 const itemsCount = 5;
                 const pageCount = Math.ceil(processedTransactions.length / itemsCount);
 
@@ -71,7 +70,7 @@ function ActionPanel() {
                                 totalNumber={processedTransactions.length}
                                 firstNumber={firstNumber}
                                 lastNumber={lastNumber}
-                                onClick={val => setCurrentPage(val)}
+                                onClick={(val) => setCurrentPage(val)}
                             />
                         )}
                         {isLoading && <Loader />}
@@ -91,7 +90,7 @@ function ActionPanel() {
             />
 
             <TabList count={tabs.length}>
-                {tabs.map(tab => (
+                {tabs.map((tab) => (
                     <Tab isActive={activeTab === tab} key={tab} ready={true} buttonTheme="plain" onClick={() => onChangeTab(tab)}>
                         <TabText ready={true}>{t(tab)}</TabText>
                     </Tab>

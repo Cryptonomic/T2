@@ -1,3 +1,4 @@
+import { app } from 'electron';
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
@@ -14,6 +15,7 @@ import TopBar from '../../components/TopBar';
 import VersionStatus from '../../components/VersionStatus';
 import MessageBar from '../../components/MessageBar';
 import { createMessageAction } from '../../reduxContent/message/actions';
+import { setLaunchUrl } from '../../reduxContent/app/actions';
 import { setModalOpen, setModalValue, setModalActiveTab } from '../../reduxContent/modal/actions';
 import { getNewVersionThunk } from '../../reduxContent/app/thunks';
 import { getIsNodesSelector } from '../../reduxContent/settings/selectors';
@@ -43,8 +45,35 @@ function App() {
     useEffect(() => {
         dispatch(getNewVersionThunk());
 
-        ipcRenderer.on('login', (event, msg) => {
+        ipcRenderer.on('showMessage', (event, msg) => {
+            dispatch(createMessageAction(msg, false));
+        });
+
+        ipcRenderer.on('login', (event, msg, args) => {
             dispatch(createMessageAction(msg, true));
+
+            let param = '';
+            console.log('ipcRenderer/login', args);
+            if (Array.isArray(args)) {
+                console.log(`ipcRenderer/login parsed`, args[1]);
+                param = args[1];
+            } else if (args.split(',').length > 1) {
+                console.log(
+                    `ipcRenderer/login split`,
+                    args
+                        .split(',')
+                        .map((s) => s.trim())
+                        .map((ss) => `"${ss}"`)
+                );
+                param = args.split(',').map((s) => s.trim())[1];
+            } else {
+                console.log(`ipcRenderer/login unparsed`, args);
+                param = args;
+            }
+
+            if (param.length > 0) {
+                dispatch(setLaunchUrl(param));
+            }
         });
 
         ipcRenderer.on('wallet', (event, url) => {
@@ -52,10 +81,11 @@ function App() {
             const pathname = urlProps.pathname.slice(2);
             const searchParams = urlProps.searchParams;
 
-            if (pathname.length === 0 && searchParams.has('type') && searchParams.get('type') === 'tzip10') {
+            if (searchParams.has('type') && searchParams.get('type') === 'tzip10') {
                 const beaconRequest = searchParams.get('data') || '';
                 dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconRegistration'));
                 dispatch(setModalOpen(true, 'beaconRegistration'));
+                app.focus();
             } else if (['sign', 'auth', 'beaconRegistration', 'beaconEvent'].includes(pathname) && searchParams.has('r')) {
                 const req = searchParams.get('r') || '';
 
@@ -67,6 +97,8 @@ function App() {
                 } else {
                     dispatch(setModalOpen(true, pathname));
                 }
+
+                app.focus();
             }
         });
     }, []);

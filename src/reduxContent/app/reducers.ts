@@ -16,6 +16,7 @@ import {
     SET_BEACON_CLIENT,
     SET_BEACON_MESSAGE,
     SET_BEACON_LOADING,
+    SET_LAUNCH_URL,
 } from './types';
 
 const initState: AppState = {
@@ -39,6 +40,7 @@ const initState: AppState = {
     beaconLoading: false,
     beaconClient: false,
     beaconConnection: null,
+    launchUrl: null,
 };
 
 export function appReducer(state: AppState = initState, action: AppActionTypes) {
@@ -69,6 +71,8 @@ export function appReducer(state: AppState = initState, action: AppActionTypes) 
             return { ...state, beaconMessage: action.beaconMessage, beaconConnection: action.beaconConnection };
         case SET_BEACON_LOADING:
             return { ...state, beaconLoading: action.beaconLoading };
+        case SET_LAUNCH_URL:
+            return { ...state, launchUrl: action.url };
         default:
             return state;
     }
