@@ -133,7 +133,17 @@ const MessageContent = (props: Props) => {
             <StyledCloseIcon onClick={() => onClose()} />
             <MessageHeader isWrap={content !== 'general.errors.no_ledger_detected'}>
                 {!!hash && <CheckIcon iconName="checkmark2" size={ms(0)} color="white" />}
-                {t(content, { localeParam })}
+                {t(content.substring(0, 80), { localeParam })}
+                <CopyBtnWrapper
+                    text={content}
+                    color="white"
+                    iconStyle={{
+                        width: '15px',
+                        height: '15px',
+                        position: 'relative',
+                        top: '3px',
+                    }}
+                />
             </MessageHeader>
 
             {!!hash && (
@@ -147,7 +157,7 @@ const MessageContent = (props: Props) => {
                             width: '15px',
                             height: '15px',
                             position: 'relative',
-                            top: '3px'
+                            top: '3px',
                         }}
                     />
 
