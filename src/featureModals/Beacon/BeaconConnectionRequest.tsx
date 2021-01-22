@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
 
-import { beaconClient } from './BeaconConnect';
+import { beaconClient } from './BeaconMessageRouter';
 import Loader from '../../components/Loader';
 import { RootState, ModalState } from '../../types/store';
 import { getMainNode } from '../../utils/settings';
@@ -45,9 +45,9 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
             const beaconRequest = modalValues[activeModal];
             await beaconClient.addPeer(beaconRequest);
         } catch (e) {
-            console.log('BeaconConnectionRequestError', e);
+            console.log('BeaconConnectionRequest error', e);
             dispatch(setBeaconLoading());
-            dispatch(createMessageAction('Beacon connection request fails', true));
+            dispatch(createMessageAction(`Beacon connection request failed due to ${e.toString()}`, true));
         }
     };
 
