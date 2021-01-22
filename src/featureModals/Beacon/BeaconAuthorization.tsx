@@ -27,7 +27,7 @@ import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
 
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
-import { knownContractNames } from '../../constants/Token';
+import { knownContractNames, knownMarketMetadata } from '../../constants/Token';
 
 export const PromptContainer = styled.div`
     align-items: center;
@@ -72,7 +72,7 @@ const BoldSpan = styled.span`
 
 const defaultState = {
     amount: '',
-    fee: 16_001,
+    fee: 26_501,
     total: 0,
     balance: 0,
 };
@@ -125,6 +125,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
             const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
             if (isContract) {
+                // TODO: errors from here don't always bubble up
                 const operationResult = await dispatch(
                     invokeAddressThunk(
                         destination,
@@ -242,6 +243,36 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 );
             }
 
+            if (transaction.parameters.entrypoint === 'tokenToToken') {
+                const targetToken = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // const targetName = knownContractNames[targetToken] || targetToken;
+                const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
+                const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
+                const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
+                const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                let holderText = '';
+                if (targetHolder === sourceHolder) {
+                    holderText = `for ${targetHolder}`;
+                } else {
+                    holderText = `from ${sourceHolder} to ${targetHolder}`;
+                }
+
+                return (
+                    <>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> ETHtz for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
+                        <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
             return undefined;
         }
 
@@ -274,6 +305,36 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     <>
                         &nbsp;to add <strong>{tokenAmount.toString()}</strong> USDtz to the pool from <strong>{holder}</strong>, expiring on{' '}
                         <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'tokenToToken') {
+                const targetToken = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // const targetName = knownContractNames[targetToken] || targetToken;
+                const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
+                const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
+                const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
+                const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                let holderText = '';
+                if (targetHolder === sourceHolder) {
+                    holderText = `for ${targetHolder}`;
+                } else {
+                    holderText = `from ${sourceHolder} to ${targetHolder}`;
+                }
+
+                return (
+                    <>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> USDtz for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
+                        <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
                     </>
                 );
             }
@@ -314,6 +375,36 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 );
             }
 
+            if (transaction.parameters.entrypoint === 'tokenToToken') {
+                const targetToken = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // const targetName = knownContractNames[targetToken] || targetToken;
+                const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
+                const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
+                const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
+                const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                let holderText = '';
+                if (targetHolder === sourceHolder) {
+                    holderText = `for ${targetHolder}`;
+                } else {
+                    holderText = `from ${sourceHolder} to ${targetHolder}`;
+                }
+
+                return (
+                    <>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> wXTZ for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
+                        <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
             return undefined;
         }
 
@@ -346,6 +437,36 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     <>
                         &nbsp;to add <strong>{tokenAmount.toString()}</strong> tzBTC to the pool from <strong>{holder}</strong>, expiring on{' '}
                         <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'tokenToToken') {
+                const targetToken = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // const targetName = knownContractNames[targetToken] || targetToken;
+                const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
+                const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
+                const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
+                const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('100000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                let holderText = '';
+                if (targetHolder === sourceHolder) {
+                    holderText = `for ${targetHolder}`;
+                } else {
+                    holderText = `from ${sourceHolder} to ${targetHolder}`;
+                }
+
+                return (
+                    <>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> tzBTC for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
+                        <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
                     </>
                 );
             }
