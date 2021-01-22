@@ -20,6 +20,7 @@ import {
 import { RootState, SettingsState } from '../../../../types/store';
 import { getMainNode } from '../../../../utils/settings';
 import { Node } from '../../../../types/general';
+import { knownContractNames } from '../../../../constants/Token';
 
 const AmountContainer = styled.div<{ color: string }>`
     color: ${({ theme: { colors }, color }) => colors[color]};
@@ -180,7 +181,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
             } else if (isSameLocation && !isFlag) {
                 return {
                     icon: 'send',
-                    preposition: t('general.of'),
+                    preposition: '',
                     state: t('components.transaction.invoke_function'),
                     isFee: true,
                     color: isAmount ? 'error1' : 'gray8',
@@ -198,8 +199,8 @@ const getStatus = (transaction, selectedAccountHash, t) => {
             } else {
                 return {
                     icon: 'receive',
-                    preposition: t('general.by'),
-                    state: t('components.transaction.invoked'),
+                    preposition: t('general.from'),
+                    state: t('components.transaction.received'),
                     isFee,
                     color: isAmount ? 'check' : 'gray8',
                     sign: isAmount ? '+' : '',
@@ -210,9 +211,9 @@ const getStatus = (transaction, selectedAccountHash, t) => {
 };
 
 const getAddress = (transaction, selectedAccountHash, selectedParentHash, t) => {
-    const address = transaction.source === selectedAccountHash ? transaction.destination : transaction.source;
-
+    const address = transaction.source === selectedAccountHash ? knownContractNames[transaction.destination] || transaction.destination : transaction.source;
     const type = transaction.kind;
+
     if (type === types.ACTIVATION) {
         return <AddressText>{t('components.transaction.this_address')}</AddressText>;
     }
@@ -240,6 +241,14 @@ const getAddress = (transaction, selectedAccountHash, selectedParentHash, t) => 
 
     if (!address) {
         return null;
+    }
+
+    if (transaction.destination.startsWith('KT1') && transaction.parameters_entrypoints) {
+        return (
+            <>
+                {transaction.parameters_entrypoints} {t('general.of')} {address}
+            </>
+        );
     }
 
     return <TezosAddress address={address} size="14px" weight={200} color="black2" />;

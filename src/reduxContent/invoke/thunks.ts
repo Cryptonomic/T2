@@ -91,7 +91,7 @@ export function invokeAddressThunk(
 
             if (operationResult && operationResult.errors && operationResult.errors.length) {
                 const error = 'components.messageBar.messages.invoke_operation_failed';
-                console.error(operationResult.errors);
+                console.error('invokeAddressThunk failed with', operationResult.errors);
                 dispatch(createMessageAction(error, true));
                 return false;
             }

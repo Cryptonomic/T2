@@ -6,8 +6,9 @@ import { BeaconMessageType, OperationResponseInput } from '@airgap/beacon-sdk';
 import IconButton from '@material-ui/core/IconButton';
 import { BigNumber } from 'bignumber.js';
 import { TezosParameterFormat, OperationKindType } from 'conseiljs';
+import { JSONPath } from 'jsonpath-plus';
 
-import { beaconClient } from './BeaconConnect';
+import { beaconClient } from './BeaconMessageRouter';
 
 import Loader from '../../components/Loader';
 import PasswordInput from '../../components/PasswordInput';
@@ -26,6 +27,7 @@ import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
 
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
+import { knownContractNames, knownMarketMetadata } from '../../constants/Token';
 
 export const PromptContainer = styled.div`
     align-items: center;
@@ -70,7 +72,7 @@ const BoldSpan = styled.span`
 
 const defaultState = {
     amount: '',
-    fee: 2_840,
+    fee: 26_501,
     total: 0,
     balance: 0,
 };
@@ -123,6 +125,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
             const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
             if (isContract) {
+                // TODO: errors from here don't always bubble up
                 const operationResult = await dispatch(
                     invokeAddressThunk(
                         destination,
@@ -183,7 +186,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 dispatch(setBeaconLoading());
                 dispatch(setModalOpen(false, activeModal));
             } catch (e) {
-                dispatch(createMessageAction('Beacon authorization fails', true));
+                dispatch(createMessageAction(`Beacon authorization failed with "${e.message}"`, true));
             }
         };
 
@@ -202,6 +205,358 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 </TooltipContent>
             </TooltipContainer>
         );
+    };
+
+    const contractName = knownContractNames[operationDetails[0].destination] || operationDetails[0].destination;
+
+    const idTransaction = (transaction) => {
+        if (transaction.destination === 'KT19c8n5mWrqpxMcR3J687yssHxotj88nGhZ') {
+            // Dexter ETHtz Pool
+            if (transaction.parameters.entrypoint === 'xtzToToken') {
+                const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> ETHtz at <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'addLiquidity') {
+                const holder = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // TODO: $.args[0].args[1].int liquidity token balance
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to add <strong>{tokenAmount.toString()}</strong> ETHtz to the pool from <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'tokenToToken') {
+                const targetToken = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // const targetName = knownContractNames[targetToken] || targetToken;
+                const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
+                const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
+                const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
+                const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                let holderText = '';
+                if (targetHolder === sourceHolder) {
+                    holderText = `for ${targetHolder}`;
+                } else {
+                    holderText = `from ${sourceHolder} to ${targetHolder}`;
+                }
+
+                return (
+                    <>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> ETHtz for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
+                        <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT1Puc9St8wdNoGtLiD2WXaHbWU7styaxYhD') {
+            // Dexter USDtz Pool
+            if (transaction.parameters.entrypoint === 'xtzToToken') {
+                const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> USDtz at <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'addLiquidity') {
+                const holder = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // TODO: $.args[0].args[1].int liquidity token balance
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to add <strong>{tokenAmount.toString()}</strong> USDtz to the pool from <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'tokenToToken') {
+                const targetToken = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // const targetName = knownContractNames[targetToken] || targetToken;
+                const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
+                const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
+                const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
+                const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                let holderText = '';
+                if (targetHolder === sourceHolder) {
+                    holderText = `for ${targetHolder}`;
+                } else {
+                    holderText = `from ${sourceHolder} to ${targetHolder}`;
+                }
+
+                return (
+                    <>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> USDtz for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
+                        <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT1XTXBsEauzcv3uPvVXW92mVqrx99UGsb9T') {
+            // Dexter wXTZ Pool
+            if (transaction.parameters.entrypoint === 'xtzToToken') {
+                const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> wXTZ at <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'addLiquidity') {
+                const holder = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // TODO: $.args[0].args[1].int liquidity token balance
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to add <strong>{tokenAmount.toString()}</strong> wXTZ to the pool from <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'tokenToToken') {
+                const targetToken = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // const targetName = knownContractNames[targetToken] || targetToken;
+                const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
+                const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
+                const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
+                const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                let holderText = '';
+                if (targetHolder === sourceHolder) {
+                    holderText = `for ${targetHolder}`;
+                } else {
+                    holderText = `from ${sourceHolder} to ${targetHolder}`;
+                }
+
+                return (
+                    <>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> wXTZ for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
+                        <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT1DrJV8vhkdLEj76h1H9Q4irZDqAkMPo1Qf') {
+            // Dexter tzBTC Pool
+            if (transaction.parameters.entrypoint === 'xtzToToken') {
+                const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('100000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> tzBTC at <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'addLiquidity') {
+                const holder = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // TODO: $.args[0].args[1].int liquidity token balance
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('100000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to add <strong>{tokenAmount.toString()}</strong> tzBTC to the pool from <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'tokenToToken') {
+                const targetToken = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // const targetName = knownContractNames[targetToken] || targetToken;
+                const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
+                const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
+                const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
+                const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('100000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                let holderText = '';
+                if (targetHolder === sourceHolder) {
+                    holderText = `for ${targetHolder}`;
+                } else {
+                    holderText = `from ${sourceHolder} to ${targetHolder}`;
+                }
+
+                return (
+                    <>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> tzBTC for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
+                        <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8') {
+            // ETHtz Token
+            if (transaction.parameters.entrypoint === 'approve') {
+                let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+
+                approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
+
+                return (
+                    <>
+                        &nbsp;to approve <strong>{approvedAddress}</strong> for a balance of <strong>{tokenAmount}</strong> ETHtz
+                    </>
+                );
+            }
+
+            // TODO: transfer
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9') {
+            // USDtz Token
+            if (transaction.parameters.entrypoint === 'approve') {
+                let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]).dividedBy('1000000').toFixed();
+
+                approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
+
+                return (
+                    <>
+                        &nbsp;to approve <strong>{approvedAddress}</strong> for a balance of <strong>{tokenAmount}</strong> USDtz
+                    </>
+                );
+            }
+
+            // TODO: transfer
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH') {
+            // wXTZ Token
+            if (transaction.parameters.entrypoint === 'approve') {
+                let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]).dividedBy('1000000').toFixed();
+
+                approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
+
+                return (
+                    <>
+                        &nbsp;to approve <strong>{approvedAddress}</strong> for a balance of <strong>{tokenAmount}</strong> wXTZ
+                    </>
+                );
+            }
+
+            // TODO: transfer
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn') {
+            // tzBTC Token
+            if (transaction.parameters.entrypoint === 'approve') {
+                let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]).dividedBy('100000000').toFixed();
+
+                approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
+
+                return (
+                    <>
+                        &nbsp;to approve <strong>{approvedAddress}</strong> for a balance of <strong>{tokenAmount}</strong> tzBTC
+                    </>
+                );
+            }
+
+            // TODO: transfer
+
+            return undefined;
+        }
+
+        return undefined;
     };
 
     return (
@@ -223,17 +578,21 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             )}
                             {isContract && (
                                 <p>
-                                    {appMetadata.name} is requesting a contract call to the <strong>{operationParameters.entrypoint}</strong> function of{' '}
-                                    <strong>{operationDetails[0].destination}</strong>
+                                    <strong>{appMetadata.name}</strong> is requesting a contract call to the <strong>{operationParameters.entrypoint}</strong>{' '}
+                                    function of <strong>{contractName}</strong>
                                     {new BigNumber(operationDetails[0].amount).toNumber() !== 0 && (
                                         <span>
                                             {' '}
                                             with <strong>{new BigNumber(operationDetails[0].amount).dividedBy(utez).toNumber().toFixed(6)}</strong>{' '}
-                                            <strong>XTZ</strong> and{' '}
+                                            <strong>XTZ</strong>
                                         </span>
                                     )}
-                                    {new BigNumber(operationDetails[0].amount).toNumber() === 0 && <span> with </span>}
-                                    the following parameters: <strong>{JSON.stringify(operationParameters.value)}</strong>
+                                    {idTransaction(operationDetails[0]) && idTransaction(operationDetails[0])}
+                                    {!idTransaction(operationDetails[0]) && (
+                                        <>
+                                            &nbsp;with the following parameters: <strong>{JSON.stringify(operationParameters.value)}</strong>
+                                        </>
+                                    )}
                                 </p>
                             )}
 

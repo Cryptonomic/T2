@@ -11,7 +11,7 @@ import { RootState, ModalState } from '../../types/store';
 
 import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { beaconClient } from './BeaconConnect';
+import { beaconClient } from './BeaconMessageRouter';
 
 import { ModalWrapper, ModalContainer, CloseIconWrapper, Container, ButtonContainer, InvokeButton, Footer, WhiteBtn } from '../style';
 

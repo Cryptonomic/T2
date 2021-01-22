@@ -5,7 +5,7 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
 
-import { BeaconConnect } from '../../featureModals/Beacon/BeaconConnect';
+import { BeaconMessageRouter } from '../../featureModals/Beacon/BeaconMessageRouter';
 import { setLaunchUrl } from '../../reduxContent/app/actions';
 import AddressBlock from '../../components/AddressBlock';
 import BabylonDelegation from '../../contracts/BabylonDelegation';
@@ -55,7 +55,7 @@ function HomeMain() {
 
     return (
         <Container>
-            <BeaconConnect />
+            <BeaconMessageRouter />
             <SideBarContainer>
                 {identities.sort(sortArr({ sortOrder: 'asc', sortBy: 'order' })).map((accountBlock, index) => (
                     <AccountItem key={index}>
