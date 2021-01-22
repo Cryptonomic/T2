@@ -12,13 +12,13 @@ import { RootState } from '../../types/store';
 
 export const beaconClient = new WalletClient({ name: 'Beacon Wallet Client' });
 
-export const BeaconConnect = () => {
+export const BeaconMessageRouter = () => {
     const dispatch = useDispatch();
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
     const modalValues = useSelector<RootState, any>((state) => state.modal.values);
     const beaconMessage = useSelector((state: RootState) => state.app.beaconMessage);
     const beaconConnection = useSelector((state: RootState) => state.app.beaconConnection);
-    const selectedAccountHash = useSelector((state: RootState) => state.app.selectedAccountHash);
+    const selectedParentHash = useSelector((state: RootState) => state.app.selectedParentHash);
     const beaconClientLoaded = useSelector((state: RootState) => state.app.beaconClient);
     const isError = useSelector((state: RootState) => state.message.isError);
     const beaconLoading = useSelector((state: RootState) => state.app.beaconLoading);
@@ -50,8 +50,8 @@ export const BeaconConnect = () => {
         } else if (message.type === BeaconMessageType.OperationRequest) {
             console.log('Beacon.OperationRequest', message);
 
-            if (message.sourceAddress !== selectedAccountHash) {
-                dispatch(createMessageAction('Beacon address did not match', true));
+            if (message.sourceAddress !== selectedParentHash) {
+                dispatch(createMessageAction('Beacon requestor address did not match', true));
                 return;
             }
 
@@ -103,9 +103,9 @@ export const BeaconConnect = () => {
             try {
                 await beaconClient.init();
                 await beaconClient.connect((message, connection) => dispatch(setBeaconMessageAction(message, connection)));
-                console.log('BeaconConnect.Loaded');
+                console.log('BeaconMessageRouter.Loaded');
             } catch (e) {
-                console.log('BeaconConnectError', e);
+                console.log('BeaconMessageRouter Error', e);
             }
         };
         init();
