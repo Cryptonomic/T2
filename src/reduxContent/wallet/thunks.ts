@@ -187,10 +187,19 @@ export function syncTokenThunk(tokenAddress) {
             let detailsAsync;
             let ovenAddresses: string[] = [];
 
+            const serverInfo: ConseilServerInfo = {
+                url: mainNode.conseilUrl,
+                apiKey: mainNode.apiKey,
+                network: mainNode.network,
+            };
+            const mapid = tokens[tokenIndex].mapid || 0;
+
             if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtz || tokens[tokenIndex].kind === TokenKind.ethtz) {
-                const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                detailsAsync = Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
+                detailsAsync = Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
+                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                    return { ...d, holders: keyCount };
+                });
                 transAsync = tzip7Util.syncTokenTransactions(
                     tokenAddress,
                     selectedParentHash,
@@ -199,28 +208,23 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].kind
                 );
             } else if (tokens[tokenIndex].kind === TokenKind.stkr) {
-                const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = StakerDAOTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
                 transAsync = [];
             } else if (tokens[tokenIndex].kind === TokenKind.tzbtc) {
-                const mapid = tokens[tokenIndex].mapid || 0;
                 balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
             } else if (tokens[tokenIndex].kind === TokenKind.wxtz) {
                 const vaultToken = tokens[tokenIndex] as VaultToken;
-                const mapid = tokens[tokenIndex].mapid || 0;
-                balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
-                detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
-
                 const coreContractAddress = vaultToken.vaultCoreAddress;
                 const vaultListBigMapId = vaultToken.vaultRegistryMapId;
-                const serverInfo: ConseilServerInfo = {
-                    url: mainNode.conseilUrl,
-                    apiKey: mainNode.apiKey,
-                    network: mainNode.network,
-                };
+
+                balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
+                detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
+                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                    return { ...d, holders: keyCount };
+                });
 
                 try {
                     ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
