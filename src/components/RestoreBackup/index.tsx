@@ -98,6 +98,7 @@ function RestoreBackup() {
     const [hasDerivationPath, setHasDerivationPath] = useState(false);
     const [key, setKey] = useState('');
     const [error, setError] = useState(false);
+    const [restoreDisabled, setRestoreDisabled] = useState(false);
 
     const importAddress = () => {
         if (type === 'phrase') {
@@ -115,14 +116,8 @@ function RestoreBackup() {
         }
     };
 
-    let isdisabled = false;
-    if (type === 'phrase') {
-        isdisabled = ![12, 15, 18, 21, 24].includes(seeds.length) || error;
-    } else {
-        isdisabled = !key;
-    }
     return (
-        <MainContainer onKeyDown={(event) => onEnterPress(event.key, isdisabled)}>
+        <MainContainer onKeyDown={(event) => onEnterPress(event.key, restoreDisabled)}>
             <RestoreHeader>
                 {t('components.restoreBackup.restore_from')}
                 <RestoreTabs type={type} t={t} changeFunc={(val) => setType(val)} />
@@ -132,8 +127,15 @@ function RestoreBackup() {
                     <SeedInput
                         placeholder={t('containers.homeAddAddress.restore_mnemonic')}
                         seeds={seeds}
-                        onChange={(val) => setSeeds(val)}
-                        onError={(err) => setError(err)}
+                        onChange={(val) => {
+                            setSeeds(val);
+                            setRestoreDisabled(![12, 15, 18, 21, 24].includes(val.length));
+                            setError(false);
+                        }}
+                        onError={(err) => {
+                            setError(err);
+                            setRestoreDisabled(true);
+                        }}
                         expectedWords={0}
                     />
 
@@ -164,10 +166,20 @@ function RestoreBackup() {
                 </Fragment>
             )}
 
-            {type === 'key' && <TextField label={t('components.restoreBackup.enter_private_key')} value={key} onChange={(val) => setKey(val)} />}
+            {type === 'key' && (
+                <TextField
+                    label={t('components.restoreBackup.enter_private_key')}
+                    value={key}
+                    onChange={(val) => {
+                        setKey(val);
+                        setRestoreDisabled(!key);
+                        setError(false);
+                    }}
+                />
+            )}
 
             <RestoreFooter>
-                <RestoreButton buttonTheme="primary" disabled={isdisabled} onClick={importAddress}>
+                <RestoreButton buttonTheme="primary" disabled={restoreDisabled} onClick={importAddress}>
                     {t('general.verbs.restore')}
                 </RestoreButton>
             </RestoreFooter>
