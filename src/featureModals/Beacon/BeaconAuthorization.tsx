@@ -16,18 +16,19 @@ import Fees from '../../components/Fees';
 import Tooltip from '../../components/Tooltip';
 import TezosIcon from '../../components/TezosIcon';
 import { ms } from '../../styles/helpers';
-import { useFetchFees, estimateContractCall } from '../../reduxContent/app/thunks';
+import { useFetchFees } from '../../reduxContent/app/thunks';
 
 import { RootState, ModalState } from '../../types/store';
 
 import { sendTezThunk } from '../../contracts/duck/thunks';
-import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';
 import { setModalOpen } from '../../reduxContent/modal/actions';
 import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
 
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
 import { knownContractNames, knownMarketMetadata } from '../../constants/Token';
+
+import { estimateOperationGroupFee, sendOperations } from './thunks';
 
 export const PromptContainer = styled.div`
     align-items: center;
@@ -104,13 +105,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const operationParameters = parameters || { value: { prim: 'Unit' }, entrypoint: 'default' };
 
     const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Transaction, true, true);
-    const { fee } = estimateContractCall(
-        selectedParentHash,
-        destination,
-        new BigNumber(amount).toNumber(),
-        operationParameters.entrypoint,
-        JSON.stringify(operationParameters.value)
-    );
+    const fee = estimateOperationGroupFee(selectedParentHash, operationDetails);
 
     const onAuthorize = async () => {
         try {
@@ -126,23 +121,13 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
             if (isContract) {
                 // TODO: errors from here don't always bubble up
-                const operationResult = await dispatch(
-                    invokeAddressThunk(
-                        destination,
-                        operationState.fee,
-                        formattedAmount,
-                        10_000,
-                        500_000,
-                        JSON.stringify(operationParameters.value),
-                        password,
-                        selectedParentHash,
-                        operationParameters.entrypoint,
-                        TezosParameterFormat.Micheline
-                    )
-                );
+                const operationResult = await dispatch(sendOperations(password, operationDetails));
 
                 if (!!operationResult) {
+                    dispatch(setBeaconLoading(false));
                     onClose();
+                } else {
+                    // error
                 }
 
                 // TODO: ledger
@@ -152,6 +137,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             }
         } catch (e) {
             console.log('Transaction.Error', e);
+            dispatch(createMessageAction(e.message || e.toString(), true));
             dispatch(setBeaconLoading(false));
         }
     };
@@ -174,6 +160,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (!operationHash || !beaconLoading) {
             return;
         }
+
         const sendBeaconResponse = async () => {
             try {
                 const response: OperationResponseInput = {
@@ -191,6 +178,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         };
 
         sendBeaconResponse();
+        setOperationState({ ...operationState, fee });
     }, [operationHash, beaconLoading]);
 
     const renderFeeToolTip = () => {
@@ -200,7 +188,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 <TooltipContent>
                     <Trans i18nKey="components.send.fee_tooltip_content">
                         This address is not revealed on the blockchain. We have added
-                        <BoldSpan>0.001420 XTZ</BoldSpan> for Public Key Reveal to your regular send operation fee.
+                        <BoldSpan>0.001270</BoldSpan> XTZ for Public Key Reveal to your regular send operation fee.
                     </Trans>
                 </TooltipContent>
             </TooltipContainer>
@@ -596,18 +584,24 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 </p>
                             )}
 
+                            {isContract && operationDetails.length > 1 && (
+                                <p>
+                                    and {operationDetails.length - 1} more operation{operationDetails.length - 1 > 1 ? 's' : ''}.
+                                </p>
+                            )}
+
                             {isContract && (
                                 <div>
                                     <p className="inputLabel">Raw Operation Content</p>
-                                    <textarea className="inputField">{JSON.stringify(operationDetails[0], null, 2)}</textarea>
+                                    <textarea className="inputField">{JSON.stringify(operationDetails, null, 2)}</textarea>
                                 </div>
                             )}
                             <div className="feeContainer">
                                 <Fees
-                                    low={isContract ? fee : newFees.low}
+                                    low={newFees.low}
                                     medium={newFees.medium}
                                     high={newFees.high}
-                                    fee={operationState.fee}
+                                    fee={fee}
                                     miniFee={miniFee}
                                     onChange={changeFee}
                                     tooltip={
