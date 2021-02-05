@@ -100,7 +100,7 @@ export async function saveWallet(filename: string, wallet: Wallet, passphrase: s
     };
 
     const p = new Promise((resolve, reject) => {
-        fs.writeFile(filename, JSON.stringify(encryptedWallet), (err) => {
+        fs.writeFile(filename, JSON.stringify(encryptedWallet), { mode: 0o600 }, (err) => {
             if (err) {
                 reject(err);
                 return;
