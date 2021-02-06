@@ -519,7 +519,9 @@
         "errors": {
             "wrong_server": "Palabra inválida, por favor vuelve a intentarlo.",
             "wrong_network": "Parece que el nodo Tezos que estás usando está congelado o en la red equivocada. Por favor retrasa acciones adicionales.",
-            "not_synced": "Para que el servidor Conseil no está sincronizado con la red Tezos. Por favor retrasa acciones adicionales."
+            "not_synced": "Para que el servidor Conseil no está sincronizado con la red Tezos. Por favor retrasa acciones adicionales.",
+            "tezos_node": "Tezos node doesn't appear to be responding, please delay further actions.",
+            "indexer_server": "Conseil indexer server doesn't appear to be responding, please delay further actions."
         }
     }
 }

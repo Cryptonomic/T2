@@ -519,7 +519,9 @@
         "errors": {
             "wrong_server": "지정된 서버에 문제가 있습니다. 추가 조치를 지연하세요.",
             "wrong_network": "사용 중인 Tezos 노드가 막혔거나 잘못된 네트워크에 있는 것 같습니다. 추가 조치를 지연하세요.",
-            "not_synced": "Conseil 서버가 Tezos 네트워크와 동기화되지 않은 것으로 보입니다. 추가 조치를 지연하세요."
+            "not_synced": "Conseil 서버가 Tezos 네트워크와 동기화되지 않은 것으로 보입니다. 추가 조치를 지연하세요.",
+            "tezos_node": "Tezos node doesn't appear to be responding, please delay further actions.",
+            "indexer_server": "Conseil indexer server doesn't appear to be responding, please delay further actions."
         }
     }
 }

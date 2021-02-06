@@ -518,7 +518,9 @@
         "errors": {
             "wrong_server": "Sunucularımızdan kaynaklanan bir sorun var. Lütfen işlem yapmak için bekleyin.",
             "wrong_network": "Seçtiğiniz Tezos Nod'u takılmış veya yanlış bir ağa bağlı. Lütfen kontrol edin.",
-            "not_synced": "Seçtiğiniz Conseil sunucusu Tezos Ağ'ı ile senkronize değil. Lütfen işlem yapmak için bekleyin."
+            "not_synced": "Seçtiğiniz Conseil sunucusu Tezos Ağ'ı ile senkronize değil. Lütfen işlem yapmak için bekleyin.",
+            "tezos_node": "Tezos node doesn't appear to be responding, please delay further actions.",
+            "indexer_server": "Conseil indexer server doesn't appear to be responding, please delay further actions."
         }
     }
 }
