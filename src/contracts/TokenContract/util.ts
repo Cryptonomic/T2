@@ -1,8 +1,11 @@
 import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient } from 'conseiljs';
+import { BigNumber } from 'bignumber.js';
+import { JSONPath } from 'jsonpath-plus';
 
 import * as status from '../../constants/StatusTypes';
 import { Node, TokenKind } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
+import { knownTokenContracts, knownContractNames } from '../../constants/Token';
 
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
     let newTransactions: any[] = (
@@ -24,7 +27,23 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
 
     newTransactions = newTransactions.map((transaction) => {
         const params = transaction.parameters.replace(/\s/g, '');
-        if (transferPattern.test(params)) {
+        console.log('parsing transaction ', transaction);
+        if (transaction.parameters_entrypoints === 'approve') {
+            const michelineParams = JSON.parse(transaction.parameters_micheline);
+
+            const targetAddress = JSONPath({ path: '$.args[0].string', json: michelineParams })[0];
+            const targetScale = knownTokenContracts.filter((t) => t.address === tokenAddress)[0].scale || 0;
+            const targetAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: michelineParams })[0]).dividedBy(10 ** targetScale).toNumber();
+
+            return createTokenTransaction({
+                ...transaction,
+                status: transaction.status !== 'applied' ? status.FAILED : status.READY,
+                amount: targetAmount,
+                source: knownContractNames[tokenAddress] || tokenAddress,
+                destination: targetAddress,
+                entryPoint: 'approve',
+            });
+        } else if (transferPattern.test(params)) {
             try {
                 const parts = params.match(transferPattern);
 
@@ -100,7 +119,9 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
         'fee',
         'status',
         'operation_group_hash',
-        'parameters'
+        'parameters',
+        'parameters_micheline',
+        'parameters_entrypoints'
     );
     direct = ConseilQueryBuilder.addPredicate(direct, 'kind', ConseilOperator.EQ, ['transaction'], false);
     direct = ConseilQueryBuilder.addPredicate(direct, 'status', ConseilOperator.EQ, ['applied'], false);
@@ -121,7 +142,9 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
         'fee',
         'status',
         'operation_group_hash',
-        'parameters'
+        'parameters',
+        'parameters_micheline',
+        'parameters_entrypoints'
     );
     indirect = ConseilQueryBuilder.addPredicate(indirect, 'kind', ConseilOperator.EQ, ['transaction'], false);
     indirect = ConseilQueryBuilder.addPredicate(indirect, 'status', ConseilOperator.EQ, ['applied'], false);

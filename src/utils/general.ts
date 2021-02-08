@@ -29,8 +29,12 @@ export async function getNodesStatus(node: Node): Promise<NodeStatus> {
 }
 
 export function getNodesError({ tezos, conseil }: NodeStatus): string {
-    if (!tezos || !conseil) {
-        return 'nodes.errors.wrong_server';
+    if (!tezos) {
+        return 'nodes.errors.tezos_node';
+    }
+
+    if (!conseil) {
+        return 'nodes.errors.indexer_server';
     }
 
     if (conseil - tezos > 5) {

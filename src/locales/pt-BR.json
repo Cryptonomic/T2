@@ -519,7 +519,9 @@
         "errors": {
             "wrong_server": "Há um problema com os servidores especificados. Adie novas ações.",
             "wrong_network": "Aparentemente o node de Tezos que você está usando está travado ou em uma rede errada. Adie novas ações.",
-            "not_synced": "Aparentemente o servidor Conseil não está sincronizado com a rede Tezos. Adie novas ações."
+            "not_synced": "Aparentemente o servidor Conseil não está sincronizado com a rede Tezos. Adie novas ações.",
+            "tezos_node": "Tezos node doesn't appear to be responding, please delay further actions.",
+            "indexer_server": "Conseil indexer server doesn't appear to be responding, please delay further actions."
         }
     }
 }

@@ -518,7 +518,9 @@
         "errors": {
             "wrong_server": "指定的服务器有些问题。请推迟进一步的操作",
             "wrong_network": "你正使用的Tezos节点好像被卡住或者是在错误的网络上。请推迟进一步的操作。",
-            "not_synced": "Conseil服务器好像没有和Tezos网络同步。请推迟进一步的操作。"
+            "not_synced": "Conseil服务器好像没有和Tezos网络同步。请推迟进一步的操作。",
+            "tezos_node": "Tezos node doesn't appear to be responding, please delay further actions.",
+            "indexer_server": "Conseil indexer server doesn't appear to be responding, please delay further actions."
         }
     }
 }

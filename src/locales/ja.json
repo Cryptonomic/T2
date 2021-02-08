@@ -519,7 +519,9 @@
         "errors": {
             "wrong_server": "指定サーバーで何か問題がありました。今後のアクションを延期してください",
             "wrong_network": "ご利用のTezosノードは、スタックされているか誤ったネットワークにあるようです。今後のアクションを延期してください。",
-            "not_synced": "ConseilサーバーがTezosネットワークに同期されていないようです。今後のアクションを延期してください。"
+            "not_synced": "ConseilサーバーがTezosネットワークに同期されていないようです。今後のアクションを延期してください。",
+            "tezos_node": "Tezos node doesn't appear to be responding, please delay further actions.",
+            "indexer_server": "Conseil indexer server doesn't appear to be responding, please delay further actions."
         }
     }
 }
