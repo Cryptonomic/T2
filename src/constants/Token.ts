@@ -7,6 +7,7 @@ import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 import ethtzIcon from '../../resources/contracts/ethtz-icon.png';
 import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 import uteIcon from '../../resources/contracts/ute-aspen-icon.png';
+import kusdIcon from '../../resources/contracts/kusd-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken)[] = [
     {
@@ -87,6 +88,21 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
+        displayName: 'Kolibri',
+        symbol: 'kUSD',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.kusd,
+        icon: kusdIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 380,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1PzkxU8UC4Py85VxbbrHyiJ57Bknjom3r2',
         displayName: 'UTE Token by Aspen Collective Trust',
         symbol: 'UTE',
@@ -127,18 +143,17 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         round: 0,
     },
     {
-        network: 'carthagenet',
-        address: 'KT1N3YaxhH3JGr3u9Q7ULd6MnMxYo24jKKDF',
-        displayName: 'StakerDAO Token',
-        symbol: 'STKR',
+        network: 'delphinet',
+        address: 'KT1RDZrkoTnBtwpDAhiMyYnxv8sZ9Lc8Cxyg',
+        displayName: 'M2 Token',
+        symbol: 'M2T',
         balance: 0,
         transactions: [],
-        activeTab: DETAILS,
-        kind: TokenKind.stkr,
-        icon: stakerdaoIcon,
-        scale: 0,
-        precision: 0,
-        round: 0,
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        scale: 6,
+        precision: 6,
+        round: 6,
     },
     {
         network: 'delphinet',

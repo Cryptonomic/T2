@@ -1,58 +1,26 @@
 import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient } from 'conseiljs';
-import { BigNumber } from 'bignumber.js';
-import { JSONPath } from 'jsonpath-plus';
 
 import * as status from '../../constants/StatusTypes';
-import { Node, TokenKind } from '../../types/general';
+import { Node } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
-import { knownTokenContracts, knownContractNames } from '../../constants/Token';
 
-export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
+export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[]) {
     let newTransactions: any[] = (
         await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
-            console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
+            console.log('-debug: Error in: getSyncAccount -> getTokenTransactions for:' + tokenAddress);
             console.error(e);
             return [];
         })
     ).filter((obj, pos, arr) => arr.map((o) => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
 
-    const addressPattern = '([1-9A-Za-z^OIl]{36})';
-    const amountPattern = '([0-9]+)';
-
-    const transferPattern = new RegExp(`Left[(]Left[(]Left[(]Pair"${addressPattern}"[(]Pair"${addressPattern}"([0-9]+)[))))]`);
-    const transferShortPattern = new RegExp(`Pair"${addressPattern}"[(]Pair"${addressPattern}"([0-9]+)[)]`);
-    const mintPattern = new RegExp(`Right[(]Right[(]Right[(]Left[(]Pair"${addressPattern}"${amountPattern}[))))]`);
-    const burnPattern = new RegExp(`Right[(]Right[(]Right[(]Right[(]Pair"${addressPattern}"${amountPattern}[))))]`);
-    const pausePatternFalse = new RegExp('Right[(]Left[(]LeftFalse[))]');
-    const pausePatternTrue = new RegExp('Right[(]Left[(]LeftTrue[))]');
+    const transferPattern = /Pair"([1-9A-Za-z^OIl]{36})"\(Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)\)/;
+    const mintPattern = /Pair"([1-9A-Za-z^OIl]{36})"([0-9]+)/;
 
     newTransactions = newTransactions.map((transaction) => {
         const params = transaction.parameters.replace(/\s/g, '');
-
-        if (transaction.parameters_entrypoints === 'approve') {
-            const michelineParams = JSON.parse(transaction.parameters_micheline);
-
-            const targetAddress = JSONPath({ path: '$.args[0].string', json: michelineParams })[0];
-            const targetScale = knownTokenContracts.filter((t) => t.address === tokenAddress)[0].scale || 0;
-            const targetAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: michelineParams })[0]).dividedBy(10 ** targetScale).toNumber();
-
-            return createTokenTransaction({
-                ...transaction,
-                status: transaction.status !== 'applied' ? status.FAILED : status.READY,
-                amount: targetAmount,
-                source: knownContractNames[tokenAddress] || tokenAddress,
-                destination: targetAddress,
-                entryPoint: 'approve',
-            });
-        } else if (transferPattern.test(params) || transferShortPattern.test(params)) {
+        if (transferPattern.test(params)) {
             try {
-                let parts: any[] = [];
-
-                if (transferPattern.test(params)) {
-                    parts = params.match(transferPattern);
-                } else if (transferShortPattern.test(params)) {
-                    parts = params.match(transferShortPattern);
-                }
+                const parts = params.match(transferPattern);
 
                 return createTokenTransaction({
                     ...transaction,
@@ -67,50 +35,29 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
         } else if (mintPattern.test(params)) {
             try {
                 const parts = params.match(mintPattern);
+
                 return createTokenTransaction({
                     ...transaction,
                     status: transaction.status !== 'applied' ? status.FAILED : status.READY,
                     amount: Number(parts[2]),
                     source: managerAddress,
-                    destination: parts[1],
+                    destination: tokenAddress, // TODO: target address of mint operation parts[1]
                     entryPoint: 'mint',
                 });
             } catch (e) {
                 /* */
             }
-        } else if (burnPattern.test(params)) {
-            try {
-                const parts = params.match(burnPattern);
-
-                return createTokenTransaction({
-                    ...transaction,
-                    status: transaction.status !== 'applied' ? status.FAILED : status.READY,
-                    amount: Number(parts[2]) * -1,
-                    source: managerAddress,
-                    destination: parts[1],
-                    entryPoint: 'burn',
-                });
-            } catch (e) {
-                /* */
-            }
-        } else if (pausePatternFalse.test(params) || pausePatternTrue.test(params)) {
-            const parts = params.match(burnPattern);
-            return createTokenTransaction({
-                ...transaction,
-                status: transaction.status !== 'applied' ? status.FAILED : status.READY,
-                source: managerAddress,
-                destination: tokenAddress,
-                entryPoint: 'setPause',
-            });
         } else {
-            console.warn(`cannot render unsupported transaction: "${params}" from ${transaction}`);
+            // TODO
+            console.log('kusd mismatch', transaction);
         }
     });
 
     return syncTransactionsWithState(newTransactions, stateTransactions);
 }
 
-export async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
+async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
+    // TODO: consider reusing the common function
     const { conseilUrl, apiKey, network } = node;
 
     let direct = ConseilQueryBuilder.blankQuery();
@@ -125,9 +72,7 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
         'fee',
         'status',
         'operation_group_hash',
-        'parameters',
-        'parameters_micheline',
-        'parameters_entrypoints'
+        'parameters'
     );
     direct = ConseilQueryBuilder.addPredicate(direct, 'kind', ConseilOperator.EQ, ['transaction'], false);
     direct = ConseilQueryBuilder.addPredicate(direct, 'status', ConseilOperator.EQ, ['applied'], false);
@@ -148,9 +93,7 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
         'fee',
         'status',
         'operation_group_hash',
-        'parameters',
-        'parameters_micheline',
-        'parameters_entrypoints'
+        'parameters'
     );
     indirect = ConseilQueryBuilder.addPredicate(indirect, 'kind', ConseilOperator.EQ, ['transaction'], false);
     indirect = ConseilQueryBuilder.addPredicate(indirect, 'status', ConseilOperator.EQ, ['applied'], false);
@@ -166,6 +109,11 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
                 return result;
             })
         )
+        .then((transactions) => {
+            return transactions
+                .filter((o) => o !== undefined)
+                .filter((obj, pos, arr) => arr.map((o) => o.operation_group_hash).indexOf(obj.operation_group_hash) === pos);
+        })
         .then((transactions) => {
             return transactions.sort((a, b) => a.timestamp - b.timestamp);
         });
