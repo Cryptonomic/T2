@@ -364,6 +364,10 @@ function AddressBlock(props: Props) {
                     tokenType = AddressType.TzBTC;
                 }
 
+                if (token.kind === TokenKind.kusd) {
+                    tokenType = AddressType.kUSD;
+                }
+
                 return (
                     <TokenNav
                         key={token.address}

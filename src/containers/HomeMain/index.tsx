@@ -15,6 +15,7 @@ import ImplicitAccount from '../../contracts/ImplicitAccount';
 import StakerToken from '../../contracts/StakerToken';
 import TzBtcToken from '../../contracts/TzBtcToken';
 import WXTZToken from '../../contracts/WrappedTezos';
+import KolibriToken from '../../contracts/KolibriToken';
 import { sortArr } from '../../utils/array';
 
 import { Container, SideBarContainer, AccountItem } from './style';
@@ -48,6 +49,8 @@ function HomeMain() {
                 return <TzBtcToken />;
             case AddressType.wXTZ:
                 return <WXTZToken />;
+            case AddressType.kUSD:
+                return <KolibriToken />;
             default:
                 return <GenericContract />;
         }
