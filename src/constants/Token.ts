@@ -213,6 +213,8 @@ export const knownContractNames = {
     KT1DrJV8vhkdLEj76h1H9Q4irZDqAkMPo1Qf: 'Dexter tzBTC/XTZ Pool',
     KT1XTXBsEauzcv3uPvVXW92mVqrx99UGsb9T: 'Dexter wXTZ/XTZ Pool',
     KT1H28iie4mW9LmmJeYLjH6zkC8wwSmfHf5P: 'TzButton Round 2',
+    KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: 'Kolibri Token',
+    KT1Xf2Cwwwh67Ycu7E9yd3UhsABQC4YZPkab: 'Dexter kUSD/XTZ Pool',
 };
 
 export const knownMarketMetadata = [
@@ -243,5 +245,12 @@ export const knownMarketMetadata = [
         name: 'Dexter wXTZ/XTZ Pool',
         scale: 6,
         symbol: 'wXTZ',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1Xf2Cwwwh67Ycu7E9yd3UhsABQC4YZPkab',
+        name: 'Dexter kUSD/XTZ Pool',
+        scale: 18,
+        symbol: 'kUSD',
     },
 ];
