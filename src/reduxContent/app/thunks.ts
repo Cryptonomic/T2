@@ -272,14 +272,14 @@ export function getNewVersionThunk() {
     };
 }
 
-export function setSignerThunk(key: string) {
+export function setSignerThunk(key: string, password: string) {
     if (!key || key.length === 0) {
         throw new Error('Empty key parameter in setSignerThunk()');
     }
 
     return async (dispatch) => {
         const keyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(key);
-        const signer = await SoftSigner.createSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'));
+        const signer = await SoftSigner.createSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'), password);
         dispatch(setSignerAction(signer));
     };
 }

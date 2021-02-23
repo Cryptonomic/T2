@@ -3,7 +3,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { tezToUtez } from '../../utils/currency';
 
-import { saveIdentitiesToLocal } from '../../utils/wallet';
+import { saveIdentitiesToLocal, cloneDecryptedSigner } from '../../utils/wallet';
 import { createTransaction } from '../../utils/transaction';
 import { TRANSACTION, DELEGATION } from '../../constants/TransactionTypes';
 
@@ -40,14 +40,23 @@ export function delegateThunk(delegateAddress: string, fee: number, password: st
 
         let res: any;
         if (delegateAddress === '') {
-            res = await unSetDelegate(tezosUrl, signer, keyStore, selectedAccountHash, fee).catch((err) => {
-                const errorObj = { name: err.message, ...err };
-                console.error(errorObj);
-                dispatch(createMessageAction(errorObj.name, true));
-                return false;
-            });
+            res = await unSetDelegate(tezosUrl, isLedger ? signer : await cloneDecryptedSigner(signer, password), keyStore, selectedAccountHash, fee).catch(
+                (err) => {
+                    const errorObj = { name: err.message, ...err };
+                    console.error(errorObj);
+                    dispatch(createMessageAction(errorObj.name, true));
+                    return false;
+                }
+            );
         } else {
-            res = await setDelegate(tezosUrl, signer, keyStore, selectedAccountHash, delegateAddress, fee).catch((err) => {
+            res = await setDelegate(
+                tezosUrl,
+                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                keyStore,
+                selectedAccountHash,
+                delegateAddress,
+                fee
+            ).catch((err) => {
                 const errorObj = { name: err.message, ...err };
                 console.error(errorObj);
                 dispatch(createMessageAction(errorObj.name, true));
@@ -129,13 +138,12 @@ export function invokeAddressThunk(
 
         const keyStore = getSelectedKeyStore(identities, selectedInvokeAddress, selectedParentHash, isLedger);
         const derivation = isLedger ? getMainPath(pathsList, selectedPath) : '';
-        const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
-
+        const parsedAmount = tezToUtez(amount);
         const realEntryPoint = entryPoint !== '' ? entryPoint : undefined;
 
         const res: any = await sendContractInvocationOperation(
             tezosUrl,
-            signer,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
             keyStore,
             contractAddress,
             parsedAmount,
@@ -230,7 +238,14 @@ export function withdrawThunk(fee: number, amount: string, password: string) {
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
 
-        const res: any = await withdrawDelegatedFunds(tezosUrl, signer, keyStore, selectedAccountHash, fee, parsedAmount).catch((err) => {
+        const res: any = await withdrawDelegatedFunds(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            selectedAccountHash,
+            fee,
+            parsedAmount
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(err);
             dispatch(createMessageAction(errorObj.name, true));
@@ -254,9 +269,6 @@ export function withdrawThunk(fee: number, amount: string, password: string) {
             }
 
             const clearedOperationId = clearOperationId(res.operationGroupID);
-            // const consumedGas = operationResult.consumed_gas
-            //   ? Number(operationResult.consumed_gas)
-            //   : null;
 
             dispatch(createMessageAction('components.messageBar.messages.success_invoke_operation', false, clearedOperationId));
 
@@ -305,7 +317,14 @@ export function depositThunk(fee: number, amount: string, password: string, toAd
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
 
-        const res: any = await depositDelegatedFunds(tezosUrl, signer, keyStore, toAddress, fee, parsedAmount).catch((err) => {
+        const res: any = await depositDelegatedFunds(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            toAddress,
+            fee,
+            parsedAmount
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(err);
             dispatch(createMessageAction(errorObj.name, true));
@@ -384,9 +403,16 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
             return false;
         }
 
-        const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
+        const parsedAmount = tezToUtez(amount);
 
-        const res: any = await sendTransactionOperation(tezosUrl, signer, keyStore, toAddress, parsedAmount, fee).catch((err) => {
+        const res: any = await sendTransactionOperation(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            toAddress,
+            parsedAmount,
+            fee
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
@@ -471,7 +497,15 @@ export function sendDelegatedFundsThunk(password: string, toAddress: string, amo
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
 
-        const res: any = await sendDelegatedFunds(tezosUrl, signer, keyStore, selectedAccountHash, fee, parsedAmount, toAddress).catch((err) => {
+        const res: any = await sendDelegatedFunds(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            selectedAccountHash,
+            fee,
+            parsedAmount,
+            toAddress
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
