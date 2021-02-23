@@ -22,5 +22,5 @@ export function formatAmount(amount, decimal: number = 6) {
     const b = new BigNumber(amount);
     const m = b.dividedBy(utez);
 
-    return m.toFormat(decimal);
+    return m.toFixed(decimal);
 }

@@ -33,7 +33,7 @@ const NumericInput = (props: Props) => {
             return;
         }
 
-        onChange(b.toFormat(precision));
+        onChange(b.toFixed(precision));
     }
 
     return (
