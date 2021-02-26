@@ -198,10 +198,15 @@ function Send(props: Props) {
 
     async function onSend() {
         dispatch(setIsLoadingAction(true));
-        await dispatch(sendDelegatedFundsThunk(password, toAddress, amount, Math.floor(fee)));
-
-        setOpen(false);
-        dispatch(setIsLoadingAction(false));
+        try {
+            await dispatch(sendDelegatedFundsThunk(password, toAddress, amount, Math.floor(fee)));
+        } catch (err) {
+            //
+        } finally {
+            setPassword('');
+            setOpen(false);
+            dispatch(setIsLoadingAction(false));
+        }
     }
 
     function getBalanceState() {

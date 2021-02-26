@@ -593,7 +593,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {isContract && (
                                 <div>
                                     <p className="inputLabel">Raw Operation Content</p>
-                                    <textarea className="inputField">{JSON.stringify(operationDetails, null, 2)}</textarea>
+                                    <textarea className="inputField" readOnly>{JSON.stringify(operationDetails, null, 2)}</textarea>
                                 </div>
                             )}
                             <div className="feeContainer">

@@ -1,6 +1,6 @@
 {
   "name": "tezori",
-  "version": "1.1.12-beta",
+  "version": "1.1.13-beta",
   "description": "An open-source wallet framework for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
@@ -217,6 +217,7 @@
     "@material-ui/icons": "4.9.1",
     "@material-ui/lab": "4.0.0-alpha.53",
     "bignumber.js": "9.0.0",
+    "bip39": "3.0.3",
     "blakejs": "1.1.0",
     "connected-react-router": "6.8.0",
     "electron-store": "5.1.1",
@@ -224,6 +225,7 @@
     "i18next": "19.4.4",
     "i18next-electron-language-detector": "0.0.10",
     "i18next-xhr-backend": "^3.2.2",
+    "jsonpath-plus": "5.0.3",
     "lodash": "4.17.20",
     "moment": "2.27.0",
     "polished": "3.6.5",
@@ -247,7 +249,7 @@
     "zxcvbn": "4.4.2"
   },
   "engines": {
-    "node": "12.19.1",
-    "npm": "6.14.8"
+    "node": "12.20.1",
+    "npm": "6.14.10"
   }
 }

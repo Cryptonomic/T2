@@ -13,7 +13,7 @@ import InvokeLedgerConfirmationModal from '../../../components/ConfirmModals/Inv
 import FormatSelector from '../../../components/FormatSelector';
 
 import { useFetchFees } from '../../../reduxContent/app/thunks';
-import { invokeAddressThunk } from '../../../reduxContent/invoke/thunks';
+import { invokeAddressThunk } from '../../../contracts/duck/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 
 import { OPERATIONFEE, AVERAGEFEES } from '../../../constants/FeeValue';

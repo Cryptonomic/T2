@@ -9,6 +9,7 @@ import { openLink } from '../../utils/general';
 import Loader from '../../components/Loader';
 import Tooltip from '../../components/Tooltip';
 import { RootState } from '../../types/store';
+import PasswordInput from '../../components/PasswordInput';
 
 import {
     ModalWrapper,
@@ -48,7 +49,7 @@ interface Props {
 
 const Auth = (props: Props) => {
     const { t } = useTranslation();
-    const { isLoading, selectedParentHash, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { isLoading, selectedParentHash, isLedger, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
     const values = useSelector<RootState, object>((state) => state.modal.values, shallowEqual);
     const [result, setResult] = useState('');
@@ -59,6 +60,7 @@ const Auth = (props: Props) => {
     const [requestorDescription, setRequestorDescription] = useState('');
     const [requestorUrl, setRequestorUrl] = useState('');
     const [prompt, setPrompt] = useState('');
+    const [password, setPassword] = useState('');
 
     const isDisabled = isLoading || !prompt;
 
@@ -70,7 +72,7 @@ const Auth = (props: Props) => {
             return;
         }
 
-        const signature = await signer.signText(prompt);
+        const signature = await signer.signText(prompt, password);
 
         const req = values[activeModal]; // TODO: this should be an enum or constant, not a state lookup
         try {
@@ -168,6 +170,14 @@ const Auth = (props: Props) => {
                         </ResultContainer>
                         <Footer>
                             <ButtonContainer>
+                                {!isLedger && (
+                                    <PasswordInput
+                                        label={t('general.nouns.wallet_password')}
+                                        password={password}
+                                        onChange={(val) => setPassword(val)}
+                                        containerStyle={{ width: '60%', marginTop: '10px' }}
+                                    />
+                                )}
                                 {!error && (
                                     <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onAuth}>
                                         {t('general.verbs.authenticate')}

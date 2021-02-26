@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { TezosMessageUtils } from 'conseiljs';
+import { SoftSigner } from 'conseiljs-softsigner';
 
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainPath } from '../../utils/settings';
 import CopyButton from '../../components/CopyButton';
+import PasswordInput from '../../components/PasswordInput';
 import { RootState } from '../../types/store';
 
-import { CloseIconWrapper, ModalContainer, ModalTitle, ModalWrapper, KeyWrapper, KeyTitle, KeyAddress, Keys, SecretKeyMessage } from '../style';
+import { CloseIconWrapper, ModalContainer, ModalTitle, ModalWrapper, KeyWrapper, KeyTitle, KeyAddress, Keys, SecretKeyMessage, InvokeButton, ButtonContainer } from '../style';
 
 interface Props {
     open: boolean;
@@ -16,7 +19,7 @@ interface Props {
 
 const KeyDetails = (props: Props) => {
     const { t } = useTranslation();
-    const { isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { isLedger, selectedParentHash, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
     const { settings } = useSelector((rootState: RootState) => rootState, shallowEqual);
     const { open, onClose } = props;
@@ -27,13 +30,21 @@ const KeyDetails = (props: Props) => {
     const [publicKey, setPublicKey] = useState('');
     const [secretKey, setSecretKey] = useState('');
     const [secretKeyVisible, setSecretKeyVisible] = useState(false);
+    const [password, setPassword] = useState('');
 
     useEffect(() => {
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, derivationPath);
         setAddress(keyStore.publicKeyHash);
         setPublicKey(keyStore.publicKey);
-        setSecretKey(keyStore.secretKey);
     }, []);
+
+    const onShowSecretKey = async () => {
+        const rawSecretKey = await (signer as SoftSigner).getKey(password);
+        const stringSecretKey = TezosMessageUtils.readKeyWithHint(rawSecretKey, 'edsk');
+
+        setSecretKey(stringSecretKey);
+        setSecretKeyVisible(true)
+    };
 
     return (
         <ModalWrapper open={open}>
@@ -60,9 +71,17 @@ const KeyDetails = (props: Props) => {
                             <KeyWrapper>
                                 <KeyTitle>{t('components.keyDetailsModal.secretKey')}</KeyTitle>
                                 {!secretKeyVisible && (
-                                    <SecretKeyMessage onClick={() => setSecretKeyVisible(!secretKeyVisible)}>
-                                        {t('components.keyDetailsModal.secretKeyNotice')}
-                                    </SecretKeyMessage>
+                                    <ButtonContainer>
+                                        <PasswordInput
+                                            label={t('general.nouns.wallet_password')}
+                                            password={password}
+                                            onChange={(val) => setPassword(val)}
+                                            containerStyle={{ width: '60%', marginTop: '10px' }}
+                                        />
+                                        <InvokeButton buttonTheme="primary" disabled={false} onClick={onShowSecretKey}>
+                                            {t('general.verbs.show')}
+                                        </InvokeButton>
+                                    </ButtonContainer>
                                 )}
                                 {secretKeyVisible && (
                                     <>

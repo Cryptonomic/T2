@@ -12,7 +12,7 @@ import InvokeLedgerConfirmationModal from '../ConfirmModals/InvokeLedgerConfirma
 import FormatSelector from '../FormatSelector';
 
 import { setIsLoadingAction } from '../../reduxContent/app/actions';
-import { invokeAddressThunk } from '../../reduxContent/invoke/thunks';
+import { invokeAddressThunk } from '../../contracts/duck/thunks';
 
 import { OPERATIONFEE } from '../../constants/FeeValue';
 import { openBlockExplorerForOperation } from '../../utils/general';
