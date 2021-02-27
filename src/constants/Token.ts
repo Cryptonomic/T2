@@ -119,7 +119,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
     {
         network: 'mainnet',
         address: 'KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN',
-        displayName: 'Blend Token by StakerDAO',
+        displayName: 'Blend',
         symbol: 'BLND',
         balance: 0,
         transactions: [],
@@ -218,7 +218,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
     {
         network: 'delphinet',
         address: 'KT1N3KopJkpzBfRPFVzqaAwyPEyuVmhpePmt',
-        displayName: 'Blend Token by StakerDAO',
+        displayName: 'Blend',
         symbol: 'BLND',
         balance: 0,
         transactions: [],
