@@ -6,7 +6,6 @@ import {
     TezosNodeWriter,
     KeyStoreType,
     Tzip7ReferenceTokenHelper,
-    StakerDAOTokenHelper,
     TzbtcTokenHelper,
     WrappedTezosHelper,
     KolibriTokenHelper,
@@ -208,10 +207,6 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].transactions,
                     tokens[tokenIndex].kind
                 );
-            } else if (tokens[tokenIndex].kind === TokenKind.stkr) {
-                balanceAsync = StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                detailsAsync = StakerDAOTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
-                transAsync = [];
             } else if (tokens[tokenIndex].kind === TokenKind.tzbtc) {
                 balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
@@ -348,30 +343,6 @@ export function syncWalletThunk() {
                     ); /* TODO */
 
                     return { ...token, mapid, administrator, balance, transactions, details };
-                } else if (token.kind === TokenKind.stkr) {
-                    try {
-                        const validCode = await StakerDAOTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
-                        if (!validCode) {
-                            console.log(`warning, stkr fingerprint mismatch for token: ${JSON.stringify(token)}`);
-                        }
-                    } catch {
-                        console.log(`warning, stkr fingerprint mismatch for token: ${JSON.stringify(token)}`);
-                    }
-
-                    let mapid = token.mapid;
-                    const administrator = token.administrator || '';
-
-                    const details = await StakerDAOTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
-                    mapid = details?.mapid || -1;
-
-                    if (mapid === -1) {
-                        console.log(`warning, could not process token: ${JSON.stringify(token)}`);
-                        return { ...token, mapid, administrator, balance: 0 };
-                    }
-
-                    const balance = await StakerDAOTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
-
-                    return { ...token, mapid, administrator, balance, transactions: [], details };
                 } else if (token.kind === TokenKind.tzbtc) {
                     try {
                         const validCode = await TzbtcTokenHelper.verifyDestination(mainNode.tezosUrl, token.address);
@@ -511,7 +482,6 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
             dispatch(setWalletIsSyncingAction(true));
             if (
                 addressType === AddressType.Token ||
-                addressType === AddressType.STKR ||
                 addressType === AddressType.TzBTC ||
                 addressType === AddressType.wXTZ ||
                 addressType === AddressType.kUSD
