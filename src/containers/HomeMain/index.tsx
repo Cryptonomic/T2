@@ -16,6 +16,7 @@ import StakerToken from '../../contracts/StakerToken';
 import TzBtcToken from '../../contracts/TzBtcToken';
 import WXTZToken from '../../contracts/WrappedTezos';
 import KolibriToken from '../../contracts/KolibriToken';
+import BlndToken from '../../contracts/BlndToken';
 import { sortArr } from '../../utils/array';
 
 import { Container, SideBarContainer, AccountItem } from './style';
@@ -51,6 +52,8 @@ function HomeMain() {
                 return <WXTZToken />;
             case AddressType.kUSD:
                 return <KolibriToken />;
+            case AddressType.BLND:
+                return <BlndToken />;
             default:
                 return <GenericContract />;
         }

@@ -8,6 +8,7 @@ import ethtzIcon from '../../resources/contracts/ethtz-icon.png';
 import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 import uteIcon from '../../resources/contracts/ute-aspen-icon.png';
 import kusdIcon from '../../resources/contracts/kusd-icon.png';
+import blndIcon from '../../resources/contracts/blnd-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken)[] = [
     {
@@ -116,6 +117,21 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         round: 2,
     },
     {
+        network: 'mainnet',
+        address: 'KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN',
+        displayName: 'Blend Token by StakerDAO',
+        symbol: 'BLND',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.blnd,
+        icon: blndIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 368,
+    },
+    {
         network: 'delphinet',
         address: 'KT1REPEBMQS3Be8ZybkQQfSwAv3g4pHJViuK',
         displayName: 'USDtz',
@@ -199,6 +215,21 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         precision: 6,
         round: 6,
     },
+    {
+        network: 'delphinet',
+        address: 'KT1N3KopJkpzBfRPFVzqaAwyPEyuVmhpePmt',
+        displayName: 'Blend Token by StakerDAO',
+        symbol: 'BLND',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.blnd,
+        icon: blndIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 54781,
+    },
 ];
 
 export const knownContractNames = {
@@ -215,6 +246,7 @@ export const knownContractNames = {
     KT1H28iie4mW9LmmJeYLjH6zkC8wwSmfHf5P: 'TzButton Round 2',
     KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: 'Kolibri Token',
     KT1Xf2Cwwwh67Ycu7E9yd3UhsABQC4YZPkab: 'Dexter kUSD/XTZ Pool',
+    KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN: 'BLND Token',
 };
 
 export const knownMarketMetadata = [
