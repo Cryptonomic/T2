@@ -249,6 +249,8 @@ export function syncTokenThunk(tokenAddress) {
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                    console.log('[stakerdao] Storage: ' + JSON.stringify(d));
+
                     return { ...d, holders: keyCount };
                 });
                 transAsync = tzip7Util.syncTokenTransactions(
@@ -512,7 +514,10 @@ export function syncWalletThunk() {
                         network: mainNode.network,
                     };
 
-                    let details: any = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
+                    let details: any = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch((e) => {
+                        console.log('Caught: ' + e);
+                        return undefined;
+                    });
                     mapid = details?.mapid || -1;
                     if (token.mapid && token.mapid > mapid) {
                         mapid = token.mapid;

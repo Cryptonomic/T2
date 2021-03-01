@@ -130,6 +130,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         precision: 18,
         round: 2,
         mapid: 368,
+        helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
     },
     {
         network: 'delphinet',
@@ -229,6 +230,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         precision: 18,
         round: 2,
         mapid: 54781,
+        helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
     },
 ];
 
