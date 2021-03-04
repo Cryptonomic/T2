@@ -1,7 +1,6 @@
 import { VaultToken, Token, TokenKind } from '../types/general';
 import { TRANSACTIONS, DETAILS } from './TabConstants';
 
-import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
 import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 import ethtzIcon from '../../resources/contracts/ethtz-icon.png';
@@ -11,20 +10,6 @@ import kusdIcon from '../../resources/contracts/kusd-icon.png';
 import blndIcon from '../../resources/contracts/blnd-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken)[] = [
-    {
-        network: 'mainnet',
-        address: 'KT1EctCuorV2NfVb1XTQgvzJ88MQtWP8cMMv',
-        displayName: 'StakerDAO Token',
-        symbol: 'STKR',
-        balance: 0,
-        transactions: [],
-        activeTab: DETAILS,
-        kind: TokenKind.stkr,
-        icon: stakerdaoIcon,
-        scale: 0,
-        precision: 0,
-        round: 0,
-    },
     {
         network: 'mainnet',
         address: 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
@@ -235,7 +220,6 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
 ];
 
 export const knownContractNames = {
-    KT1EctCuorV2NfVb1XTQgvzJ88MQtWP8cMMv: 'StakerDAO Token',
     KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn: 'tzBTC Token',
     KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: 'USDtz Token',
     KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8: 'ETHtz Token',

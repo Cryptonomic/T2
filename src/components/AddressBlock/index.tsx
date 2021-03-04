@@ -356,10 +356,6 @@ function AddressBlock(props: Props) {
                     return null;
                 }
 
-                if (token.kind === TokenKind.stkr) {
-                    tokenType = AddressType.STKR;
-                }
-
                 if (token.kind === TokenKind.tzbtc) {
                     tokenType = AddressType.TzBTC;
                 }
