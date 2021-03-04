@@ -58,6 +58,7 @@ export enum AddressType {
     TzBTC,
     wXTZ,
     kUSD,
+    BLND,
 }
 
 export interface RegularAddress {
@@ -113,6 +114,7 @@ export enum TokenKind {
     wxtz = 'wxtz',
     ethtz = 'ethtz',
     kusd = 'kusd',
+    blnd = 'blnd',
 }
 
 export interface Token {

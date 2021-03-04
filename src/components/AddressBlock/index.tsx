@@ -368,6 +368,10 @@ function AddressBlock(props: Props) {
                     tokenType = AddressType.kUSD;
                 }
 
+                if (token.kind === TokenKind.blnd) {
+                    tokenType = AddressType.BLND;
+                }
+
                 return (
                     <TokenNav
                         key={token.address}
