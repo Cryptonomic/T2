@@ -1,4 +1,4 @@
-import { VaultToken, Token, TokenKind } from '../types/general';
+import { ArtToken, VaultToken, Token, TokenKind } from '../types/general';
 import { TRANSACTIONS, DETAILS } from './TabConstants';
 
 import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
@@ -9,7 +9,7 @@ import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 import uteIcon from '../../resources/contracts/ute-aspen-icon.png';
 import kusdIcon from '../../resources/contracts/kusd-icon.png';
 
-export const knownTokenContracts: (Token | VaultToken)[] = [
+export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
         network: 'mainnet',
         address: 'KT1EctCuorV2NfVb1XTQgvzJ88MQtWP8cMMv',
@@ -116,6 +116,21 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         round: 2,
     },
     {
+        network: 'mainnet',
+        address: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
+        displayName: 'hic et nunc',
+        symbol: 'OBJKT',
+        balance: 0,
+        transactions: [],
+        activeTab: DETAILS,
+        kind: TokenKind.objkt,
+        icon: stakerdaoIcon,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        marketAddress: 'KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9',
+    },
+    {
         network: 'delphinet',
         address: 'KT1REPEBMQS3Be8ZybkQQfSwAv3g4pHJViuK',
         displayName: 'USDtz',
@@ -208,49 +223,60 @@ export const knownContractNames = {
     KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8: 'ETHtz Token',
     KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH: 'wXTZ Token',
     KT1V4Vp7zhynCNuaBjWMpNU535Xm2sgqkz6M: 'wXTZ Manager',
-    KT19c8n5mWrqpxMcR3J687yssHxotj88nGhZ: 'Dexter ETHtz/XTZ Pool',
-    KT1Puc9St8wdNoGtLiD2WXaHbWU7styaxYhD: 'Dexter USDtz/XTZ Pool',
-    KT1DrJV8vhkdLEj76h1H9Q4irZDqAkMPo1Qf: 'Dexter tzBTC/XTZ Pool',
-    KT1XTXBsEauzcv3uPvVXW92mVqrx99UGsb9T: 'Dexter wXTZ/XTZ Pool',
+    KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU: 'Dexter ETHtz/XTZ Pool',
+    KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9: 'Dexter USDtz/XTZ Pool',
+    KT1BGQR7t4izzKZ7eRodKWTodAsM23P38v7N: 'Dexter tzBTC/XTZ Pool',
+    KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo: 'Dexter wXTZ/XTZ Pool',
     KT1H28iie4mW9LmmJeYLjH6zkC8wwSmfHf5P: 'TzButton Round 2',
     KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: 'Kolibri Token',
-    KT1Xf2Cwwwh67Ycu7E9yd3UhsABQC4YZPkab: 'Dexter kUSD/XTZ Pool',
+    KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6: 'Dexter kUSD/XTZ Pool',
+    KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9: 'hic et nunc Auction House',
+    KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton: 'hic et nunc NFT',
+    KT1CpeSQKdkhWi4pinYcseCFKmDhs5M74BkU: 'tzcolors Auction House',
+    KT1FyaDqiMQWg7Exo7VUiXAgZbd2kCzo3d4s: 'tzcolors NFT',
 };
 
 export const knownMarketMetadata = [
     {
         network: 'mainnet',
-        address: 'KT19c8n5mWrqpxMcR3J687yssHxotj88nGhZ',
+        address: 'KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU',
         name: 'Dexter ETHtz/XTZ Pool',
         scale: 18,
         symbol: 'ETHtz',
     },
     {
         network: 'mainnet',
-        address: 'KT1Puc9St8wdNoGtLiD2WXaHbWU7styaxYhD',
+        address: 'KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9',
         name: 'Dexter USDtz/XTZ Pool',
         scale: 6,
         symbol: 'USDtz',
     },
     {
         network: 'mainnet',
-        address: 'KT1DrJV8vhkdLEj76h1H9Q4irZDqAkMPo1Qf',
+        address: 'KT1BGQR7t4izzKZ7eRodKWTodAsM23P38v7N',
         name: 'Dexter tzBTC/XTZ Pool',
         scale: 8,
         symbol: 'tzBTC',
     },
     {
         network: 'mainnet',
-        address: 'KT1XTXBsEauzcv3uPvVXW92mVqrx99UGsb9T',
+        address: 'KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo',
         name: 'Dexter wXTZ/XTZ Pool',
         scale: 6,
         symbol: 'wXTZ',
     },
     {
         network: 'mainnet',
-        address: 'KT1Xf2Cwwwh67Ycu7E9yd3UhsABQC4YZPkab',
+        address: 'KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6',
         name: 'Dexter kUSD/XTZ Pool',
         scale: 18,
         symbol: 'kUSD',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
+        name: 'hic et nunc NFT',
+        scale: 0,
+        symbol: 'OBJKT',
     },
 ];
