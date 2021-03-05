@@ -76,7 +76,9 @@
             "proposal": "Proposal",
             "evaluation": "evaluation",
             "voting": "Voting",
-            "implementation": "Implementation"
+            "implementation": "Implementation",
+            "vaults": "Vaults",
+            "collection": "Collection"
         },
         "errors": {
             "no_hex_data": "The provided string doesn't look like hex data",
