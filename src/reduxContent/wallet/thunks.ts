@@ -23,7 +23,7 @@ import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
 import { CREATED } from '../../constants/StatusTypes';
 import { createTransaction } from '../../utils/transaction';
-import { TokenKind, Vault, VaultToken } from '../../types/general';
+import { TokenKind, VaultToken, ArtToken } from '../../types/general';
 
 import { findAccountIndex, getSyncAccount, syncAccountWithState } from '../../utils/account';
 
@@ -47,6 +47,8 @@ import {
     setIsLedgerConnectingAction,
     changeAccountAction,
 } from '../app/actions';
+
+import * as HicNFTUtil from '../../contracts/HicNFT/util';
 
 import { setSignerThunk, setLedgerSignerThunk } from '../app/thunks';
 
@@ -245,6 +247,10 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].transactions,
                     tokens[tokenIndex].kind
                 );
+            } else if (tokens[tokenIndex].kind === TokenKind.objkt) {
+                balanceAsync = HicNFTUtil.getCollectionSize(511, selectedParentHash, selectedNode);
+                detailsAsync = {};
+                transAsync = [];
             }
 
             try {
@@ -490,6 +496,21 @@ export function syncWalletThunk() {
                     ); /* TODO */
 
                     return { ...token, mapid, administrator, balance, transactions, details };
+                } else if (token.kind === TokenKind.objkt) {
+                    const mapid = 511;
+                    const administrator = '';
+
+                    // const details = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
+
+                    if (mapid === -1) {
+                        console.log(`warning, could not process token: ${JSON.stringify(token)}`);
+                        return { ...token, mapid, administrator, balance: 0 };
+                    }
+
+                    const balance = await HicNFTUtil.getCollectionSize(511, selectedParentHash, selectedNode);
+                    const transactions = await HicNFTUtil.getTokenTransactions('', selectedParentHash, selectedNode);
+
+                    return { ...token, mapid, administrator, balance, transactions };
                 } else {
                     console.warn(`warning, unsupported token: ${JSON.stringify(token)}`);
                     return { ...token, mapid: -1, administrator: '', balance: 0, transactions: [] };
@@ -514,7 +535,8 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
                 addressType === AddressType.STKR ||
                 addressType === AddressType.TzBTC ||
                 addressType === AddressType.wXTZ ||
-                addressType === AddressType.kUSD
+                addressType === AddressType.kUSD ||
+                addressType === AddressType.objkt
             ) {
                 await dispatch(syncTokenThunk(selectedAccountHash));
             } else if (selectedAccountHash === selectedParentHash) {

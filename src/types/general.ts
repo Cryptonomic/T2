@@ -58,6 +58,7 @@ export enum AddressType {
     TzBTC,
     wXTZ,
     kUSD,
+    objkt,
 }
 
 export interface RegularAddress {
@@ -113,6 +114,7 @@ export enum TokenKind {
     wxtz = 'wxtz',
     ethtz = 'ethtz',
     kusd = 'kusd',
+    objkt = 'objkt',
 }
 
 export interface Token {
@@ -147,6 +149,10 @@ export interface VaultToken extends Token {
 
     // A list of Ovens owned by the user.
     vaultList: Vault[];
+}
+
+export interface ArtToken extends Token {
+    marketAddress: string;
 }
 
 /**
