@@ -60,9 +60,9 @@ function BalanceBanner(props: Props) {
                     <AddressTitle>{displayName}</AddressTitle>{' '}
                     {token.helpLink && (
                         <>
-                            <AddressInfoLink onClick={() => openLink(token.details.helpLink)}>
+                            <AddressInfoLink onClick={() => openLink(token.helpLink || '')}>
                                 Learn more
-                                <LinkIcon iconName="new-window" size={ms(0)} color="white" onClick={() => openLink(token.details.helpLink)} />
+                                <LinkIcon iconName="new-window" size={ms(0)} color="white" onClick={() => openLink(token.helpLink || '')} />
                             </AddressInfoLink>
                         </>
                     )}
