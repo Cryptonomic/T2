@@ -664,6 +664,24 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                         </>
                     );
                 }
+            } else if (transaction.parameters.entrypoint === 'mint_OBJKT') {
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].int', json: transaction.parameters.value })[0]).toString();
+                const royaltyAmount = Number(JSONPath({ path: '$.args[1].args[1].int', json: transaction.parameters.value })[0]);
+                const metadataString = JSONPath({ path: '$.args[1].args[0].bytes', json: transaction.parameters.value })[0].toString();
+                const metadataUrl = Buffer.from(metadataString, 'hex').toString(); // TODO: download and parse metadata
+
+                return (
+                    <>
+                        &nbsp;to mint&nbsp;
+                        <strong>{tokenAmount} OBJKT</strong>
+                        {royaltyAmount > 0 && (
+                            <span>
+                                &nbsp;with&nbsp;<strong>{(royaltyAmount / 10).toFixed(1)}%</strong>&nbsp;royalties
+                            </span>
+                        )}
+                        {!royaltyAmount && <span> without royalties</span>}
+                    </>
+                );
             }
 
             return undefined;
@@ -678,9 +696,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 <ModalContainer>
                     <Container>
                         <div className="modal-holder">
-                            {operationDetails.length === 1 && <h3>{t('components.Beacon.authorization.title')}</h3>}
-                            {operationDetails.length > 1 && <h3>{t('components.Beacon.authorization.title_plural')}</h3>}
-                            <h4>Network: {network.type}</h4>
+                            {operationDetails.length === 1 && <h3>{t('components.Beacon.authorization.title', { network: network.type })}</h3>}
+                            {operationDetails.length > 1 && <h3>{t('components.Beacon.authorization.title_plural', { network: network.type })}</h3>}
                             <p className="linkAddress">{website}</p>
                             {!isContract && (
                                 <p>
@@ -718,7 +735,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {isContract && (
                                 <div>
                                     <p className="inputLabel">Raw Operation Content</p>
-                                    <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)}/>
+                                    <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
                                 </div>
                             )}
                             <div className="feeContainer">

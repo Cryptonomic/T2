@@ -374,8 +374,8 @@ export const BeaconInfoContainer = styled.div`
         margin-top: 24px;
     }
     .items {
-        margin-top: 32px;
-        margin-bottom: 100px;
+        max-height: 480px;
+        overflow-y: scroll;
     }
 `;
 

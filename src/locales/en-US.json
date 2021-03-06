@@ -140,14 +140,14 @@
         },
         "Beacon": {
             "connection": {
-                "title": "Connection Request"
+                "title": "{{network}} Connection Request"
             },
             "permission": {
-                "title": "Permission Request"
+                "title": "{{network}} Permission Request"
             },
             "authorization": {
-                "title": "Authorize Operation",
-                "title_plural": "Authorize Operations"
+                "title": "Authorize {{network}} Operation",
+                "title_plural": "Authorize {{network}} Operations"
             },
             "info": {
                 "title": "Beacon Status",
