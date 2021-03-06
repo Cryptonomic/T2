@@ -165,7 +165,6 @@ export function queryHicEtNuncSwap(swapId: number) {
     // TODO
     const store = useStore<RootState>();
     const [info, setInfo] = useState<any>({});
-    console.log('queryHicEtNuncSwap', swapId);
 
     useEffect(() => {
         const getSwapInfo = async () => {

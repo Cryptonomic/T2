@@ -27,14 +27,13 @@ export const BeaconMessageRouter = () => {
 
     const onBeaconMessage = (message: BeaconRequestOutputMessage, connection: ConnectionContext) => {
         if (message.type === BeaconMessageType.PermissionRequest) {
-            console.log('Beacon.PermissionRequest', message);
             if (connectedBlockchainNode.network !== message.network.type) {
                 dispatch(createMessageAction('Beacon network mismatch', true));
                 return;
             }
 
             if (!Object.keys(modalValues).length || !Object.keys(modalValues).includes('beaconRegistration')) {
-                dispatch(createMessageAction('Received malformed Beacon request', true));
+                dispatch(createMessageAction('Received unexpected Beacon request', true));
                 return;
             }
 

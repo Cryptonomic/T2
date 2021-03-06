@@ -1,4 +1,4 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosMessageUtils } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosMessageUtils, TezosNodeReader } from 'conseiljs';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
@@ -171,22 +171,53 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
         });
 }
 
-export async function getCollection(tokenMapId: number, managerAddress: string, node: Node) {
+export async function getCollection(tokenMapId: number, managerAddress: string, node: Node): Promise<any[]> {
+    // TODO: move to conseiljs wrapper
     const { conseilUrl, apiKey, network } = node;
 
     let collectionQuery = ConseilQueryBuilder.blankQuery();
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
-        `Pair ${TezosMessageUtils.writeAddress(managerAddress)}`,
+        `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
     ]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
-    console.log('collectionResult', JSON.stringify(collectionResult));
+
+    const collection = collectionResult.map((i) => {
+        return { piece: i.key.toString().replace(/.* ([0-9]{1,}$)/, '$1'), amount: Number(i.value) };
+    });
+
+    return collection;
 }
 
-export async function getCollectionSize(tokenMapId: number, managerAddress: string, node: Node) {
-    await getCollection(tokenMapId, managerAddress, node);
+export async function getCollectionSize(tokenMapId: number, managerAddress: string, node: Node): Promise<number> {
+    const collection = await getCollection(tokenMapId, managerAddress, node);
+    const tokenCount = collection.reduce((a, c) => a + c.amount, 0);
+
+    return tokenCount;
 }
+
+export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
+    const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
+    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 514, packedNftId);
+    const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
+    const ipfsHash = Buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
+
+    const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+    const nftDetailJson = await nftDetails.json();
+
+    const nftName = nftDetailJson.name;
+    const nftDescription = nftDetailJson.description;
+    const nftCreators = nftDetailJson.creators.join(', ');
+    const nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+    const nftArtifactType = nftDetailJson.formats[0].mimeType.toString();
+
+    return { name: nftName, description: nftDescription, creators: nftCreators, artifactUrl: nftArtifact, artifactType: nftArtifactType };
+}
+
+// number of holders
+
+// number of unique tokens

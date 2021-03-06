@@ -1,4 +1,10 @@
+import { useState, useEffect } from 'react';
+import { useStore } from 'react-redux';
+
 import { Tzip7ReferenceTokenHelper } from 'conseiljs';
+
+import { RootState } from '../../types/store';
+
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
@@ -12,9 +18,9 @@ import { ArtToken, Token, TokenKind } from '../../types/general';
 
 import { findTokenIndex } from '../../utils/token';
 
-import { getCollectionSize } from './util';
+import * as HicNFTUtil from './util';
 
-const { transferBalance, mint, burn } = Tzip7ReferenceTokenHelper;
+const { transferBalance } = Tzip7ReferenceTokenHelper;
 
 const GAS = 125000; // TODO
 const FREIGHT = 1000;
@@ -96,7 +102,7 @@ export function syncTokenTransactions(tokenAddress) {
         let transAsync;
         if (tokens[tokenIndex].kind === TokenKind.objkt) {
             const mapid = tokens[tokenIndex].mapid || -1; // TODO: if -1, return empty
-            balanceAsync = await getCollectionSize(511, selectedParentHash, selectedNode);
+            balanceAsync = await HicNFTUtil.getCollectionSize(mapid, selectedParentHash, selectedNode);
             transAsync = [];
         }
 
@@ -121,4 +127,41 @@ export function getTokenAttributes(tokenAddress) {
 
         // const storage = await StakerDAOTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokenAddress);
     };
+}
+
+export function getCollection() {
+    const store = useStore<RootState>();
+    const [collection, setCollection] = useState<any[]>([]);
+
+    useEffect(() => {
+        const _getCollection = async () => {
+            const { selectedNode, nodesList } = store.getState().settings;
+            const { selectedParentHash } = store.getState().app;
+            const mainNode = getMainNode(nodesList, selectedNode);
+
+            setCollection(await HicNFTUtil.getCollection(511, selectedParentHash, mainNode));
+        };
+
+        _getCollection();
+    }, []);
+
+    return collection;
+}
+
+export function getPieceInfo(objectId: number) {
+    const store = useStore<RootState>();
+    const [pieceInfo, setPieceInfo] = useState<any>({});
+
+    useEffect(() => {
+        const _getPieceInfo = async () => {
+            const { selectedNode, nodesList } = store.getState().settings;
+            const mainNode = getMainNode(nodesList, selectedNode);
+
+            setPieceInfo(await HicNFTUtil.getNFTObjectDetails(mainNode.tezosUrl, objectId));
+        };
+
+        _getPieceInfo();
+    }, []);
+
+    return pieceInfo;
 }
