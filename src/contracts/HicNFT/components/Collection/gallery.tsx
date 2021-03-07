@@ -45,7 +45,6 @@ const ArtGallery = (props: ArtGalleryProps) => {
     };
 
     const pieces = collection.map((p: any) => {
-        console.log('ArtGallery', p);
         return <ArtPiece key={p.piece} objectId={p.piece} />;
     });
 

@@ -1,4 +1,12 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosMessageUtils, TezosNodeReader } from 'conseiljs';
+import {
+    ConseilQueryBuilder,
+    ConseilOperator,
+    ConseilSortDirection,
+    TezosConseilClient,
+    TezosMessageUtils,
+    TezosNodeReader,
+    TezosParameterFormat,
+} from 'conseiljs';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
@@ -198,6 +206,32 @@ export async function getCollectionSize(tokenMapId: number, managerAddress: stri
     const tokenCount = collection.reduce((a, c) => a + c.amount, 0);
 
     return tokenCount;
+}
+
+/**
+ * Returns raw hDAO token balance for the account.
+ * KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW, ledger map id 515
+ *
+ * @param tokenMapId
+ * @param managerAddress
+ * @param node
+ * @returns
+ */
+export async function getBalance(tezosUrl: string, mapId: number, address: string): Promise<number> {
+    const packedTokenKey = TezosMessageUtils.encodeBigMapKey(
+        Buffer.from(TezosMessageUtils.writePackedData(`(Pair 0x${TezosMessageUtils.writeAddress(address)} 0)`, '', TezosParameterFormat.Michelson), 'hex')
+    );
+    let balance = 0;
+
+    try {
+        const balanceResult = await TezosNodeReader.getValueForBigMapKey(tezosUrl, mapId, packedTokenKey);
+        console.log('balanceResult', balanceResult, TezosMessageUtils.writeAddress(address), JSONPath({ path: '$.int', json: balanceResult })[0]);
+        balance = new BigNumber(JSONPath({ path: '$.int', json: balanceResult })[0]).toNumber();
+    } catch (err) {
+        //
+    }
+
+    return balance;
 }
 
 export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {

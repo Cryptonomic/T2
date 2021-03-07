@@ -148,6 +148,25 @@ export function getCollection() {
     return collection;
 }
 
+export function getBalance() {
+    const store = useStore<RootState>();
+    const [balance, setBalance] = useState<number>(0);
+
+    useEffect(() => {
+        const _getBalance = async () => {
+            const { selectedNode, nodesList } = store.getState().settings;
+            const { selectedParentHash } = store.getState().app;
+            const mainNode = getMainNode(nodesList, selectedNode);
+
+            setBalance(await HicNFTUtil.getBalance(mainNode.tezosUrl, 515, selectedParentHash));
+        };
+
+        _getBalance();
+    }, []);
+
+    return balance;
+}
+
 export function getPieceInfo(objectId: number) {
     const store = useStore<RootState>();
     const [pieceInfo, setPieceInfo] = useState<any>({});

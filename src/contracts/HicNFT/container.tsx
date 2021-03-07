@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
-import BalanceBanner from '../components/BalanceBanner';
+import BalanceBanner from './components/BalanceBanner';
 import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
 import Loader from '../../components/Loader';
 import { TRANSACTIONS, SEND, COLLECTION } from '../../constants/TabConstants';
-import { RootState, SettingsState } from '../../types/store';
+import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 
 import { ArtToken } from '../../types/general';
@@ -18,7 +18,7 @@ import Send from '../components/Send';
 import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
 import { getTokenSelector } from '../duck/selectors';
 
-import { transferThunk, getCollection } from './thunks';
+import { transferThunk, getCollection, getBalance } from './thunks';
 import CollectionContainer from './components/Collection';
 
 function ActionPanel() {
@@ -36,6 +36,7 @@ function ActionPanel() {
     }
 
     const collection = getCollection();
+    const balance = getBalance();
 
     function renderSection() {
         switch (activeTab) {
@@ -84,6 +85,7 @@ function ActionPanel() {
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 displayName={displayName}
                 token={selectedToken}
+                auxBalance={balance}
             />
 
             <TabList count={tabs.length}>
