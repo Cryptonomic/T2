@@ -90,7 +90,7 @@ interface Props {
 const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
     const modalValues = useSelector<RootState, ModalState>((state) => state.modal.values, shallowEqual);
     const operationHash = useSelector<RootState>((state) => state.message.hash) as string;
@@ -98,6 +98,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
     const [password, setPassword] = useState('');
     const [operationState, setOperationState] = useState(defaultState);
+    const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
 
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
@@ -119,26 +120,30 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             // TODO: validate destination != self
 
             const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
+
+            if (isLedger) {
+                setLedgerModalOpen(true);
+            }
             if (isContract) {
                 // TODO: errors from here don't always bubble up
                 const operationResult = await dispatch(sendOperations(password, operationDetails));
 
                 if (!!operationResult) {
+                    setLedgerModalOpen(false);
                     dispatch(setBeaconLoading(false));
                     onClose();
                 } else {
                     // error
+                    setLedgerModalOpen(false);
                 }
-
-                // TODO: ledger
             } else {
                 dispatch(sendTezThunk(password, destination, formattedAmount, operationState.fee));
-                // TODO: ledger
             }
         } catch (e) {
             console.log('Transaction.Error', e);
             dispatch(createMessageAction(e.message || e.toString(), true));
             dispatch(setBeaconLoading(false));
+            setLedgerModalOpen(false);
         }
     };
 
@@ -757,9 +762,13 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                     }
                                 />
                             </div>
-                            <WrapPassword>
-                                <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
-                            </WrapPassword>
+
+                            {!isLedger && (
+                                <WrapPassword>
+                                    <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
+                                </WrapPassword>
+                            )}
+
                             <p className="subtitleText">
                                 Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
                             </p>
@@ -767,14 +776,22 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     </Container>
                     {beaconLoading && <Loader />}
                     <Footer>
-                        <ButtonContainer>
-                            <WhiteBtn buttonTheme="secondary" onClick={onClose}>
-                                {t('general.verbs.cancel')}
-                            </WhiteBtn>
-                            <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
-                                {t('general.verbs.authorize')}
-                            </InvokeButton>
-                        </ButtonContainer>
+                        {!ledgerModalOpen && (
+                            <ButtonContainer>
+                                <WhiteBtn buttonTheme="secondary" onClick={onClose}>
+                                    {t('general.verbs.cancel')}
+                                </WhiteBtn>
+                                <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
+                                    {t('general.verbs.authorize')}
+                                </InvokeButton>
+                            </ButtonContainer>
+                        )}
+
+                        {isLedger && ledgerModalOpen && (
+                            <ButtonContainer>
+                                <>Please confirm the operation on the Ledger device</>
+                            </ButtonContainer>
+                        )}
                     </Footer>
                 </ModalContainer>
             ) : (
