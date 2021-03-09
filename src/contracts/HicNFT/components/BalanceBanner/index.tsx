@@ -65,31 +65,37 @@ function BalanceBanner(props: Props) {
                     )}
                 </AddressInfo>
                 <AddressInfo>
-                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
-                    <Gap />
-                    <AmountView
-                        color="white"
-                        size={ms(4.5)}
-                        amount={balance}
-                        weight="light"
-                        symbol={token.symbol}
-                        showTooltip={true}
-                        scale={token.scale}
-                        precision={token.precision}
-                        round={token.round}
-                    />
-                    <Gap />
-                    <AmountView
-                        color="white"
-                        size={ms(4.5)}
-                        amount={auxBalance}
-                        weight="light"
-                        symbol={'hDAO'}
-                        showTooltip={true}
-                        scale={6}
-                        precision={6}
-                        round={6}
-                    />
+                    <div style={{ alignItems: 'start', marginTop: '5px' }}>
+                        <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
+                    </div>
+                    <div style={{ marginLeft: 'auto' }}>
+                        <div>
+                            <AmountView
+                                color="white"
+                                size={ms(4.5)}
+                                amount={balance}
+                                weight="light"
+                                symbol={token.symbol}
+                                showTooltip={true}
+                                scale={token.scale}
+                                precision={token.precision}
+                                round={token.round}
+                            />
+                        </div>
+                        <div>
+                            <AmountView
+                                color="white"
+                                size={ms(4.5)}
+                                amount={auxBalance}
+                                weight="light"
+                                symbol={'hDAO'}
+                                showTooltip={true}
+                                scale={6}
+                                precision={6}
+                                round={2}
+                            />
+                        </div>
+                    </div>
                 </AddressInfo>
                 <AddressInfo>
                     {token.details && token.details.paused === false && 'Token is active.'}{' '}

@@ -70,17 +70,19 @@ function BalanceBanner(props: Props) {
                 <AddressInfo>
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
                     <Gap />
-                    <AmountView
-                        color="white"
-                        size={ms(4.5)}
-                        amount={balance}
-                        weight="light"
-                        symbol={token.symbol}
-                        showTooltip={true}
-                        scale={token.scale}
-                        precision={token.precision}
-                        round={token.round}
-                    />
+                    <div style={{ marginLeft: 'auto' }}>
+                        <AmountView
+                            color="white"
+                            size={ms(4.5)}
+                            amount={balance}
+                            weight="light"
+                            symbol={token.symbol}
+                            showTooltip={true}
+                            scale={token.scale}
+                            precision={token.precision}
+                            round={token.round}
+                        />
+                    </div>
                 </AddressInfo>
                 <AddressInfo>
                     {token.details && token.details.paused === false && 'Token is active.'}{' '}

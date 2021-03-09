@@ -43,7 +43,7 @@ export const AddressTitleIcon = styled(TezosIcon)`
 export const AddressInfo = styled.div`
     display: flex;
     align-items: center;
-    line-height: 1.9;
+    line-height: 1.4;
     flex-wrap: wrap;
 `;
 
