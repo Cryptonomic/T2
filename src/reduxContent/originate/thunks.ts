@@ -12,6 +12,7 @@ import { createTransaction } from '../../utils/transaction';
 import { ORIGINATION } from '../../constants/TransactionTypes';
 
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
+import { cloneDecryptedSigner } from '../../utils/wallet';
 
 const { sendContractOriginationOperation } = TezosNodeWriter;
 const { deployManagerContract } = BabylonDelegationHelper;
@@ -76,7 +77,7 @@ export function originateContractThunk(
         if (isSmartContract) {
             newAddress = await sendContractOriginationOperation(
                 tezosUrl,
-                signer,
+                isLedger ? signer : await cloneDecryptedSigner(signer, passPhrase),
                 keyStore,
                 amountInUtez,
                 delegate.length > 0 ? delegate : undefined,
@@ -93,7 +94,14 @@ export function originateContractThunk(
                 return false;
             });
         } else {
-            newAddress = await deployManagerContract(tezosUrl, signer, keyStore, delegate, fee, amountInUtez).catch((err) => {
+            newAddress = await deployManagerContract(
+                tezosUrl,
+                isLedger ? signer : await cloneDecryptedSigner(signer, passPhrase),
+                keyStore,
+                delegate,
+                fee,
+                amountInUtez
+            ).catch((err) => {
                 const errorObj = { name: err.message, ...err };
                 console.error(errorObj);
                 dispatch(createMessageAction(errorObj.name, true));
