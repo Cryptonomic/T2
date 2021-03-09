@@ -1,4 +1,4 @@
-import { Identity, Vault, VaultToken, Token } from '../../types/general';
+import { Identity, VaultToken, Token, ArtToken } from '../../types/general';
 
 export const SET_WALLET = 'SET_WALLET';
 export const SET_WALLET_FILENAME = 'SET_WALLET_FILENAME';
@@ -54,7 +54,7 @@ export interface UpdateIdentityAction {
 
 export interface UpdateTokensAction {
     type: typeof UPDATE_TOKENS;
-    tokens: (VaultToken | Token)[];
+    tokens: (VaultToken | Token | ArtToken)[];
 }
 
 export type WalletActionTypes =

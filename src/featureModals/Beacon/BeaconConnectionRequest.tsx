@@ -57,8 +57,7 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
                 <ModalContainer>
                     <Container>
                         <div className="modal-holder">
-                            <h3>{t('components.Beacon.connection.title')}</h3>
-                            <h4>{`Network: ${connectedBlockchainNode.network}`}</h4>
+                            <h3>{t('components.Beacon.connection.title', { network: connectedBlockchainNode.network })}</h3>
                             {/*<p className="linkAddress">https://app.dexter.exchange/</p>*/}
                             <p className="text-center">{`${modalValues[activeModal].name} would like to connect to your wallet`}</p>
                             <p className="subtitleText text-center mr-t-100">

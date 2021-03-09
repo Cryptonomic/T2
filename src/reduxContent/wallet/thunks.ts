@@ -23,7 +23,7 @@ import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
 import { CREATED } from '../../constants/StatusTypes';
 import { createTransaction } from '../../utils/transaction';
-import { TokenKind, Vault, VaultToken } from '../../types/general';
+import { TokenKind, VaultToken, ArtToken } from '../../types/general';
 
 import { findAccountIndex, getSyncAccount, syncAccountWithState } from '../../utils/account';
 
@@ -31,7 +31,7 @@ import { findIdentity, findIdentityIndex, createIdentity, getSyncIdentity, syncI
 
 import { clearOperationId, getNodesStatus, getNodesError, getSelectedKeyStore } from '../../utils/general';
 
-import { saveUpdatedWallet, loadPersistedState, saveIdentitiesToLocal, loadWalletFromLedger, loadTokens } from '../../utils/wallet';
+import { saveUpdatedWallet, loadPersistedState, saveIdentitiesToLocal, loadWalletFromLedger, loadTokens, cloneDecryptedSigner } from '../../utils/wallet';
 
 import { findTokenIndex } from '../../utils/token';
 
@@ -47,6 +47,8 @@ import {
     setIsLedgerConnectingAction,
     changeAccountAction,
 } from '../app/actions';
+
+import * as HicNFTUtil from '../../contracts/HicNFT/util';
 
 import { setSignerThunk, setLedgerSignerThunk } from '../app/thunks';
 
@@ -177,7 +179,7 @@ export function syncTokenThunk(tokenAddress) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList } = state().settings;
         const { selectedParentHash } = state().app;
-        const tokens: (Token | VaultToken)[] = state().wallet.tokens;
+        const tokens: (Token | VaultToken | ArtToken)[] = state().wallet.tokens;
 
         const mainNode = getMainNode(nodesList, selectedNode);
         const tokenIndex = findTokenIndex(tokens, tokenAddress);
@@ -245,6 +247,10 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].transactions,
                     tokens[tokenIndex].kind
                 );
+            } else if (tokens[tokenIndex].kind === TokenKind.objkt) {
+                balanceAsync = HicNFTUtil.getCollectionSize(511, selectedParentHash, mainNode);
+                detailsAsync = {};
+                transAsync = [];
             }
 
             try {
@@ -284,7 +290,7 @@ export function syncWalletThunk() {
         dispatch(setWalletIsSyncingAction(true));
         const { selectedNode, nodesList } = state().settings;
         const { selectedAccountHash, selectedParentHash } = state().app;
-        const tokens: Token[] = state().wallet.tokens;
+        const tokens: (Token | VaultToken | ArtToken)[] = state().wallet.tokens;
 
         const mainNode = getMainNode(nodesList, selectedNode);
 
@@ -490,6 +496,16 @@ export function syncWalletThunk() {
                     ); /* TODO */
 
                     return { ...token, mapid, administrator, balance, transactions, details };
+                } else if (token.kind === TokenKind.objkt) {
+                    const artToken = token as ArtToken;
+                    const mapid = 511;
+                    const administrator = '';
+
+                    // const details = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
+                    const balance = await HicNFTUtil.getCollectionSize(mapid, selectedParentHash, mainNode);
+                    const transactions = []; // await HicNFTUtil.getTokenTransactions('', selectedParentHash, selectedNode);
+
+                    return { ...artToken, mapid, administrator, balance, transactions };
                 } else {
                     console.warn(`warning, unsupported token: ${JSON.stringify(token)}`);
                     return { ...token, mapid: -1, administrator: '', balance: 0, transactions: [] };
@@ -514,7 +530,8 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
                 addressType === AddressType.STKR ||
                 addressType === AddressType.TzBTC ||
                 addressType === AddressType.wXTZ ||
-                addressType === AddressType.kUSD
+                addressType === AddressType.kUSD ||
+                addressType === AddressType.objkt
             ) {
                 await dispatch(syncTokenThunk(selectedAccountHash));
             } else if (selectedAccountHash === selectedParentHash) {
@@ -579,10 +596,13 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     if (!account || account.length === 0) {
                         const keyStore = getSelectedKeyStore([identity], identity.publicKeyHash, identity.publicKeyHash, false);
                         const newKeyStore = { ...keyStore, storeType: KeyStoreType.Fundraiser };
-                        activating = await sendIdentityActivationOperation(tezosUrl, state().app.signer, newKeyStore, activationCode).catch((err) => {
-                            const error = err;
-                            error.name = err.message;
-                            throw error;
+                        activating = await sendIdentityActivationOperation(
+                            tezosUrl,
+                            await cloneDecryptedSigner(state().app.signer, walletPassword),
+                            newKeyStore,
+                            activationCode
+                        ).catch((err) => {
+                            throw new Error(`Count not activate account, due to – ${err.message}`);
                         });
 
                         const operationId = clearOperationId(activating.operationGroupID);
