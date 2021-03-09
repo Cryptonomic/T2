@@ -65,7 +65,7 @@ function BalanceBanner(props: Props) {
                     )}
                 </AddressInfo>
                 <AddressInfo>
-                    <div style={{ alignItems: 'start', marginTop: '5px' }}>
+                    <div style={{ alignItems: 'start' }}>
                         <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
                     </div>
                     <div style={{ marginLeft: 'auto' }}>

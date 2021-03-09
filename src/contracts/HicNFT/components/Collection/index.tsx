@@ -27,7 +27,7 @@ export default function CollectionContainer(props: Props) {
             <PaginationList
                 list={collection}
                 ListComponent={ArtGallery}
-                listComponentProps={{ ovens: collection }}
+                listComponentProps={{}}
                 componentListName="collection"
                 emptyState={emptyGallery}
                 emptyStateTitle={t('components.actionPanel.empty-title')}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
-import { BeaconMessageType, OperationResponseInput } from '@airgap/beacon-sdk';
+import { BeaconMessageType, OperationResponseInput, BeaconErrorType, BeaconResponseInputMessage } from '@airgap/beacon-sdk';
 import IconButton from '@material-ui/core/IconButton';
 import { BigNumber } from 'bignumber.js';
 import { OperationKindType } from 'conseiljs';
@@ -107,6 +107,18 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
     const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Transaction, true, true);
     const fee = estimateOperationGroupFee(selectedParentHash, operationDetails);
+
+    const onCancel = async () => {
+        const response: BeaconResponseInputMessage = {
+            id,
+            type: BeaconMessageType.Error,
+            errorType: BeaconErrorType.ABORTED_ERROR,
+            // senderId:
+        };
+        await beaconClient.respond(response);
+
+        onClose();
+    };
 
     const onAuthorize = async () => {
         try {
@@ -778,7 +790,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     <Footer>
                         {!ledgerModalOpen && (
                             <ButtonContainer>
-                                <WhiteBtn buttonTheme="secondary" onClick={onClose}>
+                                <WhiteBtn buttonTheme="secondary" onClick={onCancel}>
                                     {t('general.verbs.cancel')}
                                 </WhiteBtn>
                                 <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
