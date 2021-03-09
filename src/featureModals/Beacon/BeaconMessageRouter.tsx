@@ -32,15 +32,15 @@ export const BeaconMessageRouter = () => {
                 return;
             }
 
-            if (!Object.keys(modalValues).length || !Object.keys(modalValues).includes('beaconRegistration')) {
+            /*if (!Object.keys(modalValues).length || !Object.keys(modalValues).includes('beaconRegistration')) {
                 dispatch(createMessageAction('Received unexpected Beacon request', true));
                 return;
-            }
+            }*/
 
-            if (connection.id !== modalValues.beaconRegistration.publicKey) {
+            /*if (connection.id !== modalValues.beaconRegistration.publicKey) {
                 dispatch(createMessageAction('Beacon connection id did not match', true));
                 return;
-            }
+            }*/
 
             dispatch(setBeaconLoading());
             dispatch(setModalValue(message, 'beaconPermission'));
