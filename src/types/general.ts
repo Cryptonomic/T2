@@ -58,6 +58,7 @@ export enum AddressType {
     wXTZ,
     kUSD,
     BLND,
+    objkt,
     STKR,
 }
 
@@ -114,6 +115,7 @@ export enum TokenKind {
     ethtz = 'ethtz',
     kusd = 'kusd',
     blnd = 'blnd',
+    objkt = 'objkt',
     stkr = 'stkr',
 }
 
@@ -149,6 +151,10 @@ export interface VaultToken extends Token {
 
     // A list of Ovens owned by the user.
     vaultList: Vault[];
+}
+
+export interface ArtToken extends Token {
+    marketAddress: string;
 }
 
 /**
