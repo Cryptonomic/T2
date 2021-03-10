@@ -27,21 +27,20 @@ export const BeaconMessageRouter = () => {
 
     const onBeaconMessage = (message: BeaconRequestOutputMessage, connection: ConnectionContext) => {
         if (message.type === BeaconMessageType.PermissionRequest) {
-            console.log('Beacon.PermissionRequest', message);
             if (connectedBlockchainNode.network !== message.network.type) {
                 dispatch(createMessageAction('Beacon network mismatch', true));
                 return;
             }
 
-            if (!Object.keys(modalValues).length || !Object.keys(modalValues).includes('beaconRegistration')) {
-                dispatch(createMessageAction('Received malformed Beacon request', true));
+            /*if (!Object.keys(modalValues).length || !Object.keys(modalValues).includes('beaconRegistration')) {
+                dispatch(createMessageAction('Received unexpected Beacon request', true));
                 return;
-            }
+            }*/
 
-            if (connection.id !== modalValues.beaconRegistration.publicKey) {
+            /*if (connection.id !== modalValues.beaconRegistration.publicKey) {
                 dispatch(createMessageAction('Beacon connection id did not match', true));
                 return;
-            }
+            }*/
 
             dispatch(setBeaconLoading());
             dispatch(setModalValue(message, 'beaconPermission'));

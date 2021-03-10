@@ -76,7 +76,9 @@
             "proposal": "Proposal",
             "evaluation": "evaluation",
             "voting": "Voting",
-            "implementation": "Implementation"
+            "implementation": "Implementation",
+            "vaults": "Vaults",
+            "collection": "Collection"
         },
         "errors": {
             "no_hex_data": "입력 한 데이터가 잘못되었습니다.",

@@ -75,6 +75,14 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                     // beaconInfo[p.senderId].icon = beaconDexter; // TODO: add icon based on id
                 }
 
+                const beaconAppKeys = Object.keys(beaconInfo);
+                for (const k of beaconAppKeys) {
+                    if (!beaconInfo[k].scopes) {
+                        // await beaconClient.removeAppMetadata(k);
+                        // delete beaconInfo[k]
+                    }
+                }
+
                 const list: Record<string, string>[] = Object.values(beaconInfo);
 
                 if (list.length) {
@@ -84,7 +92,7 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
             } catch (e) {
                 console.log('BeaconInfoError', e);
                 dispatch(setBeaconLoading());
-                dispatch(createMessageAction('Beacon informations fails', true));
+                dispatch(createMessageAction('Failed to fetch Beacon connection info', true));
             }
         };
         readState();
@@ -119,11 +127,13 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                                         {/*<div className="img"> <img src={i.icon} /> </div>*/}
                                         <div className="list">
                                             <div className="name">
-                                                {i.name} on {i.network}
+                                                {i.name}
+                                                {i.network && <span> on {i.network}</span>}
                                             </div>
-                                            <div className="item">{i.website}</div>
-                                            <div className="item">Connected on {i.connectedAt}</div>
-                                            <div className="item">Permissions: {i.scopes}</div>
+                                            {i.website && <div className="item">{i.website}</div>}
+                                            {i.connectedAt && <div className="item">Connected on {i.connectedAt}</div>}
+                                            {i.scopes && <div className="item">Permissions: {i.scopes}</div>}
+                                            {!i.scopes && <div className="item">Missing Beacon permission record</div>}
                                             {/*<div> removeAppMetadata(senderId: string): Promise<void>;*/}
                                         </div>
                                     </BeaconConnected>

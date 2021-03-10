@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
-import { BeaconMessageType, OperationResponseInput } from '@airgap/beacon-sdk';
+import { BeaconMessageType, OperationResponseInput, BeaconErrorType, BeaconResponseInputMessage } from '@airgap/beacon-sdk';
 import IconButton from '@material-ui/core/IconButton';
 import { BigNumber } from 'bignumber.js';
-import { TezosParameterFormat, OperationKindType } from 'conseiljs';
+import { OperationKindType } from 'conseiljs';
 import { JSONPath } from 'jsonpath-plus';
 
 import { beaconClient } from './BeaconMessageRouter';
@@ -28,7 +28,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
 import { knownContractNames, knownMarketMetadata } from '../../constants/Token';
 
-import { estimateOperationGroupFee, sendOperations } from './thunks';
+import { estimateOperationGroupFee, sendOperations, queryHicEtNuncSwap } from './thunks';
 
 export const PromptContainer = styled.div`
     align-items: center;
@@ -90,7 +90,7 @@ interface Props {
 const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { selectedParentHash, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
     const modalValues = useSelector<RootState, ModalState>((state) => state.modal.values, shallowEqual);
     const operationHash = useSelector<RootState>((state) => state.message.hash) as string;
@@ -98,6 +98,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
     const [password, setPassword] = useState('');
     const [operationState, setOperationState] = useState(defaultState);
+    const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
 
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
@@ -106,6 +107,18 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
     const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Transaction, true, true);
     const fee = estimateOperationGroupFee(selectedParentHash, operationDetails);
+
+    const onCancel = async () => {
+        const response: BeaconResponseInputMessage = {
+            id,
+            type: BeaconMessageType.Error,
+            errorType: BeaconErrorType.ABORTED_ERROR,
+            // senderId:
+        };
+        await beaconClient.respond(response);
+
+        onClose();
+    };
 
     const onAuthorize = async () => {
         try {
@@ -119,26 +132,30 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             // TODO: validate destination != self
 
             const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
+
+            if (isLedger) {
+                setLedgerModalOpen(true);
+            }
             if (isContract) {
                 // TODO: errors from here don't always bubble up
                 const operationResult = await dispatch(sendOperations(password, operationDetails));
 
                 if (!!operationResult) {
+                    setLedgerModalOpen(false);
                     dispatch(setBeaconLoading(false));
                     onClose();
                 } else {
                     // error
+                    setLedgerModalOpen(false);
                 }
-
-                // TODO: ledger
             } else {
                 dispatch(sendTezThunk(password, destination, formattedAmount, operationState.fee));
-                // TODO: ledger
             }
         } catch (e) {
             console.log('Transaction.Error', e);
             dispatch(createMessageAction(e.message || e.toString(), true));
             dispatch(setBeaconLoading(false));
+            setLedgerModalOpen(false);
         }
     };
 
@@ -198,7 +215,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const contractName = knownContractNames[operationDetails[0].destination] || operationDetails[0].destination;
 
     const idTransaction = (transaction) => {
-        if (transaction.destination === 'KT19c8n5mWrqpxMcR3J687yssHxotj88nGhZ') {
+        if (transaction.destination === 'KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU') {
             // Dexter ETHtz Pool
             if (transaction.parameters.entrypoint === 'xtzToToken') {
                 const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
@@ -264,7 +281,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             return undefined;
         }
 
-        if (transaction.destination === 'KT1Puc9St8wdNoGtLiD2WXaHbWU7styaxYhD') {
+        if (transaction.destination === 'KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9') {
             // Dexter USDtz Pool
             if (transaction.parameters.entrypoint === 'xtzToToken') {
                 const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
@@ -330,7 +347,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             return undefined;
         }
 
-        if (transaction.destination === 'KT1XTXBsEauzcv3uPvVXW92mVqrx99UGsb9T') {
+        if (transaction.destination === 'KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo') {
             // Dexter wXTZ Pool
             if (transaction.parameters.entrypoint === 'xtzToToken') {
                 const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
@@ -396,7 +413,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             return undefined;
         }
 
-        if (transaction.destination === 'KT1DrJV8vhkdLEj76h1H9Q4irZDqAkMPo1Qf') {
+        if (transaction.destination === 'KT1BGQR7t4izzKZ7eRodKWTodAsM23P38v7N') {
             // Dexter tzBTC Pool
             if (transaction.parameters.entrypoint === 'xtzToToken') {
                 const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
@@ -454,6 +471,72 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 return (
                     <>
                         &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> tzBTC for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
+                        <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6') {
+            // Dexter kUSD Pool
+            if (transaction.parameters.entrypoint === 'xtzToToken') {
+                const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> kUSD at <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'addLiquidity') {
+                const holder = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // TODO: $.args[0].args[1].int liquidity token balance
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                return (
+                    <>
+                        &nbsp;to add <strong>{tokenAmount.toString()}</strong> kUSD to the pool from <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
+                    </>
+                );
+            }
+
+            if (transaction.parameters.entrypoint === 'tokenToToken') {
+                const targetToken = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
+                // const targetName = knownContractNames[targetToken] || targetToken;
+                const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
+                const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
+                const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
+                const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+                const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
+
+                let holderText = '';
+                if (targetHolder === sourceHolder) {
+                    holderText = `for ${targetHolder}`;
+                } else {
+                    holderText = `from ${sourceHolder} to ${targetHolder}`;
+                }
+
+                return (
+                    <>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> kUSD for <strong>{targetAmount.toString()}</strong> {targetSymbol}{' '}
                         <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
                     </>
                 );
@@ -544,6 +627,83 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             return undefined;
         }
 
+        if (transaction.destination === 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV') {
+            // kUSD Token
+            if (transaction.parameters.entrypoint === 'approve') {
+                let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+
+                approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
+
+                return (
+                    <>
+                        &nbsp;to approve <strong>{approvedAddress}</strong> for a balance of <strong>{tokenAmount}</strong> kUSD
+                    </>
+                );
+            }
+
+            // TODO: transfer
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9') {
+            // hic et nunc Auction House
+            if (transaction.parameters.entrypoint === 'collect') {
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].int', json: transaction.parameters.value })[0]).toString();
+                const swapId = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]);
+
+                const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
+                const swapInfo = queryHicEtNuncSwap(swapId.toNumber());
+
+                if (swapInfo.source === swapInfo.nftCreators) {
+                    return (
+                        <>
+                            &nbsp;to collect{' '}
+                            <strong>
+                                {tokenAmount}/{swapInfo.stock}
+                            </strong>{' '}
+                            OBJKT #{swapInfo.nftId} from the creator – {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #
+                            {swapInfo.nftId} is "{swapInfo.nftName}", described as "{swapInfo.nftDescription}".
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            &nbsp;to collect{' '}
+                            <strong>
+                                {tokenAmount}/{swapInfo.stock}
+                            </strong>{' '}
+                            OBJKT #{swapInfo.nftId} from {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #{swapInfo.nftId} is "
+                            {swapInfo.nftName}", described as "{swapInfo.nftDescription}", created by {swapInfo.nftCreators}.
+                        </>
+                    );
+                }
+            } else if (transaction.parameters.entrypoint === 'mint_OBJKT') {
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].int', json: transaction.parameters.value })[0]).toString();
+                const royaltyAmount = Number(JSONPath({ path: '$.args[1].args[1].int', json: transaction.parameters.value })[0]);
+                const metadataString = JSONPath({ path: '$.args[1].args[0].bytes', json: transaction.parameters.value })[0].toString();
+                const metadataUrl = Buffer.from(metadataString, 'hex').toString(); // TODO: download and parse metadata
+
+                return (
+                    <>
+                        &nbsp;to mint&nbsp;
+                        <strong>{tokenAmount} OBJKT</strong>
+                        {royaltyAmount > 0 && (
+                            <span>
+                                &nbsp;with&nbsp;<strong>{(royaltyAmount / 10).toFixed(1)}%</strong>&nbsp;royalties
+                            </span>
+                        )}
+                        {!royaltyAmount && <span> without royalties</span>}
+                    </>
+                );
+            }
+
+            return undefined;
+        }
+
         return undefined;
     };
 
@@ -553,9 +713,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 <ModalContainer>
                     <Container>
                         <div className="modal-holder">
-                            {operationDetails.length === 1 && <h3>{t('components.Beacon.authorization.title')}</h3>}
-                            {operationDetails.length > 1 && <h3>{t('components.Beacon.authorization.title_plural')}</h3>}
-                            <h4>Network: {network.type}</h4>
+                            {operationDetails.length === 1 && <h3>{t('components.Beacon.authorization.title', { network: network.type })}</h3>}
+                            {operationDetails.length > 1 && <h3>{t('components.Beacon.authorization.title_plural', { network: network.type })}</h3>}
                             <p className="linkAddress">{website}</p>
                             {!isContract && (
                                 <p>
@@ -593,7 +752,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {isContract && (
                                 <div>
                                     <p className="inputLabel">Raw Operation Content</p>
-                                    <textarea className="inputField" readOnly>{JSON.stringify(operationDetails, null, 2)}</textarea>
+                                    <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
                                 </div>
                             )}
                             <div className="feeContainer">
@@ -615,9 +774,13 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                     }
                                 />
                             </div>
-                            <WrapPassword>
-                                <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
-                            </WrapPassword>
+
+                            {!isLedger && (
+                                <WrapPassword>
+                                    <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
+                                </WrapPassword>
+                            )}
+
                             <p className="subtitleText">
                                 Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
                             </p>
@@ -625,14 +788,22 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     </Container>
                     {beaconLoading && <Loader />}
                     <Footer>
-                        <ButtonContainer>
-                            <WhiteBtn buttonTheme="secondary" onClick={onClose}>
-                                {t('general.verbs.cancel')}
-                            </WhiteBtn>
-                            <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
-                                {t('general.verbs.authorize')}
-                            </InvokeButton>
-                        </ButtonContainer>
+                        {!ledgerModalOpen && (
+                            <ButtonContainer>
+                                <WhiteBtn buttonTheme="secondary" onClick={onCancel}>
+                                    {t('general.verbs.cancel')}
+                                </WhiteBtn>
+                                <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
+                                    {t('general.verbs.authorize')}
+                                </InvokeButton>
+                            </ButtonContainer>
+                        )}
+
+                        {isLedger && ledgerModalOpen && (
+                            <ButtonContainer>
+                                <>Please confirm the operation on the Ledger device</>
+                            </ButtonContainer>
+                        )}
                     </Footer>
                 </ModalContainer>
             ) : (

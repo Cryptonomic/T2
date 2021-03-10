@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
+import { JSONPath } from 'jsonpath-plus';
 
-import { TezosConstants, TezosNodeReader, TezosNodeWriter } from 'conseiljs';
+import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils } from 'conseiljs';
+
+import { cloneDecryptedSigner } from '../../utils/wallet';
 
 import { RootState } from '../../types/store';
 
@@ -121,7 +124,11 @@ export function sendOperations(password: string, operations: any[]) {
             formedOperations[i].storage_limit = estimate.operationResources[i].storageCost.toString();
         }
 
-        const result: any = await TezosNodeWriter.sendOperation(tezosUrl, formedOperations, signer).catch((err) => {
+        const result: any = await TezosNodeWriter.sendOperation(
+            tezosUrl,
+            formedOperations,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password)
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(err);
             dispatch(createMessageAction(errorObj.name, true));
@@ -152,4 +159,48 @@ export function sendOperations(password: string, operations: any[]) {
 
         return false;
     };
+}
+
+export function queryHicEtNuncSwap(swapId: number) {
+    // TODO
+    const store = useStore<RootState>();
+    const [info, setInfo] = useState<any>({});
+
+    useEffect(() => {
+        const getSwapInfo = async () => {
+            const { selectedNode, nodesList } = store.getState().settings;
+            const { tezosUrl } = getMainNode(nodesList, selectedNode);
+
+            const packedSwapId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(swapId, 'int'), 'hex'));
+
+            const swapInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 523, packedSwapId);
+
+            const source = JSONPath({ path: '$.args[0].args[0].string', json: swapInfo })[0];
+            const stock = Number(JSONPath({ path: '$.args[0].args[1].int', json: swapInfo })[0]);
+            const nftId = Number(JSONPath({ path: '$.args[1].int', json: swapInfo })[0]);
+
+            const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(nftId, 'int'), 'hex'));
+            const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 514, packedNftId);
+            const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
+            const ipfsHash = Buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
+
+            const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+            const nftDetailJson = await nftDetails.json();
+            const nftName = nftDetailJson.name;
+            const nftDescription = nftDetailJson.description;
+            const nftCreators = nftDetailJson.creators.join(', ');
+
+            setInfo({
+                source,
+                stock,
+                nftId,
+                nftName,
+                nftDescription,
+                nftCreators,
+            });
+        };
+        getSwapInfo();
+    }, []);
+
+    return info;
 }

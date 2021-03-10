@@ -3,18 +3,18 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
 
-import TezosAddress from '../../../components/TezosAddress';
-import AmountView from '../../../components/AmountView';
-import Update from '../../../components/Update';
-import { ms } from '../../../styles/helpers';
-import { syncWalletThunk } from '../../../reduxContent/wallet/thunks';
-import { Token } from '../../../types/general';
+import TezosAddress from '../../../../components/TezosAddress';
+import AmountView from '../../../../components/AmountView';
+import Update from '../../../../components/Update';
+import { ms } from '../../../../styles/helpers';
+import { syncWalletThunk } from '../../../../reduxContent/wallet/thunks';
+import { Token } from '../../../../types/general';
 
-import { RootState } from '../../../types/store';
+import { RootState } from '../../../../types/store';
 
 import { AddressInfo, AddressInfoLink, AddressTitle, Container, LinkIcon, TopRow, BottomRow, Breadcrumbs, Gap } from './style';
 
-import { openLink } from '../../../utils/general';
+import { openLink } from '../../../../utils/general';
 
 interface Props {
     isReady: boolean;
@@ -22,19 +22,16 @@ interface Props {
     publicKeyHash: string;
     displayName?: string;
     token: Token;
+    auxBalance?: number;
 }
 
 function BalanceBanner(props: Props) {
-    // TODO: rename to TokenBalanceBanner
-    const { isReady, balance, publicKeyHash, displayName, token } = props;
+    const { isReady, balance, publicKeyHash, displayName, token, auxBalance } = props;
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { time, isWalletSyncing, selectedAccountIndex, selectedParentIndex } = useSelector((state: RootState) => state.app, shallowEqual);
-    const addressIndex = selectedAccountIndex + 1;
+    const { time, isWalletSyncing, selectedParentIndex } = useSelector((state: RootState) => state.app, shallowEqual);
     const parentIndex = selectedParentIndex + 1;
-
-    const addressLabel = `${t('general.nouns.token_contract')} ${addressIndex}`;
 
     const breadcrumbs = t('components.balanceBanner.breadcrumbs', { parentIndex, addressLabel: displayName });
 
@@ -68,20 +65,36 @@ function BalanceBanner(props: Props) {
                     )}
                 </AddressInfo>
                 <AddressInfo>
-                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
-                    <Gap />
+                    <div style={{ alignItems: 'start' }}>
+                        <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
+                    </div>
                     <div style={{ marginLeft: 'auto' }}>
-                        <AmountView
-                            color="white"
-                            size={ms(4.5)}
-                            amount={balance}
-                            weight="light"
-                            symbol={token.symbol}
-                            showTooltip={true}
-                            scale={token.scale}
-                            precision={token.precision}
-                            round={token.round}
-                        />
+                        <div>
+                            <AmountView
+                                color="white"
+                                size={ms(4.5)}
+                                amount={balance}
+                                weight="light"
+                                symbol={token.symbol}
+                                showTooltip={true}
+                                scale={token.scale}
+                                precision={token.precision}
+                                round={token.round}
+                            />
+                        </div>
+                        <div>
+                            <AmountView
+                                color="white"
+                                size={ms(4.5)}
+                                amount={auxBalance}
+                                weight="light"
+                                symbol={'hDAO'}
+                                showTooltip={true}
+                                scale={6}
+                                precision={6}
+                                round={2}
+                            />
+                        </div>
                     </div>
                 </AddressInfo>
                 <AddressInfo>
