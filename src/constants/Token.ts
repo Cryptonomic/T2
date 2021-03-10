@@ -121,7 +121,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
     {
         network: 'mainnet',
         address: 'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea',
-        displayName: 'StakerDAO Governance Token',
+        displayName: 'Staker Governance Token',
         symbol: 'STKR',
         balance: 0,
         transactions: [],
@@ -237,7 +237,7 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
     {
         network: 'delphinet',
         address: 'KT19UypipJWENBavh34Wn7tc67bL1HucZh9W',
-        displayName: 'StakerDAO Governance Token',
+        displayName: 'Staker Governance Token',
         symbol: 'STKR',
         balance: 0,
         transactions: [],
@@ -266,7 +266,7 @@ export const knownContractNames = {
     KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: 'Kolibri Token',
     KT1Xf2Cwwwh67Ycu7E9yd3UhsABQC4YZPkab: 'Dexter kUSD/XTZ Pool',
     KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN: 'BLND Token',
-    KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: 'StakerDAO Governance Token',
+    KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: 'Staker Governance Token',
 };
 
 export const knownMarketMetadata = [
