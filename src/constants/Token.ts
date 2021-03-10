@@ -8,6 +8,7 @@ import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 import uteIcon from '../../resources/contracts/ute-aspen-icon.png';
 import kusdIcon from '../../resources/contracts/kusd-icon.png';
 import blndIcon from '../../resources/contracts/blnd-icon.png';
+import stkrIcon from '../../resources/contracts/stkr-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken)[] = [
     {
@@ -118,6 +119,22 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
     },
     {
+        network: 'mainnet',
+        address: 'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea',
+        displayName: 'StakerDAO Governance Token',
+        symbol: 'STKR',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.stkr,
+        icon: stkrIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 527,
+        helpLink: 'https://docs.stakerdao.com/',
+    },
+    {
         network: 'delphinet',
         address: 'KT1REPEBMQS3Be8ZybkQQfSwAv3g4pHJViuK',
         displayName: 'USDtz',
@@ -217,6 +234,22 @@ export const knownTokenContracts: (Token | VaultToken)[] = [
         mapid: 54781,
         helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
     },
+    {
+        network: 'delphinet',
+        address: 'KT19UypipJWENBavh34Wn7tc67bL1HucZh9W',
+        displayName: 'StakerDAO Governance Token',
+        symbol: 'STKR',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.stkr,
+        icon: stkrIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 75787,
+        helpLink: 'https://docs.stakerdao.com/',
+    },
 ];
 
 export const knownContractNames = {
@@ -233,6 +266,7 @@ export const knownContractNames = {
     KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: 'Kolibri Token',
     KT1Xf2Cwwwh67Ycu7E9yd3UhsABQC4YZPkab: 'Dexter kUSD/XTZ Pool',
     KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN: 'BLND Token',
+    KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: 'StakerDAO Governance Token',
 };
 
 export const knownMarketMetadata = [

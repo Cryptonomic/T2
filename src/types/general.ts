@@ -58,6 +58,7 @@ export enum AddressType {
     wXTZ,
     kUSD,
     BLND,
+    STKR,
 }
 
 export interface RegularAddress {
@@ -113,6 +114,7 @@ export enum TokenKind {
     ethtz = 'ethtz',
     kusd = 'kusd',
     blnd = 'blnd',
+    stkr = 'stkr',
 }
 
 export interface Token {
