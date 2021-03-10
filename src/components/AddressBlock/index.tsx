@@ -356,10 +356,6 @@ function AddressBlock(props: Props) {
                     return null;
                 }
 
-                if (token.kind === TokenKind.stkr) {
-                    tokenType = AddressType.STKR;
-                }
-
                 if (token.kind === TokenKind.tzbtc) {
                     tokenType = AddressType.TzBTC;
                 }
@@ -367,9 +363,13 @@ function AddressBlock(props: Props) {
                 if (token.kind === TokenKind.kusd) {
                     tokenType = AddressType.kUSD;
                 }
-
+          
                 if (token.kind === TokenKind.objkt) {
                     tokenType = AddressType.objkt;
+                }
+
+                if (token.kind === TokenKind.blnd) {
+                    tokenType = AddressType.BLND;
                 }
 
                 return (

@@ -12,11 +12,12 @@ import BabylonDelegation from '../../contracts/BabylonDelegation';
 import GenericContract from '../../contracts/GenericContract';
 import TokenContract from '../../contracts/TokenContract';
 import ImplicitAccount from '../../contracts/ImplicitAccount';
-import StakerToken from '../../contracts/StakerToken';
 import TzBtcToken from '../../contracts/TzBtcToken';
 import WXTZToken from '../../contracts/WrappedTezos';
 import KolibriToken from '../../contracts/KolibriToken';
 import HicNFT from '../../contracts/HicNFT';
+import BlndToken from '../../contracts/BlndToken';
+
 import { sortArr } from '../../utils/array';
 
 import { Container, SideBarContainer, AccountItem } from './style';
@@ -44,8 +45,6 @@ function HomeMain() {
                 return <BabylonDelegation />;
             case AddressType.Token:
                 return <TokenContract />;
-            case AddressType.STKR:
-                return <StakerToken />;
             case AddressType.TzBTC:
                 return <TzBtcToken />;
             case AddressType.wXTZ:
@@ -54,6 +53,8 @@ function HomeMain() {
                 return <KolibriToken />;
             case AddressType.objkt:
                 return <HicNFT />;
+            case AddressType.BLND:
+                return <BlndToken />;
             default:
                 return <GenericContract />;
         }

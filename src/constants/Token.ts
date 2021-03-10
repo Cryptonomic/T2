@@ -1,7 +1,6 @@
 import { ArtToken, VaultToken, Token, TokenKind } from '../types/general';
 import { TRANSACTIONS, DETAILS, COLLECTION } from './TabConstants';
 
-import stakerdaoIcon from '../../resources/contracts/stakerdao-icon.png';
 import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 import ethtzIcon from '../../resources/contracts/ethtz-icon.png';
@@ -9,6 +8,7 @@ import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
 import uteIcon from '../../resources/contracts/ute-aspen-icon.png';
 import kusdIcon from '../../resources/contracts/kusd-icon.png';
 import hicetnuncIcon from '../../resources/contracts/hicetnunc-icon.png';
+import blndIcon from '../../resources/contracts/blnd-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -84,7 +84,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         icon: wxtzIcon,
         scale: 6,
         precision: 6,
-        round: 6,
+        round: 2,
         helpLink: 'https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs',
         vaultCoreAddress: 'KT1V4Vp7zhynCNuaBjWMpNU535Xm2sgqkz6M',
         vaultRegistryMapId: 260,
@@ -131,6 +131,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 6,
         precision: 6,
         round: 2,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN',
+        displayName: 'Blend',
+        symbol: 'BLND',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.blnd,
+        icon: blndIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 368,
+        helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
     },
     {
         network: 'delphinet',
@@ -216,10 +232,25 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 6,
         round: 6,
     },
+    {
+        network: 'delphinet',
+        address: 'KT1N3KopJkpzBfRPFVzqaAwyPEyuVmhpePmt',
+        displayName: 'Blend',
+        symbol: 'BLND',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.blnd,
+        icon: blndIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 54781,
+        helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
+    },
 ];
 
 export const knownContractNames = {
-    KT1EctCuorV2NfVb1XTQgvzJ88MQtWP8cMMv: 'StakerDAO Token',
     KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn: 'tzBTC Token',
     KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: 'USDtz Token',
     KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8: 'ETHtz Token',
@@ -232,10 +263,11 @@ export const knownContractNames = {
     KT1H28iie4mW9LmmJeYLjH6zkC8wwSmfHf5P: 'TzButton Round 2',
     KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: 'Kolibri Token',
     KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6: 'Dexter kUSD/XTZ Pool',
-    KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9: 'hic et nunc Auction House',
+    KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9: 'hic et nunc Art House',
     KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton: 'hic et nunc NFT',
     KT1CpeSQKdkhWi4pinYcseCFKmDhs5M74BkU: 'tzcolors Auction House',
     KT1FyaDqiMQWg7Exo7VUiXAgZbd2kCzo3d4s: 'tzcolors NFT',
+    KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN: 'BLND Token',
 };
 
 export const knownMarketMetadata = [
