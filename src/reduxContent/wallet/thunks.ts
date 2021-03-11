@@ -250,7 +250,20 @@ export function syncTokenThunk(tokenAddress) {
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
-                    console.log('[stakerdao] Storage: ' + JSON.stringify(d));
+
+                    return { ...d, holders: keyCount };
+                });
+                transAsync = tzip7Util.syncTokenTransactions(
+                    tokenAddress,
+                    selectedParentHash,
+                    mainNode,
+                    tokens[tokenIndex].transactions,
+                    tokens[tokenIndex].kind
+                );
+            } else if (tokens[tokenIndex].kind === TokenKind.stkr) {
+                balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
+                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
 
                     return { ...d, holders: keyCount };
                 });
@@ -493,6 +506,43 @@ export function syncWalletThunk() {
 
                     return { ...artToken, mapid, administrator, balance, transactions };
                 } else if (token.kind === TokenKind.blnd) {
+                    let mapid = token.mapid || 0;
+                    let administrator = token.administrator;
+                    const serverInfo: ConseilServerInfo = {
+                        url: mainNode.conseilUrl,
+                        apiKey: mainNode.apiKey,
+                        network: mainNode.network,
+                    };
+
+                    let details: any = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch((e) => {
+                        console.log('Caught: ' + e);
+                        return undefined;
+                    });
+                    mapid = details?.mapid || -1;
+                    if (token.mapid && token.mapid > mapid) {
+                        mapid = token.mapid;
+                    }
+                    administrator = details?.administrator || '';
+
+                    if (mapid === -1) {
+                        console.log(`warning, could not process token: ${JSON.stringify(token)}`);
+                        return { ...token, mapid, administrator, balance: 0 };
+                    }
+
+                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                    details = { ...details, holders: keyCount };
+
+                    const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
+                    const transactions = await tzip7Util.syncTokenTransactions(
+                        token.address,
+                        selectedParentHash,
+                        mainNode,
+                        token.transactions,
+                        token.kind
+                    ); /* TODO */
+
+                    return { ...token, mapid, administrator, balance, transactions, details };
+                } else if (token.kind === TokenKind.stkr) {
                     let mapid = token.mapid || 0;
                     let administrator = token.administrator;
                     const serverInfo: ConseilServerInfo = {

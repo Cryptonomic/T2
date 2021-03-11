@@ -9,6 +9,7 @@ import uteIcon from '../../resources/contracts/ute-aspen-icon.png';
 import kusdIcon from '../../resources/contracts/kusd-icon.png';
 import hicetnuncIcon from '../../resources/contracts/hicetnunc-icon.png';
 import blndIcon from '../../resources/contracts/blnd-icon.png';
+import stkrIcon from '../../resources/contracts/stkr-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -149,6 +150,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
     },
     {
+        network: 'mainnet',
+        address: 'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea',
+        displayName: 'Staker Governance Token',
+        symbol: 'STKR',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.stkr,
+        icon: stkrIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 527,
+        helpLink: 'https://docs.stakerdao.com/',
+    },
+    {
         network: 'delphinet',
         address: 'KT1REPEBMQS3Be8ZybkQQfSwAv3g4pHJViuK',
         displayName: 'USDtz',
@@ -248,6 +265,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         mapid: 54781,
         helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
     },
+    {
+        network: 'delphinet',
+        address: 'KT19UypipJWENBavh34Wn7tc67bL1HucZh9W',
+        displayName: 'Staker Governance Token',
+        symbol: 'STKR',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.stkr,
+        icon: stkrIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 75787,
+        helpLink: 'https://docs.stakerdao.com/',
+    },
 ];
 
 export const knownContractNames = {
@@ -268,6 +301,7 @@ export const knownContractNames = {
     KT1CpeSQKdkhWi4pinYcseCFKmDhs5M74BkU: 'tzcolors Auction House',
     KT1FyaDqiMQWg7Exo7VUiXAgZbd2kCzo3d4s: 'tzcolors NFT',
     KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN: 'BLND Token',
+    KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: 'Staker Governance Token',
 };
 
 export const knownMarketMetadata = [

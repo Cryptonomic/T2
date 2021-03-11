@@ -17,6 +17,7 @@ import WXTZToken from '../../contracts/WrappedTezos';
 import KolibriToken from '../../contracts/KolibriToken';
 import HicNFT from '../../contracts/HicNFT';
 import BlndToken from '../../contracts/BlndToken';
+import StkrToken from '../../contracts/StkrToken';
 
 import { sortArr } from '../../utils/array';
 
@@ -55,6 +56,8 @@ function HomeMain() {
                 return <HicNFT />;
             case AddressType.BLND:
                 return <BlndToken />;
+            case AddressType.STKR:
+                return <StkrToken />;
             default:
                 return <GenericContract />;
         }
