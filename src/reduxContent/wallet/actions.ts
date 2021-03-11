@@ -6,7 +6,6 @@ import {
     SET_IDENTITIES,
     ADD_NEW_IDENTITY,
     UPDATE_IDENTITY,
-    UPDATE_OVENS,
     UPDATE_TOKENS,
     SetWalletAction,
     SetWalletFileNameAction,
@@ -18,7 +17,7 @@ import {
     UpdateTokensAction,
 } from './types';
 
-import { Vault, VaultToken, Token } from '../../types/general';
+import { ArtToken, VaultToken, Token } from '../../types/general';
 
 export function setWalletAction(identities: any[], walletLocation: string, walletFileName: string, walletPassword: string): SetWalletAction {
     const payload = { identities, walletLocation, walletFileName, walletPassword };
@@ -70,7 +69,7 @@ export function updateIdentityAction(identity: any): UpdateIdentityAction {
     };
 }
 
-export function updateTokensAction(tokens: (Token | VaultToken)[]): UpdateTokensAction {
+export function updateTokensAction(tokens: (Token | VaultToken | ArtToken)[]): UpdateTokensAction {
     return {
         type: UPDATE_TOKENS,
         tokens,

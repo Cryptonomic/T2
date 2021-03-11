@@ -13,5 +13,5 @@ export const BURN = 'general.verbs.burn';
 export const SIGN = 'general.verbs.sign';
 export const VERIFY = 'general.verbs.verify';
 export const DETAILS = 'general.nouns.details';
-// TODO(keefertaylor): Translations
-export const VAULTS = 'Vaults';
+export const VAULTS = 'general.nouns.vaults';
+export const COLLECTION = 'general.nouns.collection';

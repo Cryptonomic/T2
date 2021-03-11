@@ -15,7 +15,7 @@ The wallet is built with Typescript, React and Electron. [Cryptonomic](https://c
 
 To build your own package add the environment configuration file as `src/extraResources/walletSettings.json`. Cryptonomic uses the [Nautilus Cloud](https://nautilus.cloud/) infrastructure of Tezos and [Conseil indexer](https://github.com/Cryptonomic/Conseil) nodes for production deployments.
 
-Note the version of nodejs specified in the outer [package file](https://github.com/Cryptonomic/T2/blob/trunk/package.json), at the time of writing it was **12.19.1**. We recommend using [nvm](https://github.com/nvm-sh/nvm).
+Note the version of nodejs specified in the outer [package file](https://github.com/Cryptonomic/T2/blob/trunk/package.json), at the time of writing it was **12.21.0**. We recommend using [nvm](https://github.com/nvm-sh/nvm).
 
 ```json
 {
@@ -42,12 +42,7 @@ Note the version of nodejs specified in the outer [package file](https://github.
 
 To install all dependencies:
 
-```bash
-npm i
-cd src
-npm i
-cd ..
-```
+`npm i`
 
 To run during development:
 
@@ -56,6 +51,19 @@ To run during development:
 To package for deployment for the local target:
 
 `npm run package`
+
+A complete script might look like this:
+
+```bash
+nvm use 12.21.0
+
+mkdir ./t2
+cd t2
+
+git clone https://github.com/Cryptonomic/T2.git .
+npm i
+npm run dev
+```
 
 ### Customization Options
 
