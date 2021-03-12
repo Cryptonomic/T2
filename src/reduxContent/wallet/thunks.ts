@@ -603,8 +603,9 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
                 addressType === AddressType.TzBTC ||
                 addressType === AddressType.wXTZ ||
                 addressType === AddressType.kUSD ||
-                addressType === AddressType.objkt
-                addressType === AddressType.BLND
+                addressType === AddressType.objkt ||
+                addressType === AddressType.BLND ||
+                addressType === AddressType.STKR
             ) {
                 await dispatch(syncTokenThunk(selectedAccountHash));
             } else if (selectedAccountHash === selectedParentHash) {
