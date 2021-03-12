@@ -54,11 +54,12 @@ export enum AddressType {
     Delegated,
     Token,
     None,
-    STKR,
     TzBTC,
     wXTZ,
     kUSD,
+    BLND,
     objkt,
+    STKR,
 }
 
 export interface RegularAddress {
@@ -108,13 +109,14 @@ export interface TokenTransaction {
 
 export enum TokenKind {
     tzip7 = 'tzip7',
-    stkr = 'stkr',
     usdtz = 'usdtz',
     tzbtc = 'tzbtc',
     wxtz = 'wxtz',
     ethtz = 'ethtz',
     kusd = 'kusd',
+    blnd = 'blnd',
     objkt = 'objkt',
+    stkr = 'stkr',
 }
 
 export interface Token {
