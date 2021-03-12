@@ -5,6 +5,7 @@ import { updateTokensAction } from '../../reduxContent/wallet/actions';
 import { createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
+import { cloneDecryptedSigner } from '../../utils/wallet';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
@@ -29,7 +30,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
 
         const operationId: string | undefined = await TzbtcTokenHelper.transferBalance(
             tezosUrl,
-            signer,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
             keyStore,
             selectedAccountHash,
             fee,

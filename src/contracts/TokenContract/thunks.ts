@@ -5,6 +5,7 @@ import { updateTokensAction } from '../../reduxContent/wallet/actions';
 import { createTransaction, createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
+import { cloneDecryptedSigner } from '../../utils/wallet';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
@@ -34,7 +35,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
 
         const operationId: string | undefined = await transferBalance(
             tezosUrl,
-            signer,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
             keyStore,
             selectedAccountHash,
             fee,
@@ -94,7 +95,17 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const groupid: string = await mint(tezosUrl, signer, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch((err) => {
+        const groupid: string = await mint(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            selectedAccountHash,
+            fee,
+            destination,
+            amount,
+            GAS,
+            FREIGHT
+        ).catch((err) => {
             console.log(err);
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
@@ -148,7 +159,17 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const groupid: string = await burn(tezosUrl, signer, keyStore, selectedAccountHash, fee, destination, amount, GAS, FREIGHT).catch((err) => {
+        const groupid: string = await burn(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            selectedAccountHash,
+            fee,
+            destination,
+            amount,
+            GAS,
+            FREIGHT
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
