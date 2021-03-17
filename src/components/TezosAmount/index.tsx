@@ -85,7 +85,7 @@ const TezosAmount = (props: Props) => {
         }
 
         const formatStrBal = `${formatAmount(amount)}`;
-        const viewBal = format === 6 ? formatStrBal : `~${formatAmount(amount, format)}`;
+        const viewBal = formatAmount(amount, format);
         return {
             strBalance: formatStrBal,
             view: viewBal,
