@@ -40,7 +40,7 @@ const AmountView = (props: Props) => {
     function getRealValue() {
         return {
             fullAmount: formatAmount(true),
-            truncatedAmount: `${precision > round ? '~' : ''}${formatAmount(false)}`
+            truncatedAmount: formatAmount(false),
         };
     }
 
@@ -89,7 +89,7 @@ AmountView.defaultProps = {
     color: 'primary',
     scale: 6,
     precision: 6,
-    round: 4
+    round: 4,
 };
 
 export default AmountView;

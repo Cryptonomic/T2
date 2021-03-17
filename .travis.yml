@@ -7,7 +7,7 @@ addons:
             - xvfb
 
 node_js:
-    - 12.16
+    - 12.20.1
 
 cache:
     directories:
@@ -16,7 +16,7 @@ cache:
 before_script:
     - export DISPLAY=':99.0'
     - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-    - npm ci
+    - npm i
 
 script:
     - npm run package

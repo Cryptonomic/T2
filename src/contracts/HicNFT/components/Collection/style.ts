@@ -33,12 +33,10 @@ export const ContentTitle = styled.div`
 
 export const Image = styled.img`(
     display: inline-block;
-    padding-bottom: ${ms(4)};
 )`;
 
 export const InfoLink = styled.div`
-    margin-left: 6px;
-    margin-top: 8px;
+    cursor: pointer;
 `;
 
 export const LinkIcon = styled(TezosIcon)`
@@ -48,8 +46,15 @@ export const LinkIcon = styled(TezosIcon)`
 `;
 
 export const PieceContainer = styled.div`
+    display: flex;
     width: 100%;
     padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+`;
+
+export const PieceInfo = styled.div`
+    flex: 1;
+    padding: 5px;
 `;
 
 export const PieceName = styled.div`
@@ -66,5 +71,6 @@ export const PieceDescription = styled.div``;
 export const PieceCreator = styled.div``;
 
 export const PieceDisplay = styled.div`
+    flex: 1;
     padding: 3px;
 `;

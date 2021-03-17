@@ -3,22 +3,17 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import { BeaconMessageType, OperationResponseInput, BeaconErrorType, BeaconResponseInputMessage } from '@airgap/beacon-sdk';
-import IconButton from '@material-ui/core/IconButton';
 import { BigNumber } from 'bignumber.js';
-import { OperationKindType } from 'conseiljs';
 import { JSONPath } from 'jsonpath-plus';
 
 import { beaconClient } from './BeaconMessageRouter';
 
 import Loader from '../../components/Loader';
+import TezosNumericInput from '../../components/TezosNumericInput';
 import PasswordInput from '../../components/PasswordInput';
-import Fees from '../../components/Fees';
-import Tooltip from '../../components/Tooltip';
-import TezosIcon from '../../components/TezosIcon';
-import { ms } from '../../styles/helpers';
-import { useFetchFees } from '../../reduxContent/app/thunks';
 
 import { RootState, ModalState } from '../../types/store';
+import { formatAmount, tezToUtez } from '../../utils/currency';
 
 import { sendTezThunk } from '../../contracts/duck/thunks';
 import { setModalOpen } from '../../reduxContent/modal/actions';
@@ -71,16 +66,6 @@ const BoldSpan = styled.span`
     font-weight: 500;
 `;
 
-const defaultState = {
-    amount: '',
-    fee: 26_501,
-    total: 0,
-    balance: 0,
-};
-
-const utez = 1_000_000;
-const GAS = 64_250;
-
 interface Props {
     open: boolean;
     managerBalance: number;
@@ -97,27 +82,29 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const beaconLoading = useSelector((state: RootState) => state.app.beaconLoading);
 
     const [password, setPassword] = useState('');
-    const [operationState, setOperationState] = useState(defaultState);
     const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
+    const [fee, setFee] = useState('0');
+    const [feeError, setFeeError] = useState('');
 
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
     const { destination, amount, parameters } = operationDetails[0];
     const operationParameters = parameters || { value: { prim: 'Unit' }, entrypoint: 'default' };
 
-    const { newFees, miniFee, isRevealed } = useFetchFees(OperationKindType.Transaction, true, true);
-    const fee = estimateOperationGroupFee(selectedParentHash, operationDetails);
+    const estimatedMinimumFee = estimateOperationGroupFee(selectedParentHash, operationDetails);
 
     const onCancel = async () => {
-        const response: BeaconResponseInputMessage = {
-            id,
-            type: BeaconMessageType.Error,
-            errorType: BeaconErrorType.ABORTED_ERROR,
-            // senderId:
-        };
-        await beaconClient.respond(response);
-
-        onClose();
+        try {
+            const response: BeaconResponseInputMessage = {
+                id,
+                type: BeaconMessageType.Error,
+                errorType: BeaconErrorType.ABORTED_ERROR,
+                // senderId:
+            };
+            await beaconClient.respond(response);
+        } finally {
+            onClose();
+        }
     };
 
     const onAuthorize = async () => {
@@ -128,17 +115,19 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
             // TODO: validate fee against min
             // TODO: validate burn+amount+fee against balance - 1xtz
-            // TODO: validate amount > 0 for
+            // TODO: validate amount > 0
+            // TODO: validate amount < managerBalance
             // TODO: validate destination != self
-
-            const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
 
             if (isLedger) {
                 setLedgerModalOpen(true);
             }
+
+            const utezFee = tezToUtez(parseFloat(fee));
+
             if (isContract) {
                 // TODO: errors from here don't always bubble up
-                const operationResult = await dispatch(sendOperations(password, operationDetails));
+                const operationResult = await dispatch(sendOperations(password, operationDetails, utezFee));
 
                 if (!!operationResult) {
                     setLedgerModalOpen(false);
@@ -149,7 +138,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     setLedgerModalOpen(false);
                 }
             } else {
-                dispatch(sendTezThunk(password, destination, formattedAmount, operationState.fee));
+                dispatch(sendTezThunk(password, destination, formatAmount(amount), utezFee));
             }
         } catch (e) {
             console.log('Transaction.Error', e);
@@ -159,19 +148,9 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         }
     };
 
-    const updateState = (updatedValues) => {
-        setOperationState((prevState) => {
-            return { ...prevState, ...updatedValues };
-        });
-    };
-
-    const changeFee = (newFee) => {
-        const float = Number.isNaN(parseFloat(operationState.amount)) ? 0.0 : parseFloat(operationState.amount);
-        const numAmount = float * utez;
-        const newTotal = numAmount + newFee + GAS;
-        const newBalance = managerBalance - operationState.total;
-        updateState({ fee: newFee, total: newTotal, balance: newBalance });
-    };
+    useEffect(() => {
+        setFee(formatAmount(estimatedMinimumFee));
+    }, [estimatedMinimumFee]);
 
     useEffect(() => {
         if (!operationHash || !beaconLoading) {
@@ -195,22 +174,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         };
 
         sendBeaconResponse();
-        setOperationState({ ...operationState, fee });
     }, [operationHash, beaconLoading]);
-
-    const renderFeeToolTip = () => {
-        return (
-            <TooltipContainer>
-                <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>
-                <TooltipContent>
-                    <Trans i18nKey="components.send.fee_tooltip_content">
-                        This address is not revealed on the blockchain. We have added
-                        <BoldSpan>0.001270</BoldSpan> XTZ for Public Key Reveal to your regular send operation fee.
-                    </Trans>
-                </TooltipContent>
-            </TooltipContainer>
-        );
-    };
 
     const contractName = knownContractNames[operationDetails[0].destination] || operationDetails[0].destination;
 
@@ -655,7 +619,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].int', json: transaction.parameters.value })[0]).toString();
                 const swapId = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]);
 
-                const formattedAmount = new BigNumber(amount).dividedBy(utez).toString();
+                const formattedAmount = formatAmount(amount);
                 const swapInfo = queryHicEtNuncSwap(swapId.toNumber());
 
                 if (swapInfo.source === swapInfo.nftCreators) {
@@ -699,6 +663,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                         {!royaltyAmount && <span> without royalties</span>}
                     </>
                 );
+                // } else if (transaction.parameters.entrypoint === 'transfer') {
             }
 
             return undefined;
@@ -718,9 +683,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             <p className="linkAddress">{website}</p>
                             {!isContract && (
                                 <p>
-                                    {appMetadata.name} is requesting a transaction of{' '}
-                                    <strong>{new BigNumber(operationDetails[0].amount).dividedBy(utez).toNumber().toFixed(6)}</strong>
-                                    <strong>XTZ</strong> to <strong>{operationDetails[0].destination}</strong>
+                                    {appMetadata.name} is requesting a transaction of <strong>{formatAmount(operationDetails[0].amount, 6)}</strong>
+                                    <strong>{'\ua729'}</strong> to <strong>{operationDetails[0].destination}</strong>
                                 </p>
                             )}
                             {isContract && (
@@ -730,8 +694,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                     {new BigNumber(operationDetails[0].amount).toNumber() !== 0 && (
                                         <span>
                                             {' '}
-                                            with <strong>{new BigNumber(operationDetails[0].amount).dividedBy(utez).toNumber().toFixed(6)}</strong>{' '}
-                                            <strong>XTZ</strong>
+                                            with <strong>{formatAmount(operationDetails[0].amount, 6)}</strong> <strong>{'\ua729'}</strong>
                                         </span>
                                     )}
                                     {idTransaction(operationDetails[0]) && idTransaction(operationDetails[0])}
@@ -756,22 +719,12 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 </div>
                             )}
                             <div className="feeContainer">
-                                <Fees
-                                    low={newFees.low}
-                                    medium={newFees.medium}
-                                    high={newFees.high}
-                                    fee={fee}
-                                    miniFee={miniFee}
-                                    onChange={changeFee}
-                                    tooltip={
-                                        !isRevealed ? (
-                                            <Tooltip position="bottom" content={renderFeeToolTip()}>
-                                                <IconButton size="small">
-                                                    <TezosIcon iconName="help" size={ms(1)} color="gray5" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        ) : null
-                                    }
+                                <TezosNumericInput
+                                    decimalSeparator={t('general.decimal_separator')}
+                                    label={'Operation Fee'}
+                                    amount={fee}
+                                    onChange={setFee}
+                                    errorText={feeError}
                                 />
                             </div>
 

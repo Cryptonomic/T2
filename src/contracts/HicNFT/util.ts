@@ -11,12 +11,12 @@ import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
 import * as status from '../../constants/StatusTypes';
-import { Node, TokenKind } from '../../types/general';
+import { Node, Token, TokenKind } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
 import { knownTokenContracts, knownContractNames } from '../../constants/Token';
 
-export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
-    let newTransactions: any[] = (
+export async function syncTokenTransactions(node: Node, token: Token, managerAddress: string, stateTransactions: any[]) {
+    /*let newTransactions: any[] = (
         await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
             console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
             console.error(e);
@@ -70,7 +70,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                     destination: parts[2],
                 });
             } catch (e) {
-                /* */
+                //
             }
         } else if (mintPattern.test(params)) {
             try {
@@ -84,7 +84,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                     entryPoint: 'mint',
                 });
             } catch (e) {
-                /* */
+                //
             }
         } else if (burnPattern.test(params)) {
             try {
@@ -99,7 +99,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                     entryPoint: 'burn',
                 });
             } catch (e) {
-                /* */
+                //
             }
         } else if (pausePatternFalse.test(params) || pausePatternTrue.test(params)) {
             const parts = params.match(burnPattern);
@@ -115,7 +115,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
         }
     });
 
-    return syncTransactionsWithState(newTransactions, stateTransactions);
+    return syncTransactionsWithState(newTransactions, stateTransactions);*/
 }
 
 export async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
@@ -142,7 +142,7 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
     direct = ConseilQueryBuilder.addPredicate(direct, 'destination', ConseilOperator.EQ, [tokenAddress], false);
     direct = ConseilQueryBuilder.addPredicate(direct, 'source', ConseilOperator.EQ, [managerAddress], false);
     direct = ConseilQueryBuilder.addOrdering(direct, 'timestamp', ConseilSortDirection.DESC);
-    direct = ConseilQueryBuilder.setLimit(direct, 1_000);
+    direct = ConseilQueryBuilder.setLimit(direct, 5_000);
 
     let indirect = ConseilQueryBuilder.blankQuery();
     indirect = ConseilQueryBuilder.addFields(
@@ -165,7 +165,7 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
     indirect = ConseilQueryBuilder.addPredicate(indirect, 'destination', ConseilOperator.EQ, [tokenAddress], false);
     indirect = ConseilQueryBuilder.addPredicate(indirect, 'parameters', ConseilOperator.LIKE, [managerAddress], false);
     indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
-    indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
+    indirect = ConseilQueryBuilder.setLimit(indirect, 5_000);
 
     return Promise.all([direct, indirect].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
         .then((responses) =>
@@ -179,12 +179,29 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
         });
 }
 
+function makeLastPriceQuery(operations) {
+    let lastPriceQuery = ConseilQueryBuilder.blankQuery();
+    lastPriceQuery = ConseilQueryBuilder.addFields(lastPriceQuery, 'timestamp', 'amount', 'operation_group_hash', 'parameters_entrypoints', 'parameters');
+    lastPriceQuery = ConseilQueryBuilder.addPredicate(lastPriceQuery, 'kind', ConseilOperator.EQ, ['transaction']);
+    lastPriceQuery = ConseilQueryBuilder.addPredicate(lastPriceQuery, 'status', ConseilOperator.EQ, ['applied']);
+    lastPriceQuery = ConseilQueryBuilder.addPredicate(lastPriceQuery, 'internal', ConseilOperator.EQ, ['false']);
+    lastPriceQuery = ConseilQueryBuilder.addPredicate(
+        lastPriceQuery,
+        'operation_group_hash',
+        operations.length > 1 ? ConseilOperator.IN : ConseilOperator.EQ,
+        operations
+    );
+    lastPriceQuery = ConseilQueryBuilder.setLimit(lastPriceQuery, operations.length);
+
+    return lastPriceQuery;
+}
+
 export async function getCollection(tokenMapId: number, managerAddress: string, node: Node): Promise<any[]> {
     // TODO: move to conseiljs wrapper
     const { conseilUrl, apiKey, network } = node;
 
     let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value');
+    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
         `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
@@ -194,11 +211,67 @@ export async function getCollection(tokenMapId: number, managerAddress: string, 
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
 
-    const collection = collectionResult.map((i) => {
-        return { piece: i.key.toString().replace(/.* ([0-9]{1,}$)/, '$1'), amount: Number(i.value) };
+    const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
+    const queryChunks = chunkArray(operationGroupIds, 30);
+    const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
+
+    const priceMap: any = {};
+    await Promise.all(
+        priceQueries.map(
+            async (q) =>
+                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
+                    result.map((row) => {
+                        let amount = 0;
+                        const action = row.parameters_entrypoints;
+
+                        if (action === 'collect') {
+                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
+                        } else if (action === 'transfer') {
+                            amount = Number(
+                                row.parameters
+                                    .toString()
+                                    .replace(
+                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
+                                        '$1'
+                                    )
+                            );
+                        }
+
+                        priceMap[row.operation_group_hash] = {
+                            price: new BigNumber(row.amount),
+                            amount,
+                            timestamp: row.timestamp,
+                            action,
+                        };
+                    })
+                )
+        )
+    );
+
+    const collection = collectionResult.map((row) => {
+        let price = 0;
+        let receivedOn = new Date();
+        let action = '';
+
+        try {
+            const priceRecord = priceMap[row.operation_group_id];
+            price = priceRecord.price.dividedToIntegerBy(priceRecord.amount).toNumber();
+            receivedOn = new Date(priceRecord.timestamp);
+            action = priceRecord.action === 'collect' ? 'Purchased' : 'Received';
+        } catch {
+            //
+        }
+
+        return {
+            piece: row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1'),
+            amount: Number(row.value),
+            price: isNaN(price) ? 0 : price,
+            receivedOn,
+            action,
+        };
     });
 
-    return collection;
+    return collection.sort((a, b) => b.receivedOn.getTime() - a.receivedOn.getTime());
 }
 
 export async function getCollectionSize(tokenMapId: number, managerAddress: string, node: Node): Promise<number> {
@@ -225,7 +298,6 @@ export async function getBalance(tezosUrl: string, mapId: number, address: strin
 
     try {
         const balanceResult = await TezosNodeReader.getValueForBigMapKey(tezosUrl, mapId, packedTokenKey);
-        console.log('balanceResult', balanceResult, TezosMessageUtils.writeAddress(address), JSONPath({ path: '$.int', json: balanceResult })[0]);
         balance = new BigNumber(JSONPath({ path: '$.int', json: balanceResult })[0]).toNumber();
     } catch (err) {
         //
@@ -245,11 +317,26 @@ export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
 
     const nftName = nftDetailJson.name;
     const nftDescription = nftDetailJson.description;
-    const nftCreators = nftDetailJson.creators.join(', ');
+    const nftCreators = nftDetailJson.creators
+        .map((c) => c.trim())
+        .map((c) => `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}`)
+        .join(', '); // TODO: use names where possible
     const nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
     const nftArtifactType = nftDetailJson.formats[0].mimeType.toString();
 
     return { name: nftName, description: nftDescription, creators: nftCreators, artifactUrl: nftArtifact, artifactType: nftArtifactType };
+}
+
+function chunkArray(arr: any[], len: number) {
+    const chunks: any[] = [];
+    const n = arr.length;
+
+    let i = 0;
+    while (i < n) {
+        chunks.push(arr.slice(i, (i += len)));
+    }
+
+    return chunks;
 }
 
 // number of holders

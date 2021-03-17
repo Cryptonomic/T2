@@ -1,12 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ms } from '../../../../styles/helpers';
 import { openBlockExplorerForAccount } from '../../../../utils/general';
 import PaginationList from '../../../../components/PaginationList';
 
 import ArtGallery from './gallery';
-import { Container, BroadIcon, LinkContainer, LinkTitle, ContentTitle } from './style';
+import { Container } from './style';
 
 interface Props {
     collection: any[];
