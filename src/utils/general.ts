@@ -2,6 +2,7 @@ import { shell } from 'electron';
 import { TezosConseilClient, TezosNodeReader, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
 import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { Node, NodeStatus } from '../types/general';
+import moment from 'moment';
 
 import { findIdentity } from './identity';
 import * as status from '../constants/StatusTypes';
@@ -154,3 +155,13 @@ export const getVersionFromApi = async () => {
         console.error(error);
     }
 };
+
+export function formatDate(d) {
+    const DateFormat = {
+        lastDay: '[Yesterday]',
+        sameDay: '[Today]',
+        sameElse: 'YYYY, MMMM DD',
+    };
+
+    return moment(d).calendar(undefined, DateFormat);
+}
