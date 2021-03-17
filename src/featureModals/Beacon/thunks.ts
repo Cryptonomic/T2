@@ -23,36 +23,11 @@ export function estimateOperationGroupFee(publicKeyHash: string, operations: any
                 const { selectedNode, nodesList } = store.getState().settings;
                 const { tezosUrl } = getMainNode(nodesList, selectedNode);
 
-                let counter = await TezosNodeReader.getCounterForAccount(tezosUrl, publicKeyHash);
-                const formedOperations: any[] = [];
+                const { identities } = store.getState().wallet;
+                const { isLedger } = store.getState().app;
+                const keyStore = getSelectedKeyStore(identities, publicKeyHash, publicKeyHash, isLedger);
 
-                for (const o of operations) {
-                    counter += 1;
-
-                    switch (o.kind) {
-                        case 'transaction': {
-                            const op = TezosNodeWriter.constructContractInvocationOperation(
-                                publicKeyHash,
-                                counter,
-                                o.destination,
-                                o.amount,
-                                0,
-                                TezosConstants.OperationStorageCap,
-                                TezosConstants.OperationGasCap,
-                                o.parameters.entrypoint,
-                                JSON.stringify(o.parameters.value)
-                            );
-
-                            formedOperations.push(op);
-
-                            break;
-                        }
-                        default: {
-                            break;
-                        }
-                    }
-                }
-
+                const formedOperations = await createOperationGroup(operations, tezosUrl, publicKeyHash, keyStore.publicKey);
                 const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
 
                 setFee(estimate.estimatedFee);
@@ -67,7 +42,7 @@ export function estimateOperationGroupFee(publicKeyHash: string, operations: any
     return fee;
 }
 
-export function sendOperations(password: string, operations: any[]) {
+export function sendOperations(password: string, operations: any[], fee: number = 0) {
     // TODO: type
     return async (dispatch, state): Promise<boolean> => {
         const { selectedNode, nodesList } = state().settings;
@@ -83,41 +58,15 @@ export function sendOperations(password: string, operations: any[]) {
             return false;
         }
 
-        let counter = await TezosNodeReader.getCounterForAccount(tezosUrl, keyStore.publicKeyHash);
-        const formedOperations: any[] = [];
-
-        for (const o of operations) {
-            counter += 1;
-
-            switch (o.kind) {
-                case 'transaction': {
-                    const op = TezosNodeWriter.constructContractInvocationOperation(
-                        keyStore.publicKeyHash,
-                        counter,
-                        o.destination,
-                        o.amount,
-                        0,
-                        TezosConstants.OperationStorageCap,
-                        TezosConstants.OperationGasCap,
-                        o.parameters.entrypoint,
-                        JSON.stringify(o.parameters.value)
-                    );
-
-                    formedOperations.push(op);
-
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-        }
+        const formedOperations = await createOperationGroup(operations, tezosUrl, selectedParentHash, keyStore.publicKey);
 
         const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
 
         for (let i = 0; i < formedOperations.length; i++) {
-            if (i === 0) {
+            if (i === 0 && fee === 0) {
                 formedOperations[i].fee = estimate.estimatedFee.toString();
+            } else if (i === 0 && fee > 0) {
+                formedOperations[i].fee = fee.toString();
             }
 
             formedOperations[i].gas_limit = estimate.operationResources[i].gas.toString();
@@ -159,6 +108,56 @@ export function sendOperations(password: string, operations: any[]) {
 
         return false;
     };
+}
+
+async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicKey) {
+    const networkCounter = await TezosNodeReader.getCounterForAccount(tezosUrl, publicKeyHash);
+    const formedOperations: any[] = [];
+
+    let counter = networkCounter;
+    for (const o of operations) {
+        counter += 1;
+
+        switch (o.kind) {
+            case 'transaction': {
+                let entrypoint: string | undefined;
+                let parameters: string | undefined;
+
+                try {
+                    entrypoint = o.parameters.entrypoint;
+                } catch {
+                    //
+                }
+
+                try {
+                    parameters = JSON.stringify(o.parameters.value);
+                } catch {
+                    //
+                }
+
+                const op = TezosNodeWriter.constructContractInvocationOperation(
+                    publicKeyHash,
+                    counter,
+                    o.destination,
+                    o.amount,
+                    0,
+                    TezosConstants.OperationStorageCap,
+                    TezosConstants.OperationGasCap,
+                    entrypoint,
+                    parameters
+                );
+
+                formedOperations.push(op);
+
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+    }
+
+    return await TezosNodeWriter.appendRevealOperation(tezosUrl, publicKey, publicKeyHash, networkCounter, formedOperations);
 }
 
 export function queryHicEtNuncSwap(swapId: number) {
