@@ -149,7 +149,13 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     };
 
     useEffect(() => {
-        setFee(formatAmount(estimatedMinimumFee));
+        if (!estimatedMinimumFee) {
+            setFee('0');
+        } else if (typeof estimatedMinimumFee === 'string') {
+            setFeeError(estimatedMinimumFee);
+        } else {
+            setFee(formatAmount(estimatedMinimumFee));
+        }
     }, [estimatedMinimumFee]);
 
     useEffect(() => {
@@ -712,21 +718,37 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 </p>
                             )}
 
-                            {isContract && (
-                                <div>
-                                    <p className="inputLabel">Raw Operation Content</p>
-                                    <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
+                            <div>
+                                <p className="inputLabel">Raw Operation Content</p>
+                                <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
+                            </div>
+
+                            {feeError === '' && (
+                                <div className="feeContainer">
+                                    <TezosNumericInput
+                                        decimalSeparator={t('general.decimal_separator')}
+                                        label={'Operation Fee'}
+                                        amount={fee}
+                                        onChange={setFee}
+                                        errorText={feeError}
+                                    />
                                 </div>
                             )}
-                            <div className="feeContainer">
-                                <TezosNumericInput
-                                    decimalSeparator={t('general.decimal_separator')}
-                                    label={'Operation Fee'}
-                                    amount={fee}
-                                    onChange={setFee}
-                                    errorText={feeError}
-                                />
-                            </div>
+
+                            {feeError !== '' && (
+                                <div className="feeContainer">
+                                    <p className="inputLabel">Validation Error</p>
+                                    <p className="subtitleText">
+                                        Could not estimate fee due to operation validation failure. Please contact the dApp developer for resolution.
+                                    </p>
+                                    <p className="inputLabel">Error Details</p>
+                                    <p className="subtitleText" style={{ height: '40px', overflow: 'scroll' }}>
+                                        {feeError.split(',').map((p, i) => (
+                                            <div key={'error' + i}>{p}</div>
+                                        ))}
+                                    </p>
+                                </div>
+                            )}
 
                             {!isLedger && (
                                 <WrapPassword>
@@ -746,9 +768,11 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 <WhiteBtn buttonTheme="secondary" onClick={onCancel}>
                                     {t('general.verbs.cancel')}
                                 </WhiteBtn>
-                                <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
-                                    {t('general.verbs.authorize')}
-                                </InvokeButton>
+                                {feeError === '' && (
+                                    <InvokeButton buttonTheme="primary" onClick={onAuthorize}>
+                                        {t('general.verbs.authorize')}
+                                    </InvokeButton>
+                                )}
                             </ButtonContainer>
                         )}
 

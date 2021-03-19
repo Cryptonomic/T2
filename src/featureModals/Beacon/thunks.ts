@@ -12,10 +12,10 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
 import { getMainNode } from '../../utils/settings';
 
-export function estimateOperationGroupFee(publicKeyHash: string, operations: any[]): number {
+export function estimateOperationGroupFee(publicKeyHash: string, operations: any[]): number | string {
     // TODO: type
     const store = useStore<RootState>();
-    const [fee, setFee] = useState<number>(0);
+    const [fee, setFee] = useState<number | string>(0);
 
     useEffect(() => {
         const estimateInvocation = async () => {
@@ -33,6 +33,7 @@ export function estimateOperationGroupFee(publicKeyHash: string, operations: any
                 setFee(estimate.estimatedFee);
             } catch (e) {
                 console.log('estimateContractCall failed with ', e);
+                setFee(e.message);
             }
         };
 
