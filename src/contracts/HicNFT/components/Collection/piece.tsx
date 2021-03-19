@@ -17,6 +17,8 @@ interface Props {
     action: string;
 }
 
+const supportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
+
 function ArtPiece(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -29,16 +31,17 @@ function ArtPiece(props: Props) {
 
     return (
         <PieceContainer>
-            {!['image/png', 'image/jpeg'].includes(pieceInfo.artifactType) && (
+            {!supportedTypes.includes(pieceInfo.artifactType) && (
                 <PieceDisplay>
                     <InfoLink onClick={() => openLink(`https://www.hicetnunc.xyz/objkt/${objectId}`)}>
-                        Unsupported artifact type, view on hic et nunc
+                        Unsupported artifact type ({pieceInfo.artifactType}).&nbsp;
+                        <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>View on hic et nunc</span>
                         <LinkIcon iconName="new-window" color="black" onClick={() => openLink(`https://www.hicetnunc.xyz/objkt/${objectId}`)} />
                     </InfoLink>
                 </PieceDisplay>
             )}
 
-            {['image/png', 'image/jpeg'].includes(pieceInfo.artifactType) && (
+            {supportedTypes.includes(pieceInfo.artifactType) && (
                 <PieceDisplay>
                     <Image style={{ minWidth: '20%', maxWidth: 500, minHeight: '10%', maxHeight: 350 }} src={pieceInfo.artifactUrl} />
                 </PieceDisplay>
@@ -65,7 +68,7 @@ function ArtPiece(props: Props) {
                     )}
                 </PieceCreator>
 
-                {['image/png', 'image/jpeg'].includes(pieceInfo.artifactType) && (
+                {supportedTypes.includes(pieceInfo.artifactType) && (
                     <InfoLink onClick={() => openLink(`https://www.hicetnunc.xyz/objkt/${objectId}`)}>
                         <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>View on hic et nunc</span>
                         <LinkIcon iconName="new-window" color="black" onClick={() => openLink(`https://www.hicetnunc.xyz/objkt/${objectId}`)} />
