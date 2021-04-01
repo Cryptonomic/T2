@@ -2,9 +2,12 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
 import AmountView from '../../../../components/AmountView';
 import { ms } from '../../../../styles/helpers';
 import Button from '../../../../components/Button';
+import CopyButton from '../../../../components/CopyButton';
+import TezosAddress from '../../../../components/TezosAddress';
 
 const Container = styled.div`
     width: 100%;
@@ -33,6 +36,8 @@ const OvenInfoBar = styled.div`
 `;
 
 const OvenDelegate = styled.div`
+    font-size: 12px;
+    line-height: 30px;
     color: ${({ theme: { colors } }) => colors.gray5};
 `;
 
@@ -76,15 +81,17 @@ function OvenItem(props: Props) {
 
     return (
         <Container>
-            <AddressContainer>{address}</AddressContainer>
             <OvenInfoBar>
-                <OvenDelegate>
-                    <b>Delegate</b>: {delegate ?? 'None'}
-                </OvenDelegate>
+                <TezosAddress address={address} size="16px" weight={300} color="primary" shorten={true} text={address} />
                 <AmountContainer color="check">
                     <AmountView color={'check'} size={ms(-1)} amount={balance} scale={6} precision={6} round={6} symbol={'XTZ'} />
                 </AmountContainer>
             </OvenInfoBar>
+
+            <OvenDelegate>
+                <b>Delegate</b>: {delegate ?? 'None'}
+            </OvenDelegate>
+
             <ContentDiv>
                 <InvokeButton buttonTheme="primary" onClick={() => props.deposit(address)}>
                     {/* TODO(keefertaylor): Use translations here */}
