@@ -66,7 +66,7 @@ function Send(props: Props) {
             setOpen(true);
         }
 
-        await dispatch(tokenTransferAction(newAddress, new BigNumber(amount).multipliedBy(10 ** (token.scale || 0)).toNumber(), fee, passPhrase));
+        await dispatch(tokenTransferAction(newAddress, new BigNumber(amount).multipliedBy(10 ** (token.scale || 0)).toFixed(), fee, passPhrase));
         setOpen(false);
         dispatch(setIsLoadingAction(false));
     }
