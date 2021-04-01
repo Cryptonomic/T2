@@ -14,6 +14,7 @@ import PasswordInput from '../../components/PasswordInput';
 
 import { RootState, ModalState } from '../../types/store';
 import { formatAmount, tezToUtez } from '../../utils/currency';
+import { knownTokenContracts } from '../../constants/Token';
 
 import { sendTezThunk } from '../../contracts/duck/thunks';
 import { setModalOpen } from '../../reduxContent/modal/actions';
@@ -185,6 +186,10 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const contractName = knownContractNames[operationDetails[0].destination] || operationDetails[0].destination;
 
     const idTransaction = (transaction) => {
+        const selectedToken = knownTokenContracts.find((token) => token.address === transaction.destination);
+        const selectedTokenScale = new BigNumber(10).pow(selectedToken?.scale || 0);
+        const selectedTokenSymbol = selectedToken?.symbol || '';
+
         if (transaction.destination === 'KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU') {
             // Dexter ETHtz Pool
             if (transaction.parameters.entrypoint === 'xtzToToken') {
@@ -671,6 +676,140 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 );
                 // } else if (transaction.parameters.entrypoint === 'transfer') {
             }
+
+            return undefined;
+        }
+
+        if (transaction.destination === 'KT1MWxucqexguPjhqEyk4XndE1M5tHnhNhH7') {
+            // QuipuSwap USDtz Pool
+            if (transaction.parameters.entrypoint === 'use') {
+                const holder = JSONPath({ path: '$.args[0].args[0].args[0].args[1].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> STKR at <strong>{holder}</strong>
+                    </>
+                );
+            }
+        }
+
+        if (transaction.destination === 'KT1CiSKXR68qYSxnbzjwvfeMCRburaSDonT2') {
+            // QuipuSwap kUSD Pool
+            if (transaction.parameters.entrypoint === 'use') {
+                const holder = JSONPath({ path: '$.args[0].args[0].args[0].args[1].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> kUSD at <strong>{holder}</strong>
+                    </>
+                );
+            }
+        }
+
+        if (transaction.destination === 'KT1NABnnQ4pUTJHUwFLiVM2uuEu1RXihAVmB') {
+            // QuipuSwap wXTZ Pool
+            if (transaction.parameters.entrypoint === 'use') {
+                const holder = JSONPath({ path: '$.args[0].args[0].args[0].args[1].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> USDtz at <strong>{holder}</strong>
+                    </>
+                );
+            }
+        }
+
+        if (transaction.destination === 'KT1N1wwNPqT5jGhM91GQ2ae5uY8UzFaXHMJS') {
+            // QuipuSwap tzBTC Pool
+            if (transaction.parameters.entrypoint === 'use') {
+                const holder = JSONPath({ path: '$.args[0].args[0].args[0].args[1].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('100000000')
+                    .toFixed();
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> tzBTC at <strong>{holder}</strong>
+                    </>
+                );
+            }
+        }
+
+        if (transaction.destination === 'KT1DX1kpCEfEg5nG3pXSSwvtkjTr6ZNYuxP4') {
+            // QuipuSwap ETHtz Pool
+            if (transaction.parameters.entrypoint === 'use') {
+                const holder = JSONPath({ path: '$.args[0].args[0].args[0].args[1].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> ETHtz at <strong>{holder}</strong>
+                    </>
+                );
+            }
+        }
+
+        if (transaction.destination === 'KT1R5Fp415CJxSxxXToUj6QvxP1LHaYXaxV6') {
+            // QuipuSwap STKR Pool
+            if (transaction.parameters.entrypoint === 'use') {
+                const holder = JSONPath({ path: '$.args[0].args[0].args[0].args[1].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000000000000000')
+                    .toFixed();
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> STKR at <strong>{holder}</strong>
+                    </>
+                );
+            }
+        }
+
+        if (transaction.destination === 'KT1V41fGzkdTJki4d11T1Rp9yPkCmDhB7jph') {
+            // QuipuSwap hDAO Pool
+            if (transaction.parameters.entrypoint === 'use') {
+                const holder = JSONPath({ path: '$.args[0].args[0].args[0].args[1].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy('1000000')
+                    .toFixed();
+
+                return (
+                    <>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> hDAO at <strong>{holder}</strong>
+                    </>
+                );
+            }
+        }
+
+        if (transaction.destination === 'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea') {
+            // STKR Token
+            if (transaction.parameters.entrypoint === 'approve') {
+                let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0])
+                    .dividedBy(selectedTokenScale)
+                    .toFixed();
+
+                approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
+
+                return (
+                    <>
+                        &nbsp;to approve <strong>{approvedAddress}</strong> for a balance of <strong>{tokenAmount}</strong> {selectedTokenSymbol}
+                    </>
+                );
+            }
+
+            // TODO: transfer
 
             return undefined;
         }
