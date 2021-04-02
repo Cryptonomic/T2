@@ -38,6 +38,7 @@ export async function getAccountsForIdentity(node: Node, pkh: string) {
     let originationQuery = ConseilQueryBuilder.blankQuery();
     originationQuery = ConseilQueryBuilder.addFields(originationQuery, 'originated_contracts');
     originationQuery = ConseilQueryBuilder.addPredicate(originationQuery, 'kind', ConseilOperator.EQ, ['origination'], false);
+    originationQuery = ConseilQueryBuilder.addPredicate(originationQuery, 'status', ConseilOperator.EQ, ['applied'], false);
     originationQuery = ConseilQueryBuilder.addPredicate(originationQuery, 'source', ConseilOperator.EQ, [pkh], false);
     originationQuery = ConseilQueryBuilder.addPredicate(originationQuery, 'status', ConseilOperator.EQ, ['applied'], false);
     originationQuery = ConseilQueryBuilder.setLimit(originationQuery, 1000);

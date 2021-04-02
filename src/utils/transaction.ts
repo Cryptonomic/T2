@@ -104,12 +104,14 @@ export async function getIndexedTransactions(accountHash, node: Node) {
         false
     );
     origin = ConseilQueryBuilder.addPredicate(origin, 'source', ConseilOperator.EQ, [accountHash], false);
+    origin = ConseilQueryBuilder.addPredicate(origin, 'status', ConseilOperator.EQ, ['applied'], false);
     origin = ConseilQueryBuilder.addPredicate(origin, 'internal', ConseilOperator.EQ, ['false'], false);
     origin = ConseilQueryBuilder.addOrdering(origin, 'block_level', ConseilSortDirection.DESC);
     origin = ConseilQueryBuilder.setLimit(origin, 1_000);
 
     let target = ConseilQueryBuilder.blankQuery();
     target = ConseilQueryBuilder.addPredicate(target, 'kind', ConseilOperator.EQ, ['transaction'], false);
+    target = ConseilQueryBuilder.addPredicate(target, 'status', ConseilOperator.EQ, ['applied'], false);
     target = ConseilQueryBuilder.addPredicate(target, 'destination', ConseilOperator.EQ, [accountHash], false);
     target = ConseilQueryBuilder.addPredicate(target, 'internal', ConseilOperator.EQ, ['false'], false);
     target = ConseilQueryBuilder.addOrdering(target, 'block_level', ConseilSortDirection.DESC);

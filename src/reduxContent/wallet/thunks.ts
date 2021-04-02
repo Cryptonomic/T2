@@ -244,7 +244,9 @@ export function syncTokenThunk(tokenAddress) {
                 );
             } else if (tokens[tokenIndex].kind === TokenKind.objkt) {
                 balanceAsync = HicNFTUtil.getCollectionSize(511, selectedParentHash, mainNode);
-                detailsAsync = {};
+                detailsAsync = await HicNFTUtil.getTokenInfo(mainNode, 515).then((r) => {
+                    return { holders: r.holders, supply: r.totalBalance };
+                });
                 transAsync = [];
             } else if (tokens[tokenIndex].kind === TokenKind.blnd) {
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);

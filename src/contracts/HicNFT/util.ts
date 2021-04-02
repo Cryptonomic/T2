@@ -179,6 +179,27 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
         });
 }
 
+/*export async function getCreations(tokenMapId: number, managerAddress: string, node: Node): Promise<any[]> {
+    const { conseilUrl, apiKey, network } = node;
+
+    let collectionQuery = ConseilQueryBuilder.blankQuery();
+    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value');
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
+        `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+    ]);
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
+    collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
+
+    const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
+
+    const collection = collectionResult.map((i) => {
+        return { piece: i.key.toString().replace(/.* ([0-9]{1,}$)/, '$1'), amount: Number(i.value) };
+    });
+
+    return collection;
+}*/
+
 function makeLastPriceQuery(operations) {
     let lastPriceQuery = ConseilQueryBuilder.blankQuery();
     lastPriceQuery = ConseilQueryBuilder.addFields(lastPriceQuery, 'timestamp', 'amount', 'operation_group_hash', 'parameters_entrypoints', 'parameters');
@@ -197,7 +218,6 @@ function makeLastPriceQuery(operations) {
 }
 
 export async function getCollection(tokenMapId: number, managerAddress: string, node: Node): Promise<any[]> {
-    // TODO: move to conseiljs wrapper
     const { conseilUrl, apiKey, network } = node;
 
     let collectionQuery = ConseilQueryBuilder.blankQuery();
@@ -304,6 +324,39 @@ export async function getBalance(tezosUrl: string, mapId: number, address: strin
     }
 
     return balance;
+}
+
+/**
+ *
+ *
+ */
+export async function getTokenInfo(node: Node, mapId: number = 515): Promise<{ holders: number; totalBalance: number }> {
+    const { conseilUrl, apiKey, network } = node;
+
+    let holdersQuery = ConseilQueryBuilder.blankQuery();
+    holdersQuery = ConseilQueryBuilder.addFields(holdersQuery, 'value');
+    holdersQuery = ConseilQueryBuilder.addPredicate(holdersQuery, 'big_map_id', ConseilOperator.EQ, [mapId]);
+    holdersQuery = ConseilQueryBuilder.setLimit(holdersQuery, 20_000);
+
+    const holdersResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', holdersQuery);
+
+    let holders = 0;
+    let totalBalance = new BigNumber(0);
+    holdersResult.forEach((r) => {
+        try {
+            const balance = new BigNumber(r.value);
+            if (balance.isGreaterThan(0)) {
+                totalBalance = totalBalance.plus(balance);
+            }
+            holders++;
+        } catch {
+            // eh
+        }
+    });
+
+    console.log('HIC getTokenInfo', holders, totalBalance.toString());
+
+    return { holders, totalBalance: totalBalance.toNumber() };
 }
 
 export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
