@@ -3,9 +3,11 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { Container as TopWrapper, TopRow, BottomRow, Breadcrumbs, AddressTitle } from '../../components/BalanceBanner/style';
-import { Container, SectionContainer } from '../../contracts/components/TabContainer/style';
-import { BottomRowInner, Link, LinkIcon, Box, BoxIcon, BoxTitle, BoxDescription, Img } from './style';
+import { Container } from '../../contracts/components/TabContainer/style';
+import { BottomRowInner, Link, LinkIcon, Box, BoxIcon, BoxTitle, BoxDescription, Img, BoxContainer } from './style';
 import defaultIcon from '../../../resources/contracts/token-icon.svg';
+
+import config from '../../config.json';
 
 import Update from '../../components/Update';
 
@@ -38,17 +40,19 @@ const TokensPage = () => {
                     </BottomRowInner>
                 </BottomRow>
             </TopWrapper>
-            <SectionContainer>
-                <Box>
-                    <BoxIcon>
-                        <Img src={defaultIcon} />
-                    </BoxIcon>
-                    <BoxTitle>tzBTC</BoxTitle>
-                    <BoxDescription>
-                        tzBTC is a Tezos token which is fully collateralized with Bitcoin, issued by the Bitcoin Association Switzerland
-                    </BoxDescription>
-                </Box>
-            </SectionContainer>
+            <BoxContainer container={true} justify="flex-start">
+                {config.supportedTokens.map((token) => (
+                    <Box key={token.name} item={true} xs={3}>
+                        <BoxIcon>
+                            <Img src={defaultIcon} />
+                        </BoxIcon>
+                        <BoxTitle>{token.name}</BoxTitle>
+                        <BoxDescription>
+                            {token.symbol} {token.description}
+                        </BoxDescription>
+                    </Box>
+                ))}
+            </BoxContainer>
         </Container>
     );
 };
