@@ -43,7 +43,7 @@
             "name": "StakerDAO Token",
             "symbol": "STKR",
             "description": "is the governance token for StakerDAO, is built on the FA 1.2 token standard on Tezos",
-            "icon": "usdtz-icon"
+            "icon": "stkr-icon"
         }
     ]
 }
