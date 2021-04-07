@@ -13,5 +13,37 @@
     "ledgerReferral": "",
     "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/master/version.json",
     "logLevel": "debug",
-    "customProtocols": ["tezori", "tezos"]
+    "customProtocols": ["tezori", "tezos"],
+    "supportedTokens": [
+        {
+            "name": "Wrapped Tezos",
+            "symbol": "wXTZ",
+            "description": "is a fully collateralized representation of XTZ conforming to the FA1.2 token standard",
+            "icon": "wXTZ-token-FullColor"
+        },
+        {
+            "name": "tzBTC",
+            "symbol": "tzBTC",
+            "description": "is a Tezos token which is fully collateralized with Bitcoin, issued by the Bitcoin Association Switzerland",
+            "icon": "tzbtc-icon"
+        },
+        {
+            "name": "Kolibri",
+            "symbol": "KUSD",
+            "description": "is a Tezos based stablecoin built on Collateralized Debt Positions (CDPs)",
+            "icon": "kusd-icon"
+        },
+        {
+            "name": "USDTez",
+            "symbol": "USDtz",
+            "description": "is a stable coin pegged to the value of the United States Dollar",
+            "icon": "usdtz-icon"
+        },
+        {
+            "name": "StakerDAO Token",
+            "symbol": "STKR",
+            "description": "is the governance token for StakerDAO, is built on the FA 1.2 token standard on Tezos",
+            "icon": "usdtz-icon"
+        }
+    ]
 }
