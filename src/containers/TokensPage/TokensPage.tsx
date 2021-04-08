@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { Container as TopWrapper, TopRow, BottomRow, Breadcrumbs, AddressTitle } from '../../components/BalanceBanner/style';
 import { Container } from '../../contracts/components/TabContainer/style';
 import { BottomRowInner, Link, LinkIcon, Box, BoxIcon, BoxTitle, BoxDescription, Img, BoxContainer } from './style';
-import defaultIcon from '../../../resources/contracts/token-icon.svg';
 
-import config from '../../config.json';
+import { knownTokenContracts, knownTokenDescription } from '../../constants/Token';
 
 import Update from '../../components/Update';
 
@@ -18,7 +17,9 @@ import { RootState } from '../../types/store';
 const TokensPage = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { time, isWalletSyncing, selectedParentIndex } = useSelector((state: RootState) => state.app, shallowEqual);
+    const { time, isWalletSyncing, selectedParentIndex } = useSelector((state: RootState) => state.app);
+    const { selectedNode, nodesList } = useSelector((state: RootState) => state.settings);
+    const currentNetwork = nodesList.find((n) => n.displayName === selectedNode);
 
     const onSyncWallet = () => dispatch(syncWalletThunk());
 
@@ -41,17 +42,19 @@ const TokensPage = () => {
                 </BottomRow>
             </TopWrapper>
             <BoxContainer container={true} justify="flex-start">
-                {config.supportedTokens.map((token) => (
-                    <Box key={token.name} item={true} xs={3}>
-                        <BoxIcon>
-                            <Img src={defaultIcon} />
-                        </BoxIcon>
-                        <BoxTitle>{token.name}</BoxTitle>
-                        <BoxDescription>
-                            {token.symbol} {token.description}
-                        </BoxDescription>
-                    </Box>
-                ))}
+                {knownTokenContracts
+                    .filter((i) => !!knownTokenDescription[i.symbol] && currentNetwork?.network === i.network)
+                    .map((token) => (
+                        <Box key={token.symbol} item={true} xs={3}>
+                            <BoxIcon>
+                                <Img src={token.icon} />
+                            </BoxIcon>
+                            <BoxTitle>{token.displayName}</BoxTitle>
+                            <BoxDescription>
+                                {token.symbol} {knownTokenDescription[token.symbol]}
+                            </BoxDescription>
+                        </Box>
+                    ))}
             </BoxContainer>
         </Container>
     );
