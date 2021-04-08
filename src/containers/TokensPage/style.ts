@@ -3,8 +3,7 @@ import mStyled from '@material-ui/styles/styled';
 import { withStyles } from '@material-ui/styles';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import Grid from '@material-ui/core/Grid';
-
-import { ms } from '../../styles/helpers';
+import Divider from '@material-ui/core/Divider';
 
 export const BottomRowInner = styled.div`
     display: flex;
@@ -29,7 +28,7 @@ export const Box = withStyles({
         maxWidth: '208px',
         minWidth: '208px',
         minHeight: '193px',
-        backgroundColor: '#f6f8fa',
+        backgroundColor: '#F6F8FA',
         border: '1px solid #d8e4fc',
         borderRadius: '8px',
         display: 'flex',
@@ -68,4 +67,31 @@ export const BoxDescription = styled.div`
     margin-top: 8px;
 `;
 
-export const BoxContainer = mStyled(Grid)({});
+export const BlueLink = styled.span<{ isActive: boolean | undefined }>`
+    color: ${({ isActive }) => (isActive ? '#2F80ED' : '')};
+`;
+
+export const TokensTitle = styled.div`
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: 0.015em;
+    color: #4f4f4f;
+    margin-top: 24px;
+`;
+
+export const HorizontalDivider = mStyled(Divider)({
+    marginTop: '24px',
+    backgroundColor: '#E0E0E0',
+});
+
+export const BalanceTitle = styled.div`
+    font-size: 14px;
+    line-height: 16px;
+    margin-top: 16px;
+`;
+
+export const BalanceAmount = styled.div`
+    font-size: 24px;
+    line-height: 28px;
+    margin-top: 4px;
+`;
