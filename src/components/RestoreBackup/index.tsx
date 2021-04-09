@@ -128,13 +128,14 @@ function RestoreBackup() {
                         placeholder={t('containers.homeAddAddress.restore_mnemonic')}
                         seeds={seeds}
                         onChange={(val) => {
+                            val = val.map((s) => s.toLowerCase());
                             setSeeds(val);
                             setRestoreDisabled(![12, 15, 18, 21, 24].includes(val.length));
                             setError(false);
                         }}
                         onError={(err) => {
                             setError(err);
-                            setRestoreDisabled(true);
+                            setRestoreDisabled(err);
                         }}
                         expectedWords={0}
                     />
