@@ -1,6 +1,6 @@
 {
   "name": "tezori",
-  "version": "1.1.18-beta",
+  "version": "1.1.19-beta",
   "description": "An open-source wallet framework for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
