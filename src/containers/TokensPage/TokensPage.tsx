@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'bignumber.js';
 
 import Grid from '@material-ui/core/Grid';
 
@@ -22,56 +23,104 @@ import {
     BalanceAmount,
 } from './style';
 
-import { knownTokenContracts, knownTokenDescription } from '../../constants/Token';
+import { knownTokenDescription } from '../../constants/Token';
 
 import Update from '../../components/Update';
 
 import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
 
-import { openLink } from '../../utils/general';
+import { changeAccountThunk } from '../../reduxContent/app/thunks';
+
+import { openLink, isReady } from '../../utils/general';
+
+import { getAccountSelector } from '../../contracts/duck/selectors';
 
 import { RootState } from '../../types/store';
+
+import { AddressType, TokenKind } from '../../types/general';
 
 const TokensPage = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { time, isWalletSyncing, selectedParentIndex } = useSelector((state: RootState) => state.app);
-    const { selectedNode, nodesList } = useSelector((state: RootState) => state.settings);
-    const currentNetwork = nodesList.find((n) => n.displayName === selectedNode); // Selected Network
-    const myTokens = [knownTokenContracts[0]]; // TODO: get my tokens
-    const supportedTokens = knownTokenContracts.filter(
-        (i) => !!knownTokenDescription[i.symbol] && currentNetwork?.network === i.network && !myTokens.map((m) => m.symbol).includes(i.symbol)
-    );
+    const { time, isWalletSyncing, selectedParentIndex, selectedAccountIndex } = useSelector((state: RootState) => state.app);
+    const selectedAccount = useSelector(getAccountSelector);
+    const tokens = useSelector((state: RootState) => state.wallet.tokens);
+    const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
+
+    const { storeType, status } = selectedAccount;
+    const isReadyProp = isReady(status, storeType);
+    const activeTokens = tokens.filter((mt) => mt.kind === TokenKind.wxtz || mt.balance); // Always show wXTZ
+    // knownTokenDescription display tokens with description
+    const supportedTokens = tokens.filter((i) => !!knownTokenDescription[i.symbol] && !activeTokens.map((m) => m.address).includes(i.address));
+
+    const formatAmount = (truncateAmount, amount): string => {
+        const digits = truncateAmount ? 6 : 2;
+        return new BigNumber(amount)
+            .dividedBy(10 ** 6)
+            .toNumber()
+            .toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+    };
 
     const onSyncWallet = () => dispatch(syncWalletThunk());
 
     const onClickLink = (link: string) => openLink(link);
 
+    const onClickToken = (addressId, index, addressType) => {
+        let tokenType = AddressType.Token;
+
+        if (addressType === TokenKind.wxtz) {
+            tokenType = AddressType.wXTZ;
+        }
+
+        if (addressType === TokenKind.tzbtc) {
+            tokenType = AddressType.TzBTC;
+        }
+
+        if (addressType === TokenKind.kusd) {
+            tokenType = AddressType.kUSD;
+        }
+
+        if (addressType === TokenKind.objkt) {
+            tokenType = AddressType.objkt;
+        }
+
+        if (addressType === TokenKind.blnd) {
+            tokenType = AddressType.BLND;
+        }
+
+        if (addressType === TokenKind.stkr) {
+            tokenType = AddressType.STKR;
+        }
+
+        const { publicKeyHash } = identities[selectedAccountIndex];
+        dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, addressType));
+    };
+
     return (
         <Container>
             <TopWrapper>
-                <TopRow isReady={true}>
+                <TopRow isReady={isReadyProp}>
                     <Breadcrumbs>
                         {t('components.balanceBanner.breadcrumbs', { parentIndex: selectedParentIndex + 1, addressLabel: 'Tokens Page' })}
                     </Breadcrumbs>
-                    <Update onClick={onSyncWallet} time={time} isReady={true} isWalletSyncing={isWalletSyncing} />
+                    <Update onClick={onSyncWallet} time={time} isReady={isReadyProp} isWalletSyncing={isWalletSyncing} />
                 </TopRow>
-                <BottomRow isReady={true}>
+                <BottomRow isReady={isReadyProp}>
                     <BottomRowInner>
                         <AddressTitle>Tokens</AddressTitle>
-                        {/* TODO: add tokens link */}
+                        {/* TODO: Add tokens link */}
                         <Link onClick={() => onClickLink('')}>
                             List a Token on Galleon <LinkIcon />
                         </Link>
                     </BottomRowInner>
                 </BottomRow>
             </TopWrapper>
-            {myTokens.length && (
+            {!!activeTokens.length && (
                 <>
                     <TokensTitle>Your Tokens</TokensTitle>
                     <Grid container={true} justify="flex-start">
-                        {myTokens.map((token) => (
-                            <Box key={token.symbol} item={true} xs={3}>
+                        {activeTokens.map((token, index) => (
+                            <Box key={token.symbol} item={true} xs={3} onClick={() => onClickToken(token.address, index, token.kind)}>
                                 <BoxIcon>
                                     <Img src={token.icon} />
                                 </BoxIcon>
@@ -83,14 +132,16 @@ const TokensPage = () => {
                                     {knownTokenDescription[token.symbol]}
                                 </BoxDescription>
                                 <BalanceTitle>Balance</BalanceTitle>
-                                <BalanceAmount>10.00 {token.symbol}</BalanceAmount>
+                                <BalanceAmount>
+                                    {formatAmount(false, token.balance)} {token.symbol}
+                                </BalanceAmount>
                             </Box>
                         ))}
                     </Grid>
                     <HorizontalDivider />
                 </>
             )}
-            {supportedTokens.length && (
+            {!!supportedTokens.length && (
                 <>
                     <TokensTitle>Supported Tokens</TokensTitle>
                     <Grid container={true} justify="flex-start">
