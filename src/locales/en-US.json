@@ -65,6 +65,7 @@
             "code": "Code",
             "format": "Format",
             "tokens": "Tokens",
+            "tokens_page": "Tokens Page",
             "token_contract": "Token Contract",
             "sign_n_verify": "Sign & Verify",
             "platform": "Platform",

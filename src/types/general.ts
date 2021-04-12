@@ -60,6 +60,7 @@ export enum AddressType {
     BLND,
     objkt,
     STKR,
+    TokensPage,
 }
 
 export interface RegularAddress {

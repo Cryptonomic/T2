@@ -330,6 +330,10 @@ function AddressBlock(props: Props) {
                 <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
             </AddDelegateLabel>
 
+            <AddDelegateLabel onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
+                <DelegateTitle>{t('general.nouns.tokens_page')}</DelegateTitle>
+            </AddDelegateLabel>
+
             <AddDelegateLabel>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
             </AddDelegateLabel>
@@ -363,7 +367,7 @@ function AddressBlock(props: Props) {
                 if (token.kind === TokenKind.kusd) {
                     tokenType = AddressType.kUSD;
                 }
-          
+
                 if (token.kind === TokenKind.objkt) {
                     tokenType = AddressType.objkt;
                 }

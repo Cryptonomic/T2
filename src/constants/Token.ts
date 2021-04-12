@@ -10,6 +10,7 @@ import kusdIcon from '../../resources/contracts/kusd-icon.png';
 import hicetnuncIcon from '../../resources/contracts/hicetnunc-icon.png';
 import blndIcon from '../../resources/contracts/blnd-icon.png';
 import stkrIcon from '../../resources/contracts/stkr-icon.png';
+import hdaoIcon from '../../resources/contracts/hdao-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -136,6 +137,34 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 8,
         precision: 8,
         round: 8,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW',
+        displayName: 'hDAO',
+        symbol: 'hDAO',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: hdaoIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf',
+        displayName: 'Stably USD',
+        symbol: 'USDS',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: hdaoIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
     },
     {
         network: 'mainnet',
@@ -270,26 +299,31 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
 ];
 
+export const knownTokenDescription = {
+    wXTZ: 'is a fully collateralized representation of XTZ conforming to the FA1.2 token standard',
+    tzBTC: 'is a Tezos token which is fully collateralized with Bitcoin, issued by the Bitcoin Association Switzerland',
+    kUSD: 'is a Tezos based stablecoin built on Collateralized Debt Positions (CDPs)',
+    USDtz: 'is a stable coin pegged to the value of the United States Dollar',
+    STKR: 'is the governance token for StakerDAO, is built on the FA 1.2 token standard on Tezos',
+};
+
 export const knownContractNames = {
     KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn: 'tzBTC Token',
     KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: 'USDtz Token',
     KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8: 'ETHtz Token',
     KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH: 'wXTZ Token',
     KT1V4Vp7zhynCNuaBjWMpNU535Xm2sgqkz6M: 'wXTZ Manager',
+    KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: 'Kolibri Token',
+    KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: 'Staker Governance Token',
+    KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN: 'BLND Token',
+    KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf: 'USDS Token',
+
     KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU: 'Dexter ETHtz/XTZ Pool',
     KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9: 'Dexter USDtz/XTZ Pool',
     KT1BGQR7t4izzKZ7eRodKWTodAsM23P38v7N: 'Dexter tzBTC/XTZ Pool',
     KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo: 'Dexter wXTZ/XTZ Pool',
-    KT1H28iie4mW9LmmJeYLjH6zkC8wwSmfHf5P: 'TzButton Round 2',
-    KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: 'Kolibri Token',
     KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6: 'Dexter kUSD/XTZ Pool',
-    KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9: 'hic et nunc Art House',
-    KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton: 'hic et nunc NFT',
-    KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: 'hic et nunc DAO',
-    KT1CpeSQKdkhWi4pinYcseCFKmDhs5M74BkU: 'tzcolors Auction House',
-    KT1FyaDqiMQWg7Exo7VUiXAgZbd2kCzo3d4s: 'tzcolors NFT',
-    KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN: 'BLND Token',
-    KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: 'Staker Governance Token',
+
     KT1MWxucqexguPjhqEyk4XndE1M5tHnhNhH7: 'QuipuSwap USDtz/XTZ Pool',
     KT1CiSKXR68qYSxnbzjwvfeMCRburaSDonT2: 'QuipuSwap kUSD/XTZ Pool',
     KT1NABnnQ4pUTJHUwFLiVM2uuEu1RXihAVmB: 'QuipuSwap wXTZ/XTZ Pool',
@@ -297,14 +331,25 @@ export const knownContractNames = {
     KT1DX1kpCEfEg5nG3pXSSwvtkjTr6ZNYuxP4: 'QuipuSwap ETHtz/XTZ Pool',
     KT1R5Fp415CJxSxxXToUj6QvxP1LHaYXaxV6: 'QuipuSwap STKR/XTZ Pool',
     KT1V41fGzkdTJki4d11T1Rp9yPkCmDhB7jph: 'QuipuSwap hDAO/XTZ Pool',
+    KT1T4wNjJtNqZ9XCKSZqR5BXsuGczTxhV9Vu: 'QuipuSwap USDS/XTZ Pool',
     KT1K7whn5yHucGXMN7ymfKiX5r534QeaJM29: 'QuipuSwap FA1.2 Pool Factory',
     KT1MMLb2FVrrE9Do74J3FH1RNNc4QhDuVCNX: 'QuipuSwap FA2 Pool Factory',
+
+    KT1CpeSQKdkhWi4pinYcseCFKmDhs5M74BkU: 'tzcolors Auction House',
+    KT1FyaDqiMQWg7Exo7VUiXAgZbd2kCzo3d4s: 'tzcolors NFT',
+
+    KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9: 'hic et nunc Art House',
+    KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton: 'hic et nunc NFT',
+    KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: 'hic et nunc DAO',
+
+    KT1H28iie4mW9LmmJeYLjH6zkC8wwSmfHf5P: 'TzButton Round 2',
 };
 
 export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU',
+        token: 'KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8',
         name: 'Dexter ETHtz/XTZ Pool',
         scale: 18,
         symbol: 'ETHtz',
@@ -312,6 +357,7 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9',
+        token: 'KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9',
         name: 'Dexter USDtz/XTZ Pool',
         scale: 6,
         symbol: 'USDtz',
@@ -319,6 +365,7 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1BGQR7t4izzKZ7eRodKWTodAsM23P38v7N',
+        token: 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
         name: 'Dexter tzBTC/XTZ Pool',
         scale: 8,
         symbol: 'tzBTC',
@@ -326,6 +373,7 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo',
+        token: 'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH',
         name: 'Dexter wXTZ/XTZ Pool',
         scale: 6,
         symbol: 'wXTZ',
@@ -333,13 +381,15 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6',
+        token: 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
         name: 'Dexter kUSD/XTZ Pool',
         scale: 18,
         symbol: 'kUSD',
     },
     {
         network: 'mainnet',
-        address: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
+        address: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton', // KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9
+        token: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
         name: 'hic et nunc NFT',
         scale: 0,
         symbol: 'OBJKT',
@@ -347,6 +397,7 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1MWxucqexguPjhqEyk4XndE1M5tHnhNhH7',
+        token: 'KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9',
         name: 'QuipuSwap USDtz/XTZ Pool',
         scale: 6,
         symbol: 'USDtz',
@@ -354,6 +405,7 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1CiSKXR68qYSxnbzjwvfeMCRburaSDonT2',
+        token: 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
         name: 'QuipuSwap kUSD/XTZ Pool',
         scale: 18,
         symbol: 'kUSD',
@@ -361,6 +413,7 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1NABnnQ4pUTJHUwFLiVM2uuEu1RXihAVmB',
+        token: 'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH',
         name: 'QuipuSwap wXTZ/XTZ Pool',
         scale: 6,
         symbol: 'wXTZ',
@@ -368,6 +421,7 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1N1wwNPqT5jGhM91GQ2ae5uY8UzFaXHMJS',
+        token: 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
         name: 'QuipuSwap tzBTC/XTZ Pool',
         scale: 8,
         symbol: 'tzBTC',
@@ -375,6 +429,7 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1DX1kpCEfEg5nG3pXSSwvtkjTr6ZNYuxP4',
+        token: 'KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8',
         name: 'QuipuSwap ETHtz/XTZ Pool',
         scale: 18,
         symbol: 'ETHtz',
@@ -382,6 +437,7 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1R5Fp415CJxSxxXToUj6QvxP1LHaYXaxV6',
+        token: 'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea',
         name: 'QuipuSwap STKR/XTZ Pool',
         scale: 18,
         symbol: 'STKR',
@@ -389,7 +445,16 @@ export const knownMarketMetadata = [
     {
         network: 'mainnet',
         address: 'KT1V41fGzkdTJki4d11T1Rp9yPkCmDhB7jph',
+        token: 'KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW',
         name: 'QuipuSwap hDAO/XTZ Pool',
+        scale: 6,
+        symbol: 'hDAO',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1T4wNjJtNqZ9XCKSZqR5BXsuGczTxhV9Vu',
+        token: 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf',
+        name: 'QuipuSwap USDS/XTZ Pool',
         scale: 6,
         symbol: 'hDAO',
     },
