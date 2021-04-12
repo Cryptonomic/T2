@@ -18,6 +18,7 @@ import KolibriToken from '../../contracts/KolibriToken';
 import HicNFT from '../../contracts/HicNFT';
 import BlndToken from '../../contracts/BlndToken';
 import StkrToken from '../../contracts/StkrToken';
+import TokensPage from '../TokensPage';
 
 import { sortArr } from '../../utils/array';
 
@@ -58,6 +59,8 @@ function HomeMain() {
                 return <BlndToken />;
             case AddressType.STKR:
                 return <StkrToken />;
+            case AddressType.TokensPage:
+                return <TokensPage />;
             default:
                 return <GenericContract />;
         }

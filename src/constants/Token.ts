@@ -299,6 +299,14 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
 ];
 
+export const knownTokenDescription = {
+    wXTZ: 'is a fully collateralized representation of XTZ conforming to the FA1.2 token standard',
+    tzBTC: 'is a Tezos token which is fully collateralized with Bitcoin, issued by the Bitcoin Association Switzerland',
+    kUSD: 'is a Tezos based stablecoin built on Collateralized Debt Positions (CDPs)',
+    USDtz: 'is a stable coin pegged to the value of the United States Dollar',
+    STKR: 'is the governance token for StakerDAO, is built on the FA 1.2 token standard on Tezos',
+};
+
 export const knownContractNames = {
     KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn: 'tzBTC Token',
     KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: 'USDtz Token',
