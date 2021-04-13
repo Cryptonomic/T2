@@ -124,6 +124,7 @@ function SeedInput(props: Props) {
             value={seeds}
             onInputChange={onChangeInput}
             onChange={onChangeItems}
+            getOptionSelected={() => false}
             filterOptions={(options, state) => {
                 const { inputValue } = state;
                 if (inputValue.length < 2) {
