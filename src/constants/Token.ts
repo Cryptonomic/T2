@@ -456,6 +456,6 @@ export const knownMarketMetadata = [
         token: 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf',
         name: 'QuipuSwap USDS/XTZ Pool',
         scale: 6,
-        symbol: 'hDAO',
+        symbol: 'USDS',
     },
 ];

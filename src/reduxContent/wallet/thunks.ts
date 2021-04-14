@@ -180,6 +180,10 @@ export function syncTokenThunk(tokenAddress) {
         const { selectedParentHash } = state().app;
         const tokens: (Token | VaultToken | ArtToken)[] = state().wallet.tokens;
 
+        if (!selectedParentHash || selectedParentHash.length === 0) {
+            return;
+        }
+
         const mainNode = getMainNode(nodesList, selectedNode);
         const tokenIndex = findTokenIndex(tokens, tokenAddress);
 
@@ -316,6 +320,10 @@ export function syncWalletThunk() {
         const { selectedNode, nodesList } = state().settings;
         const { selectedAccountHash, selectedParentHash } = state().app;
         const tokens: (Token | VaultToken | ArtToken)[] = state().wallet.tokens;
+
+        if (!selectedParentHash || selectedParentHash.length === 0) {
+            return;
+        }
 
         const mainNode = getMainNode(nodesList, selectedNode);
 
