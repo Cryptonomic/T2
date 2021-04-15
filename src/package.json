@@ -1,6 +1,6 @@
 {
     "name": "tezori",
-    "productName": "Tezori Preview",
+    "productName": "Tezori",
     "version": "1.1.19-beta",
     "description": "An open-source wallet framework for the Tezos blockchain.",
     "main": "./main.prod.js",

@@ -3,12 +3,14 @@ import Switch from '@material-ui/core/Switch';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
+
+import { importAddressThunk, importSecretKeyThunk } from '../../reduxContent/wallet/thunks';
+import * as ADD_ADDRESS_TYPES from '../../constants/AddAddressTypes';
+
 import TextField from '../TextField';
 import Button from '../Button';
 import SeedInput from './SeedInput';
 import PasswordInput from '../PasswordInput';
-import { importAddressThunk, importSecretKeyThunk } from '../../reduxContent/wallet/thunks';
-import * as ADD_ADDRESS_TYPES from '../../constants/AddAddressTypes';
 
 const MainContainer = styled.div`
     position: relative;
@@ -98,7 +100,7 @@ function RestoreBackup() {
     const [hasDerivationPath, setHasDerivationPath] = useState(false);
     const [key, setKey] = useState('');
     const [error, setError] = useState(false);
-    const [restoreDisabled, setRestoreDisabled] = useState(false);
+    const [restoreDisabled, setRestoreDisabled] = useState(true);
 
     const importAddress = () => {
         if (type === 'phrase') {
@@ -116,11 +118,23 @@ function RestoreBackup() {
         }
     };
 
+    const onTypeChange = (restoreType: string) => {
+        setType(restoreType);
+
+        if (restoreType === 'key') {
+            setRestoreDisabled(!key || key.trim().length === 0);
+        }
+
+        if (restoreType === 'phrase') {
+            setRestoreDisabled(![12, 15, 18, 21, 24].includes(seeds.length));
+        }
+    };
+
     return (
         <MainContainer onKeyDown={(event) => onEnterPress(event.key, restoreDisabled)}>
             <RestoreHeader>
                 {t('components.restoreBackup.restore_from')}
-                <RestoreTabs type={type} t={t} changeFunc={(val) => setType(val)} />
+                <RestoreTabs type={type} t={t} changeFunc={(val) => onTypeChange(val)} />
             </RestoreHeader>
             {type === 'phrase' && (
                 <Fragment>
@@ -173,7 +187,7 @@ function RestoreBackup() {
                     value={key}
                     onChange={(val) => {
                         setKey(val);
-                        setRestoreDisabled(!key);
+                        setRestoreDisabled(!key || key.trim().length === 0);
                         setError(false);
                     }}
                 />

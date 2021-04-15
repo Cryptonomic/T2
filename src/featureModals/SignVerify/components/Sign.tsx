@@ -17,18 +17,7 @@ import { getMainPath } from '../../../utils/settings';
 
 import { publicKeyThunk } from '../thunks';
 
-import {
-    Container,
-    MainContainer,
-    ButtonContainer,
-    ResultContainer,
-    InvokeButton,
-    Result,
-    MessageContainer,
-    InfoIcon,
-    WarningIcon,
-    Footer
-} from '../../style';
+import { Container, MainContainer, ButtonContainer, ResultContainer, InvokeButton, Result, MessageContainer, InfoIcon, WarningIcon, Footer } from '../../style';
 
 const PublicKeyContainer = styled.div`
     display: flex;
@@ -53,8 +42,9 @@ const Sign = () => {
     const [key, setKey] = useState('');
     const [keyRevealed, setKeyRevealed] = useState(true);
     const [password, setPassword] = useState('');
+    const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
 
-    const isDisabled = isLoading || !message;
+    const isDisabled = isLoading || !message || ledgerModalOpen;
     const { selectedPath, pathsList } = settings;
     const derivationPath = isLedger ? getMainPath(pathsList, selectedPath) : '';
 
@@ -74,7 +64,17 @@ const Sign = () => {
             return;
         }
 
-        const signature = await (await cloneDecryptedSigner(signer as SoftSigner, password)).signText(message);
+        let signature: string = '';
+        if (isLedger) {
+            try {
+                setLedgerModalOpen(true);
+                signature = await signer.signText(message);
+            } finally {
+                setLedgerModalOpen(false);
+            }
+        } else {
+            signature = await (await cloneDecryptedSigner(signer as SoftSigner, password)).signText(message);
+        }
 
         setError(false);
         setResult(signature);
@@ -131,6 +131,9 @@ const Sign = () => {
                             containerStyle={{ width: '60%', marginTop: '10px' }}
                         />
                     )}
+
+                    {isLedger && ledgerModalOpen && <>Please confirm the operation on the Ledger device</>}
+
                     <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
                         {t('general.verbs.sign')}
                     </InvokeButton>

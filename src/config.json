@@ -1,6 +1,6 @@
 {
     "name": "Tezori",
-    "version": "1.1.19b",
+    "version": "1.1.19-beta",
     "blockExplorerHost": "https://arronax.io/tezos",
     "logo": "tezosLogo.png",
     "logoLink": "https://github.com/Cryptonomic/T2",
