@@ -52,10 +52,10 @@ const TokensPage = () => {
     const activeTokens = tokens.filter((mt) => mt.balance);
     const supportedTokens = tokens.filter((i) => !activeTokens.map((m) => m.address).includes(i.address));
 
-    const formatAmount = (truncateAmount, amount): string => {
-        const digits = truncateAmount ? 6 : 2;
+    const formatAmount = (truncateAmount, amount, precision, round, scale): string => {
+        const digits = truncateAmount ? precision : round;
         return new BigNumber(amount)
-            .dividedBy(10 ** 6)
+            .dividedBy(10 ** scale)
             .toNumber()
             .toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits });
     };
@@ -134,7 +134,7 @@ const TokensPage = () => {
                                 </BoxDescription>
                                 <BalanceTitle>Balance</BalanceTitle>
                                 <BalanceAmount>
-                                    {formatAmount(false, token.balance)} {token.symbol}
+                                    {formatAmount(false, token.balance, token.precision, token.round, token.scale)} {token.symbol}
                                 </BalanceAmount>
                             </Box>
                         ))}
