@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
@@ -31,13 +32,15 @@ import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
 
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 
-import { openLink, isReady } from '../../utils/general';
+import { openLink, isReady, getDataFromApi } from '../../utils/general';
 
 import { getAccountSelector } from '../../contracts/duck/selectors';
 
 import { RootState } from '../../types/store';
 
 import { AddressType, TokenKind } from '../../types/general';
+
+import { tokensSupportURL } from '../../config.json';
 
 const TokensPage = () => {
     const { t } = useTranslation();
@@ -46,6 +49,8 @@ const TokensPage = () => {
     const selectedAccount = useSelector(getAccountSelector);
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
     const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
+
+    const [supportUrl, setSupportUrl] = useState('');
 
     const { storeType, status } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
@@ -95,6 +100,14 @@ const TokensPage = () => {
         dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, addressType));
     };
 
+    useEffect(() => {
+        const getSupportURL = async () => {
+            const { url } = await getDataFromApi(tokensSupportURL);
+            setSupportUrl(url);
+        };
+        getSupportURL();
+    }, []);
+
     return (
         <Container>
             <TopWrapper>
@@ -107,8 +120,7 @@ const TokensPage = () => {
                 <BottomRow isReady={isReadyProp}>
                     <BottomRowInner>
                         <AddressTitle>Tokens</AddressTitle>
-                        {/* TODO: Add tokens link */}
-                        <Link onClick={() => onClickLink('')}>
+                        <Link onClick={() => onClickLink(supportUrl)}>
                             List a Token on Galleon <LinkIcon />
                         </Link>
                     </BottomRowInner>

@@ -7,7 +7,7 @@ import moment from 'moment';
 import { findIdentity } from './identity';
 import * as status from '../constants/StatusTypes';
 import { SEND, TRANSACTIONS } from '../constants/TabConstants';
-import { blockExplorerHost, versionReferenceURL } from '../config.json';
+import { blockExplorerHost } from '../config.json';
 
 const { Mnemonic, Hardware } = KeyStoreType;
 
@@ -146,9 +146,9 @@ export function clearOperationId(operationId) {
     return operationId;
 }
 
-export const getVersionFromApi = async () => {
+export const getDataFromApi = async (url: string) => {
     try {
-        const response = await fetch(versionReferenceURL, { cache: 'no-store' });
+        const response = await fetch(url, { cache: 'no-store' });
         const responseJson = await response.json();
         return responseJson;
     } catch (error) {

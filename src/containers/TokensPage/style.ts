@@ -16,11 +16,15 @@ export const Link = styled.div`
     align-items: center;
     font-size: 14px;
     line-height: 16px;
+    cursor: pointer;
 `;
 
 export const LinkIcon = mStyled(OpenInNewIcon)({
     fontSize: '12px',
     marginLeft: '5px',
+    '&:hover': {
+        cursor: 'pointer',
+    },
 });
 
 export const Box = withStyles({

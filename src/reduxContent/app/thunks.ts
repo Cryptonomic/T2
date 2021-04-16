@@ -17,9 +17,9 @@ import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
 import { changeAccountAction, addNewVersionAction, setSignerAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
-import { getVersionFromApi } from '../../utils/general';
+import { getDataFromApi } from '../../utils/general';
 import { AVERAGEFEES, OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
-import { LocalVersionIndex } from '../../config.json';
+import { LocalVersionIndex, versionReferenceURL } from '../../config.json';
 
 import { AverageFees, AddressType } from '../../types/general';
 import { RootState } from '../../types/store';
@@ -264,7 +264,7 @@ export function changeAccountThunk(accountHash: string, parentHash: string, acco
 
 export function getNewVersionThunk() {
     return async (dispatch) => {
-        const result = await getVersionFromApi();
+        const result = await getDataFromApi(versionReferenceURL);
         const RemoteVersionIndex = parseInt(result.currentVersionIndex, 10);
         if (RemoteVersionIndex > parseInt(LocalVersionIndex, 10)) {
             dispatch(addNewVersionAction(result.currentVersionString));
