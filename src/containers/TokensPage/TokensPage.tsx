@@ -50,8 +50,7 @@ const TokensPage = () => {
     const { storeType, status } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
     const activeTokens = tokens.filter((mt) => mt.balance);
-    // knownTokenDescription display tokens with description
-    const supportedTokens = tokens.filter((i) => !!knownTokenDescription[i.symbol] && !activeTokens.map((m) => m.address).includes(i.address));
+    const supportedTokens = tokens.filter((i) => !activeTokens.map((m) => m.address).includes(i.address));
 
     const formatAmount = (truncateAmount, amount): string => {
         const digits = truncateAmount ? 6 : 2;
@@ -126,9 +125,11 @@ const TokensPage = () => {
                                 </BoxIcon>
                                 <BoxTitle>{token.displayName}</BoxTitle>
                                 <BoxDescription>
-                                    <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
-                                        {token.symbol}
-                                    </BlueLink>{' '}
+                                    {!!token.helpLink && (
+                                        <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
+                                            {token.symbol}
+                                        </BlueLink>
+                                    )}{' '}
                                     {knownTokenDescription[token.symbol]}
                                 </BoxDescription>
                                 <BalanceTitle>Balance</BalanceTitle>
@@ -152,9 +153,11 @@ const TokensPage = () => {
                                 </BoxIcon>
                                 <BoxTitle>{token.displayName}</BoxTitle>
                                 <BoxDescription>
-                                    <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
-                                        {token.symbol}
-                                    </BlueLink>{' '}
+                                    {!!token.helpLink && (
+                                        <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
+                                            {token.symbol}
+                                        </BlueLink>
+                                    )}{' '}
                                     {knownTokenDescription[token.symbol]}
                                 </BoxDescription>
                             </Box>

@@ -69,7 +69,7 @@ export const BoxDescription = styled.div`
 
 export const BlueLink = styled.span<{ isActive: boolean | undefined }>`
     color: ${({ isActive }) => (isActive ? '#2F80ED' : '')};
-    cursor: pointer;
+    cursor: ${({ isActive }) => (isActive ? 'pointer' : '')};
 `;
 
 export const TokensTitle = styled.div`
