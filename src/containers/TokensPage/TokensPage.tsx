@@ -49,7 +49,7 @@ const TokensPage = () => {
 
     const { storeType, status } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
-    const activeTokens = tokens.filter((mt) => mt.kind === TokenKind.wxtz || mt.balance); // Always show wXTZ
+    const activeTokens = tokens.filter((mt) => mt.balance);
     // knownTokenDescription display tokens with description
     const supportedTokens = tokens.filter((i) => !!knownTokenDescription[i.symbol] && !activeTokens.map((m) => m.address).includes(i.address));
 
