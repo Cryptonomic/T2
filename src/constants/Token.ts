@@ -57,6 +57,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 18,
         round: 2,
         mapid: 380,
+        helpLink: 'https://kolibri.finance/',
     },
     {
         network: 'mainnet',
@@ -137,6 +138,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 8,
         precision: 8,
         round: 8,
+        helpLink: 'https://tzbtc.io/',
     },
     {
         network: 'mainnet',
@@ -194,6 +196,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 6,
         precision: 6,
         round: 2,
+        helpLink: 'https://usdtz.com',
     },
     {
         network: 'delphinet',
@@ -234,6 +237,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 8,
         precision: 8,
         round: 8,
+        helpLink: 'https://tzbtc.io/',
     },
     {
         network: 'delphinet',
@@ -251,6 +255,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         vaultCoreAddress: 'KT1AZ6Kuj6FpbVJdoizwUxVqTSF2nYbTFzeQ',
         vaultRegistryMapId: 30147,
         vaultList: [],
+        helpLink: 'https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs',
     },
     {
         network: 'delphinet',
