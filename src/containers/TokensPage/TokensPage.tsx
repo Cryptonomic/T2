@@ -42,6 +42,9 @@ import { AddressType, TokenKind } from '../../types/general';
 
 import { tokensSupportURL } from '../../config.json';
 
+const hideInList: string[] = ['USDtz']; // List of tokens to hide
+const shouldHideInList = false; // Hide unwanted tokens
+
 const TokensPage = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -54,8 +57,9 @@ const TokensPage = () => {
 
     const { storeType, status } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
-    const activeTokens = tokens.filter((mt) => mt.balance);
-    const supportedTokens = tokens.filter((i) => !activeTokens.map((m) => m.address).includes(i.address));
+    const allTokens = [...tokens].filter((token) => !shouldHideInList || !hideInList.includes(token.symbol));
+    const activeTokens = allTokens.filter((mt) => mt.balance);
+    const supportedTokens = allTokens.filter((i) => !activeTokens.map((m) => m.address).includes(i.address));
 
     const formatAmount = (truncateAmount, amount, precision, round, scale): string => {
         const digits = truncateAmount ? precision : round;
