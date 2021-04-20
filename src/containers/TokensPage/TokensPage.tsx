@@ -50,8 +50,6 @@ const TokensPage = () => {
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
     const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
 
-    const [supportUrl, setSupportUrl] = useState('');
-
     const { storeType, status } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
     const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
@@ -114,7 +112,7 @@ const TokensPage = () => {
                     <BottomRowInner>
                         <AddressTitle>Tokens</AddressTitle>
                         {tokensSupportURL && tokensSupportURL.length > 0 && (
-                            <Link onClick={() => onClickLink(supportUrl)}>
+                            <Link onClick={() => onClickLink(tokensSupportURL)}>
                                 List a token in Galleon <LinkIcon />
                             </Link>
                         )}
