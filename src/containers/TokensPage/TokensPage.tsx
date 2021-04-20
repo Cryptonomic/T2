@@ -96,7 +96,7 @@ const TokensPage = () => {
         }
 
         const { publicKeyHash } = identities[selectedAccountIndex];
-        dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, addressType));
+        dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, tokenType));
     };
 
     return (
