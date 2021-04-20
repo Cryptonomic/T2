@@ -148,11 +148,12 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7,
+        kind: TokenKind.FA2Token,
         icon: hdaoIcon,
         scale: 6,
         precision: 6,
         round: 2,
+        hideOnLanding: true,
     },
     {
         network: 'mainnet',
@@ -162,11 +163,12 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7,
+        kind: TokenKind.FA2Token,
         icon: hdaoIcon,
         scale: 6,
         precision: 6,
         round: 2,
+        hideOnLanding: true,
     },
     {
         network: 'mainnet',
@@ -181,6 +183,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 6,
         precision: 6,
         round: 2,
+        hideOnLanding: true,
     },
     //// testnets
     {

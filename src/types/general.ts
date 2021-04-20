@@ -61,6 +61,7 @@ export enum AddressType {
     objkt,
     STKR,
     TokensPage,
+    FA2Token,
 }
 
 export interface RegularAddress {
@@ -118,6 +119,7 @@ export enum TokenKind {
     blnd = 'blnd',
     objkt = 'objkt',
     stkr = 'stkr',
+    FA2Token = 'FA2Token',
 }
 
 export interface Token {
@@ -138,6 +140,7 @@ export interface Token {
     round?: number;
     transactionFeeFloor?: number;
     helpLink?: string;
+    hideOnLanding?: boolean;
 }
 
 /**

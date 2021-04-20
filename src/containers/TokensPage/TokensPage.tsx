@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
@@ -32,7 +32,7 @@ import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
 
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 
-import { openLink, isReady, getDataFromApi } from '../../utils/general';
+import { openLink, isReady } from '../../utils/general';
 
 import { getAccountSelector } from '../../contracts/duck/selectors';
 
@@ -41,9 +41,6 @@ import { RootState } from '../../types/store';
 import { AddressType, TokenKind } from '../../types/general';
 
 import { tokensSupportURL } from '../../config.json';
-
-const hideInList: string[] = ['USDtz']; // List of tokens to hide
-const shouldHideInList = false; // Hide unwanted tokens
 
 const TokensPage = () => {
     const { t } = useTranslation();
@@ -57,7 +54,7 @@ const TokensPage = () => {
 
     const { storeType, status } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
-    const allTokens = [...tokens].filter((token) => !shouldHideInList || !hideInList.includes(token.symbol));
+    const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
     const activeTokens = allTokens.filter((mt) => mt.balance);
     const supportedTokens = allTokens.filter((i) => !activeTokens.map((m) => m.address).includes(i.address));
 
@@ -104,14 +101,6 @@ const TokensPage = () => {
         dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, addressType));
     };
 
-    useEffect(() => {
-        const getSupportURL = async () => {
-            const { url } = await getDataFromApi(tokensSupportURL);
-            setSupportUrl(url);
-        };
-        getSupportURL();
-    }, []);
-
     return (
         <Container>
             <TopWrapper>
@@ -124,9 +113,11 @@ const TokensPage = () => {
                 <BottomRow isReady={isReadyProp}>
                     <BottomRowInner>
                         <AddressTitle>Tokens</AddressTitle>
-                        <Link onClick={() => onClickLink(supportUrl)}>
-                            List a Token on Galleon <LinkIcon />
-                        </Link>
+                        {tokensSupportURL && tokensSupportURL.length > 0 && (
+                            <Link onClick={() => onClickLink(supportUrl)}>
+                                List a token in Galleon <LinkIcon />
+                            </Link>
+                        )}
                     </BottomRowInner>
                 </BottomRow>
             </TopWrapper>
