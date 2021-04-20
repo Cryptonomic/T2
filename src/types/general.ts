@@ -119,7 +119,7 @@ export enum TokenKind {
     blnd = 'blnd',
     objkt = 'objkt',
     stkr = 'stkr',
-    FA2Token = 'FA2Token',
+    tzip12 = 'tzip12',
 }
 
 export interface Token {
