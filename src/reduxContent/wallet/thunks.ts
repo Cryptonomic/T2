@@ -760,7 +760,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
             if (e.name === "The provided string doesn't look like hex data") {
                 dispatch(createMessageAction('general.errors.no_hex_data', true));
             } else {
-                dispatch(createMessageAction(e.name, true));
+                dispatch(createMessageAction(e.message, true));
             }
             dispatch(setIsLoadingAction(false));
         }
