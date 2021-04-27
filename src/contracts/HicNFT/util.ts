@@ -354,8 +354,6 @@ export async function getTokenInfo(node: Node, mapId: number = 515): Promise<{ h
         }
     });
 
-    console.log('HIC getTokenInfo', holders, totalBalance.toString());
-
     return { holders, totalBalance: totalBalance.toNumber() };
 }
 
