@@ -216,7 +216,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         // icon: uteIcon,
         scale: 8,
         precision: 8,
-        round: 8
+        round: 8,
         hideOnLanding: true,
     },
     {
