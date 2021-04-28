@@ -39,11 +39,11 @@ function BalanceBanner(props: Props) {
         dispatch(syncWalletThunk());
     }
 
-    function formatAmount(amount): string {
+    function formatAmount(amount: number): string {
         return new BigNumber(amount)
-            .dividedBy(10 ** (token.scale || 0))
+            .dividedBy(10 ** 6) // TODO
             .toNumber()
-            .toLocaleString(undefined, { minimumFractionDigits: token.round, maximumFractionDigits: token.precision });
+            .toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 });
     }
 
     return (

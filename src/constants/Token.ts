@@ -57,6 +57,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 18,
         round: 2,
         mapid: 380,
+        helpLink: 'https://kolibri.finance/',
     },
     {
         network: 'mainnet',
@@ -137,6 +138,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 8,
         precision: 8,
         round: 8,
+        helpLink: 'https://tzbtc.io/',
     },
     {
         network: 'mainnet',
@@ -146,11 +148,12 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7, // TODO: TokenKind.tzip12
+        kind: TokenKind.tzip12,
         icon: hdaoIcon,
         scale: 6,
         precision: 6,
         round: 2,
+        hideOnLanding: true,
         // helpLink: 'https://'
     },
     {
@@ -161,11 +164,12 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7, // TODO: TokenKind.tzip12
+        kind: TokenKind.tzip12,
         icon: hdaoIcon,
         scale: 6,
         precision: 6,
         round: 2,
+        hideOnLanding: true,
         // helpLink: 'https://'
     },
     {
@@ -181,6 +185,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 36,
         precision: 36,
         round: 2,
+        hideOnLanding: true,
         mapid: 1600,
         // helpLink: 'https://'
     },
@@ -197,6 +202,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 6,
         precision: 6,
         round: 2,
+        helpLink: 'https://usdtz.com',
     },
     {
         network: 'mainnet',
@@ -210,8 +216,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         // icon: uteIcon,
         scale: 8,
         precision: 8,
-        round: 2,
-        // helpLink: 'https://'
+        round: 8
+        hideOnLanding: true,
     },
     {
         network: 'mainnet',
@@ -221,7 +227,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7, // TODO: TokenKind.tzip12
+        kind: TokenKind.tzip12,
         // icon: uteIcon,
         scale: 0,
         precision: 0,

@@ -16,11 +16,15 @@ export const Link = styled.div`
     align-items: center;
     font-size: 14px;
     line-height: 16px;
+    cursor: pointer;
 `;
 
 export const LinkIcon = mStyled(OpenInNewIcon)({
     fontSize: '12px',
     marginLeft: '5px',
+    '&:hover': {
+        cursor: 'pointer',
+    },
 });
 
 export const Box = withStyles({
@@ -69,6 +73,7 @@ export const BoxDescription = styled.div`
 
 export const BlueLink = styled.span<{ isActive: boolean | undefined }>`
     color: ${({ isActive }) => (isActive ? '#2F80ED' : '')};
+    cursor: ${({ isActive }) => (isActive ? 'pointer' : '')};
 `;
 
 export const TokensTitle = styled.div`

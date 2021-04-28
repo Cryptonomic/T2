@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
@@ -39,6 +40,8 @@ import { RootState } from '../../types/store';
 
 import { AddressType, TokenKind } from '../../types/general';
 
+import { tokensSupportURL } from '../../config.json';
+
 const TokensPage = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -49,14 +52,14 @@ const TokensPage = () => {
 
     const { storeType, status } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
-    const activeTokens = tokens.filter((mt) => mt.kind === TokenKind.wxtz || mt.balance); // Always show wXTZ
-    // knownTokenDescription display tokens with description
-    const supportedTokens = tokens.filter((i) => !!knownTokenDescription[i.symbol] && !activeTokens.map((m) => m.address).includes(i.address));
+    const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
+    const activeTokens = allTokens.filter((mt) => mt.balance);
+    const supportedTokens = allTokens.filter((i) => !activeTokens.map((m) => m.address).includes(i.address));
 
-    const formatAmount = (truncateAmount, amount): string => {
-        const digits = truncateAmount ? 6 : 2;
+    const formatAmount = (truncateAmount, amount, precision, round, scale): string => {
+        const digits = truncateAmount ? precision : round;
         return new BigNumber(amount)
-            .dividedBy(10 ** 6)
+            .dividedBy(10 ** scale)
             .toNumber()
             .toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits });
     };
@@ -93,7 +96,7 @@ const TokensPage = () => {
         }
 
         const { publicKeyHash } = identities[selectedAccountIndex];
-        dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, addressType));
+        dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, tokenType));
     };
 
     return (
@@ -108,10 +111,11 @@ const TokensPage = () => {
                 <BottomRow isReady={isReadyProp}>
                     <BottomRowInner>
                         <AddressTitle>Tokens</AddressTitle>
-                        {/* TODO: Add tokens link */}
-                        <Link onClick={() => onClickLink('')}>
-                            List a Token on Galleon <LinkIcon />
-                        </Link>
+                        {tokensSupportURL && tokensSupportURL.length > 0 && (
+                            <Link onClick={() => onClickLink(tokensSupportURL)}>
+                                List a token in Galleon <LinkIcon />
+                            </Link>
+                        )}
                     </BottomRowInner>
                 </BottomRow>
             </TopWrapper>
@@ -126,14 +130,16 @@ const TokensPage = () => {
                                 </BoxIcon>
                                 <BoxTitle>{token.displayName}</BoxTitle>
                                 <BoxDescription>
-                                    <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
-                                        {token.symbol}
-                                    </BlueLink>{' '}
+                                    {!!token.helpLink && (
+                                        <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
+                                            {token.symbol}
+                                        </BlueLink>
+                                    )}{' '}
                                     {knownTokenDescription[token.symbol]}
                                 </BoxDescription>
                                 <BalanceTitle>Balance</BalanceTitle>
                                 <BalanceAmount>
-                                    {formatAmount(false, token.balance)} {token.symbol}
+                                    {formatAmount(false, token.balance, token.precision, token.round, token.scale)} {token.symbol}
                                 </BalanceAmount>
                             </Box>
                         ))}
@@ -152,9 +158,11 @@ const TokensPage = () => {
                                 </BoxIcon>
                                 <BoxTitle>{token.displayName}</BoxTitle>
                                 <BoxDescription>
-                                    <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
-                                        {token.symbol}
-                                    </BlueLink>{' '}
+                                    {!!token.helpLink && (
+                                        <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
+                                            {token.symbol}
+                                        </BlueLink>
+                                    )}{' '}
                                     {knownTokenDescription[token.symbol]}
                                 </BoxDescription>
                             </Box>

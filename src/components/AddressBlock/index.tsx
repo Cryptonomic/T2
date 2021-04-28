@@ -162,6 +162,7 @@ function AddressBlock(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const selectedAccountHash = useSelector<RootState, string>((state) => state.app.selectedAccountHash);
+    const selectedAccountType = useSelector<RootState, number>((state) => state.app.selectedAccountType);
     const isModalOpen = useSelector<RootState, boolean>((state) => state.modal.open);
     const activeModal = useSelector<RootState, string>((state) => state.modal.activeModal);
     const selectedNode = useSelector(getSelectedNode);
@@ -173,7 +174,8 @@ function AddressBlock(props: Props) {
 
     const { publicKeyHash, balance, accounts, status, storeType } = accountBlock;
     let regularAddresses = [{ pkh: publicKeyHash, balance }];
-    const isManagerActive = publicKeyHash === selectedAccountHash;
+    const isManagerActive = publicKeyHash === selectedAccountHash && selectedAccountType === AddressType.Manager;
+    const isTokensPageActive = selectedAccountType === AddressType.TokensPage;
 
     function hideDelegateTooltip() {
         setIsDelegateTooltip(true);
@@ -330,9 +332,9 @@ function AddressBlock(props: Props) {
                 <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
             </AddDelegateLabel>
 
-            <AddDelegateLabel onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
+            {/* <AddDelegateLabel isActive={isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
                 <DelegateTitle>{t('general.nouns.tokens_page')}</DelegateTitle>
-            </AddDelegateLabel>
+            </AddDelegateLabel> */}
 
             <AddDelegateLabel>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
