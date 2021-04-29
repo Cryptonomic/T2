@@ -81,7 +81,7 @@ export const TokensTitle = styled.div`
     line-height: 28px;
     letter-spacing: 0.015em;
     color: #4f4f4f;
-    margin-top: 24px;
+    margin: 24px 0px 0px 10px;
 `;
 
 export const HorizontalDivider = mStyled(Divider)({
@@ -99,4 +99,8 @@ export const BalanceAmount = styled.div`
     font-size: 24px;
     line-height: 28px;
     margin-top: 4px;
+`;
+
+export const ListsWrapper = styled.div`
+    padding: 0px 24px;
 `;
