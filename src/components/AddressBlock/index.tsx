@@ -332,9 +332,9 @@ function AddressBlock(props: Props) {
                 <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
             </AddDelegateLabel>
 
-            {/* <AddDelegateLabel isActive={isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
+            <AddDelegateLabel isActive={isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
                 <DelegateTitle>{t('general.nouns.tokens_page')}</DelegateTitle>
-            </AddDelegateLabel> */}
+            </AddDelegateLabel>
 
             <AddDelegateLabel>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
