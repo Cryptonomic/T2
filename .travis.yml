@@ -12,6 +12,10 @@ node_js:
 cache:
     directories:
         - node_modules
+        
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install libusb-1.0-0-dev
 
 before_script:
     - export DISPLAY=':99.0'
