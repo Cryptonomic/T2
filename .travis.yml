@@ -12,6 +12,11 @@ node_js:
 cache:
     directories:
         - node_modules
+        
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install libusb-1.0-0-dev
+  - sudo apt-get -y install libudev-dev
 
 before_script:
     - export DISPLAY=':99.0'
@@ -20,6 +25,3 @@ before_script:
 
 script:
     - npm run package
-
-after_success:
-    - npm run coverage
