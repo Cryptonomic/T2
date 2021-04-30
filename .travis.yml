@@ -25,6 +25,3 @@ before_script:
 
 script:
     - npm run package
-
-after_success:
-    - npm run coverage
