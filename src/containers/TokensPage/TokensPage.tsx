@@ -212,7 +212,7 @@ const TokensPage = () => {
                 )}
                 {!!supportedTokens.length && (
                     <>
-                        <TokensTitle>Supported Tokens</TokensTitle>
+                        {<TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>}
                         <Grid container={true} justify="flex-start">
                             {supportedTokens.map((token) => (
                                 <Box key={token.symbol} item={true} xs={3} onMouseEnter={() => onHover(token.address)} onMouseLeave={() => onHover('')}>
