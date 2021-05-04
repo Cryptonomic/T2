@@ -52,6 +52,7 @@ export const BoxBg = styled.div`
     top: 0;
     left: 0;
     z-index: 2;
+    cursor: pointer;
 `;
 
 export const BoxHover = styled.div`
@@ -97,6 +98,8 @@ export const BoxDescription = styled.div`
 export const BlueLink = styled.span<{ isActive: boolean | undefined }>`
     color: ${({ isActive }) => (isActive ? '#2F80ED' : '')};
     cursor: ${({ isActive }) => (isActive ? 'pointer' : '')};
+    position: relative;
+    z-index: 100;
 `;
 
 export const TokensTitle = styled.div`
