@@ -55,6 +55,15 @@ export const BoxBg = styled.div`
     cursor: pointer;
 `;
 
+export const BoxesGrid = styled.div`
+    display: grid;
+    overflow: hidden;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+`;
+
 export const BoxHover = styled.div`
     width: calc(100% + 5px);
     height: calc(100% + 5px);

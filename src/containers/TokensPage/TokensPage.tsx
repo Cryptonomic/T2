@@ -29,6 +29,7 @@ import {
     SearchInput,
     BoxHover,
     BoxBg,
+    BoxesGrid,
 } from './style';
 
 import { knownTokenDescription } from '../../constants/Token';
@@ -177,7 +178,7 @@ const TokensPage = () => {
                 {!!activeTokens.length && (
                     <>
                         <TokensTitle>Your Tokens</TokensTitle>
-                        <Grid container={true} justify="flex-start">
+                        <BoxesGrid>
                             {activeTokens.map((token, index) => (
                                 <Box
                                     key={token.symbol}
@@ -216,14 +217,14 @@ const TokensPage = () => {
                                     </BoxBg>
                                 </Box>
                             ))}
-                        </Grid>
+                        </BoxesGrid>
                         <HorizontalDivider />
                     </>
                 )}
                 {!!supportedTokens.length && (
                     <>
                         {<TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>}
-                        <Grid container={true} justify="flex-start">
+                        <BoxesGrid>
                             {supportedTokens.map((token) => (
                                 <Box
                                     key={token.symbol}
@@ -246,7 +247,7 @@ const TokensPage = () => {
                                     </BoxBg>
                                 </Box>
                             ))}
-                        </Grid>
+                        </BoxesGrid>
                     </>
                 )}
             </ListsWrapper>
