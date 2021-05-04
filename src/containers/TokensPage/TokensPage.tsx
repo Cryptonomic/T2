@@ -63,7 +63,7 @@ const TokensPage = () => {
     const isReadyProp = isReady(status, storeType);
 
     const formatAmount = (truncateAmount, amount, precision, round, scale): string => {
-        const digits = truncateAmount ? precision : round;
+        const digits = Math.min(truncateAmount ? precision : round, 18);
         return new BigNumber(amount)
             .dividedBy(10 ** scale)
             .toNumber()
