@@ -34,15 +34,36 @@ export const Box = withStyles({
         maxWidth: '208px',
         minWidth: '208px',
         minHeight: '193px',
-        backgroundColor: '#F6F8FA',
-        border: '1px solid #d8e4fc',
-        borderRadius: '8px',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '16px 13px 29px 16px',
+        position: 'relative',
         margin: '10px',
     },
 })(Grid);
+
+export const BoxBg = styled.div`
+    background-color: #f6f8fa;
+    border: 1px solid #d8e4fc;
+    border-radius: 8px;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    padding: 16px 13px 29px 16px;
+    box-shadow: 0px 1px 2px rgba(225, 225, 225, 0.44);
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 2;
+`;
+
+export const BoxHover = styled.div`
+    width: calc(100% + 5px);
+    height: calc(100% + 5px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #e7efff;
+    filter: blur(12px);
+    z-index: 1;
+`;
 
 export const BoxIcon = styled.div`
     width: 100%;

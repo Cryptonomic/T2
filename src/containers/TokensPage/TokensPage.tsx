@@ -27,6 +27,8 @@ import {
     ListsWrapper,
     SearchForm,
     SearchInput,
+    BoxHover,
+    BoxBg,
 } from './style';
 
 import { knownTokenDescription } from '../../constants/Token';
@@ -58,6 +60,7 @@ const TokensPage = () => {
     const [search, setSearch] = useState('');
     const [activeTokens, setActiveTokens] = useState<any>([]);
     const [supportedTokens, setSupportedTokens] = useState<any>([]);
+    const [hover, setHover] = useState('');
 
     const { storeType, status } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
@@ -128,6 +131,8 @@ const TokensPage = () => {
         setSearch(value);
     };
 
+    const onHover = (id: string) => setHover(id);
+
     useEffect(() => {
         const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
         const aTokens = allTokens.filter((mt) => mt.balance);
@@ -172,23 +177,33 @@ const TokensPage = () => {
                         <TokensTitle>Your Tokens</TokensTitle>
                         <Grid container={true} justify="flex-start">
                             {activeTokens.map((token, index) => (
-                                <Box key={token.symbol} item={true} xs={3} onClick={() => onClickToken(token.address, index, token.kind)}>
-                                    <BoxIcon>
-                                        <Img src={token.icon} />
-                                    </BoxIcon>
-                                    <BoxTitle>{token.displayName}</BoxTitle>
-                                    <BoxDescription>
-                                        {!!token.helpLink && (
-                                            <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
-                                                {token.symbol}
-                                            </BlueLink>
-                                        )}{' '}
-                                        {knownTokenDescription[token.symbol]}
-                                    </BoxDescription>
-                                    <BalanceTitle>Balance</BalanceTitle>
-                                    <BalanceAmount>
-                                        {formatAmount(false, token.balance, token.precision, token.round, token.scale)} {token.symbol}
-                                    </BalanceAmount>
+                                <Box
+                                    key={token.symbol}
+                                    item={true}
+                                    xs={3}
+                                    onClick={() => onClickToken(token.address, index, token.kind)}
+                                    onMouseEnter={() => onHover(token.address)}
+                                    onMouseLeave={() => onHover('')}
+                                >
+                                    {hover === token.address && <BoxHover />}
+                                    <BoxBg>
+                                        <BoxIcon>
+                                            <Img src={token.icon} />
+                                        </BoxIcon>
+                                        <BoxTitle>{token.displayName}</BoxTitle>
+                                        <BoxDescription>
+                                            {!!token.helpLink && (
+                                                <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
+                                                    {token.symbol}
+                                                </BlueLink>
+                                            )}{' '}
+                                            {knownTokenDescription[token.symbol]}
+                                        </BoxDescription>
+                                        <BalanceTitle>Balance</BalanceTitle>
+                                        <BalanceAmount>
+                                            {formatAmount(false, token.balance, token.precision, token.round, token.scale)} {token.symbol}
+                                        </BalanceAmount>
+                                    </BoxBg>
                                 </Box>
                             ))}
                         </Grid>
@@ -200,19 +215,22 @@ const TokensPage = () => {
                         <TokensTitle>Supported Tokens</TokensTitle>
                         <Grid container={true} justify="flex-start">
                             {supportedTokens.map((token) => (
-                                <Box key={token.symbol} item={true} xs={3}>
-                                    <BoxIcon>
-                                        <Img src={token.icon} />
-                                    </BoxIcon>
-                                    <BoxTitle>{token.displayName}</BoxTitle>
-                                    <BoxDescription>
-                                        {!!token.helpLink && (
-                                            <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
-                                                {token.symbol}
-                                            </BlueLink>
-                                        )}{' '}
-                                        {knownTokenDescription[token.symbol]}
-                                    </BoxDescription>
+                                <Box key={token.symbol} item={true} xs={3} onMouseEnter={() => onHover(token.address)} onMouseLeave={() => onHover('')}>
+                                    {hover === token.address && <BoxHover />}
+                                    <BoxBg>
+                                        <BoxIcon>
+                                            <Img src={token.icon} />
+                                        </BoxIcon>
+                                        <BoxTitle>{token.displayName}</BoxTitle>
+                                        <BoxDescription>
+                                            {!!token.helpLink && (
+                                                <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
+                                                    {token.symbol}
+                                                </BlueLink>
+                                            )}{' '}
+                                            {knownTokenDescription[token.symbol]}
+                                        </BoxDescription>
+                                    </BoxBg>
                                 </Box>
                             ))}
                         </Grid>
