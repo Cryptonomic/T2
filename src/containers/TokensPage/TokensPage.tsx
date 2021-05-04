@@ -114,7 +114,7 @@ const TokensPage = () => {
         if (!value) {
             const tokensList = [...tokens].filter((token) => !token.hideOnLanding);
             const myTokens = tokensList.filter((mt) => mt.balance);
-            const otherTokens = tokensList.filter((i) => !activeTokens.map((m: any) => m.address).includes(i.address));
+            const otherTokens = tokensList.filter((i) => !myTokens.map((m: any) => m.address).includes(i.address));
             setActiveTokens(myTokens);
             setSupportedTokens(otherTokens);
             setSearch('');
@@ -124,7 +124,7 @@ const TokensPage = () => {
         const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
         const aTokens = allTokens.filter((mt) => mt.balance).filter((at) => at.symbol.toLowerCase().includes(value));
         const sTokens = allTokens
-            .filter((i) => !activeTokens.map((m: any) => m.address).includes(i.address))
+            .filter((i) => !aTokens.map((m: any) => m.address).includes(i.address))
             .filter((st) => st.displayName.toLowerCase().includes(value) || st.symbol.toLowerCase().includes(value));
         setActiveTokens(aTokens);
         setSupportedTokens(sTokens);
@@ -136,7 +136,7 @@ const TokensPage = () => {
     useEffect(() => {
         const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
         const aTokens = allTokens.filter((mt) => mt.balance);
-        const sTokens = allTokens.filter((i) => !activeTokens.map((m: any) => m.address).includes(i.address));
+        const sTokens = allTokens.filter((i) => !aTokens.map((m: any) => m.address).includes(i.address));
         setActiveTokens(aTokens);
         setSupportedTokens(sTokens);
     }, [tokens]);
