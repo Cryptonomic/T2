@@ -6,6 +6,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { KeyStoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
@@ -326,18 +327,17 @@ function AddressBlock(props: Props) {
 
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'sign'} onClick={() => setIsModalOpen(true, 'sign')}>
                 <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
+                <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'sign' ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
 
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
                 <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
+                <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'beaconInfo' ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
 
-            <AddDelegateLabel isActive={isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
-                <DelegateTitle>{t('general.nouns.tokens_page')}</DelegateTitle>
-            </AddDelegateLabel>
-
-            <AddDelegateLabel>
+            <AddDelegateLabel isActive={!isModalOpen && isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
+                <ChevronRightIcon style={{ fill: !isModalOpen && isTokensPageActive ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
 
             {tokens.map((token, index) => {
