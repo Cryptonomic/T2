@@ -122,7 +122,9 @@ const TokensPage = () => {
         }
 
         const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
-        const aTokens = allTokens.filter((mt) => mt.balance).filter((at) => at.symbol.toLowerCase().includes(value));
+        const aTokens = allTokens
+            .filter((mt) => mt.balance)
+            .filter((at) => at.displayName.toLowerCase().includes(value) || at.symbol.toLowerCase().includes(value));
         const sTokens = allTokens
             .filter((i) => !aTokens.map((m: any) => m.address).includes(i.address))
             .filter((st) => st.displayName.toLowerCase().includes(value) || st.symbol.toLowerCase().includes(value));
@@ -135,7 +137,7 @@ const TokensPage = () => {
 
     useEffect(() => {
         const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
-        const aTokens = allTokens.filter((mt) => mt.balance || mt.kind === TokenKind.wxtz);
+        const aTokens = allTokens.filter((mt) => mt.balance);
         const sTokens = allTokens.filter((i) => !aTokens.map((m: any) => m.address).includes(i.address));
         setActiveTokens(aTokens);
         setSupportedTokens(sTokens);
