@@ -92,7 +92,7 @@ export const HorizontalDivider = mStyled(Divider)({
 });
 
 export const BalanceTitle = styled.div`
-    font-size: 14px;
+    font-size: 16px;
     line-height: 16px;
     margin-top: 16px;
 `;
