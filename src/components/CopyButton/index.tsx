@@ -58,6 +58,7 @@ function CopyButton(props: Props) {
 
     return (
         <Tooltip
+            data-spectron="copy-button"
             open={isShowed}
             title={<React.Fragment>{t('components.copyIcon.copied')}</React.Fragment>}
             leaveDelay={500}
@@ -68,10 +69,10 @@ function CopyButton(props: Props) {
                     modifiers: {
                         offset: {
                             enabled: true,
-                            offset: '50px, 0px'
-                        }
-                    }
-                }
+                            offset: '50px, 0px',
+                        },
+                    },
+                },
             }}
         >
             {title ? (

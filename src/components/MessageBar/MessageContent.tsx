@@ -129,9 +129,9 @@ const MessageContent = (props: Props) => {
     }
 
     return (
-        <MessageContainer isError={isError}>
-            <StyledCloseIcon onClick={() => onClose()} />
-            <MessageHeader isWrap={content !== 'general.errors.no_ledger_detected'}>
+        <MessageContainer data-spectron="message-bar" isError={isError}>
+            <StyledCloseIcon data-spectron="message-close" onClick={() => onClose()} />
+            <MessageHeader data-spectron="message" isWrap={content !== 'general.errors.no_ledger_detected'}>
                 {!!hash && <CheckIcon iconName="checkmark2" size={ms(0)} color="white" />}
                 {t(content.substring(0, 80), { localeParam })}
                 {content.length > 0 && (

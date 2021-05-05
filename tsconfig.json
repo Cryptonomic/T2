@@ -26,7 +26,7 @@
   },
   "include": [
     "src",
-    "./test"
+    "./test", "test"
   ],
   "typeRoots": [
     "../node_modules/@types"

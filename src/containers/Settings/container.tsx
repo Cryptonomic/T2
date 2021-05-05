@@ -115,7 +115,7 @@ const SettingsContainer = () => {
 
             <Content6>
                 <ContentTitle>{t('containers.homeSettings.select_display_language')}</ContentTitle>
-                <RowForParts>
+                <RowForParts data-spectron="raw-for-language-menu">
                     <Part>
                         <LanguageSelector locale={locale} changeLocale={onChangeLocale} />
                     </Part>
@@ -127,6 +127,7 @@ const SettingsContainer = () => {
                 <RowForParts>
                     <Part>
                         <CustomSelect
+                            data-spectron="settings-test-node-button"
                             label="Nodes"
                             value={selectedNode}
                             onChange={onChangeCustomSelectNodes}
@@ -163,6 +164,7 @@ const SettingsContainer = () => {
                 <RowForParts>
                     <Part>
                         <CustomSelect
+                            data-spectron="derivation-path"
                             label="Derivation Path"
                             value={selectedPath}
                             onChange={onChangeCustomSelectDerivationPath}

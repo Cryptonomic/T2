@@ -113,18 +113,19 @@ interface Props {
     balance?: number;
     index?: number;
     accountId?: string;
+    dataSpectron?: string;
     onClick?: () => void;
 }
 
-const Address: React.SFC<Props> = props => {
+const Address: React.SFC<Props> = (props) => {
     const { t } = useTranslation();
-    const { isManager, isContract, isActive, balance, index, accountId, onClick } = props;
+    const { isManager, isContract, isActive, balance, index, accountId, dataSpectron, onClick } = props;
     const firstLine = getFirstLine(isManager, isContract, isActive, index, accountId, t);
 
     return (
-        <Container isActive={isActive} onClick={onClick}>
+        <Container data-spectron={dataSpectron || 'address'} isActive={isActive} onClick={onClick}>
             {firstLine}
-            <AddressSecondLine isActive={isActive}>
+            <AddressSecondLine data-spectron="amount" isActive={isActive}>
                 <AmountView color={isActive ? 'white' : 'primary'} size={isManager ? ms(-0.7) : ms(0)} amount={balance} scale={6} precision={6} round={2} />
             </AddressSecondLine>
         </Container>

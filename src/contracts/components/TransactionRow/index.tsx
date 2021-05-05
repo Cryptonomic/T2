@@ -26,7 +26,7 @@ const openLink = (element, nodesList: Node[], selectedNode: string) => {
     return openBlockExplorerForOperation(element, currentNode.network);
 };
 
-const timeFormatter = timestamp => {
+const timeFormatter = (timestamp) => {
     const time = new Date(timestamp);
     return moment(time).format('LT');
 };
@@ -43,7 +43,7 @@ const getStatus = (transaction, selectedParentHash, t) => {
             state: t('components.transaction.sent'),
             isFee,
             color: isAmount ? 'error1' : 'gray8',
-            sign: isAmount ? '-' : ''
+            sign: isAmount ? '-' : '',
         };
     } else if (transaction.destination === selectedParentHash && !transaction.entryPoint) {
         return {
@@ -52,7 +52,7 @@ const getStatus = (transaction, selectedParentHash, t) => {
             state: t('components.transaction.received'),
             isFee,
             color: isAmount ? 'check' : 'gray8',
-            sign: isAmount ? '+' : ''
+            sign: isAmount ? '+' : '',
         };
     } else {
         return {
@@ -61,7 +61,7 @@ const getStatus = (transaction, selectedParentHash, t) => {
             state: t('components.transaction.invoked'),
             isFee,
             color: 'gray0',
-            sign: ''
+            sign: '',
         };
     }
 };
@@ -76,14 +76,16 @@ function Transaction(props: Props) {
     const { t } = useTranslation();
     const fee = transaction.fee ? transaction.fee : 0;
     const { icon, preposition, state, isFee, color, sign } = getStatus(transaction, selectedParentHash, t);
-    const { selectedNode, nodesList } = useSelector<RootState, SettingsState>(rootstate => rootstate.settings, shallowEqual);
+    const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((rootstate) => rootstate.settings, shallowEqual);
     const address = getAddress(transaction, selectedParentHash);
 
     return (
-        <TransactionContainer>
+        <TransactionContainer data-spectron="single-transaction">
             <Header>
-                <TransactionDate>{transaction.status === READY ? timeFormatter(transaction.timestamp) : t('components.transaction.pending')}</TransactionDate>
-                <AmountContainer color={color}>
+                <TransactionDate data-spectron="transaction-date-hour">
+                    {transaction.status === READY ? timeFormatter(transaction.timestamp) : t('components.transaction.pending')}
+                </TransactionDate>
+                <AmountContainer data-spectron="tezos-amount" color={color}>
                     {sign}
                     <AmountView
                         color={color}
@@ -99,7 +101,7 @@ function Transaction(props: Props) {
             <Container>
                 <ContentDiv>
                     <StateIcon iconName={icon} size={ms(-2)} color="accent" />
-                    <StateText>
+                    <StateText data-spectron="transaction-type">
                         {state}
                         {address ? <span>{preposition}</span> : null}
                     </StateText>
@@ -119,7 +121,7 @@ function Transaction(props: Props) {
                 </ContentDiv>
 
                 {isFee && (
-                    <Fee>
+                    <Fee data-spectron="fee">
                         <span>{t('general.nouns.fee')}: </span>
                         <AmountView color="gray5" size={ms(-2)} amount={fee} precision={6} round={6} />
                     </Fee>

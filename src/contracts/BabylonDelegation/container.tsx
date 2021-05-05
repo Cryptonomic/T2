@@ -117,7 +117,7 @@ function ActionPanel() {
                                 totalNumber={JSTransactions.length}
                                 firstNumber={firstNumber}
                                 lastNumber={lastNumber}
-                                onClick={val => setCurrentPage(val)}
+                                onClick={(val) => setCurrentPage(val)}
                             />
                         )}
                         {isLoading && <Loader />}
@@ -138,7 +138,7 @@ function ActionPanel() {
             />
 
             <TabList count={tabs.length}>
-                {tabs.map(tab => {
+                {tabs.map((tab) => {
                     const ready = isReady(status, storeType, tab);
                     return (
                         <Tab

@@ -117,6 +117,7 @@ function AddAddress() {
                         <RowInputs>
                             <InputWithTooltip>
                                 <TextField
+                                    data-spectron="home-address-fundraiser-password"
                                     label={t('containers.homeAddAddress.fundraiser_password')}
                                     type={isShowedPwd ? 'text' : 'password'}
                                     value={passPhrase}
@@ -124,11 +125,11 @@ function AddAddress() {
                                     right={65}
                                 />
 
-                                <ShowHidePwd onClick={() => setIsShowedPwd(!isShowedPwd)} style={{ cursor: 'pointer' }}>
+                                <ShowHidePwd data-spectron="show-hide-password" onClick={() => setIsShowedPwd(!isShowedPwd)} style={{ cursor: 'pointer' }}>
                                     {t(isShowedPwd ? 'general.verbs.hide' : 'general.verbs.show')}
                                 </ShowHidePwd>
 
-                                <Tooltip position="bottom" content={PasswordTooltip(t)}>
+                                <Tooltip dataSpectron="tooltip-home-address-fundraiser-password" position="bottom" content={PasswordTooltip(t)}>
                                     <TooltipBtn size="small" color="primary">
                                         <TezosIcon iconName="help" size={ms(0)} color="secondary" />
                                     </TooltipBtn>
@@ -136,8 +137,14 @@ function AddAddress() {
                             </InputWithTooltip>
 
                             <InputWithTooltip>
-                                <TextField label={t('containers.homeAddAddress.public_key_hash')} value={pkh} onChange={(val) => setPkh(val)} right={30} />
-                                <Tooltip position="bottom" content={PkhTooltip(t)}>
+                                <TextField
+                                    data-spectron="home-address-publish-key"
+                                    label={t('containers.homeAddAddress.public_key_hash')}
+                                    value={pkh}
+                                    onChange={(val) => setPkh(val)}
+                                    right={30}
+                                />
+                                <Tooltip dataSpectron="tooltip-home-address-publish-key" position="bottom" content={PkhTooltip(t)}>
                                     <TooltipBtn size="small" color="primary">
                                         <TezosIcon iconName="help" size={ms(0)} color="secondary" />
                                     </TooltipBtn>
@@ -148,13 +155,14 @@ function AddAddress() {
                         <RowInputs>
                             <InputWithTooltip>
                                 <TextField
+                                    data-spectron="fundraiser-email"
                                     label={t('containers.homeAddAddress.fundraiser_email_address')}
                                     value={username}
                                     onChange={(val) => setUsername(val)}
                                     right={30}
                                 />
 
-                                <Tooltip position="top" content={EmailTooltip(t)}>
+                                <Tooltip dataSpectron="tooltip-fundraiser-email" position="top" content={EmailTooltip(t)}>
                                     <TooltipBtn size="small" color="primary">
                                         <TezosIcon iconName="help" size={ms(0)} color="secondary" />
                                     </TooltipBtn>
@@ -163,12 +171,13 @@ function AddAddress() {
 
                             <InputWithTooltip>
                                 <TextField
+                                    data-spectron="home-address-activation-code"
                                     label={t('containers.homeAddAddress.activation_code')}
                                     value={activationCode}
                                     onChange={(val) => setActivationCode(val)}
                                     right={30}
                                 />
-                                <Tooltip position="top" content={ActivationTooltip(t)}>
+                                <Tooltip dataSpectron="tooltip-home-address-activation-code" position="top" content={ActivationTooltip(t)}>
                                     <TooltipBtn size="small" color="primary">
                                         <TezosIcon iconName="help" size={ms(0)} color="secondary" />
                                     </TooltipBtn>
@@ -185,7 +194,7 @@ function AddAddress() {
 
     return (
         <Container>
-            <TitleContainer>{t('containers.homeAddAddress.add_account')}</TitleContainer>
+            <TitleContainer data-spectron="title-add-an-account">{t('containers.homeAddAddress.add_account')}</TitleContainer>
             <TabContainer>
                 {Object.values(ADD_ADDRESS_TYPES).map((tabName) => (
                     <Tab key={tabName} isActive={tabName === activeTab} onClick={() => setActiveTab(tabName)}>

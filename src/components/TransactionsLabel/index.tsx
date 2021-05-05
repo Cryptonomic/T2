@@ -5,7 +5,7 @@ import moment from 'moment';
 const DateFormat = {
     lastDay: '[Yesterday]',
     sameDay: '[Today]',
-    sameElse: 'MMMM DD'
+    sameElse: 'MMMM DD',
 };
 
 const DateContainer = styled.div`
@@ -26,16 +26,17 @@ const TransactionsDate = styled.div`
 interface Props {
     date: Date | string;
     skipFormat?: boolean;
+    dataSpectron?: string;
 }
 
 function TransactionsLabel(props: Props) {
-    const { date, skipFormat } = props;
+    const { date, skipFormat, dataSpectron } = props;
 
     const time = skipFormat ? date : moment(date).calendar(undefined, DateFormat);
 
     return (
         <DateContainer>
-            <TransactionsDate>{time}</TransactionsDate>
+            <TransactionsDate data-spectron={dataSpectron}>{time}</TransactionsDate>
         </DateContainer>
     );
 }

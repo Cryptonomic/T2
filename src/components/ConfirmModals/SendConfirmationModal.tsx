@@ -35,6 +35,7 @@ const SendConfirmationModal = (props: Props) => {
 
     return (
         <Modal
+            data-spectron="send-confirmation-modal"
             title={t('components.sendConfirmationModal.send_confirmation')}
             open={open}
             onClose={onClose}
@@ -48,7 +49,7 @@ const SendConfirmationModal = (props: Props) => {
 
                 <ItemContainer>
                     <ItemTitle>{t('general.nouns.amount')}</ItemTitle>
-                    <ItemContent>
+                    <ItemContent data-spectron="amount">
                         {amount}
                         <TezosIcon color="secondary" iconName="tezos" />
                     </ItemContent>
@@ -56,7 +57,7 @@ const SendConfirmationModal = (props: Props) => {
 
                 <ItemContainer>
                     <ItemTitle>{t('general.nouns.fee')}</ItemTitle>
-                    <ItemContent>
+                    <ItemContent data-spectron="fee">
                         {calcFee}
                         <TezosIcon color="secondary" iconName="tezos" />
                     </ItemContent>
@@ -85,6 +86,7 @@ const SendConfirmationModal = (props: Props) => {
 
             <BottomContainer>
                 <PasswordInput
+                    dataSpectron="wallet-password"
                     label={t('general.nouns.wallet_password')}
                     password={password}
                     onChange={onPasswordChange}

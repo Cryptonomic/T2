@@ -272,9 +272,10 @@ function AddressBlock(props: Props) {
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
 
     return (
-        <Container>
+        <Container data-spectron="address-block">
             {ready ? (
                 <Address
+                    dataSpectron="main-addres"
                     isManager={true}
                     isActive={!isModalOpen && isManagerActive}
                     balance={balance}
@@ -288,7 +289,7 @@ function AddressBlock(props: Props) {
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
                 />
             )}
-            <AddDelegateLabel>
+            <AddDelegateLabel data-spectron="delegation-contract-label">
                 <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
             </AddDelegateLabel>
 
@@ -299,6 +300,7 @@ function AddressBlock(props: Props) {
 
                 return delegatedAddressReady ? (
                     <Address
+                        dataSpectron="delegation-contract"
                         key={addressId}
                         isContract={true}
                         accountId={addressId}
@@ -384,6 +386,7 @@ function AddressBlock(props: Props) {
 
                 return (
                     <TokenNav
+                        dataSpectron="token-nav"
                         key={token.address}
                         isActive={!isModalOpen && token.address === selectedAccountHash}
                         token={token}
@@ -392,7 +395,7 @@ function AddressBlock(props: Props) {
                 );
             })}
 
-            <AddDelegateLabel>
+            <AddDelegateLabel data-spectron="delegation-label">
                 <DelegateTitle>{t('components.interactModal.interact_contract')}</DelegateTitle>
                 {isManagerReady ? (
                     <AddCircleWrapper active={1} onClick={() => onCheckInteractModal()} />
@@ -411,6 +414,7 @@ function AddressBlock(props: Props) {
 
                 return smartAddressReady ? (
                     <Address
+                        dataSpectron="smart-contract"
                         key={addressId}
                         isContract={true}
                         accountId={addressId}

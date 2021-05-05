@@ -84,6 +84,7 @@ function Send(props: Props) {
         <Container onKeyDown={(event) => onEnterPress(event.key)}>
             <RowContainer>
                 <InputAddress
+                    dataSpectron="token-recipient-address"
                     label={t('components.send.recipient_address')}
                     operationType="send"
                     tooltip={false}
@@ -94,6 +95,7 @@ function Send(props: Props) {
             <RowContainer>
                 <AmountContainer>
                     <NumericInput
+                        dataSpectron="token-amount-send"
                         label={t('general.nouns.amount')}
                         amount={amount}
                         onChange={(val) => setAmount(val)}
@@ -110,7 +112,7 @@ function Send(props: Props) {
                 </FeeContainer>
             </RowContainer>
 
-            <PasswordButtonContainer>
+            <PasswordButtonContainer data-spectron="password-input">
                 {!isLedger && (
                     <PasswordInput
                         label={t('general.nouns.wallet_password')}
@@ -119,7 +121,7 @@ function Send(props: Props) {
                         containerStyle={{ width: '47%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
+                <InvokeButton data-spectron="token-send-bottom-button" buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
                     {t('general.verbs.send')}
                 </InvokeButton>
             </PasswordButtonContainer>

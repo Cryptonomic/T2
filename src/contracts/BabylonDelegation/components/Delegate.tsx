@@ -33,6 +33,7 @@ import {
 
 interface Props {
     isReady: boolean;
+    id?: string;
 }
 
 function Delegate(props: Props) {
@@ -47,7 +48,7 @@ function Delegate(props: Props) {
 
     const { isLoading, isLedger, selectedAccountHash } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
 
-    const { isReady } = props;
+    const { isReady, id } = props;
 
     const isDisabled = !isReady || isLoading || isAddressIssue || !newAddress || (!passPhrase && !isLedger);
 
@@ -84,9 +85,10 @@ function Delegate(props: Props) {
     };
 
     return (
-        <Container onKeyDown={(event) => onEnterPress(event.key)}>
-            <AmountContainer>
+        <Container data-spectron="delegate-section" onKeyDown={(event) => onEnterPress(event.key)}>
+            <AmountContainer data-spectron="amount-container">
                 <InputAddress
+                    dataSpectron="baker-address"
                     label={t('components.delegateConfirmationModal.new_address_label')}
                     operationType="delegate"
                     tooltip={false}
@@ -94,7 +96,7 @@ function Delegate(props: Props) {
                     onIssue={(val) => setIsAddressIssue(val)}
                 />
             </AmountContainer>
-            <FeeContainer>
+            <FeeContainer data-spectron="fees">
                 <Fees
                     low={newFees.low}
                     medium={newFees.medium}
@@ -114,7 +116,7 @@ function Delegate(props: Props) {
                 />
             </FeeContainer>
 
-            <WarningContainer>
+            <WarningContainer data-spectron="warning-container">
                 <TezosIcon iconName="info" size={ms(5)} color="info" />
                 <InfoText>{t('components.delegateConfirmationModal.delegate_warning')}</InfoText>
             </WarningContainer>
@@ -122,13 +124,14 @@ function Delegate(props: Props) {
             <PasswordButtonContainer>
                 {!isLedger && (
                     <PasswordInput
+                        dataSpectron="wallet-password"
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
+                <InvokeButton data-spectron="change-delegate-button" buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
                     {t('components.delegate.change_delegate')}
                 </InvokeButton>
             </PasswordButtonContainer>

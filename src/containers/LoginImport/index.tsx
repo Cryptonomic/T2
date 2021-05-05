@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import path from 'path';
 import { useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
@@ -85,6 +85,15 @@ function LoginImport() {
             return;
         }
 
+        // [TESTING]
+        if (ipcRenderer.sendSync('is-spectron')) {
+            event.preventDefault();
+            const testingWallet = ipcRenderer.sendSync('testing-wallet');
+            setWalletLocation(path.dirname(testingWallet));
+            setWalletFileName(path.basename(testingWallet));
+            return;
+        }
+
         const currentWindow = remote.getCurrentWindow();
         remote.dialog
             .showOpenDialog(currentWindow, {
@@ -120,13 +129,18 @@ function LoginImport() {
                 </BackButtonContainer>
                 <WalletTitle>{t('containers.loginImport.open_wallet_label')}</WalletTitle>
                 <ImportButtonContainer>
-                    <SelectBtn size="small" color="secondary" variant="outlined" onClick={openFile}>
+                    <SelectBtn data-spectron="select-wallet-button" size="small" color="secondary" variant="outlined" onClick={openFile}>
                         {t('containers.loginImport.select_file_btn')}
                     </SelectBtn>
-                    <WalletFileName>{walletFileName}</WalletFileName>
+                    <WalletFileName data-spectron="wallet-file-name">{walletFileName}</WalletFileName>
                 </ImportButtonContainer>
-                <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
-                <ActionButton onClick={() => onLogin(IMPORT)} color="secondary" variant="extended" disabled={isDisabled}>
+                <PasswordInput
+                    dataSpectron="wallet-password"
+                    label={t('general.nouns.wallet_password')}
+                    password={password}
+                    onChange={(pwd) => setPassword(pwd)}
+                />
+                <ActionButton data-spectron="open-wallet-button" onClick={() => onLogin(IMPORT)} color="secondary" variant="extended" disabled={isDisabled}>
                     {t('general.verbs.open')}
                 </ActionButton>
             </WalletContainers>

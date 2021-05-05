@@ -5,15 +5,15 @@ import { lighten } from 'polished';
 import { ms } from '../../styles/helpers';
 
 const primaryTheme = css`
-  background: ${({ theme: { colors } }) => colors.accent};
-  color: ${({ theme: { colors } }) => colors.white};
-  transition: all ${({ theme: { animations } }) => animations.defaultTime};
-  border: 2px solid ${({ theme: { colors } }) => colors.accent};
+    background: ${({ theme: { colors } }) => colors.accent};
+    color: ${({ theme: { colors } }) => colors.white};
+    transition: all ${({ theme: { animations } }) => animations.defaultTime};
+    border: 2px solid ${({ theme: { colors } }) => colors.accent};
 
-  &:hover {
-    background: ${({ theme: { colors } }) => lighten(0.08, colors.accent)};
-    border: 2px solid ${({ theme: { colors } }) => lighten(0.08, colors.accent)};
-  }
+    &:hover {
+        background: ${({ theme: { colors } }) => lighten(0.08, colors.accent)};
+        border: 2px solid ${({ theme: { colors } }) => lighten(0.08, colors.accent)};
+    }
 `;
 
 const secondaryTheme = css`
@@ -28,29 +28,29 @@ const secondaryTheme = css`
 `;
 
 const plainTheme = css`
-  background: transparent;
-  transition: background ${({ theme: { animations } }) => animations.defaultTime};
-  padding: 0;
-  outline: none;
+    background: transparent;
+    transition: background ${({ theme: { animations } }) => animations.defaultTime};
+    padding: 0;
+    outline: none;
 `;
 
 const chooseTheme = (buttonTheme: 'primary' | 'secondary' | 'plain') => {
-  switch (buttonTheme) {
-    case 'primary':
-      return primaryTheme;
-    case 'secondary':
-      return secondaryTheme;
-    case 'plain':
-      return plainTheme;
-    default:
-      return primaryTheme;
-  }
+    switch (buttonTheme) {
+        case 'primary':
+            return primaryTheme;
+        case 'secondary':
+            return secondaryTheme;
+        case 'plain':
+            return plainTheme;
+        default:
+            return primaryTheme;
+    }
 };
 
 interface ButtonProps {
-  small?: boolean;
-  buttonTheme: any;
-  type?: any;
+    small?: boolean;
+    buttonTheme: any;
+    type?: any;
 }
 
 const StyledButton = styled.button<Pick<ButtonProps, 'small' | 'buttonTheme' | 'type'>>`
@@ -65,59 +65,52 @@ const StyledButton = styled.button<Pick<ButtonProps, 'small' | 'buttonTheme' | '
   -webkit-app-region: no-drag;
   outline: none;
   ${({ small }) =>
-    small &&
-    css`
-      padding: ${ms(-5)} ${ms(6)};
-      font-size: ${ms(-1)};
-    `}
+      small &&
+      css`
+          padding: ${ms(-5)} ${ms(6)};
+          font-size: ${ms(-1)};
+      `}
 
   ${({ disabled }) =>
-    disabled &&
-    css`
-      opacity: 0.5;
-      pointer-events: none;
-      &:hover {
-        opacity: 0.5;
-      }
-    `}
+      disabled &&
+      css`
+          opacity: 0.5;
+          pointer-events: none;
+          &:hover {
+              opacity: 0.5;
+          }
+      `}
 
   ${({ buttonTheme }) => chooseTheme(buttonTheme)};
 `;
 
 interface Props {
-  className?: string;
-  children?: any;
-  disabled?: boolean;
-  buttonTheme: 'primary' | 'secondary' | 'plain';
-  small?: boolean;
-  type?: string;
-  onClick?: (event: MouseEvent) => void;
+    className?: string;
+    children?: any;
+    disabled?: boolean;
+    buttonTheme: 'primary' | 'secondary' | 'plain';
+    small?: boolean;
+    id?: string;
+    type?: string;
+    onClick?: (event: MouseEvent) => void;
 }
 
 function Button(props: Props) {
-  const {
-    className,
-    children,
-    disabled,
-    buttonTheme,
-    type,
-    small,
-    onClick,
-    ...restOfProps
-  } = props;
-  return (
-    <StyledButton
-      onClick={onClick}
-      type={type || 'button'}
-      buttonTheme={buttonTheme}
-      small={small}
-      disabled={disabled}
-      className={className}
-      {...restOfProps}
-    >
-      {children}
-    </StyledButton>
-  );
+    const { className, children, disabled, buttonTheme, type, id, small, onClick, ...restOfProps } = props;
+    return (
+        <StyledButton
+            onClick={onClick}
+            type={type || 'button'}
+            buttonTheme={buttonTheme}
+            small={small}
+            id={id}
+            disabled={disabled}
+            className={className}
+            {...restOfProps}
+        >
+            {children}
+        </StyledButton>
+    );
 }
 
 export default Button;

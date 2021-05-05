@@ -2,6 +2,10 @@ const { app, ipcMain, Menu, BrowserWindow, shell } = require('electron');
 const os = require('os');
 
 const { helpUrl, customProtocols } = require('./config.json');
+const { desktopCapturer } = require('electron');
+const { ipcMain } = electron;
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
 
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
@@ -21,6 +25,31 @@ ipcMain.on('os-platform', (event) => {
 
 ipcMain.on('wallet', (event, data) => {
     event.sender.send('wallet', data);
+});
+
+// [TESTING]
+ipcMain.on('is-spectron', (e) => {
+    e.returnValue = process.env.WEB_CLIENT === 'spectron';
+});
+
+// [TESTING]
+let count = 0;
+ipcMain.on('testing-wallet', (e) => {
+    let path = require('path');
+    const baseDir = path.join(__dirname, '..');
+    let walletLocation = path.join(baseDir, 'test', 'walletsData', 'tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet');
+    if (count % 2 !== 0) {
+        walletLocation = path.join(baseDir, 'test', 'walletsData', 'tz2_test.tezwallet');
+    }
+    count += 1;
+    e.returnValue = `${walletLocation}`;
+});
+
+// [TESTING]
+ipcMain.on('new-wallet', (e) => {
+    let path = require('path');
+    const baseDir = path.join(__dirname, '..');
+    e.returnValue = `${baseDir}/test/temporaryFiles/new.tezwallet`;
 });
 
 let mainWindow = null;

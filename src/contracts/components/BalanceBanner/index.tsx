@@ -50,14 +50,14 @@ function BalanceBanner(props: Props) {
     }
 
     return (
-        <Container>
+        <Container data-spectron="token-balance-banner">
             <TopRow isReady={isReady}>
                 <Breadcrumbs>{breadcrumbs}</Breadcrumbs>
                 <Update onClick={onSyncWallet} time={time} isReady={isReady} isWalletSyncing={isWalletSyncing} />
             </TopRow>
             <BottomRow isReady={isReady}>
                 <AddressInfo>
-                    <AddressTitle>{displayName}</AddressTitle>{' '}
+                    <AddressTitle data-spectron="token-name">{displayName}</AddressTitle>{' '}
                     {token.helpLink && (
                         <>
                             <AddressInfoLink onClick={() => openLink(token.helpLink || '')}>
@@ -68,7 +68,15 @@ function BalanceBanner(props: Props) {
                     )}
                 </AddressInfo>
                 <AddressInfo>
-                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
+                    <TezosAddress
+                        data-spectron="token-address"
+                        address={publicKeyHash}
+                        weight={100}
+                        color="white"
+                        text={publicKeyHash}
+                        size={ms(1.7)}
+                        shorten={true}
+                    />
                     <Gap />
                     <div style={{ marginLeft: 'auto' }}>
                         <AmountView
@@ -84,7 +92,7 @@ function BalanceBanner(props: Props) {
                         />
                     </div>
                 </AddressInfo>
-                <AddressInfo>
+                <AddressInfo data-spectron="token-address-info">
                     {token.details && token.details.paused === false && 'Token is active.'}{' '}
                     {token.details && token.details.supply && 'Total supply is ' + formatAmount(token.details.supply) + '.'}
                     {token.details && token.details.holders && ' ' + Number(token.details.holders) + ' holders.'}
