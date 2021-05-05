@@ -6,6 +6,7 @@ import { ms } from '../../../styles/helpers';
 
 export const Container = styled.section`
     flex-grow: 1;
+    background-color: white;
 `;
 
 export const Tab = styled(Button)<{ isActive: boolean; ready: boolean }>`

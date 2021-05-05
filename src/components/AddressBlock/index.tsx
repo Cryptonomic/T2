@@ -6,6 +6,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { KeyStoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
@@ -328,40 +329,28 @@ function AddressBlock(props: Props) {
 
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'sign'} onClick={() => setIsModalOpen(true, 'sign')}>
                 <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
+                <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'sign' ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
 
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
                 <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
+                <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'beaconInfo' ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
 
-            {/* <AddDelegateLabel isActive={isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
-                <DelegateTitle>{t('general.nouns.tokens_page')}</DelegateTitle>
-            </AddDelegateLabel> */}
-
-            <AddDelegateLabel>
+            <AddDelegateLabel isActive={!isModalOpen && isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
+                <ChevronRightIcon style={{ fill: !isModalOpen && isTokensPageActive ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
 
             {tokens.map((token, index) => {
-                let tokenType = AddressType.Token; // TODO
-
-                // Always show wXTZ so that users can open the vaulting API.
-                // TODO(keefertaylor|anonymoussprocket): Determine how to correctly show an empty state.
-                if (token.kind === TokenKind.wxtz) {
-                    tokenType = AddressType.wXTZ;
-
-                    return (
-                        <TokenNav
-                            key={token.address}
-                            isActive={!isModalOpen && token.address === selectedAccountHash}
-                            token={token}
-                            onClick={() => goToAccount(token.address, index, tokenType)}
-                        />
-                    );
-                }
+                let tokenType = AddressType.Token;
 
                 if (!token.balance) {
                     return null;
+                }
+
+                if (token.kind === TokenKind.wxtz) {
+                    tokenType = AddressType.wXTZ;
                 }
 
                 if (token.kind === TokenKind.tzbtc) {

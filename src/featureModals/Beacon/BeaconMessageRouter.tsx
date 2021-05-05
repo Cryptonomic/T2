@@ -64,10 +64,8 @@ export const BeaconMessageRouter = () => {
                 return;
             }
 
-            // temporary accept transactions only
-            if (!message.operationDetails.filter((o) => o.kind === 'transaction').length) {
-                // TODO: add delegation
-                dispatch(createMessageAction('Beacon transactions only', true));
+            if (!message.operationDetails.filter((o) => o.kind === 'transaction' || o.kind === 'delegation').length) {
+                dispatch(createMessageAction(`Unsupported Beacon operation, ${message.operationDetails[0].kind}`, true));
                 return;
             }
 

@@ -45,7 +45,7 @@ const AmountView = (props: Props) => {
     }
 
     function formatAmount(truncateAmount): string {
-        const digits = truncateAmount ? precision : round;
+        const digits = Math.min(truncateAmount ? precision : round, 18);
         return new BigNumber(amount)
             .dividedBy(10 ** scale)
             .toNumber()

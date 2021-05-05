@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
+
+import SearchIcon from '@material-ui/icons/Search';
 
 import Grid from '@material-ui/core/Grid';
 
@@ -22,6 +24,12 @@ import {
     HorizontalDivider,
     BalanceTitle,
     BalanceAmount,
+    ListsWrapper,
+    SearchForm,
+    SearchInput,
+    BoxHover,
+    BoxBg,
+    BoxesGrid,
 } from './style';
 
 import { knownTokenDescription } from '../../constants/Token';
@@ -50,14 +58,16 @@ const TokensPage = () => {
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
     const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
 
+    const [search, setSearch] = useState('');
+    const [activeTokens, setActiveTokens] = useState<any>([]);
+    const [supportedTokens, setSupportedTokens] = useState<any>([]);
+    const [hover, setHover] = useState('');
+
     const { storeType, status } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
-    const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
-    const activeTokens = allTokens.filter((mt) => mt.balance);
-    const supportedTokens = allTokens.filter((i) => !activeTokens.map((m) => m.address).includes(i.address));
 
     const formatAmount = (truncateAmount, amount, precision, round, scale): string => {
-        const digits = truncateAmount ? precision : round;
+        const digits = Math.min(truncateAmount ? precision : round, 18);
         return new BigNumber(amount)
             .dividedBy(10 ** scale)
             .toNumber()
@@ -99,6 +109,41 @@ const TokensPage = () => {
         dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, tokenType));
     };
 
+    const onSearchTokens = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+
+        if (!value) {
+            const tokensList = [...tokens].filter((token) => !token.hideOnLanding);
+            const myTokens = tokensList.filter((mt) => mt.balance);
+            const otherTokens = tokensList.filter((i) => !myTokens.map((m: any) => m.address).includes(i.address));
+            setActiveTokens(myTokens);
+            setSupportedTokens(otherTokens);
+            setSearch('');
+            return;
+        }
+
+        const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
+        const aTokens = allTokens
+            .filter((mt) => mt.balance)
+            .filter((at) => at.displayName.toLowerCase().includes(value) || at.symbol.toLowerCase().includes(value));
+        const sTokens = allTokens
+            .filter((i) => !aTokens.map((m: any) => m.address).includes(i.address))
+            .filter((st) => st.displayName.toLowerCase().includes(value) || st.symbol.toLowerCase().includes(value));
+        setActiveTokens(aTokens);
+        setSupportedTokens(sTokens);
+        setSearch(value);
+    };
+
+    const onHover = (id: string) => setHover(id);
+
+    useEffect(() => {
+        const allTokens = [...tokens].filter((token) => !token.hideOnLanding);
+        const aTokens = allTokens.filter((mt) => mt.balance);
+        const sTokens = allTokens.filter((i) => !aTokens.map((m: any) => m.address).includes(i.address));
+        setActiveTokens(aTokens);
+        setSupportedTokens(sTokens);
+    }, [tokens]);
+
     return (
         <Container>
             <TopWrapper>
@@ -119,57 +164,93 @@ const TokensPage = () => {
                     </BottomRowInner>
                 </BottomRow>
             </TopWrapper>
-            {!!activeTokens.length && (
-                <>
-                    <TokensTitle>Your Tokens</TokensTitle>
-                    <Grid container={true} justify="flex-start">
-                        {activeTokens.map((token, index) => (
-                            <Box key={token.symbol} item={true} xs={3} onClick={() => onClickToken(token.address, index, token.kind)}>
-                                <BoxIcon>
-                                    <Img src={token.icon} />
-                                </BoxIcon>
-                                <BoxTitle>{token.displayName}</BoxTitle>
-                                <BoxDescription>
-                                    {!!token.helpLink && (
-                                        <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
-                                            {token.symbol}
-                                        </BlueLink>
-                                    )}{' '}
-                                    {knownTokenDescription[token.symbol]}
-                                </BoxDescription>
-                                <BalanceTitle>Balance</BalanceTitle>
-                                <BalanceAmount>
-                                    {formatAmount(false, token.balance, token.precision, token.round, token.scale)} {token.symbol}
-                                </BalanceAmount>
-                            </Box>
-                        ))}
-                    </Grid>
-                    <HorizontalDivider />
-                </>
-            )}
-            {!!supportedTokens.length && (
-                <>
-                    <TokensTitle>Supported Tokens</TokensTitle>
-                    <Grid container={true} justify="flex-start">
-                        {supportedTokens.map((token) => (
-                            <Box key={token.symbol} item={true} xs={3}>
-                                <BoxIcon>
-                                    <Img src={token.icon} />
-                                </BoxIcon>
-                                <BoxTitle>{token.displayName}</BoxTitle>
-                                <BoxDescription>
-                                    {!!token.helpLink && (
-                                        <BlueLink isActive={!!token.helpLink} onClick={() => token.helpLink && onClickLink(token.helpLink)}>
-                                            {token.symbol}
-                                        </BlueLink>
-                                    )}{' '}
-                                    {knownTokenDescription[token.symbol]}
-                                </BoxDescription>
-                            </Box>
-                        ))}
-                    </Grid>
-                </>
-            )}
+            <ListsWrapper>
+                <SearchForm>
+                    <SearchInput
+                        defaultValue=""
+                        id="token-search-input"
+                        placeholder="Search Tokens"
+                        startAdornment={<SearchIcon style={{ fill: search ? '#000000' : '#BDBDBD' }} />}
+                        onChange={onSearchTokens}
+                        value={search}
+                    />
+                </SearchForm>
+                {!!activeTokens.length && (
+                    <>
+                        <TokensTitle>Your Tokens</TokensTitle>
+                        <BoxesGrid>
+                            {activeTokens.map((token, index) => (
+                                <Box
+                                    key={token.symbol}
+                                    item={true}
+                                    xs={3}
+                                    onClick={() => onClickToken(token.address, index, token.kind)}
+                                    onMouseEnter={() => onHover(token.address)}
+                                    onMouseLeave={() => onHover('')}
+                                >
+                                    {hover === token.address && <BoxHover />}
+                                    <BoxBg>
+                                        <BoxIcon>
+                                            <Img src={token.icon} />
+                                        </BoxIcon>
+                                        <BoxTitle>{token.displayName}</BoxTitle>
+                                        <BoxDescription>
+                                            {!!token.helpLink && (
+                                                <BlueLink
+                                                    isActive={!!token.helpLink}
+                                                    onClick={(event) => {
+                                                        event.stopPropagation();
+                                                        if (token.helpLink) {
+                                                            onClickLink(token.helpLink);
+                                                        }
+                                                    }}
+                                                >
+                                                    {token.symbol}
+                                                </BlueLink>
+                                            )}{' '}
+                                            {knownTokenDescription[token.symbol]}
+                                        </BoxDescription>
+                                        <BalanceTitle>Balance</BalanceTitle>
+                                        <BalanceAmount>
+                                            {formatAmount(false, token.balance, token.precision, token.round, token.scale)} {token.symbol}
+                                        </BalanceAmount>
+                                    </BoxBg>
+                                </Box>
+                            ))}
+                        </BoxesGrid>
+                        <HorizontalDivider />
+                    </>
+                )}
+                {!!supportedTokens.length && (
+                    <>
+                        {<TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>}
+                        <BoxesGrid>
+                            {supportedTokens.map((token) => (
+                                <Box
+                                    key={token.symbol}
+                                    item={true}
+                                    xs={3}
+                                    onMouseEnter={() => onHover(token.address)}
+                                    onMouseLeave={() => onHover('')}
+                                    onClick={() => token.helpLink && onClickLink(token.helpLink)}
+                                >
+                                    {hover === token.address && <BoxHover />}
+                                    <BoxBg>
+                                        <BoxIcon>
+                                            <Img src={token.icon} />
+                                        </BoxIcon>
+                                        <BoxTitle>{token.displayName}</BoxTitle>
+                                        <BoxDescription>
+                                            {!!token.helpLink && <BlueLink isActive={!!token.helpLink}>{token.symbol}</BlueLink>}{' '}
+                                            {knownTokenDescription[token.symbol]}
+                                        </BoxDescription>
+                                    </BoxBg>
+                                </Box>
+                            ))}
+                        </BoxesGrid>
+                    </>
+                )}
+            </ListsWrapper>
         </Container>
     );
 };

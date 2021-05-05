@@ -43,10 +43,12 @@ function BalanceBanner(props: Props) {
     }
 
     function formatAmount(amount): string {
+        const minDigits = Math.min(token.round || 0, 18);
+        const maxDigits = Math.min(token.precision || 0, 18);
         return new BigNumber(amount)
             .dividedBy(10 ** (token.scale || 0))
             .toNumber()
-            .toLocaleString(undefined, { minimumFractionDigits: token.round, maximumFractionDigits: token.precision });
+            .toLocaleString(undefined, { minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits });
     }
 
     return (
