@@ -88,6 +88,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
+    const isDelegation = operationDetails[0].kind === 'delegation';
     const { destination, amount, parameters } = operationDetails[0];
     const operationParameters = parameters || { value: { prim: 'Unit' }, entrypoint: 'default' };
 
@@ -391,7 +392,12 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {operationDetails.length === 1 && <h3>{t('components.Beacon.authorization.title', { network: network.type })}</h3>}
                             {operationDetails.length > 1 && <h3>{t('components.Beacon.authorization.title_plural', { network: network.type })}</h3>}
                             <p className="linkAddress">{website}</p>
-                            {!isContract && (
+                            {isDelegation && (
+                                <p>
+                                    {appMetadata.name} is requesting a delegation to <strong>{operationDetails[0].delegate}</strong>
+                                </p>
+                            )}
+                            {!isContract && !isDelegation && (
                                 <p>
                                     {appMetadata.name} is requesting a transaction of <strong>{formatAmount(operationDetails[0].amount, 6)}</strong>
                                     <strong>{'\ua729'}</strong> to <strong>{operationDetails[0].destination}</strong>
