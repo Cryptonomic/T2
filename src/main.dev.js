@@ -2,10 +2,6 @@ const { app, ipcMain, Menu, BrowserWindow, shell } = require('electron');
 const os = require('os');
 
 const { helpUrl, customProtocols } = require('./config.json');
-const { desktopCapturer } = require('electron');
-const { ipcMain } = electron;
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
 
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);

@@ -25,12 +25,11 @@ describe('Settings: ', function () {
     beforeEach(() => app.start());
     afterEach(() => app.stop());
 
-    it('Change an language for different than English in the modal', async () => {
-        await app.client.click('[role="radiogroup"] label:nth-child(4) span');
-        await app.client.click('button=Continuar');
-        await app.client.click('button=Acepto');
-        const getTextFromButton = await app.client.getText('[data-spectron="create-wallet"]');
-        assert.equal(getTextFromButton, 'Crear Una Nueva Billetera', 'Language was not fully changed');
+    it('Change an language for different than English in landing page', async () => {
+        await app.client.click('[data-spectron="lang-change"]');
+        await app.client.click('[data-spectron="lang-option"] li:nth-child(4)');
+        const getTextFromTitle = await app.client.getText('[data-spectron="lang-welcome"]');
+        assert.equal(getTextFromTitle[0], 'Bienvenido a Tezori', 'Language was not fully changed');
     });
 
     it('Change an language for different than English from settings tab', async () => {

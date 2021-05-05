@@ -23,7 +23,7 @@ function LanguageSelector(props: Props) {
     const [open, setOpen] = useState(false);
 
     function renderOptions() {
-        return Object.keys(localesMap).map(key => {
+        return Object.keys(localesMap).map((key) => {
             return (
                 <ItemWrapper key={key} value={key} selected={locale === key} onClick={() => onLanguageChange(key)}>
                     <div> {localesMap[key]} </div>
@@ -52,7 +52,7 @@ function LanguageSelector(props: Props) {
         <SelectContainer>
             <LabelWrapper>{t('general.nouns.language')}</LabelWrapper>
             <RootRef rootRef={domRef}>
-                <SelectWrapper onClick={() => setOpen(!open)}>
+                <SelectWrapper data-spectron="lang-change" onClick={() => setOpen(!open)}>
                     <SelectContent>{localesMap[locale]}</SelectContent>
                     <SelectIcon />
                 </SelectWrapper>
@@ -63,22 +63,22 @@ function LanguageSelector(props: Props) {
                 anchorEl={domRef.current}
                 anchorOrigin={{
                     vertical: 'center',
-                    horizontal: 'left'
+                    horizontal: 'left',
                 }}
                 transformOrigin={{
                     vertical: 'center',
-                    horizontal: 'left'
+                    horizontal: 'left',
                 }}
                 PaperProps={{
                     style: {
-                        width: domRef.current ? domRef.current.clientWidth : 300
-                    }
+                        width: domRef.current ? domRef.current.clientWidth : 300,
+                    },
                 }}
                 onClose={() => setOpen(false)}
             >
                 <GroupContainerWrapper>
                     <RootRef rootRef={setLanguageScrollRef}>
-                        <ScrollContainer>{renderOptions()}</ScrollContainer>
+                        <ScrollContainer data-spectron="lang-option">{renderOptions()}</ScrollContainer>
                     </RootRef>
                 </GroupContainerWrapper>
             </Popover>

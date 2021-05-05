@@ -131,7 +131,7 @@ function Landing(props: Props) {
             return (
                 <Container key={index}>
                     <Container1>
-                        <WelcomeTxt>{t('components.termsModal.welcome_to', { name })}</WelcomeTxt>
+                        <WelcomeTxt data-spectron="lang-welcome">{t('components.termsModal.welcome_to', { name })}</WelcomeTxt>
                         {index === 0 && <LangTitle>{t('components.languageSelectModal.select_language')}</LangTitle>}
                         <MainContainer isFirst={index === 0}>
                             <TermsLogo src={termsLogoIcon} />

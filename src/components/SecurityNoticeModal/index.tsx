@@ -147,12 +147,12 @@ function SecurityNoticeModal(props: Props) {
                     </LinkContainer>
                     <FormGroupWrapper data-spectron="form">
                         <FormControlLabelWrapper
-                            dataSpectron="understand-check"
+                            data-spectron="understand-check"
                             control={<CheckBoxWrapper checked={isUnderstand} onChange={(e) => setIsUnderstand(e.target.checked)} value="understand" />}
                             label={t('components.securityNoticeModal.understand_check')}
                         />
                         <FormControlLabelWrapper
-                            dataSpectron="dont-message"
+                            data-spectron="dont-message"
                             control={<CheckBoxWrapper checked={isNotShowMessage} onChange={(e) => setIsNotShowMessage(e.target.checked)} value="showmessage" />}
                             label={t('components.securityNoticeModal.dont_message')}
                         />
