@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 
-import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils } from 'conseiljs';
+import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation } from 'conseiljs';
 
 import { cloneDecryptedSigner } from '../../utils/wallet';
 
@@ -32,7 +32,7 @@ export function estimateOperationGroupFee(publicKeyHash: string, operations: any
 
                 setFee(estimate.estimatedFee);
             } catch (e) {
-                console.log('estimateContractCall failed with ', e);
+                console.log('estimateInvocation failed with ', e);
                 setFee(e.message);
             }
         };
@@ -118,7 +118,7 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
     let counter = networkCounter;
     for (const o of operations) {
         counter += 1;
-
+        console.log('createOperationGroup', operations);
         switch (o.kind) {
             case 'transaction': {
                 let entrypoint: string | undefined;
@@ -147,6 +147,21 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
                     entrypoint,
                     parameters
                 );
+
+                formedOperations.push(op);
+
+                break;
+            }
+            case 'delegation': {
+                const op: Delegation = {
+                    kind: 'delegation',
+                    source: publicKeyHash,
+                    fee: '0',
+                    counter: counter.toString(),
+                    storage_limit: TezosConstants.DefaultDelegationStorageLimit.toString(),
+                    gas_limit: TezosConstants.DefaultDelegationGasLimit.toString(),
+                    delegate: o.delegate,
+                };
 
                 formedOperations.push(op);
 
