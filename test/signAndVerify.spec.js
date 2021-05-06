@@ -2,6 +2,7 @@ const assert = require('assert');
 const path = require('path');
 const { Application } = require('spectron');
 const SignAndVerifyPage = require('./pages/signAndVerifyPage');
+const BaseApp = require('./pages/basePage');
 const { sleepApp } = require('./utils/sleepApp');
 
 // construct paths
@@ -25,10 +26,11 @@ describe('Sign & Verify main features tests: ', function () {
 
     // page object
     const signAndVerifyPage = new SignAndVerifyPage(app);
+    const basePage = new BaseApp(app);
 
     beforeEach(async () => {
         await app.start();
-        await signAndVerifyPage.selectLanguageAndAgreeToTerms();
+        await basePage.passLandingSlides();
         await signAndVerifyPage.setTestNode();
         await signAndVerifyPage.openExistingWallet(process.env.TZ1_PASSWORD);
     });
@@ -38,8 +40,8 @@ describe('Sign & Verify main features tests: ', function () {
     it('sign generate correct signature', async () => {
         await signAndVerifyPage.openSignAndVerify();
         await signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.signButton);
-
         const message = 'My message';
+        await app.client.addValue('[data-spectron="wallet-password"] input', process.env.TZ1_PASSWORD);
         await signAndVerifyPage.createSignature({ message: message, sign: true, copySignature: true });
         await signAndVerifyPage.assertClipBoard(process.env.TZ1_SIGNATURE);
     });

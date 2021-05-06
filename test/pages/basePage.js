@@ -66,7 +66,7 @@ class BasePage {
         this.setTestNode = async () => {
             await this.goToSettings();
             await this.app.client.click('[data-spectron="settings-test-node-button"]');
-            await this.app.client.click('div=Tezos Testnet (nautilus.cloud)');
+            await this.app.client.click('div=Tezos Florencenet (nautilus.cloud)');
             await this.goBackFromSetting();
         };
 
@@ -74,14 +74,12 @@ class BasePage {
             await this.app.client.waitForExist('span=Open Existing Wallet');
             await this.app.client.click('span=Open Existing Wallet');
             await this.app.client.click('[data-spectron="select-wallet-button"]');
-            const walletFileName = await this.app.client.getText('[data-spectron="wallet-file-name"]');
-            // assert.equal(walletFileName, 'tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet');
             let buttonEnabled = await this.app.client.isEnabled('[data-spectron="open-wallet-button"]');
             assert.equal(buttonEnabled, false);
 
-            await this.app.client.addValue('[data-spectron="wallet-password"] input', password);
+            await this.app.client.addValue('[data-spectron="wallet-password"] input', 'cryptonomic1');
             await this.app.client.click('[data-spectron="open-wallet-button"]');
-            await this.app.client.waitForExist('[data-spectron="main-addres"] [data-spectron="amount"]', 30000);
+            await this.app.client.waitForExist('[data-spectron="amount"] span:first-child');
         };
 
         this.navigateToSection = async (sectionName) => {

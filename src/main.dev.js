@@ -33,9 +33,9 @@ let count = 0;
 ipcMain.on('testing-wallet', (e) => {
     let path = require('path');
     const baseDir = path.join(__dirname, '..');
-    let walletLocation = path.join(baseDir, 'test', 'walletsData', 'tz1aA9pwaJY2VmRyH47ibubF4TGDLyLA8yEW.tezwallet');
+    let walletLocation = path.join(baseDir, 'test', 'walletsData', 'testing.tezwallet');
     if (count % 2 !== 0) {
-        walletLocation = path.join(baseDir, 'test', 'walletsData', 'tz2_test.tezwallet');
+        walletLocation = path.join(baseDir, 'test', 'walletsData', 'testing.tezwallet');
     }
     count += 1;
     e.returnValue = `${walletLocation}`;
