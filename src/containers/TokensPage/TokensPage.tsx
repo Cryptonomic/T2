@@ -225,14 +225,14 @@ const TokensPage = () => {
                     <>
                         {<TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>}
                         <BoxesGrid>
-                            {supportedTokens.map((token) => (
+                            {supportedTokens.map((token, index) => (
                                 <Box
                                     key={token.symbol}
                                     item={true}
                                     xs={3}
                                     onMouseEnter={() => onHover(token.address)}
                                     onMouseLeave={() => onHover('')}
-                                    onClick={() => token.helpLink && onClickLink(token.helpLink)}
+                                    onClick={() => onClickToken(token.address, index, token.kind)}
                                 >
                                     {hover === token.address && <BoxHover />}
                                     <BoxBg>
@@ -241,7 +241,19 @@ const TokensPage = () => {
                                         </BoxIcon>
                                         <BoxTitle>{token.displayName}</BoxTitle>
                                         <BoxDescription>
-                                            {!!token.helpLink && <BlueLink isActive={!!token.helpLink}>{token.symbol}</BlueLink>}{' '}
+                                            {!!token.helpLink && (
+                                                <BlueLink
+                                                    isActive={!!token.helpLink}
+                                                    onClick={(event) => {
+                                                        event.stopPropagation();
+                                                        if (token.helpLink) {
+                                                            onClickLink(token.helpLink);
+                                                        }
+                                                    }}
+                                                >
+                                                    {token.symbol}
+                                                </BlueLink>
+                                            )}{' '}
                                             {knownTokenDescription[token.symbol]}
                                         </BoxDescription>
                                     </BoxBg>
