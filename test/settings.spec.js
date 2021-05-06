@@ -33,22 +33,22 @@ describe('Settings: ', function () {
     });
 
     it('Change an language for different than English from settings tab', async () => {
-        await basePage.selectLanguageAndAgreeToTerms();
+        await basePage.passLandingSlides();
         await basePage.goToSettings();
-        await app.client.click('[data-spectron="raw-for-language-menu"] div:nth-last-child(2)');
-        await app.client.click('[role=menuitem]:nth-child(4)');
+        await app.client.click('[data-spectron="lang-change"]');
+        await app.client.click('[data-spectron="lang-option"] li:nth-child(4)');
         await app.client.click('span=Volver a la billetera');
         const getTextFromButton = await app.client.getText('[data-spectron="create-wallet"]');
         assert.equal(getTextFromButton, 'Crear Una Nueva Billetera', 'Language was not fully changed');
     });
 
     it('Hardware Wallet Settings', async () => {
+        await basePage.passLandingSlides();
         const selectedPath = await app.client.getText('[data-spectron="selected-path"]');
-        await basePage.selectLanguageAndAgreeToTerms();
         assert.equal(selectedPath, "Selected Path: 44'/1729'/0'/0'/0'", 'Default Path is not correctly visible');
         await basePage.goToSettings();
         await app.client.click('[data-spectron="derivation-path"]');
-        await app.client.click('[role=listbox] li:nth-child(3)');
+        await app.client.click('[role=listbox] li:nth-child(2)');
         await basePage.goBackFromSetting();
         const selectedPathAfterChange = await app.client.getText('[data-spectron="selected-path"]');
         assert.equal(selectedPathAfterChange, "Selected Path: 44'/1729'/0'/0'", 'Tezos Path is not correctly visible');

@@ -37,6 +37,20 @@ class BasePage {
             await this.app.client.click(this.termsAgreeButton);
         };
 
+        this.passLandingSlides = async () => {
+            await app.client.pause(300);
+            await app.client.click('[data-spectron="landing-next-button"]');
+            await app.client.pause(300);
+            await app.client.click('[data-spectron="landing-agree-terms"]');
+            await app.client.click('[data-spectron="landing-agree-policy"]');
+            await app.client.pause(300);
+            await app.client.click('[data-spectron="landing-next-button"]');
+            await app.client.pause(300);
+            await app.client.click('[data-spectron="landing-next-button"]');
+            await app.client.pause(300);
+            await app.client.click('[data-spectron="landing-next-button"]');
+        };
+
         this.goToSettings = async () => {
             await this.app.client.click(this.settingsButton);
         };
@@ -46,7 +60,7 @@ class BasePage {
         };
 
         this.goBackFromSetting = async () => {
-            await this.app.client.click('span=Back to Login');
+            await this.app.client.click('[data-spectron="settings-go-back"]');
         };
 
         this.setTestNode = async () => {

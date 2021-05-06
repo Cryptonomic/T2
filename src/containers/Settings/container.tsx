@@ -108,7 +108,7 @@ const SettingsContainer = () => {
     return (
         <Container>
             <BackButtonContainer>
-                <BackButton label={backTitle} onClick={onClickBackButton} />
+                <BackButton dataSpectron="settings-go-back" label={backTitle} onClick={onClickBackButton} />
             </BackButtonContainer>
 
             <H2>{`${t('containers.homeSettings.general_settings')}, ${name} ${version} (${LocalVersionIndex})`}</H2>
