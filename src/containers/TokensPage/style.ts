@@ -58,7 +58,7 @@ export const BoxBg = styled.div`
 export const BoxesGrid = styled.div`
     display: grid;
     overflow: hidden;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: 1fr;
     grid-column-gap: 5px;
     grid-row-gap: 5px;
