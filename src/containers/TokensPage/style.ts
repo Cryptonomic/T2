@@ -65,12 +65,13 @@ export const BoxesGrid = styled.div`
 `;
 
 export const BoxHover = styled.div`
-    width: calc(100% + 5px);
-    height: calc(100% + 5px);
+    width: calc(100% - 22px);
+    height: calc(100% - 22px);
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 20px;
+    left: 20px;
     background: #e7efff;
+    border: 1px solid black;
     filter: blur(12px);
     z-index: 1;
 `;
@@ -82,7 +83,6 @@ export const BoxIcon = styled.div`
     width: 40px;
     height: 40px;
 `;
-
 export const Img = styled.img`
     width: 100%;
     height: 100%;
