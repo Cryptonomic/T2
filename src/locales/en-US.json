@@ -317,7 +317,7 @@
                 "invoke_address": "Smart Contract addresses can only start with KT1",
                 "not_exist": "This account doesn't exist on the blockchain or has 0 balance.",
                 "not_smartcontract": "This is a delegated address and not a smart contract. Please use send tab to transfer funds.",
-                "use_interact": "This is a smart contract address. Please use interact with contracts button to transfer funds."
+                "use_interact": "It looks like you are trying to send funds to a smart contract. Unless this smart contract explicitly supports sending, it may be impossible to withdraw your funds. To avoid losing funds, please use the \"Interact with Smart Contracts\" functionality to invoke a specific function unless you are directed by the smart contract owner."
             }
         },
         "languageSelectModal": {
