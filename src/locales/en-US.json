@@ -451,7 +451,7 @@
             "sent": "Sent",
             "received": "Received",
             "this_address": "this address",
-            "invoke_function": "INVOKED FUNCTION",
+            "invoke_function": "Sent",
             "add_delegate": "ORIGINATION - DELEGATED ADDRESS",
             "deployment": "ORIGINATION - SMART CONTRACT",
             "invoked": "Invoked"

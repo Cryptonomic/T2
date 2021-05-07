@@ -181,7 +181,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
             } else if (isSameLocation && !isFlag) {
                 return {
                     icon: 'send',
-                    preposition: '',
+                    preposition: t('general.to'),
                     state: t('components.transaction.invoke_function'),
                     isFee: true,
                     color: isAmount ? 'error1' : 'gray8',
