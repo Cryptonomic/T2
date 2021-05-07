@@ -178,7 +178,7 @@ const TokensPage = () => {
                 {!!activeTokens.length && (
                     <>
                         <TokensTitle>Your Tokens</TokensTitle>
-                        <BoxesGrid>
+                        <BoxesGrid data-spectron="active-tokens">
                             {activeTokens.map((token, index) => (
                                 <Box
                                     key={token.symbol}
@@ -224,7 +224,7 @@ const TokensPage = () => {
                 {!!supportedTokens.length && (
                     <>
                         {<TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>}
-                        <BoxesGrid>
+                        <BoxesGrid data-spectron="supported-tokens">
                             {supportedTokens.map((token) => (
                                 <Box
                                     key={token.symbol}

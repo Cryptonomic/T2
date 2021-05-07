@@ -101,6 +101,11 @@ class BasePage {
             await sleepApp(3000);
         };
 
+        this.openTokensPage = async () => {
+            await this.app.client.click('[data-spectron="tokens-page"]');
+            await sleepApp(3000);
+        };
+
         this.openSignAndVerify = async () => {
             await this.app.client.click('div=Sign & Verify');
         };

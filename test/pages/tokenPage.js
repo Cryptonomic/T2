@@ -13,18 +13,13 @@ class TokenPage extends BasePage {
 
         this.retrieveTokenBalanceBannerData = async () => {
             const tokenPageTitle = await this.app.client.getText('[data-spectron="token-name"]');
-            const addressPartOne = await this.app.client.getText(
-                '[data-spectron="token-balance-banner"] [data-spectron="tezos-address"] span span:nth-child(1)'
-            );
-            const addressPartTwo = await this.app.client.getText(
-                '[data-spectron="token-balance-banner"] [data-spectron="tezos-address"] span span:nth-child(2)'
-            );
-            const tokenAddress = addressPartOne + addressPartTwo;
+            await this.app.client.click('[data-spectron="copy-button"]');
+            const tokenAddress = await this.app.electron.clipboard.readText();
             const tokenAddressInfo = await this.app.client.getText('[data-spectron="token-address-info"]');
             const tokenFee = '[data-spectron="fee"] span:nth-child(2)';
             const ballanceBannerInfo = {
-                title: tokenPageTitle[0],
-                addres: tokenAddress,
+                title: tokenPageTitle,
+                address: tokenAddress,
                 addresInfo: tokenAddressInfo,
                 tokenFee: tokenFee,
             };

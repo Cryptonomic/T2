@@ -337,7 +337,11 @@ function AddressBlock(props: Props) {
                 <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'beaconInfo' ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
 
-            <AddDelegateLabel isActive={!isModalOpen && isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
+            <AddDelegateLabel
+                data-spectron="tokens-page"
+                isActive={!isModalOpen && isTokensPageActive}
+                onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}
+            >
                 <DelegateTitle>{t('general.nouns.tokens')}</DelegateTitle>
                 <ChevronRightIcon style={{ fill: !isModalOpen && isTokensPageActive ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
