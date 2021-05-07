@@ -1,7 +1,8 @@
-const { app, ipcMain, Menu, BrowserWindow, shell } = require('electron');
+const { app, ipcMain, Menu, BrowserWindow } = require('electron');
+const { shell } = require('electron').remote
 const os = require('os');
 
-const { helpUrl, customProtocols } = require('./config.json');
+const { helpUrl, aboutUrl, customProtocols } = require('./config.json');
 
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
@@ -117,7 +118,7 @@ app.on('ready', async () => {
     let helpSubmenu = [];
 
     if (!isMac) {
-        helpSubmenu.push({ role: 'about' });
+        helpSubmenu.push({ role: 'about', label: 'About', click: async () =>  await shell.openExternal(aboutUrl) })
     }
 
     menuTemplate.push({
