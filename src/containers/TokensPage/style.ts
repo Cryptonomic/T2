@@ -61,7 +61,8 @@ export const BoxesGrid = styled.div`
     grid-auto-rows: 1fr;
     grid-column-gap: 5px;
     grid-row-gap: 5px;
-    padding: 10px 0px;
+    padding: 10px;
+    margin-left: -10px;
 `;
 
 export const BoxHover = styled.div`
