@@ -33,7 +33,6 @@ export const Box = withStyles({
     root: {
         maxWidth: '208px',
         minWidth: '208px',
-        minHeight: '193px',
         position: 'relative',
         margin: '10px',
     },
@@ -44,7 +43,7 @@ export const BoxBg = styled.div`
     border: 1px solid #d8e4fc;
     border-radius: 8px;
     display: flex;
-    height: 100%;
+    min-height: 260px;
     flex-direction: column;
     padding: 16px 13px 29px 16px;
     box-shadow: 0px 1px 2px rgba(225, 225, 225, 0.44);
@@ -90,8 +89,8 @@ export const Img = styled.img`
 `;
 
 export const BoxTitle = styled.div`
-    font-size: 24px;
-    line-height: 28px;
+    font-size: 16px;
+    line-height: 24px;
     width: 100%;
     text-align: center;
     margin-top: 8px;
@@ -127,12 +126,12 @@ export const HorizontalDivider = mStyled(Divider)({
 export const BalanceTitle = styled.div`
     font-size: 16px;
     line-height: 16px;
-    margin-top: 16px;
+    margin-top: auto;
 `;
 
 export const BalanceAmount = styled.div`
-    font-size: 24px;
-    line-height: 28px;
+    font-size: 16px;
+    line-height: 24px;
     margin-top: 4px;
 `;
 
