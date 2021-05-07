@@ -1,5 +1,4 @@
-const { app, ipcMain, Menu, BrowserWindow } = require('electron');
-const { shell } = require('electron').remote
+const { app, ipcMain, Menu, BrowserWindow, shell } = require('electron');
 const os = require('os');
 
 const { helpUrl, aboutUrl, customProtocols } = require('./config.json');
