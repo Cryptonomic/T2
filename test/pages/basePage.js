@@ -102,6 +102,7 @@ class BasePage {
         };
 
         this.openTokensPage = async () => {
+            await this.app.client.pause(5000);
             await this.app.client.click('[data-spectron="tokens-page"]');
             await sleepApp(3000);
         };
