@@ -1,6 +1,5 @@
 const { app, ipcMain, Menu, BrowserWindow, shell } = require('electron');
 const os = require('os');
-const { fileName } = require('../test/walletsData/testConfig.json');
 
 const { helpUrl, customProtocols } = require('./config.json');
 
@@ -25,27 +24,33 @@ ipcMain.on('wallet', (event, data) => {
 });
 
 if (process.env.TEST_ENV === 'true') {
-    ipcMain.on('is-spectron', (e) => {
-        e.returnValue = process.env.WEB_CLIENT === 'spectron';
-    });
+    try {
+        const { fileName } = require('../test/walletsData/testConfig.json');
 
-    let count = 0;
-    ipcMain.on('testing-wallet', (e) => {
-        let path = require('path');
-        const baseDir = path.join(__dirname, '..');
-        let walletLocation = path.join(baseDir, 'test', 'walletsData', fileName);
-        if (count % 2 !== 0) {
-            walletLocation = path.join(baseDir, 'test', 'walletsData', fileName);
-        }
-        count += 1;
-        e.returnValue = `${walletLocation}`;
-    });
+        ipcMain.on('is-spectron', (e) => {
+            e.returnValue = process.env.WEB_CLIENT === 'spectron';
+        });
 
-    ipcMain.on('new-wallet', (e) => {
-        let path = require('path');
-        const baseDir = path.join(__dirname, '..');
-        e.returnValue = `${baseDir}/test/temporaryFiles/new.tezwallet`;
-    });
+        let count = 0;
+        ipcMain.on('testing-wallet', (e) => {
+            let path = require('path');
+            const baseDir = path.join(__dirname, '..');
+            let walletLocation = path.join(baseDir, 'test', 'walletsData', fileName);
+            if (count % 2 !== 0) {
+                walletLocation = path.join(baseDir, 'test', 'walletsData', fileName);
+            }
+            count += 1;
+            e.returnValue = `${walletLocation}`;
+        });
+
+        ipcMain.on('new-wallet', (e) => {
+            let path = require('path');
+            const baseDir = path.join(__dirname, '..');
+            e.returnValue = `${baseDir}/test/temporaryFiles/new.tezwallet`;
+        });
+    } catch (error) {
+        // TODO: display error
+    }
 }
 
 let mainWindow = null;
