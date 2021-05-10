@@ -35,7 +35,8 @@ module.exports = {
 
   plugins: [
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production'
+      NODE_ENV: 'production',
+      TEST_ENV: 'false'
     }),
 
     new webpack.NamedModulesPlugin()

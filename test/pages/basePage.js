@@ -77,7 +77,7 @@ class BasePage {
             let buttonEnabled = await this.app.client.isEnabled('[data-spectron="open-wallet-button"]');
             assert.equal(buttonEnabled, false);
 
-            await this.app.client.addValue('[data-spectron="wallet-password"] input', 'cryptonomic1');
+            await this.app.client.addValue('[data-spectron="wallet-password"] input', password);
             await this.app.client.click('[data-spectron="open-wallet-button"]');
             await this.app.client.waitForExist('[data-spectron="amount"] span:first-child');
         };

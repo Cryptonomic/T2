@@ -4,6 +4,7 @@ const { Application } = require('spectron');
 const SignAndVerifyPage = require('./pages/signAndVerifyPage');
 const BaseApp = require('./pages/basePage');
 const { sleepApp } = require('./utils/sleepApp');
+const { address, password, signatureMessage, correctSignature, incorrectSignature } = require('./walletsData/testConfig.json');
 
 // construct paths
 const baseDir = path.join(__dirname, '..');
@@ -32,7 +33,7 @@ describe('Sign & Verify main features tests: ', function () {
         await app.start();
         await basePage.passLandingSlides();
         await signAndVerifyPage.setTestNode();
-        await signAndVerifyPage.openExistingWallet(process.env.TZ1_PASSWORD);
+        await signAndVerifyPage.openExistingWallet(password);
     });
 
     afterEach(() => app.stop());
@@ -40,10 +41,9 @@ describe('Sign & Verify main features tests: ', function () {
     it('sign generate correct signature', async () => {
         await signAndVerifyPage.openSignAndVerify();
         await signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.signButton);
-        const message = 'My message';
-        await app.client.addValue('[data-spectron="wallet-password"] input', process.env.TZ1_PASSWORD);
-        await signAndVerifyPage.createSignature({ message: message, sign: true, copySignature: true });
-        await signAndVerifyPage.assertClipBoard(process.env.TZ1_SIGNATURE);
+        await app.client.addValue('[data-spectron="wallet-password"] input', password);
+        await signAndVerifyPage.createSignature({ message: signatureMessage, sign: true, copySignature: true });
+        await signAndVerifyPage.assertClipBoard(correctSignature);
     });
 
     it('verify generate confirmed alert when signature matches message', async () => {
@@ -53,11 +53,10 @@ describe('Sign & Verify main features tests: ', function () {
         await app.client.waitForExist(signAndVerifyPage.downVerifyButton);
         signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.downVerifyButton);
 
-        const message = 'My message';
         await signAndVerifyPage.verifySignature({
-            message: message,
-            address: process.env.TZ1_ADDRESS,
-            signature: process.env.TZ1_SIGNATURE,
+            message: signatureMessage,
+            address: address,
+            signature: correctSignature,
             verify: true,
         });
         await app.client.waitForExist(signAndVerifyPage.confirmedAlert, 3000);
@@ -68,12 +67,10 @@ describe('Sign & Verify main features tests: ', function () {
         await signAndVerifyPage.navigateToSection('Verify');
         signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.downVerifyButton);
 
-        const message = 'My message';
-        const wrongSignature = 'edsigu57kEW5gzskhJb6DdbesMcw6LLRpp6vX6CscEmRRrnCSYUBGXCZKoVGmNdnq29ecvdUW6rxbS31u9FeGfzk9KLMxbEUYqa';
         await signAndVerifyPage.verifySignature({
-            message: message,
-            address: process.env.TZ1_ADDRESS,
-            signature: wrongSignature,
+            message: signatureMessage,
+            address: address,
+            signature: incorrectSignature,
             verify: true,
         });
         await app.client.waitForExist(signAndVerifyPage.wrongAlert, 3000);
@@ -84,10 +81,9 @@ describe('Sign & Verify main features tests: ', function () {
         await signAndVerifyPage.navigateToSection('Verify');
         signAndVerifyPage.buttonEnabledFalse(signAndVerifyPage.downVerifyButton);
 
-        const message = 'My message';
         await signAndVerifyPage.verifySignature({
-            message: message,
-            signature: process.env.TZ1_SIGNATURE,
+            message: signatureMessage,
+            signature: correctSignature,
             verify: false,
         });
 

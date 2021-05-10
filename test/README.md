@@ -13,15 +13,32 @@ Before launching tests make sure that:
 npm install
 ```
 
-1. You have got folders and files with sensitive data placed in the test folder:
+1. You have got files with sensitive data placed in the `walletsData` folder:
 
--   walletsData (folder)
--   .env (files)
+-   testing.tezwallet
+-   testConfig.json
+
+```json
+{
+    "fileName": "testing.tezwallet",
+    "address": "",
+    "password": "",
+    "signatureMessage": "",
+    "correctSignature": "",
+    "incorrectSignature": "",
+    "tokenName": "",
+    "tokenSymbol": "",
+    "tokenAddress": "",
+    "tokenDestination": "",
+    "tokenAmount": 1,
+    "tokenToContract": ""
+}
+```
 
 1. Production version of the application was built:
 
 ```bash
-npm run build
+npm run test-build
 ```
 
 ## Usage
@@ -30,7 +47,7 @@ Tests are launch a product version of the application.
 To launch all test, simply run:
 
 ```bash
-npm start
+npm run test
 ```
 
 If you want to launch specific tests, open package.json, and add the relative path of the selected test suite file in npm:test command as mocha's param.
@@ -48,8 +65,9 @@ If you want to launch specific tests, open package.json, and add the relative pa
 
 -   Files and folders with sensitive data:
     -   walletsData (folder)
-    -   .env (files)
-        Without those two, tests will not work.
+    -   testConfig.json (file)
+    -   wallet (file)
+-   Without those files, tests will not work.
 
 ## Problems and challenges
 

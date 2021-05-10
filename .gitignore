@@ -16,3 +16,4 @@ src/node_modules
 
 test/.env
 test/walletsData/*.tezwallet
+test/walletsData/testConfig.json

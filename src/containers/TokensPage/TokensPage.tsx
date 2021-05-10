@@ -225,14 +225,14 @@ const TokensPage = () => {
                     <>
                         {<TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>}
                         <BoxesGrid data-spectron="supported-tokens">
-                            {supportedTokens.map((token) => (
+                            {supportedTokens.map((token, index) => (
                                 <Box
                                     key={token.symbol}
                                     item={true}
                                     xs={3}
                                     onMouseEnter={() => onHover(token.address)}
                                     onMouseLeave={() => onHover('')}
-                                    onClick={() => token.helpLink && onClickLink(token.helpLink)}
+                                    onClick={() => onClickToken(token.address, index, token.kind)}
                                 >
                                     {hover === token.address && <BoxHover />}
                                     <BoxBg>
