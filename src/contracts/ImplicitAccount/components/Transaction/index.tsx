@@ -162,7 +162,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
             };
         }
         default: {
-            const isFlag = !transaction.parameter;
+            const isFlag = !transaction.parameters;
 
             if (isSameLocation && isFlag) {
                 return {
