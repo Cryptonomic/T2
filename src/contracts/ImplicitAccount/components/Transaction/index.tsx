@@ -162,12 +162,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
             };
         }
         default: {
-            const isFlag =
-                !transaction.parameters &&
-                (transaction.consumed_gas === REG_TX_GAS_CONSUMPTION ||
-                    transaction.consumed_gas === REG_TX_GAS_CONSUMPTION_ATHENS ||
-                    transaction.consumed_gas === REG_TX_GAS_CONSUMPTION_BABYLON ||
-                    transaction.consumed_gas === EMPTY_OUT_TX_GAS_CONSUMPTION);
+            const isFlag = !transaction.parameter;
 
             if (isSameLocation && isFlag) {
                 return {
@@ -181,7 +176,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
             } else if (isSameLocation && !isFlag) {
                 return {
                     icon: 'send',
-                    preposition: t('general.to'),
+                    preposition: '',
                     state: t('components.transaction.invoke_function'),
                     isFee: true,
                     color: isAmount ? 'error1' : 'gray8',
