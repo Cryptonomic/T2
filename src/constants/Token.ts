@@ -288,6 +288,10 @@ export const knownContractNames = {
     KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: 'hic et nunc DAO',
 
     KT1H28iie4mW9LmmJeYLjH6zkC8wwSmfHf5P: 'TzButton Round 2',
+
+    KT1P8n2qzJjwMPbHJfi4o8xu6Pe3gaU3u2A3: 'Tezos Domains Committer',
+    KT191reDVKrLxU9rjTSxg53wRqj6zh8pnHgr: 'Tezos Domains Sales',
+    KT1CaSP4dn8wasbMsfdtGiCPgYFW7bvnPRRT: 'Tezos Domains Bid'
 };
 
 export const knownMarketMetadata = [

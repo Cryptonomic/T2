@@ -148,9 +148,7 @@ const TokensPage = () => {
         <Container>
             <TopWrapper>
                 <TopRow isReady={isReadyProp}>
-                    <Breadcrumbs>
-                        {t('components.balanceBanner.breadcrumbs', { parentIndex: selectedParentIndex + 1, addressLabel: 'Tokens Page' })}
-                    </Breadcrumbs>
+                    <Breadcrumbs>{t('components.balanceBanner.breadcrumbs', { parentIndex: selectedParentIndex + 1, addressLabel: 'Tokens' })}</Breadcrumbs>
                     <Update onClick={onSyncWallet} time={time} isReady={isReadyProp} isWalletSyncing={isWalletSyncing} />
                 </TopRow>
                 <BottomRow isReady={isReadyProp}>
