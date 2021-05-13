@@ -380,6 +380,62 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             }
         }
 
+        // Tezos Domains
+        if (transaction.destination === 'KT1P8n2qzJjwMPbHJfi4o8xu6Pe3gaU3u2A3') {
+            if (transaction.parameters.entrypoint === 'commit') {
+                return <>&nbsp;to commit a name.</>;
+            }
+        }
+
+        if (transaction.destination === 'KT191reDVKrLxU9rjTSxg53wRqj6zh8pnHgr') {
+            if (transaction.parameters.entrypoint === 'buy') {
+                const domainBytes = JSONPath({ path: '$.args[0].bytes', json: transaction.parameters.value })[0].toString();
+                const domainName = Buffer.from(domainBytes, 'hex').toString();
+
+                const formattedAmount = formatAmount(amount);
+
+                const durationDays = Number(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0]);
+
+                const owner = JSONPath({ path: '$.args[1].args[1].args[0].string', json: transaction.parameters.value })[0];
+
+                let redirect = '';
+                try {
+                    redirect = JSONPath({ path: '$.args[1].args[1].args[1].args[0].args[0].string', json: transaction.parameters.value })[0];
+                } catch {
+                    /* meh */
+                }
+
+                return (
+                    <>
+                        &nbsp;to register <strong>{domainName}.tez</strong> as {owner} for <strong>{formattedAmount} XTZ</strong> for a period of{' '}
+                        <strong>{durationDays} days</strong>{' '}
+                        {redirect && redirect.length > 0 && (
+                            <>
+                                {' '}
+                                and point it at <strong>{redirect}</strong>
+                            </>
+                        )}{' '}
+                        {!redirect && <> without redirect</>}.
+                    </>
+                );
+            }
+        }
+
+        if (transaction.destination === 'KT1CaSP4dn8wasbMsfdtGiCPgYFW7bvnPRRT') {
+            if (transaction.parameters.entrypoint === 'bid') {
+                const domainBytes = JSONPath({ path: '$.args[0].bytes', json: transaction.parameters.value })[0].toString();
+                const domainName = Buffer.from(domainBytes, 'hex').toString();
+
+                const bidAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]).dividedBy(1_000_000).toFixed();
+
+                return (
+                    <>
+                        &nbsp;to bid <strong>{bidAmount} XTZ</strong> on <strong>{domainName}.tez</strong>.
+                    </>
+                );
+            }
+        }
+
         return undefined;
     };
 
