@@ -15,6 +15,7 @@ import {
     Link,
     LinkIcon,
     Box,
+    BoxBody,
     BoxIcon,
     BoxTitle,
     BoxDescription,
@@ -27,9 +28,9 @@ import {
     ListsWrapper,
     SearchForm,
     SearchInput,
-    BoxHover,
-    BoxBg,
     BoxesGrid,
+    BoxFront,
+    BoxBack,
 } from './style';
 
 import { knownTokenDescription } from '../../constants/Token';
@@ -182,39 +183,22 @@ const TokensPage = () => {
                             {activeTokens.map((token, index) => (
                                 <Box
                                     key={token.symbol}
-                                    item={true}
-                                    xs={3}
                                     onClick={() => onClickToken(token.address, index, token.kind)}
                                     onMouseEnter={() => onHover(token.address)}
                                     onMouseLeave={() => onHover('')}
                                 >
-                                    {hover === token.address && <BoxHover />}
-                                    <BoxBg>
-                                        <BoxIcon>
-                                            <Img src={token.icon} />
-                                        </BoxIcon>
-                                        <BoxTitle>{token.displayName}</BoxTitle>
-                                        <BoxDescription>
-                                            {!!token.helpLink && (
-                                                <BlueLink
-                                                    isActive={!!token.helpLink}
-                                                    onClick={(event) => {
-                                                        event.stopPropagation();
-                                                        if (token.helpLink) {
-                                                            onClickLink(token.helpLink);
-                                                        }
-                                                    }}
-                                                >
-                                                    {token.symbol}
-                                                </BlueLink>
-                                            )}{' '}
-                                            {knownTokenDescription[token.symbol]}
-                                        </BoxDescription>
-                                        <BalanceTitle>Balance</BalanceTitle>
-                                        <BalanceAmount>
-                                            {formatAmount(false, token.balance, token.precision, token.round, token.scale)} {token.symbol}
-                                        </BalanceAmount>
-                                    </BoxBg>
+                                    <BoxBody>
+                                        <BoxFront>
+                                            <BoxIcon>
+                                                <Img src={token.icon} />
+                                            </BoxIcon>
+                                            <BoxTitle>{token.displayName}</BoxTitle>
+                                            <BalanceTitle>Balance</BalanceTitle>
+                                            <BalanceAmount>
+                                                {formatAmount(false, token.balance, token.precision, token.round, token.scale)} {token.symbol}
+                                            </BalanceAmount>
+                                        </BoxFront>
+                                    </BoxBody>
                                 </Box>
                             ))}
                         </BoxesGrid>
@@ -228,19 +212,18 @@ const TokensPage = () => {
                             {supportedTokens.map((token, index) => (
                                 <Box
                                     key={token.symbol}
-                                    item={true}
-                                    xs={3}
                                     onMouseEnter={() => onHover(token.address)}
                                     onMouseLeave={() => onHover('')}
                                     onClick={() => onClickToken(token.address, index, token.kind)}
                                 >
-                                    {hover === token.address && <BoxHover />}
-                                    <BoxBg>
-                                        <BoxIcon>
-                                            <Img src={token.icon} />
-                                        </BoxIcon>
-                                        <BoxTitle>{token.displayName}</BoxTitle>
-                                        <BoxDescription>
+                                    <BoxBody hover={hover === token.address}>
+                                        <BoxFront>
+                                            <BoxIcon>
+                                                <Img src={token.icon} />
+                                            </BoxIcon>
+                                            <BoxTitle>{token.displayName}</BoxTitle>
+                                        </BoxFront>
+                                        <BoxBack>
                                             {!!token.helpLink && (
                                                 <BlueLink
                                                     isActive={!!token.helpLink}
@@ -251,12 +234,14 @@ const TokensPage = () => {
                                                         }
                                                     }}
                                                 >
-                                                    {token.symbol}
+                                                    {token.displayHelpLink}
                                                 </BlueLink>
-                                            )}{' '}
-                                            {knownTokenDescription[token.symbol]}
-                                        </BoxDescription>
-                                    </BoxBg>
+                                            )}
+                                            <BoxDescription>
+                                                {token.symbol} {knownTokenDescription[token.symbol]}
+                                            </BoxDescription>
+                                        </BoxBack>
+                                    </BoxBody>
                                 </Box>
                             ))}
                         </BoxesGrid>
