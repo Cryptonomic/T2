@@ -69,7 +69,6 @@ export const BoxFront = styled.div`
     backface-visibility: hidden;
     position: relative;
     ${BoxStyles};
-    justify-content: center;
 `;
 
 export const BoxBack = styled.div`
@@ -82,7 +81,6 @@ export const BoxBack = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-    border: 1px solid red;
     ${BoxStyles}
 `;
 
@@ -111,6 +109,12 @@ export const BoxIcon = styled.div`
     width: 40px;
     height: 40px;
 `;
+
+export const BoxIconWrapper = styled.div`
+    align-self: center;
+    margin-top: calc(50% - 40px);
+`;
+
 export const Img = styled.img`
     width: 100%;
     height: 100%;

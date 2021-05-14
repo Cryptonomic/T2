@@ -29,6 +29,7 @@ import {
     BoxFront,
     BoxBack,
     ViewButton,
+    BoxIconWrapper,
 } from './style';
 
 import { knownTokenDescription } from '../../constants/Token';
@@ -226,9 +227,11 @@ const TokensPage = () => {
                                 <Box key={token.symbol} onMouseEnter={() => onHover(token.address)} onMouseLeave={() => onHover('')}>
                                     <BoxBody hover={hover === token.address}>
                                         <BoxFront>
-                                            <BoxIcon>
-                                                <Img src={token.icon} />
-                                            </BoxIcon>
+                                            <BoxIconWrapper>
+                                                <BoxIcon>
+                                                    <Img src={token.icon} />
+                                                </BoxIcon>
+                                            </BoxIconWrapper>
                                             <BoxTitle>{token.displayName}</BoxTitle>
                                         </BoxFront>
                                         <BoxBack>
