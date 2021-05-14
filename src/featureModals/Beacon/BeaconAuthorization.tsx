@@ -345,6 +345,17 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     </>
                 );
                 // } else if (transaction.parameters.entrypoint === 'transfer') {
+                //
+            } else if (transaction.parameters.entrypoint === 'swap') {
+                const volume = Number(JSONPath({ path: '$.args[0].int', json: transaction.parameters.value })[0]);
+                const item = Number(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0]);
+                const price = JSONPath({ path: '$.args[1].args[1].int', json: transaction.parameters.value })[0];
+                return (
+                    <>
+                        {' '}
+                        to list <strong>{volume}</strong> OBJKT <strong>{item}</strong> for <strong>{formatAmount(price)}</strong> XTZ.
+                    </>
+                );
             }
 
             return undefined;
