@@ -22,7 +22,6 @@ import {
     Img,
     BlueLink,
     TokensTitle,
-    HorizontalDivider,
     BalanceTitle,
     BalanceAmount,
     ListsWrapper,
@@ -220,7 +219,6 @@ const TokensPage = () => {
                                 </Box>
                             ))}
                         </BoxesGrid>
-                        <HorizontalDivider />
                     </>
                 )}
                 {!!supportedTokens.length && (

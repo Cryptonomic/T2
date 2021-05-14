@@ -136,11 +136,6 @@ export const TokensTitle = styled.div`
     margin: 24px 0px 0px 10px;
 `;
 
-export const HorizontalDivider = mStyled(Divider)({
-    marginTop: '24px',
-    backgroundColor: '#E0E0E0',
-});
-
 export const BalanceTitle = styled.div`
     font-size: 16px;
     line-height: 16px;
