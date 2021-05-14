@@ -2,10 +2,16 @@ import styled, { css } from 'styled-components';
 import mStyled from '@material-ui/styles/styled';
 import { withStyles } from '@material-ui/styles';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
 import InputBase from '@material-ui/core/InputBase';
 import FormControl from '@material-ui/core/FormControl';
+import Button from '../../components/Button';
+
+export const ViewButton = styled(Button)`
+    width: 84px;
+    height: 24px;
+    align-self: center;
+    margin-top: auto;
+`;
 
 export const BottomRowInner = styled.div`
     display: flex;

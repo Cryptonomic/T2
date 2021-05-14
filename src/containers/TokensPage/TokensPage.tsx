@@ -6,8 +6,6 @@ import { BigNumber } from 'bignumber.js';
 
 import SearchIcon from '@material-ui/icons/Search';
 
-import Grid from '@material-ui/core/Grid';
-
 import { Container as TopWrapper, TopRow, BottomRow, Breadcrumbs, AddressTitle } from '../../components/BalanceBanner/style';
 import { Container } from '../../contracts/components/TabContainer/style';
 import {
@@ -30,6 +28,7 @@ import {
     BoxesGrid,
     BoxFront,
     BoxBack,
+    ViewButton,
 } from './style';
 
 import { knownTokenDescription } from '../../constants/Token';
@@ -180,12 +179,7 @@ const TokensPage = () => {
                         <TokensTitle>Your Tokens</TokensTitle>
                         <BoxesGrid>
                             {activeTokens.map((token, index) => (
-                                <Box
-                                    key={token.symbol}
-                                    onClick={() => onClickToken(token.address, index, token.kind)}
-                                    onMouseEnter={() => onHover(token.address)}
-                                    onMouseLeave={() => onHover('')}
-                                >
+                                <Box key={token.symbol} onMouseEnter={() => onHover(token.address)} onMouseLeave={() => onHover('')}>
                                     <BoxBody hover={hover === token.address}>
                                         <BoxFront>
                                             <BoxIcon>
@@ -214,6 +208,9 @@ const TokensPage = () => {
                                             <BoxDescription>
                                                 {token.symbol} {knownTokenDescription[token.symbol]}
                                             </BoxDescription>
+                                            <ViewButton buttonTheme="primary" onClick={() => onClickToken(token.address, index, token.kind)}>
+                                                View
+                                            </ViewButton>
                                         </BoxBack>
                                     </BoxBody>
                                 </Box>
@@ -226,12 +223,7 @@ const TokensPage = () => {
                         {<TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>}
                         <BoxesGrid>
                             {supportedTokens.map((token, index) => (
-                                <Box
-                                    key={token.symbol}
-                                    onMouseEnter={() => onHover(token.address)}
-                                    onMouseLeave={() => onHover('')}
-                                    onClick={() => onClickToken(token.address, index, token.kind)}
-                                >
+                                <Box key={token.symbol} onMouseEnter={() => onHover(token.address)} onMouseLeave={() => onHover('')}>
                                     <BoxBody hover={hover === token.address}>
                                         <BoxFront>
                                             <BoxIcon>
@@ -256,6 +248,9 @@ const TokensPage = () => {
                                             <BoxDescription>
                                                 {token.symbol} {knownTokenDescription[token.symbol]}
                                             </BoxDescription>
+                                            <ViewButton buttonTheme="primary" onClick={() => onClickToken(token.address, index, token.kind)}>
+                                                View
+                                            </ViewButton>
                                         </BoxBack>
                                     </BoxBody>
                                 </Box>
