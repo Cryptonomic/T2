@@ -187,7 +187,7 @@ const TokensPage = () => {
                                     onMouseEnter={() => onHover(token.address)}
                                     onMouseLeave={() => onHover('')}
                                 >
-                                    <BoxBody>
+                                    <BoxBody hover={hover === token.address}>
                                         <BoxFront>
                                             <BoxIcon>
                                                 <Img src={token.icon} />
@@ -198,6 +198,24 @@ const TokensPage = () => {
                                                 {formatAmount(false, token.balance, token.precision, token.round, token.scale)} {token.symbol}
                                             </BalanceAmount>
                                         </BoxFront>
+                                        <BoxBack>
+                                            {!!token.helpLink && (
+                                                <BlueLink
+                                                    isActive={!!token.helpLink}
+                                                    onClick={(event) => {
+                                                        event.stopPropagation();
+                                                        if (token.helpLink) {
+                                                            onClickLink(token.helpLink);
+                                                        }
+                                                    }}
+                                                >
+                                                    {token.displayHelpLink}
+                                                </BlueLink>
+                                            )}
+                                            <BoxDescription>
+                                                {token.symbol} {knownTokenDescription[token.symbol]}
+                                            </BoxDescription>
+                                        </BoxBack>
                                     </BoxBody>
                                 </Box>
                             ))}
