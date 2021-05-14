@@ -89,12 +89,19 @@ export const BoxBack = styled.div`
 export const BoxesGrid = styled.div`
     display: grid;
     overflow: hidden;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 1fr;
     grid-column-gap: 40px;
     grid-row-gap: 40px;
     padding: 10px;
     margin-left: -10px;
+    @media (min-width: 1150px) {
+        grid-column-gap: 0px;
+    }
+    @media (min-width: 1300px) {
+        grid-template-columns: repeat(4, 1fr);
+        grid-column-gap: 40px;
+    }
 `;
 
 export const BoxIcon = styled.div`
