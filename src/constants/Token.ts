@@ -291,7 +291,9 @@ export const knownContractNames = {
 
     KT1P8n2qzJjwMPbHJfi4o8xu6Pe3gaU3u2A3: 'Tezos Domains Committer',
     KT191reDVKrLxU9rjTSxg53wRqj6zh8pnHgr: 'Tezos Domains Sales',
-    KT1CaSP4dn8wasbMsfdtGiCPgYFW7bvnPRRT: 'Tezos Domains Bid'
+    KT1CaSP4dn8wasbMsfdtGiCPgYFW7bvnPRRT: 'Tezos Domains Bid',
+    KT1TnTr6b2YxSx2xUQ8Vz3MoWy771ta66yGx: 'Tezos Domains Registry',
+    KT1J9VpjiH5cmcsskNb8gEXpBtjD4zrAx4Vo: 'Tezos Domains Registry',
 };
 
 export const knownMarketMetadata = [

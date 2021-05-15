@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
+import { JSONPath } from 'jsonpath-plus';
 import {
     TezosConseilClient,
     TezosNodeReader,
@@ -233,6 +234,19 @@ const queryHarpoon = async (accountAddress: string): Promise<HarpoonInfo> => {
     }
 };
 
+const queryTezosDomains = async (nodeUrl: string, address: string): Promise<string> => {
+    try {
+        const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(address, 'address'), 'hex'));
+        const mapResult = await TezosNodeReader.getValueForBigMapKey(nodeUrl, 1265, packedKey);
+        console.log(`AAAAAA ${mapResult} ${address}`);
+        const domainBytes = JSONPath({ path: '$.args[0].args[1].args[0].bytes', json: mapResult })[0];
+        return Buffer.from(domainBytes, 'hex').toString();
+    } catch (err) {
+        console.log(`BBBBBB failed ${err}`);
+        return '';
+    }
+};
+
 export const getBakerDetails = (accountAddress: string): BakerInfo => {
     const [state, setState] = useState<BakerInfo>({ address: accountAddress, name: '', grade: '' });
     const { name, grade } = state;
@@ -250,9 +264,29 @@ export const getBakerDetails = (accountAddress: string): BakerInfo => {
         };
 
         getData();
-    }, []);
+    }, [state]);
 
     return { address: accountAddress, name, grade };
+};
+
+export const getTezosDomains = (accountAddress: string): string => {
+    const store = useStore<RootState>();
+    const { selectedNode, nodesList } = store.getState().settings;
+    const { tezosUrl } = getMainNode(nodesList, selectedNode);
+
+    const [domainName, setDomainName] = useState<string>('');
+
+    useEffect(() => {
+        const getData = async () => {
+            const domainResponse = await queryTezosDomains(tezosUrl, accountAddress);
+
+            setDomainName(domainResponse);
+        };
+
+        getData();
+    }, [domainName]);
+
+    return domainName;
 };
 
 export function changeAccountThunk(accountHash: string, parentHash: string, accountIndex: number, parentIndex: number, addressType: AddressType) {

@@ -14,7 +14,7 @@ import { AddressType } from '../../types/general';
 import keyIconSvg from '../../../resources/imgs/Key_Icon.svg';
 import { ms } from '../../styles/helpers';
 import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
-import { getBakerDetails } from '../../reduxContent/app/thunks';
+import { getBakerDetails, getTezosDomains } from '../../reduxContent/app/thunks';
 
 import { RootState } from '../../types/store';
 
@@ -65,6 +65,7 @@ function BalanceBanner(props: Props) {
     const [isShowKey, setIsShowKey] = useState(false);
 
     const { name } = getBakerDetails(String(delegatedAddress));
+    const domainName = getTezosDomains(String(publicKeyHash));
 
     let addressLabel = '';
     switch (selectedAccountType) {
@@ -132,6 +133,7 @@ function BalanceBanner(props: Props) {
                 )}
                 <AddressInfo>
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
+                    {domainName && domainName.length > 0 && <>{domainName}</>}
                     <Gap />
                     {isReady || storeType === Mnemonic ? (
                         <div style={{ marginLeft: 'auto' }}>
