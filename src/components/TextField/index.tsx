@@ -5,7 +5,7 @@ import NumberFormat from 'react-number-format';
 
 const Container = styled(FormControl)`
     width: 100%;
-    pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
+    pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 
 const InputWrapper = styled(Input)<{ right: number | undefined }>`
@@ -31,8 +31,8 @@ const ErrorText = styled(FormHelperText)`
   &&& {
     font-size: 12px;
     margin: 5px 0 0 0;
-    line-height: 18px;
-    height: 18px;
+    line-height: 14px;
+    height: 42px;
   }
 }`;
 
@@ -49,11 +49,11 @@ const NumberFormatCustom: React.ComponentType<any> = (props: Props1) => {
             {...other}
             type="text"
             getInputRef={inputRef}
-            onValueChange={values => {
+            onValueChange={(values) => {
                 onChange({
                     target: {
-                        value: values.value
-                    }
+                        value: values.value,
+                    },
                 });
             }}
             thousandSeparator={true}
@@ -105,7 +105,7 @@ TextField.defaultProps = {
     type: 'text',
     errorText: '',
     disabled: false,
-    right: 0
+    right: 0,
 };
 
 export default TextField;
