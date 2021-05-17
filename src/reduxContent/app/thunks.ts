@@ -238,35 +238,27 @@ const queryTezosDomains = async (nodeUrl: string, address: string): Promise<stri
     try {
         const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(address, 'address'), 'hex'));
         const mapResult = await TezosNodeReader.getValueForBigMapKey(nodeUrl, 1265, packedKey);
-        console.log(`AAAAAA ${mapResult} ${address}`);
         const domainBytes = JSONPath({ path: '$.args[0].args[1].args[0].bytes', json: mapResult })[0];
         return Buffer.from(domainBytes, 'hex').toString();
     } catch (err) {
-        console.log(`BBBBBB failed ${err}`);
         return '';
     }
 };
 
-export const getBakerDetails = (accountAddress: string): BakerInfo => {
-    const [state, setState] = useState<BakerInfo>({ address: accountAddress, name: '', grade: '' });
-    const { name, grade } = state;
+export const getBakerDetails = (accountAddress: string): string => {
+    const [bakerName, setBakerName] = useState<string>('');
 
     useEffect(() => {
         const getData = async () => {
-            // const harpoonResponse = await queryHarpoon(accountAddress);
             const bakingbadResponse = await queryBakingBad(accountAddress);
 
-            setState({
-                address: accountAddress,
-                name: bakingbadResponse.name,
-                grade: '', // harpoonResponse.grade,
-            });
+            setBakerName(bakingbadResponse.name);
         };
 
         getData();
-    }, [state]);
+    }, [bakerName]);
 
-    return { address: accountAddress, name, grade };
+    return bakerName;
 };
 
 export const getTezosDomains = (accountAddress: string): string => {

@@ -51,7 +51,7 @@ interface Props {
 }
 
 function BalanceBanner(props: Props) {
-    const { storeType, isReady, balance, secretKey, publicKeyHash, delegatedAddress, displayName, symbol } = props;
+    const { storeType, isReady, balance, publicKeyHash, delegatedAddress, displayName, symbol } = props;
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -64,7 +64,7 @@ function BalanceBanner(props: Props) {
 
     const [isShowKey, setIsShowKey] = useState(false);
 
-    const { name } = getBakerDetails(String(delegatedAddress));
+    const bakerName = getBakerDetails(String(delegatedAddress));
     const domainName = getTezosDomains(String(publicKeyHash));
 
     let addressLabel = '';
@@ -144,8 +144,8 @@ function BalanceBanner(props: Props) {
                 {delegatedAddress && (
                     <DelegateContainer>
                         <>{t('components.balanceBanner.delegated_to')}</>
-                        {name && <DelegateName>{name}</DelegateName>}
-                        {!name && (
+                        {bakerName && <DelegateName>{bakerName}</DelegateName>}
+                        {!bakerName && (
                             <span style={{ marginLeft: '3px', marginRight: '3px' }}>
                                 <TezosAddress address={delegatedAddress} color="white" size={ms(0)} weight={400} shorten={true} />
                             </span>
