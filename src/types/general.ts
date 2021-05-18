@@ -140,6 +140,7 @@ export interface Token {
     round?: number;
     transactionFeeFloor?: number;
     helpLink?: string;
+    displayHelpLink?: string;
     hideOnLanding?: boolean;
 }
 
