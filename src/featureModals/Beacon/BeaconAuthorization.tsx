@@ -345,6 +345,17 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     </>
                 );
                 // } else if (transaction.parameters.entrypoint === 'transfer') {
+                //
+            } else if (transaction.parameters.entrypoint === 'swap') {
+                const volume = Number(JSONPath({ path: '$.args[0].int', json: transaction.parameters.value })[0]);
+                const item = Number(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0]);
+                const price = JSONPath({ path: '$.args[1].args[1].int', json: transaction.parameters.value })[0];
+                return (
+                    <>
+                        {' '}
+                        to list <strong>{volume}</strong> OBJKT <strong>{item}</strong> for <strong>{formatAmount(price)}</strong> XTZ.
+                    </>
+                );
             }
 
             return undefined;
@@ -433,6 +444,45 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                         &nbsp;to bid <strong>{bidAmount} XTZ</strong> on <strong>{domainName}.tez</strong>.
                     </>
                 );
+            }
+        }
+
+        if (transaction.destination === 'KT1TnTr6b2YxSx2xUQ8Vz3MoWy771ta66yGx') {
+            if (transaction.parameters.entrypoint === 'claim_reverse_record') {
+                const domainBytes = JSONPath({ path: '$.args[0].args[0].bytes', json: transaction.parameters.value })[0].toString();
+                const domainName = Buffer.from(domainBytes, 'hex').toString();
+                const domainAddress = JSONPath({ path: '$.args[1].string', json: transaction.parameters.value })[0].toString();
+
+                return (
+                    <>
+                        &nbsp;to associate <strong>{domainName}</strong> with <strong>{domainAddress}</strong>.
+                    </>
+                );
+            }
+        }
+
+        if (transaction.destination === 'KT1J9VpjiH5cmcsskNb8gEXpBtjD4zrAx4Vo') {
+            if (transaction.parameters.entrypoint === 'update_reverse_record') {
+                let domainName = '';
+                const updateAction = JSONPath({ path: '$.args[1].args[0].prim', json: transaction.parameters.value })[0].toString();
+                const domainAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0].toString();
+
+                if (updateAction === 'Some') {
+                    const domainBytes = JSONPath({ path: '$.args[1].args[0].args[0].bytes', json: transaction.parameters.value })[0].toString();
+                    domainName = Buffer.from(domainBytes, 'hex').toString();
+
+                    return (
+                        <>
+                            &nbsp;to associate <strong>{domainName}</strong> with <strong>{domainAddress}</strong>.
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            &nbsp;to clear domain association from <strong>{domainAddress}</strong>.
+                        </>
+                    );
+                }
             }
         }
 
