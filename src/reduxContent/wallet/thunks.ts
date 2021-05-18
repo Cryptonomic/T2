@@ -713,12 +713,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(
                         () => false
                     );
-                    if (!account) {
-                        const title = 'components.messageBar.messages.account_not_exist';
-                        const err = new Error(title);
-                        err.name = title;
-                        throw err;
-                    }
+
                     break;
                 }
                 default:
