@@ -225,7 +225,7 @@
     "i18next-electron-language-detector": "0.0.10",
     "i18next-xhr-backend": "3.2.2",
     "jsonpath-plus": "5.0.3",
-    "lodash": "4.17.20",
+    "lodash": "4.17.21",
     "moment": "2.27.0",
     "polished": "3.6.5",
     "qrcode": "1.4.4",
