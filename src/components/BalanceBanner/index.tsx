@@ -14,7 +14,7 @@ import { AddressType } from '../../types/general';
 import keyIconSvg from '../../../resources/imgs/Key_Icon.svg';
 import { ms } from '../../styles/helpers';
 import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
-import { getBakerDetails } from '../../reduxContent/app/thunks';
+import { getBakerDetails, getTezosDomains } from '../../reduxContent/app/thunks';
 
 import { RootState } from '../../types/store';
 
@@ -51,7 +51,7 @@ interface Props {
 }
 
 function BalanceBanner(props: Props) {
-    const { storeType, isReady, balance, secretKey, publicKeyHash, delegatedAddress, displayName, symbol } = props;
+    const { storeType, isReady, balance, publicKeyHash, delegatedAddress, displayName, symbol } = props;
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -64,7 +64,8 @@ function BalanceBanner(props: Props) {
 
     const [isShowKey, setIsShowKey] = useState(false);
 
-    const { name } = getBakerDetails(String(delegatedAddress));
+    const bakerName = getBakerDetails(String(delegatedAddress));
+    const domainName = getTezosDomains(String(publicKeyHash));
 
     let addressLabel = '';
     switch (selectedAccountType) {
@@ -132,6 +133,7 @@ function BalanceBanner(props: Props) {
                 )}
                 <AddressInfo data-spectron="address-info">
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
+                    {domainName && domainName.length > 0 && <>{domainName}</>}
                     <Gap />
                     {isReady || storeType === Mnemonic ? (
                         <div style={{ marginLeft: 'auto' }}>
@@ -151,8 +153,8 @@ function BalanceBanner(props: Props) {
                 {delegatedAddress && (
                     <DelegateContainer data-spectron="delegate">
                         <>{t('components.balanceBanner.delegated_to')}</>
-                        {name && <DelegateName>{name}</DelegateName>}
-                        {!name && (
+                        {bakerName && <DelegateName>{bakerName}</DelegateName>}
+                        {!bakerName && (
                             <span style={{ marginLeft: '3px', marginRight: '3px' }}>
                                 <TezosAddress address={delegatedAddress} color="white" size={ms(0)} weight={400} shorten={true} />
                             </span>

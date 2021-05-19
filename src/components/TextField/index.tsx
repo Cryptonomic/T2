@@ -31,8 +31,8 @@ const ErrorText = styled(FormHelperText)`
   &&& {
     font-size: 12px;
     margin: 5px 0 0 0;
-    line-height: 18px;
-    height: 18px;
+    line-height: 14px;
+    height: 42px;
   }
 }`;
 

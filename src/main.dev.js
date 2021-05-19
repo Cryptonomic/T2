@@ -147,7 +147,7 @@ app.on('ready', async () => {
     let helpSubmenu = [];
 
     if (!isMac) {
-        helpSubmenu.push({ role: 'about' });
+        helpSubmenu.push({ role: 'about', label: 'About', click: async () => await shell.openExternal(helpUrl) });
     }
 
     menuTemplate.push({

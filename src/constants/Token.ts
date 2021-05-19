@@ -27,6 +27,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 6,
         round: 2,
         helpLink: 'https://usdtz.com',
+        displayHelpLink: 'usdtz.com',
     },
     {
         network: 'mainnet',
@@ -42,6 +43,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 18,
         round: 6,
         helpLink: 'https://ethtz.io',
+        displayHelpLink: 'ethtz.io',
     },
     {
         network: 'mainnet',
@@ -58,6 +60,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 380,
         helpLink: 'https://kolibri.finance/',
+        displayHelpLink: 'kolibri.finance',
     },
     {
         network: 'mainnet',
@@ -73,6 +76,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 0,
         round: 0,
         helpLink: 'https://www.hicetnunc.xyz/',
+        displayHelpLink: 'hicetnunc.xyz',
         marketAddress: 'KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9',
     },
     {
@@ -89,6 +93,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 6,
         round: 2,
         helpLink: 'https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs',
+        displayHelpLink: 'stakerdao.gitbook.io',
         vaultCoreAddress: 'KT1V4Vp7zhynCNuaBjWMpNU535Xm2sgqkz6M',
         vaultRegistryMapId: 260,
         vaultList: [],
@@ -108,6 +113,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 368,
         helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
+        displayHelpLink: 'stakerdao.com',
     },
     {
         network: 'mainnet',
@@ -124,6 +130,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 527,
         helpLink: 'https://docs.stakerdao.com/',
+        displayHelpLink: 'stakerdao.com',
     },
     {
         network: 'mainnet',
@@ -139,6 +146,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 8,
         round: 8,
         helpLink: 'https://tzbtc.io/',
+        displayHelpLink: 'tzbtc.io',
     },
     {
         network: 'mainnet',
@@ -203,6 +211,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 6,
         round: 2,
         helpLink: 'https://usdtz.com',
+        displayHelpLink: 'usdtz.com',
     },
     {
         network: 'mainnet',
@@ -288,6 +297,12 @@ export const knownContractNames = {
     KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: 'hic et nunc DAO',
 
     KT1H28iie4mW9LmmJeYLjH6zkC8wwSmfHf5P: 'TzButton Round 2',
+
+    KT1P8n2qzJjwMPbHJfi4o8xu6Pe3gaU3u2A3: 'Tezos Domains Committer',
+    KT191reDVKrLxU9rjTSxg53wRqj6zh8pnHgr: 'Tezos Domains Sales',
+    KT1CaSP4dn8wasbMsfdtGiCPgYFW7bvnPRRT: 'Tezos Domains Bid',
+    KT1TnTr6b2YxSx2xUQ8Vz3MoWy771ta66yGx: 'Tezos Domains Registry',
+    KT1J9VpjiH5cmcsskNb8gEXpBtjD4zrAx4Vo: 'Tezos Domains Registry',
 };
 
 export const knownMarketMetadata = [
