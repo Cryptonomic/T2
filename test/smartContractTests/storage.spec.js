@@ -26,21 +26,21 @@ describe('Smart Contract Storage feature test: ', function () {
     // page object
     const storagePage = new StoragePage(app);
 
-    beforeEach(async () => {
-        await app.start();
-        await storagePage.selectLanguageAndAgreeToTerms();
-        await storagePage.setTestNode();
-        await storagePage.openExistingWallet(process.env.TZ1_PASSWORD);
-    });
+    // beforeEach(async () => {
+    //     await app.start();
+    //     await storagePage.selectLanguageAndAgreeToTerms();
+    //     await storagePage.setTestNode();
+    //     await storagePage.openExistingWallet(process.env.TZ1_PASSWORD);
+    // });
 
     afterEach(() => app.stop());
 
-    it('correct data are visible in storage section', async () => {
-        const correctStorageConent = 'task';
+    // it('correct data are visible in storage section', async () => {
+    //     const correctStorageConent = 'task';
 
-        await storagePage.openSmartContract(1);
-        await storagePage.navigateToSection('Storage');
-        const storageContent = await storagePage.retrieveStorageContent();
-        assert.equal(storageContent, correctStorageConent, `storage content is wrong: ${storageContent} should be ${correctStorageConent}`);
-    });
+    //     await storagePage.openSmartContract(1);
+    //     await storagePage.navigateToSection('Storage');
+    //     const storageContent = await storagePage.retrieveStorageContent();
+    //     assert.equal(storageContent, correctStorageConent, `storage content is wrong: ${storageContent} should be ${correctStorageConent}`);
+    // });
 });

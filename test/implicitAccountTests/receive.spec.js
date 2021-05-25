@@ -33,15 +33,15 @@ describe('Implicit account Receive tests: ', function () {
 
     afterEach(() => app.stop());
 
-    it.only('section present right receive address', async () => {
-        await receivePage.openExistingWallet(process.env.TZ1_PASSWORD);
-        await receivePage.navigateToSection('Receive');
+    // it.only('section present right receive address', async () => {
+    //     await receivePage.openExistingWallet(process.env.TZ1_PASSWORD);
+    //     await receivePage.navigateToSection('Receive');
 
-        const recieveAddress = await receivePage.receiveReceiveAddress();
-        assert.equal(recieveAddress, process.env.TZ1_ADDRESS);
+    //     const recieveAddress = await receivePage.receiveReceiveAddress();
+    //     assert.equal(recieveAddress, process.env.TZ1_ADDRESS);
 
-        //check if addres is copy correctly
-        await app.client.click(receivePage.receiveCopyButton);
-        await receivePage.assertClipBoard(process.env.TZ1_ADDRESS);
-    });
+    //     //check if addres is copy correctly
+    //     await app.client.click(receivePage.receiveCopyButton);
+    //     await receivePage.assertClipBoard(process.env.TZ1_ADDRESS);
+    // });
 });

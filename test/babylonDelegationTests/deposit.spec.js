@@ -3,7 +3,7 @@ const path = require('path');
 const { Application } = require('spectron');
 const DepositPage = require('../pages/depositPage');
 const { sleepApp } = require('../utils/sleepApp');
-const TransactionPage = require('test/pages/transactionPage');
+const TransactionPage = require('../pages/transactionPage');
 
 // construct paths
 const baseDir = path.join(__dirname, '..', '..');

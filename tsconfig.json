@@ -16,6 +16,8 @@
     "moduleResolution": "node",
     // "noUnusedLocals": true,
     // "pretty": true,
+    // "allowUmdGlobalAccess": true,
+    // "explicitGlobals": true,
     "sourceMap": false,
     "resolveJsonModule": true,
     "noImplicitAny": false,

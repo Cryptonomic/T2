@@ -26,27 +26,27 @@ describe('Smart Contract Invoke feature test: ', function () {
     // page object
     const invokePage = new InvokePage(app);
 
-    beforeEach(async () => {
-        await app.start();
-        await invokePage.selectLanguageAndAgreeToTerms();
-        await invokePage.setTestNode();
-        await invokePage.openExistingWallet(process.env.TZ1_PASSWORD);
-    });
+    // beforeEach(async () => {
+    //     await app.start();
+    //     await invokePage.selectLanguageAndAgreeToTerms();
+    //     await invokePage.setTestNode();
+    //     await invokePage.openExistingWallet(process.env.TZ1_PASSWORD);
+    // });
 
     afterEach(() => app.stop());
 
-    it('invoke contract with correct data', async () => {
-        await invokePage.openSmartContract(1);
-        await invokePage.navigateToSection('Invoke');
-        await invokePage.fillInvokeContractForm({
-            parameters: '"blah"',
-            format: 'michelson',
-            amount: 0,
-            storageLimit: 600,
-            gas: 15000,
-            password: process.env.TZ1_PASSWORD,
-            invoke: true,
-        });
-        await invokePage.assertPopUpAlert('Successfully started contract invocation.');
-    });
+    // it('invoke contract with correct data', async () => {
+    //     await invokePage.openSmartContract(1);
+    //     await invokePage.navigateToSection('Invoke');
+    //     await invokePage.fillInvokeContractForm({
+    //         parameters: '"blah"',
+    //         format: 'michelson',
+    //         amount: 0,
+    //         storageLimit: 600,
+    //         gas: 15000,
+    //         password: process.env.TZ1_PASSWORD,
+    //         invoke: true,
+    //     });
+    //     await invokePage.assertPopUpAlert('Successfully started contract invocation.');
+    // });
 });

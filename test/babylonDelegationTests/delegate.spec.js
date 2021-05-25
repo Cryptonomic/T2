@@ -6,7 +6,7 @@ const moment = require('moment');
 const { sleepApp } = require('../utils/sleepApp');
 
 const DelegatePage = require('../pages/delegatePage');
-const TransactionPage = require('test/pages/transactionPage');
+const TransactionPage = require('../pages/transactionPage');
 
 // construct paths
 const baseDir = path.join(__dirname, '..', '..');
