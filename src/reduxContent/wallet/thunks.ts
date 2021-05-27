@@ -216,6 +216,12 @@ export function syncTokenThunk(tokenAddress) {
             } else if (tokens[tokenIndex].kind === TokenKind.tzbtc) {
                 balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
+                detailsAsync = TzbtcTokenHelper.getTokenSupply(mainNode.tezosUrl).then(async (supply) => {
+                    const paused = await TzbtcTokenHelper.getPaused(mainNode.tezosUrl);
+                    const keyCount = (await TezosConseilClient.countKeysInMap(serverInfo, mapid)) - 3; // paused, totalSupply, operators
+
+                    return { supply, paused, holders: keyCount };
+                });
             } else if (tokens[tokenIndex].kind === TokenKind.wxtz) {
                 const vaultToken = tokens[tokenIndex] as VaultToken;
                 const coreContractAddress = vaultToken.vaultCoreAddress;
