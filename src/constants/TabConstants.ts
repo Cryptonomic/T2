@@ -11,6 +11,7 @@ export const DEPOSIT = 'general.verbs.deposit';
 export const MINT = 'general.verbs.mint';
 export const BURN = 'general.verbs.burn';
 export const SIGN = 'general.verbs.sign';
+export const SWAP = 'general.verbs.swap';
 export const VERIFY = 'general.verbs.verify';
 export const DETAILS = 'general.nouns.details';
 export const VAULTS = 'general.nouns.vaults';

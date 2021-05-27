@@ -31,7 +31,10 @@
             "connect": "Connect",
             "authorize": "Authorize",
             "allow": "Allow",
-            "approve": "Approve"
+            "approve": "Approve",
+            "swap": "Swap",
+            "buy": "Buy",
+            "sell": "Sell"
         },
         "nouns": {
             "amount": "Amount",
