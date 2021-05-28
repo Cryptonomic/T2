@@ -7,6 +7,9 @@ import { saveIdentitiesToLocal, cloneDecryptedSigner } from '../../utils/wallet'
 import { createTransaction } from '../../utils/transaction';
 import { TRANSACTION, DELEGATION } from '../../constants/TransactionTypes';
 
+import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
+import { TRANSACTIONS } from '../../constants/TabConstants';
+
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
@@ -468,6 +471,7 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
             await saveIdentitiesToLocal(state().wallet.identities);
 
             dispatch(createMessageAction('components.messageBar.messages.success_sent', false, clearedOperationId, Number(amount)));
+            dispatch(updateActiveTabThunk(TRANSACTIONS));
             return true;
         }
         return false;
