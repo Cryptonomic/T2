@@ -32,7 +32,7 @@
             "authorize": "Authorize",
             "allow": "Allow",
             "approve": "Approve",
-            "swap": "Swap",
+            "swap": "Trade",
             "buy": "Buy",
             "sell": "Sell"
         },
@@ -93,6 +93,13 @@
             "no_ledger_detected": "Ledger device not found",
             "ledger_error": "Error communicating with Ledger device"
         },
+        "prepositions": {
+            "to": "to",
+            "of": "of",
+            "from": "from",
+            "by": "by",
+            "on": "on"
+        },
         "decimal_separator": ".",
         "back": "Back",
         "next": "Next",
@@ -100,6 +107,7 @@
         "of": "of",
         "from": "from",
         "by": "by",
+        "on": "on",
         "get_started": "Get Started"
     },
     "components": {
