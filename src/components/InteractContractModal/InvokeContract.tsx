@@ -163,6 +163,7 @@ function InvokeContract(props: Props) {
             <TabContainer>
                 <InputAddressContainer>
                     <InputAddress
+                        dataSpectron="contract-address"
                         operationType="invoke"
                         label={t('components.interactModal.smart_address')}
                         onChange={(val) => updateState({ contractAddress: val })}
@@ -176,32 +177,37 @@ function InvokeContract(props: Props) {
                     )}
                 </InputAddressContainer>
                 <StorageFormatContainer>
-                    <ColStorage>
+                    <ColStorage data-spectron="parameters">
                         <TextField label={t('components.interactModal.parameters')} onChange={(val) => updateState({ parameters: val })} />
                     </ColStorage>
-                    <ColFormat>
+                    <ColFormat data-spectron="format-selector">
                         <FormatSelector value={codeFormat} onChange={(val) => updateState({ codeFormat: val })} />
                     </ColFormat>
                 </StorageFormatContainer>
                 <ParametersContainer>
-                    <TextField label={t('components.interactModal.entry_point')} onChange={(val) => updateState({ entryPoint: val })} />
+                    <TextField
+                        dataSpectron="entry-point"
+                        label={t('components.interactModal.entry_point')}
+                        onChange={(val) => updateState({ entryPoint: val })}
+                    />
                 </ParametersContainer>
 
                 <RowContainer>
-                    <ColContainer>
+                    <ColContainer data-spectron="storage-limit">
                         <TextField
                             type="number"
                             label={t('components.interactModal.storage_limit')}
                             onChange={(val) => updateState({ storage: Number(val) })}
                         />
                     </ColContainer>
-                    <ColContainer>
+                    <ColContainer data-spectron="gas-limit">
                         <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={(val) => updateState({ gas: Number(val) })} />
                     </ColContainer>
                 </RowContainer>
                 <RowContainer>
                     <AmountContainer>
                         <TezosNumericInput
+                            dataSpectron="amount"
                             decimalSeparator={t('general.decimal_separator')}
                             label={t('general.nouns.amount')}
                             amount={amount}
@@ -230,7 +236,7 @@ function InvokeContract(props: Props) {
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onInvokeOperation}>
+                <InvokeButton data-spectron="invoke-button" buttonTheme="primary" disabled={isDisabled} onClick={onInvokeOperation}>
                     {t('general.verbs.invoke')}
                 </InvokeButton>
             </PasswordButtonContainer>

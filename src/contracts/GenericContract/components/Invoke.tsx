@@ -153,35 +153,43 @@ function Invoke(props: Props) {
     }
 
     return (
-        <Container onKeyDown={(event) => onEnterPress(event.key)}>
+        <Container data-spectron="invoke-container" onKeyDown={(event) => onEnterPress(event.key)}>
             <ParametersContainer>
                 <ColStorage>
-                    <TextField label={t('components.interactModal.parameters')} onChange={(val) => setParameters(val)} />
+                    <TextField dataSpectron="parameters" label={t('components.interactModal.parameters')} onChange={(val) => setParameters(val)} />
                 </ColStorage>
-                <ColFormat>
+                <ColFormat data-spectron="format-selector">
                     <FormatSelector value={codeFormat} onChange={(val) => setCodeFormat(val)} />
                 </ColFormat>
             </ParametersContainer>
             <ParametersContainer>
-                <TextField label={t('components.interactModal.entry_point')} onChange={(val) => setEntryPoint(val)} />
+                <TextField data-spectron="entry-point" label={t('components.interactModal.entry_point')} onChange={(val) => setEntryPoint(val)} />
             </ParametersContainer>
             <RowContainer>
                 <ColContainer>
-                    <TextField type="number" label={t('components.interactModal.storage_limit')} onChange={(val) => setStorage(Number(val))} />
+                    <TextField
+                        dataSpectron="storage-limit"
+                        type="number"
+                        label={t('components.interactModal.storage_limit')}
+                        onChange={(val) => setStorage(Number(val))}
+                    />
                 </ColContainer>
                 <ColContainer>
-                    <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={(val) => setGas(Number(val))} />
+                    <TextField dataSpectron="gas-limit" type="number" label={t('components.interactModal.gas_limit')} onChange={(val) => setGas(Number(val))} />
                 </ColContainer>
             </RowContainer>
             <RowContainer>
                 <AmountContainer>
                     <TezosNumericInput
+                        dataSpectron="amount"
                         decimalSeparator={t('general.decimal_separator')}
                         label={t('general.nouns.amount')}
                         amount={amount}
                         onChange={(val) => setAmount(val)}
                     />
-                    <UseMax onClick={onUseMax}>{t('general.verbs.use_max')}</UseMax>
+                    <UseMax data-spectron="use-max" onClick={onUseMax}>
+                        {t('general.verbs.use_max')}
+                    </UseMax>
                 </AmountContainer>
                 <FeeContainer>
                     <Fees low={newFees.low} medium={newFees.medium} high={newFees.high} fee={fee} miniFee={OPERATIONFEE} onChange={(val) => setFee(val)} />
@@ -191,13 +199,14 @@ function Invoke(props: Props) {
             <PasswordButtonContainer>
                 {!isLedger && (
                     <PasswordInput
+                        dataSpectron="wallet-password"
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onInvokeOperation()}>
+                <InvokeButton data-spectron="invoke-bottom-button" buttonTheme="primary" disabled={isDisabled} onClick={() => onInvokeOperation()}>
                     {t('general.verbs.invoke')}
                 </InvokeButton>
             </PasswordButtonContainer>

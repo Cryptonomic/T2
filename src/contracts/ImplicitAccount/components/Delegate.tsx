@@ -102,6 +102,7 @@ function Delegate(props: Props) {
         <Container onKeyDown={(event) => onEnterPress(event.key)}>
             <AmountContainer>
                 <InputAddress
+                    dataSpectron="baker-address"
                     label={t(`components.delegateConfirmationModal.${!isRevealed ? 'address_label' : 'new_address_label'}`)}
                     operationType="delegate"
                     tooltip={false}
@@ -137,17 +138,18 @@ function Delegate(props: Props) {
             <PasswordButtonContainer>
                 {!isLedger && (
                     <PasswordInput
+                        dataSpectron="wallet-password"
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={(val) => setPassPhrase(val)}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
+                <InvokeButton data-spectron="change-delegate-button" buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
                     {t('components.delegate.change_delegate')}
                 </InvokeButton>
             </PasswordButtonContainer>
-            <AddDelegationContainer>
+            <AddDelegationContainer data-spectron="add-delegation-button">
                 {isManagerReady ? (
                     <AddCircleWrapper active={1} onClick={() => dispatch(setModalOpen(true, 'delegate_contract'))} />
                 ) : (

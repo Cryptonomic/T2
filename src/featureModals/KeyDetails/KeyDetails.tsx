@@ -10,7 +10,19 @@ import CopyButton from '../../components/CopyButton';
 import PasswordInput from '../../components/PasswordInput';
 import { RootState } from '../../types/store';
 
-import { CloseIconWrapper, ModalContainer, ModalTitle, ModalWrapper, KeyWrapper, KeyTitle, KeyAddress, Keys, SecretKeyMessage, InvokeButton, ButtonContainer } from '../style';
+import {
+    CloseIconWrapper,
+    ModalContainer,
+    ModalTitle,
+    ModalWrapper,
+    KeyWrapper,
+    KeyTitle,
+    KeyAddress,
+    Keys,
+    SecretKeyMessage,
+    InvokeButton,
+    ButtonContainer,
+} from '../style';
 
 interface Props {
     open: boolean;
@@ -43,26 +55,26 @@ const KeyDetails = (props: Props) => {
         const stringSecretKey = TezosMessageUtils.readKeyWithHint(rawSecretKey, 'edsk');
 
         setSecretKey(stringSecretKey);
-        setSecretKeyVisible(true)
+        setSecretKeyVisible(true);
     };
 
     return (
         <ModalWrapper open={open}>
             {open ? (
-                <ModalContainer>
-                    <CloseIconWrapper onClick={() => onClose()} />
+                <ModalContainer data-spectron="account-keys">
+                    <CloseIconWrapper data-spectron="close-button" onClick={() => onClose()} />
                     <ModalTitle>{t('components.keyDetailsModal.title')}</ModalTitle>
                     <Keys>
                         <KeyWrapper>
                             <KeyTitle>{t('components.keyDetailsModal.address')}</KeyTitle>
-                            <KeyAddress>
+                            <KeyAddress data-spectron="address">
                                 {address}
                                 <CopyButton text={address} title="" color="accent" />
                             </KeyAddress>
                         </KeyWrapper>
                         <KeyWrapper>
                             <KeyTitle>{t('components.keyDetailsModal.publicKey')}</KeyTitle>
-                            <KeyAddress>
+                            <KeyAddress data-spectron="public-key">
                                 {publicKey}
                                 <CopyButton text={'Tezos Public Key: ' + publicKey} title="" color="accent" />
                             </KeyAddress>
@@ -85,7 +97,7 @@ const KeyDetails = (props: Props) => {
                                 )}
                                 {secretKeyVisible && (
                                     <>
-                                        <KeyAddress>
+                                        <KeyAddress data-spectron="secret-key">
                                             {secretKey}
                                             <CopyButton text={'Tezos Secret Key: ' + secretKey} title="" color="accent" />
                                         </KeyAddress>
@@ -96,7 +108,7 @@ const KeyDetails = (props: Props) => {
                         {isLedger && (
                             <KeyWrapper>
                                 <KeyTitle>{t('components.keyDetailsModal.secretKey')}</KeyTitle>
-                                <SecretKeyMessage>{t('components.keyDetailsModal.hardwareSignerNotice')}</SecretKeyMessage>
+                                <SecretKeyMessage data-spectron="secret-message">{t('components.keyDetailsModal.hardwareSignerNotice')}</SecretKeyMessage>
                             </KeyWrapper>
                         )}
                     </Keys>

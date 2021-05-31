@@ -153,7 +153,7 @@ const DelegateConfirmationModal = (props: Props) => {
         isDelegateIssue,
         onDelegateIssue,
         isLedger,
-        isDisplayedFeeTooltip
+        isDisplayedFeeTooltip,
     } = props;
     const { t } = useTranslation();
     const isDisabled = isLoading || !newAddress || (!password && !isLedger) || isDelegateIssue;

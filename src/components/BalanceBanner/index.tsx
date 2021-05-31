@@ -104,7 +104,7 @@ function BalanceBanner(props: Props) {
     }
 
     return (
-        <Container>
+        <Container data-spectron="balance-banner">
             <TopRow isReady={isReady}>
                 <Breadcrumbs>{breadcrumbs}</Breadcrumbs>
                 <Update onClick={onSyncWallet} time={time} isReady={isReady} isWalletSyncing={isWalletSyncing} />
@@ -118,31 +118,40 @@ function BalanceBanner(props: Props) {
                         {!displayName ? addressLabel : displayName}
 
                         {isManager && !isLedger && (
-                            <KeyIconButton size="small" color="primary" onClick={() => setIsShowKey(true)}>
+                            <KeyIconButton data-spectron="key-button" size="small" color="primary" onClick={() => setIsShowKey(true)}>
                                 <KeyIcon src={keyIconSvg} />
                             </KeyIconButton>
                         )}
                         {isManager && (
                             <Tooltip position="bottom" content={<TooltipContent>{t('components.balanceBanner.tooltip_content')}</TooltipContent>}>
-                                <IconButton size="small" color="primary" onClick={() => openNotifierUrl()}>
+                                <IconButton data-spectron="bell-icon" size="small" color="primary" onClick={() => openNotifierUrl()}>
                                     <BellIcon />
                                 </IconButton>
                             </Tooltip>
                         )}
                     </AddressTitle>
                 )}
-                <AddressInfo>
+                <AddressInfo data-spectron="address-info">
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
                     {domainName && domainName.length > 0 && <>{domainName}</>}
                     <Gap />
                     {isReady || storeType === Mnemonic ? (
                         <div style={{ marginLeft: 'auto' }}>
-                            <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
+                            <TezosAmount
+                                dataSpectron="amount"
+                                color="white"
+                                size={ms(4.5)}
+                                amount={balance}
+                                weight="light"
+                                format={2}
+                                symbol={symbol}
+                                showTooltip={true}
+                            />
                         </div>
                     ) : null}
                 </AddressInfo>
                 {delegatedAddress && (
-                    <DelegateContainer>
+                    <DelegateContainer data-spectron="delegate">
                         <>{t('components.balanceBanner.delegated_to')}</>
                         {bakerName && <DelegateName>{bakerName}</DelegateName>}
                         {!bakerName && (

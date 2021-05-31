@@ -69,9 +69,10 @@ const Verify = () => {
             </MessageContainer>
             <MainContainer>
                 <CustomTextArea label={t('general.nouns.message')} onChange={(val) => setMessage(val)} />
-                <TextField label={t('general.nouns.signature')} onChange={(val) => setSignature(val)} />
+                <TextField data-spectron="signature-input" label={t('general.nouns.signature')} onChange={(val) => setSignature(val)} />
 
                 <InputAddress
+                    dataSpectron="address-input"
                     label={t('components.signVerifyModal.enter_address_key')}
                     operationType="tz1"
                     tooltip={false}
@@ -80,7 +81,7 @@ const Verify = () => {
                 />
             </MainContainer>
             <Footer>
-                <ButtonContainer>
+                <ButtonContainer data-spectron="verify-button-down">
                     {error && <WarningIcon />}
                     {!error && result && <SuccessIcon color="check" iconName="checkmark2" />}
                     {result && <Result isError={error}>{result}</Result>}

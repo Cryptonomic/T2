@@ -146,20 +146,21 @@ function DeployContract(props: Props) {
     }, [enterNum]);
 
     return (
-        <MainContainer>
+        <MainContainer data-spectron="deploy-contract-section">
             <TabContainer>
                 <InputAddressContainer>
                     <CustomTextArea
+                        data-spectron="code-area"
                         label={t('components.interactModal.paste_micheline_code', { format: codeFormat })}
                         onChange={(val) => updateState({ michelsonCode: val })}
                     />
                 </InputAddressContainer>
 
                 <StorageFormatContainer>
-                    <ColStorage>
+                    <ColStorage data-spectron="storage">
                         <TextField label={t('components.interactModal.initial_storage')} onChange={(val) => updateState({ parameters: val })} />
                     </ColStorage>
-                    <ColFormat>
+                    <ColFormat data-spectron="format-selector">
                         <FormatSelector value={codeFormat} onChange={(val) => updateState({ codeFormat: val })} />
                     </ColFormat>
                 </StorageFormatContainer>
@@ -176,10 +177,10 @@ function DeployContract(props: Props) {
                     </DeployAddressContent>
                 </DeployAddressContainer>
                 <RowContainer>
-                    <ColContainer>
+                    <ColContainer data-spectron="storage-limit">
                         <TextField type="number" label={t('components.interactModal.storage_limit')} onChange={(val) => updateState({ storage: val })} />
                     </ColContainer>
-                    <ColContainer>
+                    <ColContainer data-spectron="gas-limit">
                         <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={(val) => updateState({ gas: val })} />
                     </ColContainer>
                 </RowContainer>
@@ -208,13 +209,14 @@ function DeployContract(props: Props) {
             <PasswordButtonContainer>
                 {!isLedger && (
                     <PasswordInput
+                        dataSpectron="wallet-password"
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={updatePassPhrase}
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onDeployOperation}>
+                <InvokeButton data-spectron="deploy-button" buttonTheme="primary" disabled={isDisabled} onClick={onDeployOperation}>
                     {t('general.verbs.deploy')}
                 </InvokeButton>
             </PasswordButtonContainer>

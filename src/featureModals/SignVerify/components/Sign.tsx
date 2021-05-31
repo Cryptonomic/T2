@@ -105,6 +105,7 @@ const Sign = () => {
                 {error && result && <Result isError={error}>{result}</Result>}
                 {!error && result && (
                     <TextField
+                        data-spectron="signature-value"
                         label={t('general.nouns.signature')}
                         value={result}
                         readOnly={true}
@@ -134,7 +135,7 @@ const Sign = () => {
 
                     {isLedger && ledgerModalOpen && <>Please confirm the operation on the Ledger device</>}
 
-                    <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
+                    <InvokeButton data-spectron="sign-button" buttonTheme="primary" disabled={isDisabled} onClick={onSign}>
                         {t('general.verbs.sign')}
                     </InvokeButton>
                 </ButtonContainer>

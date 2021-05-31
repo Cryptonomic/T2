@@ -62,6 +62,7 @@ const NumberFormatCustom: React.ComponentType<any> = (props: Props1) => {
 };
 
 interface Props {
+    id?: string;
     label: string;
     type?: string;
     errorText?: string | React.ReactNode;
@@ -72,15 +73,17 @@ interface Props {
     onChange?: (val: string) => void;
     endAdornment?: React.ReactElement;
     readOnly?: boolean;
+    dataSpectron?: string;
 }
 
 function TextField(props: Props) {
-    const { label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
+    const { id, dataSpectron, label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
     return (
         <Container disabled={disabled}>
-            <LabelWrapper htmlFor="custom-input">{label}</LabelWrapper>
+            <LabelWrapper htmlFor={id || 'custom-input'}>{label}</LabelWrapper>
             <InputWrapper
-                id="custom-input"
+                id={id || 'custom-input'}
+                data-spectron={dataSpectron}
                 key={label}
                 type={type}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

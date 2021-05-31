@@ -16,10 +16,10 @@ const TransactionContainer = (props: Props) => {
     }, {});
 
     return (
-        <Container>
+        <Container data-spectron="transaction">
             {Object.keys(transactionsByDate).map((day, indexParent) => (
-                <SectionContainer key={indexParent}>
-                    <TransactionsLabel date={day} skipFormat={true} />
+                <SectionContainer data-spectron="transaction-daily" key={indexParent}>
+                    <TransactionsLabel dataSpectron="transaction-date" date={day} skipFormat={true} />
                     {transactionsByDate[day].map((transaction, indexChild) => {
                         return <Transaction key={indexChild} transaction={transaction} selectedParentHash={selectedParentHash} token={token} />;
                     })}

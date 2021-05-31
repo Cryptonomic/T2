@@ -23,6 +23,36 @@ ipcMain.on('wallet', (event, data) => {
     event.sender.send('wallet', data);
 });
 
+if (process.env.TEST_ENV === 'true') {
+    try {
+        const { fileName } = require('../test/walletsData/testConfig.json');
+
+        ipcMain.on('is-spectron', (e) => {
+            e.returnValue = process.env.WEB_CLIENT === 'spectron';
+        });
+
+        let count = 0;
+        ipcMain.on('testing-wallet', (e) => {
+            let path = require('path');
+            const baseDir = path.join(__dirname, '..');
+            let walletLocation = path.join(baseDir, 'test', 'walletsData', fileName);
+            if (count % 2 !== 0) {
+                walletLocation = path.join(baseDir, 'test', 'walletsData', fileName);
+            }
+            count += 1;
+            e.returnValue = `${walletLocation}`;
+        });
+
+        ipcMain.on('new-wallet', (e) => {
+            let path = require('path');
+            const baseDir = path.join(__dirname, '..');
+            e.returnValue = `${baseDir}/test/temporaryFiles/new.tezwallet`;
+        });
+    } catch (error) {
+        // TODO: display error
+    }
+}
+
 let mainWindow = null;
 
 if (process.env.NODE_ENV === 'production') {

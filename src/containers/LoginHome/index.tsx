@@ -112,7 +112,7 @@ function LoginHome(props: Props) {
                             {!isLedgerConnecting && t('containers.loginHome.connect_ledger')}
                         </UnlockWalletButton>
                         {activePath && (
-                            <SelectedPath>
+                            <SelectedPath data-spectron="selected-path">
                                 {t('containers.loginHome.selectedPath')} {activePath}
                             </SelectedPath>
                         )}
@@ -145,7 +145,13 @@ function LoginHome(props: Props) {
                         <UnlockWalletButton color="secondary" variant="extended" onClick={() => goTo('import')} disabled={!isAgreement}>
                             {t('containers.loginHome.open_exisiting_wallet_btn')}
                         </UnlockWalletButton>
-                        <CreateWalletButton color="primary" variant="outlined" onClick={() => goTo('create')} disabled={!isAgreement}>
+                        <CreateWalletButton
+                            data-spectron="create-wallet"
+                            color="primary"
+                            variant="outlined"
+                            onClick={() => goTo('create')}
+                            disabled={!isAgreement}
+                        >
                             {t('containers.loginHome.create_new_wallet_btn')}
                         </CreateWalletButton>
                         <Linebar />
@@ -153,7 +159,10 @@ function LoginHome(props: Props) {
                             <div>
                                 {t('containers.loginHome.want_to_import_fundraiser_paper_wallet')}
                                 <Trans i18nKey="containers.loginHome.create_named_wallet">
-                                    <Link onClick={() => goTo('create')}>Create a wallet</Link> first.
+                                    <Link data-spectron="create-wallet-link" onClick={() => goTo('create')}>
+                                        Create a wallet
+                                    </Link>{' '}
+                                    first.
                                 </Trans>
                             </div>
                         </Tip>

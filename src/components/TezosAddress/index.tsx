@@ -51,7 +51,7 @@ const TezosAddress = (props: Props) => {
     }
 
     return (
-        <Address weight={weight} color={color} size={size}>
+        <Address weight={weight} color={color} size={size} data-spectron="tezos-address">
             <span>
                 <FirstPart color={color2 || color}>{addressType}</FirstPart>
                 <SecondPart>{addressTail}</SecondPart>

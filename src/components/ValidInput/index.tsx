@@ -36,7 +36,7 @@ const InputWrapper = styled(Input)<{ score: number }>`
         &:after {
             border-bottom-color: ${({ score }) => getBorderColors(score)};
         }
-        
+
     }
     &.MuiInput-focused {
         &:hover:not(.Mui-disabled):before {
@@ -46,7 +46,7 @@ const InputWrapper = styled(Input)<{ score: number }>`
             border-bottom-color: ${({ score }) => getBorderColors(score)};
         }
     }
-    
+
     color: ${({ theme: { colors } }) => colors.primary};
     font-size: 16px;
     font-weight: 300;
@@ -125,11 +125,12 @@ interface Props {
     visibilityIcon?: boolean | undefined;
     changFunc: (val: string) => void;
     onShow: () => void;
+    dataSpectron?: string;
 }
 
 function InputValid(props: Props) {
     const { t } = useTranslation();
-    const { label, error, suggestion, score, status, isShowed, changFunc, onShow, visibilityIcon } = props;
+    const { dataSpectron, label, error, suggestion, score, status, isShowed, changFunc, onShow, visibilityIcon } = props;
     const borderColor = getBorderColors(score);
 
     function getIcon(val) {
@@ -147,18 +148,28 @@ function InputValid(props: Props) {
         <Container>
             <Content>
                 <LabelWrapper>{label}</LabelWrapper>
-                <InputWrapper key={label} type={isShowed ? 'text' : 'password'} onChange={(event) => changFunc(event.target.value)} score={score} />
+                <InputWrapper
+                    data-spectron={dataSpectron}
+                    key={label}
+                    type={isShowed ? 'text' : 'password'}
+                    onChange={(event) => changFunc(event.target.value)}
+                    score={score}
+                />
             </Content>
             <CheckContainer visibilityIcon={true}>
                 {getIcon(score)}
-                <ShowHidePwd onClick={onShow} style={{ cursor: 'pointer' }}>
+                <ShowHidePwd data-spectron={`visibility-${dataSpectron}`} onClick={onShow} style={{ cursor: 'pointer' }}>
                     {visibilityIcon && (isShowed ? <VisibilityIcon color="secondary" /> : <VisibilityIcon color="action" />)}
                     {!visibilityIcon && t(isShowed ? 'general.verbs.hide' : 'general.verbs.show')}
                 </ShowHidePwd>
             </CheckContainer>
 
             <PasswordStrengthSuggestions>
-                {!!error && <Error color={borderColor}>{error}</Error>}
+                {!!error && (
+                    <Error data-spectron={`error-${dataSpectron}`} color={borderColor}>
+                        {error}
+                    </Error>
+                )}
                 {!!suggestion && <Suggestion>suggestion</Suggestion>}
             </PasswordStrengthSuggestions>
         </Container>

@@ -145,13 +145,15 @@ function SecurityNoticeModal(props: Props) {
                         {t('components.securityNoticeModal.learn_more')}
                         <LinkIcon iconName="new-window" size={ms(0)} color="accent" />
                     </LinkContainer>
-                    <FormGroupWrapper>
+                    <FormGroupWrapper data-spectron="form">
                         <FormControlLabelWrapper
-                            control={<CheckBoxWrapper checked={isUnderstand} onChange={e => setIsUnderstand(e.target.checked)} value="understand" />}
+                            data-spectron="understand-check"
+                            control={<CheckBoxWrapper checked={isUnderstand} onChange={(e) => setIsUnderstand(e.target.checked)} value="understand" />}
                             label={t('components.securityNoticeModal.understand_check')}
                         />
                         <FormControlLabelWrapper
-                            control={<CheckBoxWrapper checked={isNotShowMessage} onChange={e => setIsNotShowMessage(e.target.checked)} value="showmessage" />}
+                            data-spectron="dont-message"
+                            control={<CheckBoxWrapper checked={isNotShowMessage} onChange={(e) => setIsNotShowMessage(e.target.checked)} value="showmessage" />}
                             label={t('components.securityNoticeModal.dont_message')}
                         />
                     </FormGroupWrapper>
@@ -160,7 +162,7 @@ function SecurityNoticeModal(props: Props) {
                     <CustomButton buttonTheme="secondary" onClick={() => onCloseFunc()}>
                         {t('general.verbs.cancel')}
                     </CustomButton>
-                    <CustomButton buttonTheme="primary" disabled={!isUnderstand} onClick={() => onProceedFunc()}>
+                    <CustomButton data-spectron="proceed-button" buttonTheme="primary" disabled={!isUnderstand} onClick={() => onProceedFunc()}>
                         {t('general.verbs.proceed')}
                     </CustomButton>
                 </BottomContainer>

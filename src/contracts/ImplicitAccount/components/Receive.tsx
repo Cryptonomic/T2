@@ -64,7 +64,7 @@ function Receive(props: Props) {
     }, [address]);
 
     return (
-        <ReceiveContainer>
+        <ReceiveContainer data-spectron="receive-container">
             <QRCodeContainer ref={canvasRef} />
             <HashContainer>
                 <TezosAddress address={address} size="16px" weight={300} color="primary" text={address} />

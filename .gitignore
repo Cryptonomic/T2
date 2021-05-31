@@ -13,3 +13,7 @@ src/main.prod.js.map
 src/node_modules
 
 **/walletSettings.json
+
+test/.env
+test/walletsData/*.tezwallet
+test/walletsData/testConfig.json

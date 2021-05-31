@@ -109,10 +109,12 @@ function Landing(props: Props) {
                         </TosDesTxt>
                         <FormGroupWrapper>
                             <FormControlLabelWrapper
+                                data-spectron="landing-agree-terms"
                                 control={<CheckBoxWrapper checked={isTos} onChange={(e) => setIsTos(e.target.checked)} name="checkedB" color="primary" />}
                                 label={t('components.landingCarousel.agree_terms')}
                             />
                             <FormControlLabelWrapper
+                                data-spectron="landing-agree-policy"
                                 control={<CheckBoxWrapper checked={isPP} onChange={(e) => setIsPP(e.target.checked)} name="checkedB" color="primary" />}
                                 label={t('components.landingCarousel.agree_policy')}
                             />
@@ -131,7 +133,7 @@ function Landing(props: Props) {
             return (
                 <Container key={index}>
                     <Container1>
-                        <WelcomeTxt>{t('components.termsModal.welcome_to', { name })}</WelcomeTxt>
+                        <WelcomeTxt data-spectron="lang-welcome">{t('components.termsModal.welcome_to', { name })}</WelcomeTxt>
                         {index === 0 && <LangTitle>{t('components.languageSelectModal.select_language')}</LangTitle>}
                         <MainContainer isFirst={index === 0}>
                             <TermsLogo src={termsLogoIcon} />
@@ -157,20 +159,35 @@ function Landing(props: Props) {
     const getNextButton = (onClickHandler, hasNext, label) => {
         if (!hasNext) {
             return (
-                <StartBtn variant="contained" color="secondary" disableRipple={true} onClick={() => gotoMainPage()}>
+                <StartBtn data-spectron="landing-next-button" variant="contained" color="secondary" disableRipple={true} onClick={() => gotoMainPage()}>
                     {t('general.get_started')}
                 </StartBtn>
             );
         }
         if (selectedIndex === 1 && (!isTos || !isPP)) {
             return (
-                <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} endIcon={<NextCaret />} isleft={0} disabled={true}>
+                <ButtonContainer
+                    data-spectron="landing-next-button"
+                    color="secondary"
+                    disableRipple={true}
+                    onClick={onClickHandler}
+                    endIcon={<NextCaret />}
+                    isleft={0}
+                    disabled={true}
+                >
                     {t('general.next')}
                 </ButtonContainer>
             );
         }
         return (
-            <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} endIcon={<NextCaret />} isleft={0}>
+            <ButtonContainer
+                data-spectron="landing-next-button"
+                color="secondary"
+                disableRipple={true}
+                onClick={onClickHandler}
+                endIcon={<NextCaret />}
+                isleft={0}
+            >
                 {t('general.next')}
             </ButtonContainer>
         );

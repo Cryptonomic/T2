@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import path from 'path';
 import zxcvbn from 'zxcvbn';
 import { useTranslation } from 'react-i18next';
@@ -52,6 +52,30 @@ function LoginCreate() {
     const [pwdSuggestion, setPwdSuggestion] = useState('');
     const [confirmPwdScore, setConfirmPwdScore] = useState(0);
     const [confirmPwdText, setConfirmPwdText] = useState('');
+
+    function saveFile(event) {
+        if (event.detail === 0 && walletLocation && walletFileName) {
+            return;
+        }
+
+        // [TESTING]
+        if (ipcRenderer.sendSync('is-spectron')) {
+            event.preventDefault();
+            const newWallet = ipcRenderer.sendSync('new-wallet');
+            setWalletLocation(path.dirname(newWallet));
+            setWalletFileName(path.basename(newWallet));
+            return;
+        }
+
+        const currentWindow = remote.getCurrentWindow();
+        remote.dialog.showSaveDialog(currentWindow, { filters: dialogFilters }).then((result) => {
+            const filePath = result.filePath;
+            if (filePath) {
+                setWalletLocation(path.dirname(filePath));
+                setWalletFileName(path.basename(filePath));
+            }
+        });
+    }
 
     function onChangePassword(pwd: string) {
         if (pwd) {
@@ -131,6 +155,24 @@ function LoginCreate() {
             onLogin(CREATE);
         }
     }
+    function getWalletFileSection() {
+        if (walletFileName) {
+            return (
+                <WalletFileSection>
+                    <CheckIcon iconName="checkmark2" size={ms(5)} color="check" />
+                    <WalletFileName data-spectron="new-wallet-file-name">{walletFileName}</WalletFileName>
+                </WalletFileSection>
+            );
+        }
+
+        return (
+            <>
+                <CreateFileEmptyIcon src={createFileEmptyIcon} />
+                <FileDescription>Name your wallet file and select a file location</FileDescription>
+                <FileDescriptionArrowIcon iconName="arrow-right" color="gray16" />
+            </>
+        );
+    }
 
     const isDisabled = isLoading || !isPasswordValidation || !isPasswordMatched;
 
@@ -145,12 +187,19 @@ function LoginCreate() {
                 <FormContainer>
                     {/* <CreateFileSelector>
                         {getWalletFileSection()}
-                        <CreateFileButton startIcon={<ButtonAddIcon />} size="small" variant="outlined" onClick={evt => saveFile(evt)}>
+                        <CreateFileButton
+                            data-spectron="new-file-button"
+                            startIcon={<ButtonAddIcon />}
+                            size="small"
+                            variant="outlined"
+                            onClick={(evt) => saveFile(evt)}
+                        >
                             {t('containers.loginCreate.create_new_wallet_btn')}
                         </CreateFileButton>
                     </CreateFileSelector> */}
                     <PasswordsContainer>
                         <ValidInput
+                            dataSpectron="create-wallet-password"
                             label={t('containers.loginCreate.create_wallet_password_label')}
                             isShowed={isPwdShowed}
                             error={pwdError}
@@ -161,6 +210,7 @@ function LoginCreate() {
                             onShow={() => onPasswordShow(0)}
                         />
                         <ValidInput
+                            dataSpectron="confirm-wallet-password"
                             label={t('containers.loginCreate.confirm_wallet_password_label')}
                             status={true}
                             isShowed={isConfirmPwdShowed}
