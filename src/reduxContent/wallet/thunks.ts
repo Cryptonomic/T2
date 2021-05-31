@@ -59,6 +59,7 @@ import { Identity, Token, AddressType } from '../../types/general';
 import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
 import * as tzip7Util from '../../contracts/TokenContract/util';
 import * as wxtzUtil from '../../contracts/WrappedTezos/util';
+import * as plentyUtil from '../../contracts/Plenty/util';
 
 const { restoreIdentityFromFundraiser, restoreIdentityFromMnemonic, restoreIdentityFromSecretKey } = KeyStoreUtils;
 
@@ -286,6 +287,20 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].transactions,
                     tokens[tokenIndex].kind
                 );
+            } else if (tokens[tokenIndex].kind === TokenKind.plenty) {
+                balanceAsync = plentyUtil.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                detailsAsync = plentyUtil.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
+                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+
+                    return { ...d, holders: keyCount };
+                });
+                transAsync = tzip7Util.syncTokenTransactions(
+                    tokenAddress,
+                    selectedParentHash,
+                    mainNode,
+                    tokens[tokenIndex].transactions,
+                    tokens[tokenIndex].kind
+                );
             }
 
             try {
@@ -368,7 +383,7 @@ export function syncWalletThunk() {
                         console.log(`warning, code fingerprint mismatch for token: ${JSON.stringify(token)}`);
                     }
 
-                    let mapid = token.mapid;
+                    let mapid = token.mapid || -1;
                     let administrator = token.administrator;
 
                     const details = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
@@ -595,6 +610,40 @@ export function syncWalletThunk() {
                     ); /* TODO */
 
                     return { ...token, mapid, administrator, balance, transactions, details };
+                } else if (token.kind === TokenKind.plenty) {
+                    let mapid = token.mapid || -1;
+                    let administrator = token.administrator;
+                    const serverInfo: ConseilServerInfo = {
+                        url: mainNode.conseilUrl,
+                        apiKey: mainNode.apiKey,
+                        network: mainNode.network,
+                    };
+
+                    let details: any = await plentyUtil.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
+                    mapid = details?.mapid || -1;
+                    if (token.mapid && token.mapid > mapid) {
+                        mapid = token.mapid;
+                    }
+                    administrator = details?.administrator || '';
+
+                    if (mapid === -1) {
+                        console.log(`warning, could not process token: ${JSON.stringify(token)}`);
+                        return { ...token, mapid, administrator, balance: 0 };
+                    }
+
+                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                    details = { ...details, holders: keyCount };
+
+                    const balance = await plentyUtil.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash).catch(() => 0);
+                    const transactions = await tzip7Util.syncTokenTransactions(
+                        token.address,
+                        selectedParentHash,
+                        mainNode,
+                        token.transactions,
+                        token.kind
+                    ); /* TODO */
+
+                    return { ...token, mapid, administrator, balance, transactions, details };
                 } else {
                     console.warn(`warning, unsupported token: ${JSON.stringify(token)}`);
                     return { ...token, mapid: -1, administrator: '', balance: 0, transactions: [] };
@@ -621,7 +670,8 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
                 addressType === AddressType.kUSD ||
                 addressType === AddressType.objkt ||
                 addressType === AddressType.BLND ||
-                addressType === AddressType.STKR
+                addressType === AddressType.STKR ||
+                addressType === AddressType.plenty
             ) {
                 await dispatch(syncTokenThunk(selectedAccountHash));
             } else if (selectedAccountHash === selectedParentHash) {

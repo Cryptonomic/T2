@@ -61,6 +61,8 @@ function HomeMain() {
                 return <StkrToken />;
             case AddressType.TokensPage:
                 return <TokensPage />;
+            case AddressType.plenty:
+                return <TokenContract />;
             default:
                 return <GenericContract />;
         }

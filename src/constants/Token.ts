@@ -11,6 +11,7 @@ import hicetnuncIcon from '../../resources/contracts/hicetnunc-icon.png';
 import blndIcon from '../../resources/contracts/blnd-icon.png';
 import stkrIcon from '../../resources/contracts/stkr-icon.png';
 import hdaoIcon from '../../resources/contracts/hdao-icon.png';
+import plentyIcon from '../../resources/contracts/plenty-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -95,6 +96,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b',
+        displayName: 'Plenty',
+        symbol: 'PLENTY',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.plenty,
+        icon: plentyIcon,
+        scale: 18,
+        precision: 18,
+        round: 6,
+        mapid: 3943,
+        helpLink: 'https://plentydefi.com',
+    },
+    {
+        network: 'mainnet',
         address: 'KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN',
         displayName: 'Blend',
         symbol: 'BLND',
@@ -127,21 +144,6 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
-        displayName: 'tzBTC',
-        symbol: 'tzBTC',
-        balance: 0,
-        transactions: [],
-        activeTab: TRANSACTIONS,
-        kind: TokenKind.tzbtc,
-        icon: tzbtcIcon,
-        scale: 8,
-        precision: 8,
-        round: 8,
-        helpLink: 'https://tzbtc.io/',
-    },
-    {
-        network: 'mainnet',
         address: 'KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW',
         displayName: 'hDAO',
         symbol: 'hDAO',
@@ -155,6 +157,36 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         hideOnLanding: true,
         // helpLink: 'https://'
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1HASEjnrp915toQ7RSJGW5YYcv5X7hvQbn',
+        displayName: 'kDAO Token',
+        symbol: 'kDAO',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        // icon: uteIcon,
+        scale: 18,
+        precision: 18,
+        round: 6,
+        // helpLink: 'https://'
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
+        displayName: 'tzBTC',
+        symbol: 'tzBTC',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzbtc,
+        icon: tzbtcIcon,
+        scale: 8,
+        precision: 8,
+        round: 8,
+        helpLink: 'https://tzbtc.io/',
     },
     {
         network: 'mainnet',
@@ -258,6 +290,10 @@ export const knownContractNames = {
     KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA: 'QLkUSD Token',
     KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd: 'WRAP Token',
     KT1Nbc9cmx19qFrYYFpkiDoojVYL8UZJYVcj: 'GUTS Token',
+    KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9: 'Hedgehoge Token',
+    KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng: 'Crunchy.network Token',
+    KT1HASEjnrp915toQ7RSJGW5YYcv5X7hvQbn: 'kDAO Token',
+    KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: 'PLENTY DAO',
 
     KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU: 'Dexter ETHtz Pool',
     KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9: 'Dexter USDtz Pool',
@@ -276,9 +312,12 @@ export const knownContractNames = {
     KT1WtFb1mTsFRd1n1nAYMdrE2Ud9XREz5hjK: 'QuipuSwap QLkUSD Pool',
     KT1FG63hhFtMEEEtmBSX2vuFmP87t9E7Ab4t: 'QuipuSwap WRAP Pool',
     KT1WYQj3HEt3sxdsV4dMLA8RKzUnYAzXgguS: 'QuipuSwap GUTS Pool',
+    KT1BgezWwHBxA9NrczwK9x3zfgFnUkc7JJ4b: 'QuipuSwap Hedgehoge Pool',
+    KT1RRgK6eXvCWCiEGWhRZCSVGzhDzwXEEjS4: 'QuipuSwap Crunchy Pool',
+    KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z: 'QuipuSwap PLENTY Pool',
 
     KT1Lw8hCoaBrHeTeMXbqHPG4sS4K1xn7yKcD: 'QuipuSwap FA1.2 Pool Factory',
-    KT1GDtv3sqhWeSsXLWgcGsmoH5nRRGJd8xVc: 'Quipuswap FA2 Pool Factory',
+    KT1SwH9P1Tx8a58Mm6qBExQFTcy2rwZyZiXS: 'Quipuswap FA2 Pool Factory',
 
     KT1CpeSQKdkhWi4pinYcseCFKmDhs5M74BkU: 'tzcolors Auction House',
     KT1FyaDqiMQWg7Exo7VUiXAgZbd2kCzo3d4s: 'tzcolors NFT',
@@ -294,6 +333,8 @@ export const knownContractNames = {
     KT1CaSP4dn8wasbMsfdtGiCPgYFW7bvnPRRT: 'Tezos Domains Bid',
     KT1TnTr6b2YxSx2xUQ8Vz3MoWy771ta66yGx: 'Tezos Domains Registry',
     KT1J9VpjiH5cmcsskNb8gEXpBtjD4zrAx4Vo: 'Tezos Domains Registry',
+
+    KT1J5dqegz1qYaYc7X3KjynYL9St1wcZ8ZyV: 'Maelstrom Mixer',
 };
 
 export const knownMarketMetadata = [
@@ -432,5 +473,13 @@ export const knownMarketMetadata = [
         name: 'QuipuSwap GUTS Pool',
         scale: 8,
         symbol: 'GUTS',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z',
+        token: 'KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b',
+        name: 'QuipuSwap PLENTY Pool',
+        scale: 18,
+        symbol: 'PLENTY',
     },
 ];

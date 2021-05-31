@@ -371,6 +371,10 @@ function AddressBlock(props: Props) {
                     tokenType = AddressType.STKR;
                 }
 
+                if (token.kind === TokenKind.plenty) {
+                    tokenType = AddressType.plenty;
+                }
+
                 return (
                     <TokenNav
                         key={token.address}

@@ -62,6 +62,7 @@ export enum AddressType {
     STKR,
     TokensPage,
     FA2Token,
+    plenty,
 }
 
 export interface RegularAddress {
@@ -120,6 +121,7 @@ export enum TokenKind {
     objkt = 'objkt',
     stkr = 'stkr',
     tzip12 = 'tzip12',
+    plenty = 'plenty',
 }
 
 export interface Token {

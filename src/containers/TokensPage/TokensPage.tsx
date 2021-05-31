@@ -105,6 +105,10 @@ const TokensPage = () => {
             tokenType = AddressType.STKR;
         }
 
+        if (addressType === TokenKind.plenty) {
+            tokenType = AddressType.plenty;
+        }
+
         const { publicKeyHash } = identities[selectedAccountIndex];
         dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, tokenType));
     };
