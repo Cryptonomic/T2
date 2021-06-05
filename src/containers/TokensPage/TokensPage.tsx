@@ -109,6 +109,10 @@ const TokensPage = () => {
             tokenType = AddressType.plenty;
         }
 
+        if (addressType === TokenKind.tzip12) {
+            tokenType = AddressType.Token2;
+        }
+
         const { publicKeyHash } = identities[selectedAccountIndex];
         dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, tokenType));
     };

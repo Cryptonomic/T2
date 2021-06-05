@@ -1,17 +1,21 @@
 import { ArtToken, VaultToken, Token, TokenKind } from '../types/general';
-import { TRANSACTIONS, DETAILS, COLLECTION } from './TabConstants';
+import { TRANSACTIONS, COLLECTION } from './TabConstants';
 
 import tzbtcIcon from '../../resources/contracts/tzbtc-icon.png';
 import usdtzIcon from '../../resources/contracts/usdtz-icon.png';
 import ethtzIcon from '../../resources/contracts/ethtz-icon.png';
 import wxtzIcon from '../../resources/contracts/wXTZ-token-FullColor.png';
-import uteIcon from '../../resources/contracts/ute-aspen-icon.png';
 import kusdIcon from '../../resources/contracts/kusd-icon.png';
 import hicetnuncIcon from '../../resources/contracts/hicetnunc-icon.png';
 import blndIcon from '../../resources/contracts/blnd-icon.png';
 import stkrIcon from '../../resources/contracts/stkr-icon.png';
 import hdaoIcon from '../../resources/contracts/hdao-icon.png';
 import plentyIcon from '../../resources/contracts/plenty-icon.png';
+import kalamIcon from '../../resources/contracts/kalam-icon.png';
+import stablyIcon from '../../resources/contracts/stably-icon.png';
+import hehIcon from '../../resources/contracts/heh-icon.png';
+import kdaoIcon from '../../resources/contracts/kdao-icon.png';
+import wrapIcon from '../../resources/contracts/wrap-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -27,6 +31,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 6,
         precision: 6,
         round: 2,
+        mapid: 36,
         helpLink: 'https://usdtz.com',
     },
     {
@@ -42,6 +47,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 18,
         precision: 18,
         round: 6,
+        mapid: 199,
         helpLink: 'https://ethtz.io',
     },
     {
@@ -73,6 +79,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 0,
         precision: 0,
         round: 0,
+        mapid: 511,
         helpLink: 'https://www.hicetnunc.xyz/',
         marketAddress: 'KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9',
     },
@@ -89,6 +96,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 6,
         precision: 6,
         round: 2,
+        mapid: 257,
         helpLink: 'https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs',
         vaultCoreAddress: 'KT1V4Vp7zhynCNuaBjWMpNU535Xm2sgqkz6M',
         vaultRegistryMapId: 260,
@@ -109,6 +117,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 6,
         mapid: 3943,
         helpLink: 'https://plentydefi.com',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT',
+        displayName: 'Kalamint DAO',
+        symbol: 'KALAM',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: kalamIcon,
+        scale: 10,
+        precision: 10,
+        round: 5,
+        mapid: 4178,
+        helpLink: 'https://kalamint.io/',
     },
     {
         network: 'mainnet',
@@ -155,8 +179,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 6,
         precision: 6,
         round: 2,
-        hideOnLanding: true,
-        // helpLink: 'https://'
+        mapid: 515,
+        tokenIndex: 0,
     },
     {
         network: 'mainnet',
@@ -167,11 +191,44 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         transactions: [],
         activeTab: TRANSACTIONS,
         kind: TokenKind.tzip7,
-        // icon: uteIcon,
+        icon: kdaoIcon,
         scale: 18,
         precision: 18,
         round: 6,
-        // helpLink: 'https://'
+        mapid: 3706,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9',
+        displayName: 'Hedgehoge',
+        symbol: 'HEH',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: hehIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 3686,
+        balancePath: '$.args[1].int',
+        helpLink: 'https://twitter.com/heh_hedgehoge',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd',
+        displayName: 'WRAP Governance Token',
+        symbol: 'WRAP',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: wrapIcon,
+        scale: 8,
+        precision: 8,
+        round: 8,
+        mapid: 1777,
+        hideOnLanding: true,
     },
     {
         network: 'mainnet',
@@ -186,6 +243,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 8,
         precision: 8,
         round: 8,
+        mapid: 31,
         helpLink: 'https://tzbtc.io/',
     },
     {
@@ -197,12 +255,11 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         transactions: [],
         activeTab: TRANSACTIONS,
         kind: TokenKind.tzip12,
-        icon: hdaoIcon,
+        icon: stablyIcon,
         scale: 6,
         precision: 6,
         round: 2,
-        hideOnLanding: true,
-        // helpLink: 'https://'
+        mapid: 397,
     },
     {
         network: 'mainnet',
@@ -212,46 +269,14 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.kusd,
+        kind: TokenKind.tzip7,
         icon: kusdIcon,
         scale: 36,
         precision: 36,
         round: 2,
-        hideOnLanding: true,
         mapid: 1600,
-        // helpLink: 'https://'
     },
-    {
-        network: 'mainnet',
-        address: 'KT1PzkxU8UC4Py85VxbbrHyiJ57Bknjom3r2',
-        displayName: 'UTE Token by Aspen Collective Trust',
-        symbol: 'UTE',
-        balance: 0,
-        transactions: [],
-        activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7,
-        icon: uteIcon,
-        scale: 6,
-        precision: 6,
-        round: 2,
-        helpLink: 'https://usdtz.com',
-    },
-    {
-        network: 'mainnet',
-        address: 'KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd',
-        displayName: 'WRAP Governance Token',
-        symbol: 'WRAP',
-        balance: 0,
-        transactions: [],
-        activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7, // TODO: TokenKind.tzip12
-        // icon: uteIcon,
-        scale: 8,
-        precision: 8,
-        round: 8,
-        hideOnLanding: true,
-    },
-    {
+    /*{
         network: 'mainnet',
         address: 'KT1Nbc9cmx19qFrYYFpkiDoojVYL8UZJYVcj',
         displayName: 'Guts Gaming token',
@@ -264,8 +289,9 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 0,
         precision: 0,
         round: 0,
-        // helpLink: 'https://'
-    },
+        mapid: 1948,
+        hideOnLanding: true,
+    },*/
 ];
 
 export const knownTokenDescription = {
@@ -275,6 +301,9 @@ export const knownTokenDescription = {
     USDtz: 'is a stable coin pegged to the value of the United States Dollar',
     ETHtz: '',
     STKR: 'is the governance token for StakerDAO, is built on the FA 1.2 token standard on Tezos',
+    PLENTY: 'Plenty Farm DAO token',
+    KALAM: '',
+    KDAO: '',
 };
 
 export const knownContractNames = {
@@ -315,6 +344,7 @@ export const knownContractNames = {
     KT1BgezWwHBxA9NrczwK9x3zfgFnUkc7JJ4b: 'QuipuSwap Hedgehoge Pool',
     KT1RRgK6eXvCWCiEGWhRZCSVGzhDzwXEEjS4: 'QuipuSwap Crunchy Pool',
     KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z: 'QuipuSwap PLENTY Pool',
+    KT1J3wTYb4xk5BsSBkg6ML55bX1xq7desS34: 'QuipuSwap KALAM Pool',
 
     KT1Lw8hCoaBrHeTeMXbqHPG4sS4K1xn7yKcD: 'QuipuSwap FA1.2 Pool Factory',
     KT1SwH9P1Tx8a58Mm6qBExQFTcy2rwZyZiXS: 'Quipuswap FA2 Pool Factory',
@@ -333,6 +363,12 @@ export const knownContractNames = {
     KT1CaSP4dn8wasbMsfdtGiCPgYFW7bvnPRRT: 'Tezos Domains Bid',
     KT1TnTr6b2YxSx2xUQ8Vz3MoWy771ta66yGx: 'Tezos Domains Registry',
     KT1J9VpjiH5cmcsskNb8gEXpBtjD4zrAx4Vo: 'Tezos Domains Registry',
+
+    KT1BfQLAsQNX8BjSBzgjTLx3GTd3qhwLoWNz: 'Plenty QuipuSwap Liquidity Farm',
+    KT1J7v85udA8GnaBupacgY9mMvrb8zQdYb3E: 'Plenty ETHtz Pool',
+    KT1Vs8gqh7YskPnUQMfmjogZh3A5ZLpqQGcg: 'Plenty hDAO Pool',
+    KT1JCkdS3x5hTWdrTQdzK6vEkeAdQzsm2wzf: 'Plenty wLINK Pool',
+    KT1UDe1YP963CQSb5xN7cQ1X8NJ2pUyjGw5T: 'Plenty Pool',
 
     KT1J5dqegz1qYaYc7X3KjynYL9St1wcZ8ZyV: 'Maelstrom Mixer',
 };
@@ -481,5 +517,21 @@ export const knownMarketMetadata = [
         name: 'QuipuSwap PLENTY Pool',
         scale: 18,
         symbol: 'PLENTY',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1J3wTYb4xk5BsSBkg6ML55bX1xq7desS34',
+        token: 'KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT',
+        name: 'QuipuSwap KALAM Pool',
+        scale: 10,
+        symbol: 'KALAM',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1BgezWwHBxA9NrczwK9x3zfgFnUkc7JJ4b',
+        token: 'KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9',
+        name: 'QuipuSwap HEH Pool',
+        scale: 10,
+        symbol: 'HEH',
     },
 ];

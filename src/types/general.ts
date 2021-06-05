@@ -53,6 +53,7 @@ export enum AddressType {
     Smart,
     Delegated,
     Token,
+    Token2,
     None,
     TzBTC,
     wXTZ,
@@ -124,24 +125,29 @@ export enum TokenKind {
     plenty = 'plenty',
 }
 
-export interface Token {
+export interface TokenDefinition {
     network: string;
     address: string;
     displayName: string;
     symbol: string;
-    balance: number;
-    mapid?: number;
+    mapid: number;
+    kind: TokenKind;
+    scale: number;
     administrator?: string;
+    icon?: string;
+    tokenIndex?: number; // FA2/tzip12 tokens have an index, frequently 0
+    balancePath?: string; // JSON path to the element inside the ledger bigmap value
+    helpLink?: string;
+}
+
+export interface Token extends TokenDefinition {
+    balance: number;
     transactions: TokenTransaction[];
     activeTab?: string;
-    kind: TokenKind;
-    icon?: string;
     details?: any;
-    scale?: number;
     precision?: number;
     round?: number;
     transactionFeeFloor?: number;
-    helpLink?: string;
     hideOnLanding?: boolean;
 }
 

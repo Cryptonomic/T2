@@ -375,6 +375,10 @@ function AddressBlock(props: Props) {
                     tokenType = AddressType.plenty;
                 }
 
+                if (token.kind === TokenKind.tzip12) {
+                    tokenType = AddressType.Token2;
+                }
+
                 return (
                     <TokenNav
                         key={token.address}

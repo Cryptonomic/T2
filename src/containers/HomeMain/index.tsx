@@ -11,6 +11,7 @@ import AddressBlock from '../../components/AddressBlock';
 import BabylonDelegation from '../../contracts/BabylonDelegation';
 import GenericContract from '../../contracts/GenericContract';
 import TokenContract from '../../contracts/TokenContract';
+import Token2Contract from '../../contracts/Token2Contract';
 import ImplicitAccount from '../../contracts/ImplicitAccount';
 import TzBtcToken from '../../contracts/TzBtcToken';
 import WXTZToken from '../../contracts/WrappedTezos';
@@ -63,6 +64,8 @@ function HomeMain() {
                 return <TokensPage />;
             case AddressType.plenty:
                 return <TokenContract />;
+            case AddressType.Token2:
+                return <Token2Contract />;
             default:
                 return <GenericContract />;
         }
