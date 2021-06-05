@@ -28,6 +28,12 @@ export const quipuPoolStorageMap = {
     liquidityBalancePath: '$.args[1].args[0].args[4].int',
 };
 
+export const quipuPool2StorageMap = {
+    coinBalancePath: '$.args[1].args[0].args[1].args[2].int',
+    tokenBalancePath: '$.args[1].args[0].args[3].int',
+    liquidityBalancePath: '$.args[1].args[1].args[0].args[0].int',
+};
+
 const dexterExpirationPadding = 5 * 60 * 1000;
 
 export const tokenPoolMap = {
@@ -37,12 +43,19 @@ export const tokenPoolMap = {
     KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: { dexterPool: 'KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9', quipuPool: 'KT1WxgZ1ZSfMgmsSDDcUn8Xn577HwnQ7e1Lb' }, // usdtz
     KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH: { dexterPool: 'KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo', quipuPool: 'KT1W3VGRUjvS869r4ror8kdaxqJAZUbPyjMT' }, // wxtz
     KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: { dexterPool: '', quipuPool: 'KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z' }, // plenty
+    KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT: { dexterPool: '', quipuPool: 'KT1J3wTYb4xk5BsSBkg6ML55bX1xq7desS34' }, // kalam
+    KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9: { dexterPool: '', quipuPool: 'KT1BgezWwHBxA9NrczwK9x3zfgFnUkc7JJ4b' }, // heh
+    KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: { dexterPool: '', quipuPool: 'KT1QxLqukyfohPV5kPkw97Rs6cw1DDDvYgbB' }, // hdao
+    KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf: { dexterPool: '', quipuPool: 'KT1KFszq8UFCcWxnXuhZPUyHT9FK3gjmSKm6' }, // usds
+    KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd: { dexterPool: '', quipuPool: 'KT1FG63hhFtMEEEtmBSX2vuFmP87t9E7Ab4t' }, // wrap
+    KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA: { dexterPool: '', quipuPool: 'KT1WtFb1mTsFRd1n1nAYMdrE2Ud9XREz5hjK' }, // QLkUSD
 };
 
 export async function sendDexterBuy(
     tezosNode: string,
     keyStore: KeyStore,
     signer: Signer,
+    tokenAddress: string,
     poolAddress: string,
     notional: string,
     size: string
@@ -80,33 +93,45 @@ export async function sendDexterSell(
     tezosNode: string,
     keyStore: KeyStore,
     signer: Signer,
+    tokenAddress: string,
     poolAddress: string,
     notional: string,
     size: string
 ): Promise<string | undefined> {
+    const nextCounter = (await TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
+
+    const approveParams = `{ "prim": "Pair", "args": [ { "string": "${poolAddress}" }, { "int": "${size}" } ] }`;
+    const approveOp = TezosNodeWriter.constructContractInvocationOperation(
+        keyStore.publicKeyHash,
+        nextCounter,
+        tokenAddress,
+        0,
+        0,
+        0,
+        0,
+        'approve',
+        approveParams
+    );
+
     const expiration = new Date(Date.now() + dexterExpirationPadding);
-    const params = `{ "prim": "Pair","args": [ { "prim": "Pair", "args": [ { "string": "${keyStore.publicKeyHash}" }, { "string": "${
+    const sellParams = `{ "prim": "Pair","args": [ { "prim": "Pair", "args": [ { "string": "${keyStore.publicKeyHash}" }, { "string": "${
         keyStore.publicKeyHash
     }" } ] }, {"int": "${size}" }, { "int": "${notional}" }, { "string": "${expiration.toISOString()}" } ] }`;
+    const sellOp = TezosNodeWriter.constructContractInvocationOperation(
+        keyStore.publicKeyHash,
+        nextCounter + 1,
+        poolAddress,
+        0,
+        0,
+        0,
+        0,
+        'tokenToXtz',
+        sellParams
+    );
 
     try {
-        // TODO: missing approval operation
-
-        const r = await TezosNodeWriter.sendContractInvocationOperation(
-            tezosNode,
-            signer,
-            keyStore,
-            poolAddress,
-            Number(notional),
-            0,
-            0,
-            0,
-            'tokenToXtz',
-            params,
-            TezosParameterFormat.Micheline,
-            TezosConstants.HeadBranchOffset,
-            true
-        );
+        const opGroup = await TezosNodeWriter.prepareOperationGroup(tezosNode, keyStore, nextCounter - 1, [approveOp, sellOp], true);
+        const r = await TezosNodeWriter.sendOperation(tezosNode, opGroup, signer);
 
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {
@@ -119,6 +144,7 @@ export async function sendQuipuBuy(
     tezosNode: string,
     keyStore: KeyStore,
     signer: Signer,
+    tokenAddress: string,
     poolAddress: string,
     notional: string,
     size: string
@@ -153,28 +179,43 @@ export async function sendQuipuSell(
     tezosNode: string,
     keyStore: KeyStore,
     signer: Signer,
+    tokenAddress: string,
     poolAddress: string,
     notional: string,
     size: string
 ): Promise<string | undefined> {
-    const params = `{ "prim": "Pair", "args": [ { "prim": "Pair", "args": [ { "int": "${size}" }, { "int": "${notional}" } ] }, { "string": "${keyStore.publicKeyHash}" } ] }`;
+    const nextCounter = (await TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
+
+    // TODO: fa2 approval is different
+    const approveParams = `{ "prim": "Pair", "args": [ { "string": "${poolAddress}" }, { "int": "${size}" } ] }`;
+    const approveOp = TezosNodeWriter.constructContractInvocationOperation(
+        keyStore.publicKeyHash,
+        nextCounter,
+        tokenAddress,
+        0,
+        0,
+        0,
+        0,
+        'approve',
+        approveParams
+    );
+
+    const sellParams = `{ "prim": "Pair", "args": [ { "prim": "Pair", "args": [ { "int": "${size}" }, { "int": "${notional}" } ] }, { "string": "${keyStore.publicKeyHash}" } ] }`;
+    const sellOp = TezosNodeWriter.constructContractInvocationOperation(
+        keyStore.publicKeyHash,
+        nextCounter + 1,
+        poolAddress,
+        0,
+        0,
+        0,
+        0,
+        'tokenToTezPayment',
+        sellParams
+    );
 
     try {
-        const r = await TezosNodeWriter.sendContractInvocationOperation(
-            tezosNode,
-            signer,
-            keyStore,
-            poolAddress,
-            Number(notional),
-            0,
-            0,
-            0,
-            'tokenToTezPayment',
-            params,
-            TezosParameterFormat.Micheline,
-            TezosConstants.HeadBranchOffset,
-            true
-        );
+        const opGroup = await TezosNodeWriter.prepareOperationGroup(tezosNode, keyStore, nextCounter - 1, [approveOp, sellOp], true);
+        const r = await TezosNodeWriter.sendOperation(tezosNode, opGroup, signer);
 
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {

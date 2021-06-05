@@ -6,31 +6,40 @@ import { getMainNode, getMainPath } from '../../../utils/settings';
 
 import { sendDexterBuy, sendDexterSell, sendQuipuBuy, sendQuipuSell } from './util';
 
-export function buyDexter(marketAddress: string, tokenAmount: string, coinAmount: string, password: string) {
+export function buyDexter(marketAddress: string, tokenAddress: string, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterBuy);
+        return await callMarket(tokenAddress, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterBuy);
     };
 }
 
 export function sellDexter(marketAddress: string, tokenAddress: string, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterSell);
+        return await callMarket(tokenAddress, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterSell);
     };
 }
 
 export function buyQuipu(marketAddress: string, tokenAddress: string, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuBuy);
+        return await callMarket(tokenAddress, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuBuy);
     };
 }
 
 export function sellQuipu(marketAddress: string, tokenAddress: string, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuSell);
+        return await callMarket(tokenAddress, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuSell);
     };
 }
 
-async function callMarket(marketAddress: string, tokenAmount: string, coinAmount: string, password: string, dispatch: any, state: any, marketFunction) {
+async function callMarket(
+    tokenAddress: string,
+    marketAddress: string,
+    tokenAmount: string,
+    coinAmount: string,
+    password: string,
+    dispatch: any,
+    state: any,
+    marketFunction
+) {
     const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
     const { identities, walletPassword } = state().wallet;
     const { selectedParentHash, isLedger, signer } = state().app;
@@ -50,6 +59,7 @@ async function callMarket(marketAddress: string, tokenAmount: string, coinAmount
         tezosUrl,
         keyStore,
         isLedger ? signer : await cloneDecryptedSigner(signer, password),
+        tokenAddress,
         marketAddress,
         coinAmount,
         tokenAmount

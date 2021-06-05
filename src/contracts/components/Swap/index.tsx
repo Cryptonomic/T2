@@ -11,12 +11,21 @@ import NumericInput from '../../../components/NumericInput';
 import TokenLedgerConfirmationModal from '../../../components/ConfirmModals/TokenLedgerConfirmationModal';
 import InputError from '../../../components/InputError';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
-
 import { RootState, AppState, SettingsState } from '../../../types/store';
+import { knownTokenContracts } from '../../../constants/Token';
+import { TokenKind } from '../../../types/general';
 import { Container, AmountContainer, PasswordButtonContainer, InvokeButton, RowContainer } from '../style';
 
 import { SegmentedControlContainer, SegmentedControl, SegmentedControlItem } from './style';
-import { dexterPoolStorageMap, quipuPoolStorageMap, tokenPoolMap, getPoolState, getXTZBuyExchangeRate, getXTZSellExchangeRate } from './util';
+import {
+    dexterPoolStorageMap,
+    quipuPoolStorageMap,
+    quipuPool2StorageMap,
+    tokenPoolMap,
+    getPoolState,
+    getXTZBuyExchangeRate,
+    getXTZSellExchangeRate,
+} from './util';
 import { buyDexter, sellDexter, buyQuipu, sellQuipu } from './thunks';
 
 interface Props {
@@ -122,8 +131,14 @@ function Swap(props: Props) {
     }
 
     async function updateMarketPrice(tokenValue, side) {
+        const tokenMetadata = knownTokenContracts.find((i) => i.address === token.address);
+
         const dexterState = await getPoolState(tezosUrl, tokenPoolMap[token.address].dexterPool, dexterPoolStorageMap);
-        const quipuState = await getPoolState(tezosUrl, tokenPoolMap[token.address].quipuPool, quipuPoolStorageMap);
+        const quipuState = await getPoolState(
+            tezosUrl,
+            tokenPoolMap[token.address].quipuPool,
+            tokenMetadata?.kind === TokenKind.tzip12 ? quipuPool2StorageMap : quipuPoolStorageMap
+        );
 
         if (side === 'buy') {
             let dexterCost = { xtzAmount: -1, rate: 0 };
@@ -203,6 +218,7 @@ function Swap(props: Props) {
             await dispatch(
                 buyDexter(
                     tokenPoolMap[token.address].dexterPool,
+                    token.address,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(dexterTokenCost).toString(),
                     passPhrase
@@ -282,7 +298,7 @@ function Swap(props: Props) {
                     <>Proceeds on Dexter {formatAmount(dexterTokenProceeds)}</>
                 )}
                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
-                    <>Proceeds on Dexter {formatAmount(quipuTokenProceeds)}</>
+                    <>Proceeds on QuipuSwap {formatAmount(quipuTokenProceeds)}</>
                 )}
             </RowContainer>
 
