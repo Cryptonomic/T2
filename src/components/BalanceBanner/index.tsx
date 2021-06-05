@@ -14,7 +14,7 @@ import { AddressType } from '../../types/general';
 import keyIconSvg from '../../../resources/imgs/Key_Icon.svg';
 import { ms } from '../../styles/helpers';
 import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
-import { getBakerDetails, getTezosDomains } from '../../reduxContent/app/thunks';
+import { getBakerDetails, getTezosDomains, getPrices } from '../../reduxContent/app/thunks';
 
 import { RootState } from '../../types/store';
 
@@ -66,6 +66,7 @@ function BalanceBanner(props: Props) {
 
     const bakerName = getBakerDetails(String(delegatedAddress));
     const domainName = getTezosDomains(String(publicKeyHash));
+    const xtzPrices = getPrices();
 
     let addressLabel = '';
     switch (selectedAccountType) {
@@ -140,6 +141,13 @@ function BalanceBanner(props: Props) {
                             <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
                         </div>
                     ) : null}
+                    {selectedAccountType === AddressType.Manager && xtzPrices.usd !== '-1' && (
+                        <>
+                            <>{((balance * Number(xtzPrices.usd)) / 1_000_000).toFixed(2)}USD</>
+                            <>{((balance * Number(xtzPrices.eur)) / 1_000_000).toFixed(2)}EUR</>
+                            <>{((balance * Number(xtzPrices.jpy)) / 1_000_000).toFixed(0)}JPY</>
+                        </>
+                    )}
                 </AddressInfo>
                 {delegatedAddress && (
                     <DelegateContainer>
