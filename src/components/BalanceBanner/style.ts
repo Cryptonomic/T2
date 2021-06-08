@@ -171,3 +171,16 @@ export const LinkIcon = styled(TezosIcon)`
     top: 1px;
     margin-left: 2px;
 `;
+
+export const Column = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+export const Currencies = styled(Column)`
+    margin-left: 15px;
+`;
+
+export const CurrencySymbol = styled.span`
+    margin-left: 5px;
+`;
