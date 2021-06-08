@@ -37,6 +37,9 @@ import {
     Gap,
     LinkIcon,
     LinkContainer,
+    Column,
+    Currencies,
+    CurrencySymbol,
 } from './style';
 
 interface Props {
@@ -133,8 +136,10 @@ function BalanceBanner(props: Props) {
                     </AddressTitle>
                 )}
                 <AddressInfo>
-                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
-                    {domainName && domainName.length > 0 && <>{domainName}</>}
+                    <Column>
+                        {domainName && domainName.length > 0 && <>{domainName}</>}
+                        <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
+                    </Column>
                     <Gap />
                     {isReady || storeType === Mnemonic ? (
                         <div style={{ marginLeft: 'auto' }}>
@@ -142,11 +147,20 @@ function BalanceBanner(props: Props) {
                         </div>
                     ) : null}
                     {selectedAccountType === AddressType.Manager && xtzPrices.usd !== '-1' && (
-                        <>
-                            <>{((balance * Number(xtzPrices.usd)) / 1_000_000).toFixed(2)}USD</>
-                            <>{((balance * Number(xtzPrices.eur)) / 1_000_000).toFixed(2)}EUR</>
-                            <>{((balance * Number(xtzPrices.jpy)) / 1_000_000).toFixed(0)}JPY</>
-                        </>
+                        <Currencies>
+                            <div>
+                                {((balance * Number(xtzPrices.usd)) / 1_000_000).toFixed(2)}
+                                <CurrencySymbol>USD</CurrencySymbol>
+                            </div>
+                            <div>
+                                {((balance * Number(xtzPrices.eur)) / 1_000_000).toFixed(2)}
+                                <CurrencySymbol>EUR</CurrencySymbol>
+                            </div>
+                            <div>
+                                {((balance * Number(xtzPrices.jpy)) / 1_000_000).toFixed(0)}
+                                <CurrencySymbol>JPY</CurrencySymbol>
+                            </div>
+                        </Currencies>
                     )}
                 </AddressInfo>
                 {delegatedAddress && (
