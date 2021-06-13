@@ -368,9 +368,22 @@ export const knownContractNames = {
     KT1J7v85udA8GnaBupacgY9mMvrb8zQdYb3E: 'Plenty ETHtz Pool',
     KT1Vs8gqh7YskPnUQMfmjogZh3A5ZLpqQGcg: 'Plenty hDAO Pool',
     KT1JCkdS3x5hTWdrTQdzK6vEkeAdQzsm2wzf: 'Plenty wLINK Pool',
+    KT1K5cgrw1A8WTiizZ5b6TxNdFnBq9AtyQ7X: 'Plenty USDtz Pool',
+    KT1TNzH1KiVsWh9kpFrWACrDNnfK4ihvGAZs: 'Plenty wMATIC Pool',
     KT1UDe1YP963CQSb5xN7cQ1X8NJ2pUyjGw5T: 'Plenty Pool',
 
+    KT1JQAZqShNMakSNXc2cgTzdAWZFemGcU6n1: 'Plenty 1.1 QuipuSwap Liquidity Farm',
+    KT1DjDZio7k2GJwCJCXwK82ing3n51AE55DW: 'Plenty/Kalam QuipuSwap Liquidity Farm',
+    KT1QqjR4Fj9YegB37PQEqXUPHmFbhz6VJtwE: 'Plenty 1.1 Pool',
+    KT19asUVzBNidHgTHp8MP31YSphooMb3piWR: 'Plenty 1.1 ETHtz Pool',
+    KT1Ga15wxGR5oWK1vBG2GXbjYM6WqPgpfRSP: 'Plenty 1.1 hDAO Pool',
+    KT1MBqc3GHpApBXaBZyvY63LF6eoFyTWtySn: 'Plenty 1.1 USDtz Pool',
+    KT1KyxPitU1xNbTriondmAFtPEcFhjSLV1hz: 'Plenty 1.1 wLINK Pool',
+    KT1XherecVvrE6X4PV5RTwdEKNzA294ZE9T9: 'Plenty 1.1 wMATIC Pool',
+
     KT1J5dqegz1qYaYc7X3KjynYL9St1wcZ8ZyV: 'Maelstrom Mixer',
+
+    KT1KENVgwsrAnXZHkm5MptHWhMYiXeG5hwa3: 'Wrap wLINK Farm',
 };
 
 export const knownMarketMetadata = [
