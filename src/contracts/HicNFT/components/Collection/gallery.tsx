@@ -17,7 +17,17 @@ const ArtGallery = (props: ArtGalleryProps) => {
     const { collection } = props;
 
     const pieces = collection.map((p: any) => {
-        return <ArtPiece key={p.piece} objectId={p.piece} amount={p.amount} price={p.price} receivedOn={p.receivedOn} action={p.action} />;
+        return (
+            <ArtPiece
+                key={p.piece}
+                objectId={p.piece}
+                amount={p.amount}
+                price={p.price}
+                receivedOn={p.receivedOn}
+                action={p.action}
+                transferTrigger={undefined}
+            />
+        );
     });
 
     return <Container>{pieces}</Container>;

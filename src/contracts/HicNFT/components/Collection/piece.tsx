@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { openLink, formatDate } from '../../../../utils/general';
@@ -8,6 +7,7 @@ import { formatAmount } from '../../../../utils/currency';
 import { getPieceInfo } from '../../thunks';
 
 import { InfoLink, Image, LinkIcon, PieceContainer, PieceId, PieceName, PieceDescription, PieceCreator, PieceDisplay, PieceInfo } from './style';
+import { InvokeButton } from '../../../components/style';
 
 interface Props {
     objectId: number;
@@ -15,15 +15,15 @@ interface Props {
     price: number;
     receivedOn: Date;
     action: string;
+    transferTrigger: any;
 }
 
 const supportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
 
 function ArtPiece(props: Props) {
     const { t } = useTranslation();
-    const dispatch = useDispatch();
 
-    const { objectId, amount, price, receivedOn, action } = props;
+    const { objectId, amount, price, receivedOn, action, transferTrigger } = props;
 
     const pieceInfo = getPieceInfo(objectId);
     const formattedPrice = formatAmount(price, 2);
@@ -74,8 +74,14 @@ function ArtPiece(props: Props) {
                         <LinkIcon iconName="new-window" color="black" onClick={() => openLink(`https://www.hicetnunc.xyz/objkt/${objectId}`)} />
                     </InfoLink>
                 )}
+
+                <InvokeButton buttonTheme="primary" onClick={() => transferTrigger()}>
+                    Send
+                </InvokeButton>
             </PieceInfo>
         </PieceContainer>
+
+        //
     );
 }
 
