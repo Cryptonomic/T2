@@ -19,6 +19,7 @@ import KolibriToken from '../../contracts/KolibriToken';
 import HicNFT from '../../contracts/HicNFT';
 import BlndToken from '../../contracts/BlndToken';
 import StkrToken from '../../contracts/StkrToken';
+import PlentyToken from '../../contracts/Plenty';
 import TokensPage from '../TokensPage';
 
 import { sortArr } from '../../utils/array';
@@ -63,7 +64,7 @@ function HomeMain() {
             case AddressType.TokensPage:
                 return <TokensPage />;
             case AddressType.plenty:
-                return <TokenContract />;
+                return <PlentyToken />;
             case AddressType.Token2:
                 return <Token2Contract />;
             default:
