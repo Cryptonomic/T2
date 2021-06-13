@@ -1,7 +1,10 @@
 import { JSONPath } from 'jsonpath-plus';
 import bigInt from 'big-integer';
 
-import { KeyStore, Signer, TezosNodeReader, TezosConstants, TezosNodeWriter, TezosParameterFormat } from 'conseiljs';
+import { KeyStore, Signer, TezosNodeReader, TezosConstants, TezosNodeWriter, TezosParameterFormat, Transaction } from 'conseiljs';
+
+import { knownTokenContracts } from '../../../constants/Token';
+import { TokenKind } from '../../../types/general';
 
 export interface PoolState {
     coinBalance: string;
@@ -184,21 +187,23 @@ export async function sendQuipuSell(
     notional: string,
     size: string
 ): Promise<string | undefined> {
+    const selectedToken = knownTokenContracts.filter((t) => t.address === tokenAddress)[0];
+
     const nextCounter = (await TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
 
-    // TODO: fa2 approval is different
-    const approveParams = `{ "prim": "Pair", "args": [ { "string": "${poolAddress}" }, { "int": "${size}" } ] }`;
-    const approveOp = TezosNodeWriter.constructContractInvocationOperation(
-        keyStore.publicKeyHash,
-        nextCounter,
-        tokenAddress,
-        0,
-        0,
-        0,
-        0,
-        'approve',
-        approveParams
-    );
+    let approveOp: Transaction;
+    if (selectedToken.kind === TokenKind.tzip12 || selectedToken.kind === TokenKind.objkt) {
+        approveOp = constructFA2ApprovalOperation(
+            keyStore.publicKeyHash,
+            nextCounter,
+            { fee: 0, gas: 0, storage: 0 },
+            tokenAddress,
+            poolAddress,
+            selectedToken.tokenIndex?.toString() || '0'
+        );
+    } else {
+        approveOp = constructFA1ApprovalOperation(keyStore.publicKeyHash, nextCounter, { fee: 0, gas: 0, storage: 0 }, tokenAddress, poolAddress, size);
+    }
 
     const sellParams = `{ "prim": "Pair", "args": [ { "prim": "Pair", "args": [ { "int": "${size}" }, { "int": "${notional}" } ] }, { "string": "${keyStore.publicKeyHash}" } ] }`;
     const sellOp = TezosNodeWriter.constructContractInvocationOperation(
@@ -292,10 +297,9 @@ export async function getPoolState(server: string, address: string, storageMap: 
     };
 }
 
-export async function constructApprovalOperation(
+export function constructFA1ApprovalOperation(
     sourceAddress: string,
     counter: number,
-    signer: Signer,
     fee: OperationFee,
     tokenAddress: string,
     destinationAddress: string,
@@ -312,6 +316,29 @@ export async function constructApprovalOperation(
         fee?.storage || 0,
         fee?.gas || 0,
         'approve',
+        params
+    );
+}
+
+export function constructFA2ApprovalOperation(
+    sourceAddress: string,
+    counter: number,
+    fee: OperationFee,
+    tokenAddress: string,
+    destinationAddress: string,
+    tokenIndex: string = '0'
+) {
+    const params = `[{"prim":"Left","args":[{"prim":"Pair","args":[{"string":"${sourceAddress}"},{"prim":"Pair","args":[{"string":"${destinationAddress}"},{"int":"${tokenIndex}"}]}]}]}]`;
+
+    return TezosNodeWriter.constructContractInvocationOperation(
+        sourceAddress,
+        counter,
+        tokenAddress,
+        0,
+        fee?.fee || 0,
+        fee?.storage || 0,
+        fee?.gas || 0,
+        'update_operators',
         params
     );
 }

@@ -8,7 +8,6 @@ import { getMainNode } from '../../../utils/settings';
 import { Token } from '../../../types/general';
 import PasswordInput from '../../../components/PasswordInput';
 import NumericInput from '../../../components/NumericInput';
-import TokenLedgerConfirmationModal from '../../../components/ConfirmModals/TokenLedgerConfirmationModal';
 import InputError from '../../../components/InputError';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { RootState, AppState, SettingsState } from '../../../types/store';
@@ -59,8 +58,8 @@ function Swap(props: Props) {
     const dispatch = useDispatch();
 
     const [tradeSide, setTradeSide] = useState('buy');
-
     const [passPhrase, setPassPhrase] = useState('');
+    const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
 
     const [tokenAmount, setTokenAmount] = useState('');
     const [dexterTokenCost, setDexterTokenCost] = useState(0.0);
@@ -69,9 +68,7 @@ function Swap(props: Props) {
     const [quipuTokenProceeds, setQuipuTokenProceeds] = useState(0.0);
     const [bestMarket, setBestMarket] = useState('');
 
-    const [open, setOpen] = useState(false);
-
-    const { isLoading, isLedger, selectedParentHash } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
+    const { isLoading, isLedger } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
     const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((state: RootState) => state.settings, shallowEqual);
     const tezosUrl = getMainNode(nodesList, selectedNode).tezosUrl;
 
@@ -211,7 +208,7 @@ function Swap(props: Props) {
         dispatch(setIsLoadingAction(true));
 
         if (isLedger) {
-            setOpen(true);
+            setLedgerModalOpen(true);
         }
 
         if (tradeSide === 'buy' && bestMarket.toLowerCase() === 'dexter') {
@@ -256,7 +253,7 @@ function Swap(props: Props) {
             );
         }
 
-        setOpen(false);
+        setLedgerModalOpen(false);
         dispatch(setIsLoadingAction(false));
     }
 
@@ -315,19 +312,11 @@ function Swap(props: Props) {
                     {t(`general.verbs.${tradeSide}`)} {t('general.prepositions.on')} {bestMarket}
                 </InvokeButton>
             </PasswordButtonContainer>
-            {/*isLedger && open && (
-                <TokenLedgerConfirmationModal
-                    fee={fee}
-                    to={newAddress}
-                    source={selectedParentHash}
-                    amount={amount}
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    isLoading={isLoading}
-                    op={SEND}
-                    symbol={token.symbol}
-                />
-            )*/}
+            {isLedger && ledgerModalOpen && (
+                <PasswordButtonContainer>
+                    <>Please confirm the operation on the Ledger device</>
+                </PasswordButtonContainer>
+            )}
         </Container>
     );
 }
