@@ -291,19 +291,19 @@ export const getTezosDomains = (accountAddress: string): string => {
 };
 
 export const getPrices = (): { usd: string; eur: string; jpy: string } => {
-    const store = useStore<RootState>();
-
-    const [prices, setPrices] = useState<any>({});
+    const [prices, setPrices] = useState<any>({ usd: '-1', eur: '-1', jpy: '-1' });
+    const [priceTrigger, setPriceTrigger] = useState<string>('');
 
     useEffect(() => {
         const getData = async () => {
             const priceResponse = await queryPrices();
 
             setPrices(priceResponse);
+            setPriceTrigger(JSON.stringify(priceResponse));
         };
 
         getData();
-    }, [prices]);
+    }, [priceTrigger]);
 
     const k = Object.keys(prices);
     return { usd: prices.usd, eur: prices.eur, jpy: prices.jpy };
