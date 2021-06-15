@@ -24,6 +24,7 @@ import {
     getPoolState,
     getXTZBuyExchangeRate,
     getXTZSellExchangeRate,
+    applyFees,
 } from '../../components/Swap/util';
 import { buyDexter, sellDexter, buyQuipu, sellQuipu } from '../../components/Swap/thunks';
 import { harvestRewards } from '../thunks';
@@ -95,32 +96,6 @@ function Swap(props: Props) {
             isIssue: false,
             warningMessage: '',
         };
-    }
-
-    /**
-     *
-     * @param amount Decimal-formatted XTZ amount
-     * @param side buy | sell
-     * @returns
-     */
-    function applyFees(amount: number, side: string) {
-        const slippage = 0.01;
-        const fee = 0.05;
-        const feeThreshold = 500_000_000;
-
-        const ba = new BigNumber(amount);
-        const bs = ba.multipliedBy(slippage);
-        const bf = ba.isGreaterThanOrEqualTo(feeThreshold) ? ba.multipliedBy(fee) : 0;
-
-        if (side === 'buy') {
-            return ba.plus(bs).plus(bf).dp(0, 0).toNumber();
-        }
-
-        if (side === 'sell') {
-            return ba.minus(bs).minus(bf).dp(0, 1).toNumber();
-        }
-
-        return 0;
     }
 
     async function updateAmount(val) {

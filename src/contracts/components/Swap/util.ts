@@ -54,6 +54,33 @@ export const tokenPoolMap = {
     KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA: { dexterPool: '', quipuPool: 'KT1WtFb1mTsFRd1n1nAYMdrE2Ud9XREz5hjK' }, // QLkUSD
 };
 
+/**
+ *
+ * @param amount Decimal-formatted XTZ amount
+ * @param side buy | sell
+ * @returns
+ */
+export function applyFees(amount: number, side: string) {
+    return amount;
+    // const slippage = 0.01;
+    // const fee = 0.05;
+    // const feeThreshold = 500_000_000;
+
+    // const ba = new BigNumber(amount);
+    // const bs = ba.multipliedBy(slippage);
+    // const bf = ba.isGreaterThanOrEqualTo(feeThreshold) ? ba.multipliedBy(fee) : 0;
+
+    // if (side === 'buy') {
+    //     return ba.plus(bs).plus(bf).dp(0, 0).toNumber();
+    // }
+
+    // if (side === 'sell') {
+    //     return ba.minus(bs).minus(bf).dp(0, 1).toNumber();
+    // }
+
+    // return 0;
+}
+
 export async function sendDexterBuy(
     tezosNode: string,
     keyStore: KeyStore,
