@@ -51,11 +51,6 @@ export default function CollectionContainer(props: Props) {
                 emptyState={emptyGallery}
                 emptyStateTitle={t('components.actionPanel.empty-title')}
             />
-            {transferModalVisible && (
-                <>
-                    <></>
-                </>
-            )}
         </Container>
     );
 }

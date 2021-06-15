@@ -480,6 +480,13 @@
         "withdrawDeposit": {
             "withdraw_warning": "To withdraw funds back to your manager account, {{managerAddress}}, please select a fee of at least 0.005 XTZ and ensure you have at least that amount in your manager account to cover the transaction.",
             "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}."
+        },
+        "hicNFT": {
+            "modal": {
+                "title": "HicNFT Transfer",
+                "recipient_address": "Recipient Address",
+                "send": "Send"
+            }
         }
     },
     "containers": {
