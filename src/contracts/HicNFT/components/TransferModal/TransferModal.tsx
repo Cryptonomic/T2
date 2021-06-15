@@ -9,6 +9,7 @@ import Loader from '../../../../components/Loader';
 import { RootState, AppState } from '../../../../types/store';
 import { AddressInfoLink, ModalWrapper, ModalContainer, CloseIconWrapper, ModalTitle } from '../../../../featureModals/style';
 
+import { LinkIcon } from '../Collection/style';
 import { Container, AmountContainer, PasswordContainer, InvokeButton } from './style';
 
 import InputAddress from '../../../../components/InputAddress';
@@ -42,26 +43,33 @@ const TransferModal = ({ open, onClose }: Props) => {
     const { piece } = useSelector<RootState, any>((state: RootState) => state.modal.values, shallowEqual);
 
     const [passPhrase, setPassPhrase] = useState('');
-    const [amount, setAmount] = useState(piece.amount);
+    const [amount, setAmount] = useState(0);
     const [address, setAddress] = useState('');
     const [issue, setIssue] = useState('');
 
     const isDisabled = !passPhrase && !isLedger;
 
     const onTransfer = async () => {
-        dispatch(transferThunk(piece.destination, piece.amount, piece.tokenId, passPhrase));
+        dispatch(transferThunk(address, amount, piece.objectId, passPhrase));
+        onClose();
     };
 
-    const onChangeAddress = () => setAddress('');
+    const onChangeAddress = (a) => setAddress(a);
     const onIssue = () => setIssue('');
-    const onChangeAmount = () => setAmount('');
+    const onChangeAmount = (n) => setAmount(Number(n));
 
     return (
         <ModalWrapper open={open}>
             {open ? (
                 <ModalContainer>
                     <CloseIconWrapper onClick={() => onClose()} />
-                    <ModalTitle>{t('components.hicNFT.modal.title')}</ModalTitle>
+                    <ModalTitle>
+                        {t('general.verbs.send')} "{piece.info.name}" (OBJKT #{piece.objectId})
+                        <AmountContainer>
+                            <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>View on hic et nunc</span>
+                            <LinkIcon iconName="new-window" color="black" onClick={() => openLink(`https://www.hicetnunc.xyz/objkt/${piece.objectId}`)} />
+                        </AmountContainer>
+                    </ModalTitle>
                     <Container>
                         {/* TODO: extract values from piece if needed */}
                         <InputAddress
@@ -75,9 +83,10 @@ const TransferModal = ({ open, onClose }: Props) => {
                             <TezosNumericInput
                                 decimalSeparator={t('general.decimal_separator')}
                                 label={t('general.nouns.amount')}
-                                amount={amount}
+                                amount={amount + ''}
                                 onChange={onChangeAmount}
                                 errorText={''}
+                                symbol=" "
                             />
                         </AmountContainer>
                         <PasswordContainer>
