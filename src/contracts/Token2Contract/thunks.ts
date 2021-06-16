@@ -39,7 +39,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
                 keyStore,
                 fee,
                 selectedParentHash,
-                [{ address: destination, tokenid: 0, amount }],
+                [{ address: destination, tokenid: token.tokenIndex, amount }],
                 0,
                 0
             ).catch((err) => {

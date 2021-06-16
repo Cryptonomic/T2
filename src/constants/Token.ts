@@ -16,6 +16,9 @@ import stablyIcon from '../../resources/contracts/stably-icon.png';
 import hehIcon from '../../resources/contracts/heh-icon.png';
 import kdaoIcon from '../../resources/contracts/kdao-icon.png';
 import wrapIcon from '../../resources/contracts/wrap-icon.png';
+import wusdcIcon from '../../resources/contracts/wusdc-icon.png';
+import wlinkIcon from '../../resources/contracts/wlink-icon.png';
+import wmaticIcon from '../../resources/contracts/wmatic-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -232,6 +235,54 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        displayName: 'Wrapped LINK',
+        symbol: 'wLINK',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: wlinkIcon,
+        tokenIndex: 10,
+        scale: 18,
+        precision: 8,
+        round: 8,
+        mapid: 1772,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        displayName: 'Wrapped Matic/Polygon',
+        symbol: 'wMATIC',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: wmaticIcon,
+        tokenIndex: 11,
+        scale: 18,
+        precision: 8,
+        round: 8,
+        mapid: 1772,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        displayName: 'Wrapped USDC',
+        symbol: 'wUSDC',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: wusdcIcon,
+        tokenIndex: 17,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 1772,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
         displayName: 'tzBTC',
         symbol: 'tzBTC',
@@ -276,22 +327,6 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 1600,
     },
-    /*{
-        network: 'mainnet',
-        address: 'KT1Nbc9cmx19qFrYYFpkiDoojVYL8UZJYVcj',
-        displayName: 'Guts Gaming token',
-        symbol: 'GUTS',
-        balance: 0,
-        transactions: [],
-        activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip12,
-        // icon: uteIcon,
-        scale: 0,
-        precision: 0,
-        round: 0,
-        mapid: 1948,
-        hideOnLanding: true,
-    },*/
 ];
 
 export const knownTokenDescription = {
@@ -340,6 +375,9 @@ export const knownContractNames = {
     KT1KFszq8UFCcWxnXuhZPUyHT9FK3gjmSKm6: 'QuipuSwap USDS Pool',
     KT1WtFb1mTsFRd1n1nAYMdrE2Ud9XREz5hjK: 'QuipuSwap QLkUSD Pool',
     KT1FG63hhFtMEEEtmBSX2vuFmP87t9E7Ab4t: 'QuipuSwap WRAP Pool',
+    KT1U2hs5eNdeCpHouAvQXGMzGFGJowbhjqmo: 'QuipuSwap wUSDC Pool',
+    KT1Lpysr4nzcFegC9ci9kjoqVidwoanEmJWt: 'QuipuSwap wLINK Pool',
+    KT1RsfuBee5o7GtYrdB7bzQ1M6oVgyBnxY4S: 'QuipuSwap wMATIC Pool',
     KT1WYQj3HEt3sxdsV4dMLA8RKzUnYAzXgguS: 'QuipuSwap GUTS Pool',
     KT1BgezWwHBxA9NrczwK9x3zfgFnUkc7JJ4b: 'QuipuSwap Hedgehoge Pool',
     KT1RRgK6eXvCWCiEGWhRZCSVGzhDzwXEEjS4: 'QuipuSwap Crunchy Pool',
@@ -546,5 +584,29 @@ export const knownMarketMetadata = [
         name: 'QuipuSwap HEH Pool',
         scale: 10,
         symbol: 'HEH',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1U2hs5eNdeCpHouAvQXGMzGFGJowbhjqmo',
+        token: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        name: 'QuipuSwap wUSDC Pool',
+        scale: 6,
+        symbol: 'wUSDC',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1Lpysr4nzcFegC9ci9kjoqVidwoanEmJWt',
+        token: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        name: 'QuipuSwap wLINK Pool',
+        scale: 18,
+        symbol: 'wLINK',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1RsfuBee5o7GtYrdB7bzQ1M6oVgyBnxY4S',
+        token: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        name: 'QuipuSwap wMATIC Pool',
+        scale: 18,
+        symbol: 'wMATIC',
     },
 ];
