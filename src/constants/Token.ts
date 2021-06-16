@@ -36,6 +36,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 36,
         helpLink: 'https://usdtz.com',
+        displayHelpLink: 'usdtz.com',
     },
     {
         network: 'mainnet',
@@ -52,6 +53,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 6,
         mapid: 199,
         helpLink: 'https://ethtz.io',
+        displayHelpLink: 'ethtz.io',
     },
     {
         network: 'mainnet',
@@ -68,6 +70,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 380,
         helpLink: 'https://kolibri.finance/',
+        displayHelpLink: 'kolibri.finance',
     },
     {
         network: 'mainnet',
@@ -84,6 +87,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 0,
         mapid: 511,
         helpLink: 'https://www.hicetnunc.xyz/',
+        displayHelpLink: 'hicetnunc.xyz',
         marketAddress: 'KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9',
     },
     {
@@ -101,6 +105,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 257,
         helpLink: 'https://stakerdao.gitbook.io/stakerdao-faq-and-docs/wrapped-tezos-wxtz-faq-and-docs',
+        displayHelpLink: 'stakerdao.gitbook.io',
         vaultCoreAddress: 'KT1V4Vp7zhynCNuaBjWMpNU535Xm2sgqkz6M',
         vaultRegistryMapId: 260,
         vaultList: [],
@@ -152,6 +157,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 368,
         helpLink: 'https://docs.stakerdao.com/blend-blnd-faq-and-docs',
+        displayHelpLink: 'stakerdao.com',
     },
     {
         network: 'mainnet',
@@ -168,6 +174,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 527,
         helpLink: 'https://docs.stakerdao.com/',
+        displayHelpLink: 'stakerdao.com',
     },
     {
         network: 'mainnet',

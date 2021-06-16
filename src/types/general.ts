@@ -148,6 +148,8 @@ export interface Token extends TokenDefinition {
     precision?: number;
     round?: number;
     transactionFeeFloor?: number;
+    helpLink?: string;
+    displayHelpLink?: string;
     hideOnLanding?: boolean;
 }
 
