@@ -162,12 +162,7 @@ const getStatus = (transaction, selectedAccountHash, t) => {
             };
         }
         default: {
-            const isFlag =
-                !transaction.parameters &&
-                (transaction.consumed_gas === REG_TX_GAS_CONSUMPTION ||
-                    transaction.consumed_gas === REG_TX_GAS_CONSUMPTION_ATHENS ||
-                    transaction.consumed_gas === REG_TX_GAS_CONSUMPTION_BABYLON ||
-                    transaction.consumed_gas === EMPTY_OUT_TX_GAS_CONSUMPTION);
+            const isFlag = !transaction.parameters;
 
             if (isSameLocation && isFlag) {
                 return {
