@@ -86,7 +86,8 @@
             "voting": "Voting",
             "implementation": "Implementation",
             "vaults": "Vaults",
-            "collection": "Collection"
+            "collection": "Collection",
+            "quantity": "Quantity"
         },
         "errors": {
             "no_hex_data": "The provided string doesn't look like hex data",

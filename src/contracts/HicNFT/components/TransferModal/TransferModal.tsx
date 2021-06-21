@@ -13,7 +13,7 @@ import { LinkIcon } from '../Collection/style';
 import { Container, AmountContainer, PasswordContainer, InvokeButton } from './style';
 
 import InputAddress from '../../../../components/InputAddress';
-import TezosNumericInput from '../../../../components/TezosNumericInput';
+import NumericInput from '../../../../components/NumericInput';
 import PasswordInput from '../../../../components/PasswordInput';
 
 import { transferThunk } from '../../thunks';
@@ -80,13 +80,14 @@ const TransferModal = ({ open, onClose }: Props) => {
                             onIssue={onIssue}
                         />
                         <AmountContainer>
-                            <TezosNumericInput
-                                decimalSeparator={t('general.decimal_separator')}
-                                label={t('general.nouns.amount')}
+                            <NumericInput
+                                label={t('general.nouns.quantity')}
+                                scale={1}
+                                precision={0}
                                 amount={amount + ''}
                                 onChange={onChangeAmount}
                                 errorText={''}
-                                symbol=" "
+                                symbol={'OBJKT'}
                             />
                         </AmountContainer>
                         <PasswordContainer>
