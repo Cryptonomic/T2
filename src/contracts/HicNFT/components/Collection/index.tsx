@@ -14,8 +14,6 @@ export default function CollectionContainer(props: Props) {
     const { collection } = props;
     const { t } = useTranslation();
 
-    const emptyGallery = <></>; // TODO: show number of active auctions, link to site
-
     return (
         <Container>
             <PaginationList
@@ -23,8 +21,8 @@ export default function CollectionContainer(props: Props) {
                 ListComponent={ArtGallery}
                 listComponentProps={{}}
                 componentListName="collection"
-                emptyState={emptyGallery}
-                emptyStateTitle={t('components.actionPanel.empty-title')}
+                emptyState={''}
+                emptyStateTitle={'No OBJKTs found.'}
             />
         </Container>
     );
