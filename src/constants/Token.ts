@@ -337,7 +337,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1TjLCCfJZJRSBeNq5hK7BspjUKyafLKMuh',
+        address: 'KT1H3LrbC378dPBjTZEK8wVyaknDpQmskRhq',
         displayName: 'ER Ecoworld',
         symbol: 'EREW',
         balance: 0,
@@ -348,7 +348,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 8,
         precision: 8,
         round: 8,
-        mapid: 5407,
+        mapid: 5479,
         hideOnLanding: true,
     },
 ];
