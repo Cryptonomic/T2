@@ -1,4 +1,4 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosMessageUtils } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosMessageUtils, TezosNodeReader } from 'conseiljs';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
@@ -179,4 +179,21 @@ export async function getTokenTransactions(tokenAddress: string, managerAddress:
         .then((transactions) => {
             return transactions.sort((a, b) => a.timestamp - b.timestamp);
         });
+}
+
+/**
+ * Parses storage of contracts matching the smartpy FA2 implementation audited byt PWC.
+ */
+export async function getSimpleStoragePWCA(tezosUrl: string, tokenAddress: string) {
+    const storageResult = await TezosNodeReader.getContractStorage(tezosUrl, tokenAddress);
+
+    return {
+        administrator: JSONPath({ path: '$.args[0].args[0].string', json: storageResult })[0],
+        tokens: Number(JSONPath({ path: '$.args[0].args[1].int', json: storageResult })[0]),
+        ledger: Number(JSONPath({ path: '$.args[0].args[2].int', json: storageResult })[0]),
+        metadata: Number(JSONPath({ path: '$.args[3].int', json: storageResult })[0]),
+        paused: JSONPath({ path: '$.args[2].prim', json: storageResult })[0].toString().toLowerCase().startsWith('t'),
+        operators: Number(JSONPath({ path: '$.args[1].args[1].int', json: storageResult })[0]),
+        tokenMetadata: Number(JSONPath({ path: '$.args[3].int', json: storageResult })[0]),
+    };
 }

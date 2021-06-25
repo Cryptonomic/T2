@@ -36,6 +36,8 @@ import { saveUpdatedWallet, loadPersistedState, saveIdentitiesToLocal, loadWalle
 
 import { findTokenIndex } from '../../utils/token';
 
+import * as token2Util from '../../contracts/Token2Contract/util';
+
 import { setWalletAction, setIdentitiesAction, addNewIdentityAction, updateIdentityAction, updateTokensAction } from './actions';
 
 import {
@@ -313,11 +315,26 @@ export function syncTokenThunk(tokenAddress) {
                     balanceAsync = SingleAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].balancePath);
                 }
 
-                detailsAsync = MultiAssetTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                if (tokens[tokenIndex].symbol.toLowerCase() === 'btctz') {
+                    // TODO
+                    detailsAsync = token2Util
+                        .getSimpleStoragePWCA(mainNode.tezosUrl, tokens[tokenIndex].address)
+                        .then(async (d) => {
+                            const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
 
-                    return { ...d, holders: keyCount };
-                });
+                            return { ...d, holders: keyCount };
+                        })
+                        .catch(() => undefined);
+                } else {
+                    detailsAsync = MultiAssetTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address)
+                        .then(async (d) => {
+                            const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+
+                            return { ...d, holders: keyCount };
+                        })
+                        .catch(() => undefined); // supply, paused
+                }
+
                 transAsync = tzip12Util.syncTokenTransactions(
                     tokenAddress,
                     selectedParentHash,
@@ -540,7 +557,14 @@ export function syncWalletThunk() {
                 } else if (token.kind === TokenKind.tzip12) {
                     let administrator = token.administrator;
 
-                    let details: any = await MultiAssetTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined); // supply, paused
+                    let details: any = {};
+                    if (token.symbol.toLowerCase() === 'btctz') {
+                        // TODO
+                        details = await token2Util.getSimpleStoragePWCA(mainNode.tezosUrl, token.address).catch(() => undefined);
+                    } else {
+                        details = await MultiAssetTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined); // supply, paused
+                    }
+
                     administrator = details?.administrator || '';
 
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);

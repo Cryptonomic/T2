@@ -92,3 +92,130 @@ export function transferThunk(destination: string, amount: number, fee: number, 
         return true;
     };
 }
+
+export function mintThunk(destination: string, amount: number, fee: number, password: string) {
+    /*return async (dispatch, state) => {
+        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { identities, walletPassword, tokens } = state().wallet;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
+        const mainNode = getMainNode(nodesList, selectedNode);
+        const { tezosUrl } = mainNode;
+
+        if (password !== walletPassword && !isLedger) {
+            const error = 'components.messageBar.messages.incorrect_password';
+            dispatch(createMessageAction(error, true));
+            return false;
+        }
+
+        const mainPath = getMainPath(pathsList, selectedPath);
+
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
+
+        const groupid: string = await mint(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            selectedAccountHash,
+            fee,
+            destination,
+            amount,
+            0,
+            0
+        ).catch((err) => {
+            console.log(err);
+            const errorObj = { name: err.message, ...err };
+            console.error(errorObj);
+            dispatch(createMessageAction(errorObj.name, true));
+            return '';
+        });
+
+        if (groupid.length === 0) {
+            return false;
+        }
+
+        dispatch(createMessageAction('components.messageBar.messages.mint_operation_success', false, groupid));
+
+        const transaction = createTransaction({
+            amount,
+            destination,
+            kind: TRANSACTION,
+            source: keyStore.publicKeyHash,
+            operation_group_hash: groupid,
+            fee,
+            entryPoint: 'mint',
+        });
+
+        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+
+        if (tokenIndex > -1) {
+            tokens[tokenIndex].transactions.push(transaction);
+        }
+
+        dispatch(updateTokensAction([...tokens]));
+
+        return true;
+    };*/
+}
+
+export function burnThunk(destination: string, amount: number, fee: number, password: string) {
+    /*return async (dispatch, state) => {
+        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { identities, walletPassword, tokens } = state().wallet;
+        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
+        const mainNode = getMainNode(nodesList, selectedNode);
+        const { tezosUrl } = mainNode;
+
+        if (password !== walletPassword && !isLedger) {
+            const error = 'components.messageBar.messages.incorrect_password';
+            dispatch(createMessageAction(error, true));
+            return false;
+        }
+
+        const mainPath = getMainPath(pathsList, selectedPath);
+
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
+
+        const groupid: string = await burn(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            selectedAccountHash,
+            fee,
+            destination,
+            amount,
+            0,
+            0
+        ).catch((err) => {
+            const errorObj = { name: err.message, ...err };
+            console.error(errorObj);
+            dispatch(createMessageAction(errorObj.name, true));
+            return '';
+        });
+
+        if (groupid.length === 0) {
+            return false;
+        }
+
+        dispatch(createMessageAction('components.messageBar.messages.burn_operation_success', false, groupid));
+
+        const transaction = createTransaction({
+            amount: amount * -1,
+            destination,
+            kind: TRANSACTION,
+            source: keyStore.publicKeyHash,
+            operation_group_hash: groupid,
+            fee,
+            entryPoint: 'burn',
+        });
+
+        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+
+        if (tokenIndex > -1) {
+            tokens[tokenIndex].transactions.push(transaction);
+        }
+
+        dispatch(updateTokensAction([...tokens]));
+
+        return true;
+    };*/
+}

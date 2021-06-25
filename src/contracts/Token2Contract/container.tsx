@@ -8,13 +8,15 @@ import BalanceBanner from '../components/BalanceBanner';
 import EmptyState from '../../components/EmptyState';
 import PageNumbers from '../../components/PageNumbers';
 import Loader from '../../components/Loader';
-import { TRANSACTIONS, SEND, SWAP } from '../../constants/TabConstants';
+import { TRANSACTIONS, SEND, SWAP, MINT, BURN } from '../../constants/TabConstants';
 import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 
 import Transactions from '../components/TransactionContainer';
 import Send from '../components/Send';
 import Swap from '../components/Swap';
+import Mint from '../components/Mint';
+import Burn from '../components/Burn';
 import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
 import { getTokenSelector } from '../duck/selectors';
 
@@ -31,7 +33,7 @@ function ActionPanel() {
     const { activeTab, displayName, administrator, transactions } = selectedToken;
 
     const isAdmin = selectedParentHash === administrator;
-    const tabs = isAdmin ? [TRANSACTIONS, SEND, SWAP] : [TRANSACTIONS, SEND, SWAP];
+    const tabs = isAdmin ? [TRANSACTIONS, SEND, SWAP, MINT, BURN] : [TRANSACTIONS, SEND, SWAP];
 
     function onChangeTab(newTab: string) {
         dispatch(updateActiveTabThunk(newTab, true));
@@ -39,6 +41,10 @@ function ActionPanel() {
 
     function renderSection() {
         switch (activeTab) {
+            // case MINT:
+            // return <Mint isReady={true} token={selectedToken} tokenMintAction={mintThunk} />;
+            // case BURN:
+            // return <Burn isReady={true} token={selectedToken} tokenBurnAction={burnThunk} />;
             case SEND:
                 return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
             case SWAP:
