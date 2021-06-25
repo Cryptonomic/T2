@@ -19,6 +19,7 @@ import wrapIcon from '../../resources/contracts/wrap-icon.png';
 import wusdcIcon from '../../resources/contracts/wusdc-icon.png';
 import wlinkIcon from '../../resources/contracts/wlink-icon.png';
 import wmaticIcon from '../../resources/contracts/wmatic-icon.png';
+import btctzIcon from '../../resources/contracts/btctz-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -333,6 +334,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 36,
         round: 2,
         mapid: 1600,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1TjLCCfJZJRSBeNq5hK7BspjUKyafLKMuh',
+        displayName: 'ER Ecoworld',
+        symbol: 'EREW',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        tokenIndex: 0,
+        scale: 8,
+        precision: 8,
+        round: 8,
+        mapid: 5407,
+        hideOnLanding: true,
     },
 ];
 
