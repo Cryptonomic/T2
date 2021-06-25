@@ -54,6 +54,10 @@ export const tokenPoolMap = {
     KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA: { dexterPool: '', quipuPool: 'KT1WtFb1mTsFRd1n1nAYMdrE2Ud9XREz5hjK' }, // QLkUSD
 };
 
+export function isTradeable(tokenAddress: string) {
+    return Object.keys(tokenPoolMap).includes(tokenAddress);
+}
+
 /**
  *
  * @param amount Decimal-formatted XTZ amount

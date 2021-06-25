@@ -9,6 +9,7 @@ import { Token } from '../../../types/general';
 import PasswordInput from '../../../components/PasswordInput';
 import NumericInput from '../../../components/NumericInput';
 import InputError from '../../../components/InputError';
+import EmptyState from '../../../components/EmptyState';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { RootState, AppState, SettingsState } from '../../../types/store';
 import { knownTokenContracts } from '../../../constants/Token';
@@ -25,6 +26,7 @@ import {
     getXTZBuyExchangeRate,
     getXTZSellExchangeRate,
     applyFees,
+    isTradeable,
 } from './util';
 import { buyDexter, sellDexter, buyQuipu, sellQuipu } from './thunks';
 
@@ -234,63 +236,69 @@ function Swap(props: Props) {
 
     const { isIssue, warningMessage } = getBalanceState();
     const error = isIssue ? <InputError error={warningMessage} /> : '';
+    const showForm = isTradeable(token.address);
 
     // TODO: needs a popup explaining slippage, fees
     // TODO: needs a modal to accept disclaimer on actual amounts
     return (
         <Container>
-            <RowContainer>
-                <SegmentedControlContainer>
-                    <RestoreTabs type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
-                </SegmentedControlContainer>
+            {!showForm && <EmptyState imageSrc={''} title={`Trading of ${token.displayName} is not supported yet.`} description={null} />}
+            {showForm && (
+                <>
+                    <RowContainer>
+                        <SegmentedControlContainer>
+                            <RestoreTabs type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
+                        </SegmentedControlContainer>
 
-                <AmountContainer>
-                    <NumericInput
-                        label={t('general.nouns.amount')}
-                        amount={tokenAmount}
-                        onChange={updateAmount}
-                        errorText={error}
-                        symbol={token.symbol}
-                        scale={token.scale || 0}
-                        precision={token.precision || 6}
-                        maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
-                        minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
-                    />
-                </AmountContainer>
-            </RowContainer>
-            <RowContainer>
-                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
-                    <>Cost on Dexter {formatAmount(dexterTokenCost)}</>
-                )}
-                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
-                    <>Cost on QuipuSwap {formatAmount(quipuTokenCost)}</>
-                )}
+                        <AmountContainer>
+                            <NumericInput
+                                label={t('general.nouns.amount')}
+                                amount={tokenAmount}
+                                onChange={updateAmount}
+                                errorText={error}
+                                symbol={token.symbol}
+                                scale={token.scale || 0}
+                                precision={token.precision || 6}
+                                maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
+                                minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
+                            />
+                        </AmountContainer>
+                    </RowContainer>
+                    <RowContainer>
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
+                            <>Cost on Dexter {formatAmount(dexterTokenCost)}</>
+                        )}
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
+                            <>Cost on QuipuSwap {formatAmount(quipuTokenCost)}</>
+                        )}
 
-                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
-                    <>Proceeds on Dexter {formatAmount(dexterTokenProceeds)}</>
-                )}
-                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
-                    <>Proceeds on QuipuSwap {formatAmount(quipuTokenProceeds)}</>
-                )}
-            </RowContainer>
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
+                            <>Proceeds on Dexter {formatAmount(dexterTokenProceeds)}</>
+                        )}
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
+                            <>Proceeds on QuipuSwap {formatAmount(quipuTokenProceeds)}</>
+                        )}
+                    </RowContainer>
 
-            <PasswordButtonContainer>
-                {!isLedger && (
-                    <PasswordInput
-                        label={t('general.nouns.wallet_password')}
-                        password={passPhrase}
-                        onChange={(val) => setPassPhrase(val)}
-                        containerStyle={{ width: '47%', marginTop: '10px' }}
-                    />
-                )}
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
-                    {t(`general.verbs.${tradeSide}`)} {t('general.prepositions.on')} {bestMarket}
-                </InvokeButton>
-            </PasswordButtonContainer>
-            {isLedger && ledgerModalOpen && (
-                <PasswordButtonContainer>
-                    <>Please confirm the operation on the Ledger device</>
-                </PasswordButtonContainer>
+                    <PasswordButtonContainer>
+                        {!isLedger && (
+                            <PasswordInput
+                                label={t('general.nouns.wallet_password')}
+                                password={passPhrase}
+                                onChange={(val) => setPassPhrase(val)}
+                                containerStyle={{ width: '47%', marginTop: '10px' }}
+                            />
+                        )}
+                        <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
+                            {t(`general.verbs.${tradeSide}`)} {t('general.prepositions.on')} {bestMarket}
+                        </InvokeButton>
+                    </PasswordButtonContainer>
+                    {isLedger && ledgerModalOpen && (
+                        <PasswordButtonContainer>
+                            <>Please confirm the operation on the Ledger device</>
+                        </PasswordButtonContainer>
+                    )}
+                </>
             )}
         </Container>
     );
