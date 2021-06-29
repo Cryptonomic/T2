@@ -356,7 +356,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
         network: 'mainnet',
         address: 'KT1Wa8yqRBpFCusJWgcQyjhRz7hUQAmFxW7j',
-        displayName: 'fDAO',
+        displayName: 'Flame Token',
         symbol: 'FLAME',
         balance: 0,
         transactions: [],
@@ -368,6 +368,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 6,
         mapid: 2545,
         balancePath: '$.args[1].int',
+        helpLink: 'https://spacefarm.xyz',
+        displayHelpLink: 'spacefarm.xyz',
     },
     {
         network: 'mainnet',
@@ -414,6 +416,7 @@ export const knownTokenDescription = {
     KALAM: 'Kalamint DAO',
     KDAO: 'Kolibri DAO',
     SMAK: 'SmartLink',
+    FLAME: 'is the utility token of FlameDeFi.',
 };
 
 export const knownContractNames = {
