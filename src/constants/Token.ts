@@ -20,6 +20,8 @@ import wusdcIcon from '../../resources/contracts/wusdc-icon.png';
 import wlinkIcon from '../../resources/contracts/wlink-icon.png';
 import wmaticIcon from '../../resources/contracts/wmatic-icon.png';
 import btctzIcon from '../../resources/contracts/btctz-icon.png';
+import smakIcon from '../../resources/contracts/smak-icon.png';
+import flameIcon from '../../resources/contracts/flame-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -353,6 +355,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1Wa8yqRBpFCusJWgcQyjhRz7hUQAmFxW7j',
+        displayName: 'fDAO',
+        symbol: 'FLAME',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: flameIcon,
+        scale: 6,
+        precision: 6,
+        round: 6,
+        mapid: 2545,
+        balancePath: '$.args[1].int',
+    },
+    {
+        network: 'mainnet',
         address: 'KT1H3LrbC378dPBjTZEK8wVyaknDpQmskRhq',
         displayName: 'ER Ecoworld',
         symbol: 'EREW',
@@ -367,18 +385,35 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         mapid: 5479,
         hideOnLanding: true,
     },
+    {
+        network: 'mainnet',
+        address: 'KT1TwzD6zV3WeJ39ukuqxcfK2fJCnhvrdN1X',
+        displayName: 'SmartLink',
+        symbol: 'SMAK',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: smakIcon,
+        scale: 3,
+        precision: 3,
+        round: 3,
+        mapid: 1798,
+        balancePath: '$.args[1].int',
+    },
 ];
 
 export const knownTokenDescription = {
-    wXTZ: 'is a fully collateralized representation of XTZ conforming to the FA1.2 token standard',
+    wXTZ: 'is a fully collateralized representation of XTZ as a token',
     tzBTC: 'is a Tezos token which is fully collateralized with Bitcoin, issued by the Bitcoin Association Switzerland',
     kUSD: 'is a Tezos based stablecoin built on Collateralized Debt Positions (CDPs)',
     USDtz: 'is a stable coin pegged to the value of the United States Dollar',
-    ETHtz: '',
+    ETHtz: 'a StableTez token fully backed by Eth',
     STKR: 'is the governance token for StakerDAO, is built on the FA 1.2 token standard on Tezos',
     PLENTY: 'Plenty Farm DAO token',
-    KALAM: '',
-    KDAO: '',
+    KALAM: 'Kalamint DAO',
+    KDAO: 'Kolibri DAO',
+    SMAK: 'SmartLink',
 };
 
 export const knownContractNames = {
@@ -423,6 +458,8 @@ export const knownContractNames = {
     KT1RRgK6eXvCWCiEGWhRZCSVGzhDzwXEEjS4: 'QuipuSwap Crunchy Pool',
     KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z: 'QuipuSwap PLENTY Pool',
     KT1J3wTYb4xk5BsSBkg6ML55bX1xq7desS34: 'QuipuSwap KALAM Pool',
+    KT1Gdix8LoDoQng7YqdPNhdP5V7JRX8FqWvM: 'QuipuSwap SMAK Pool',
+    KT1Q93ftAUzvfMGPwC78nX8eouL1VzmHPd4d: 'QuipuSwap FLAME Pool',
 
     KT1Lw8hCoaBrHeTeMXbqHPG4sS4K1xn7yKcD: 'QuipuSwap FA1.2 Pool Factory',
     KT1SwH9P1Tx8a58Mm6qBExQFTcy2rwZyZiXS: 'Quipuswap FA2 Pool Factory',
@@ -458,6 +495,7 @@ export const knownContractNames = {
     KT1MBqc3GHpApBXaBZyvY63LF6eoFyTWtySn: 'Plenty 1.1 USDtz Pool',
     KT1KyxPitU1xNbTriondmAFtPEcFhjSLV1hz: 'Plenty 1.1 wLINK Pool',
     KT1XherecVvrE6X4PV5RTwdEKNzA294ZE9T9: 'Plenty 1.1 wMATIC Pool',
+    KT1WfLprabHVTnNhWFigmopAduUpxG5HKvNf: 'Plenty KALAM Pond',
 
     KT1J5dqegz1qYaYc7X3KjynYL9St1wcZ8ZyV: 'Maelstrom Mixer',
 
@@ -648,5 +686,21 @@ export const knownMarketMetadata = [
         name: 'QuipuSwap wMATIC Pool',
         scale: 18,
         symbol: 'wMATIC',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1Gdix8LoDoQng7YqdPNhdP5V7JRX8FqWvM',
+        token: 'KT1TwzD6zV3WeJ39ukuqxcfK2fJCnhvrdN1X',
+        name: 'QuipuSwap SMAK Pool',
+        scale: 3,
+        symbol: 'SMAK',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1Q93ftAUzvfMGPwC78nX8eouL1VzmHPd4d',
+        token: 'KT1Wa8yqRBpFCusJWgcQyjhRz7hUQAmFxW7j',
+        name: 'QuipuSwap FLAME Pool',
+        scale: 6,
+        symbol: 'FLAME',
     },
 ];
