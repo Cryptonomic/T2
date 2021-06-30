@@ -14,9 +14,9 @@ import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { RootState, AppState, SettingsState } from '../../../types/store';
 import { knownTokenContracts } from '../../../constants/Token';
 import { TokenKind } from '../../../types/general';
-import { Container, AmountContainer, PasswordButtonContainer, InvokeButton, RowContainer } from '../style';
+import { Container, PasswordButtonContainer, InvokeButton, RowContainer } from '../style';
 
-import { SegmentedControlContainer, SegmentedControl, SegmentedControlItem } from './style';
+import { ColumnContainer, SegmentedControlContainer, SegmentedControl, SegmentedControlItem } from './style';
 import {
     dexterPoolStorageMap,
     quipuPoolStorageMap,
@@ -246,38 +246,52 @@ function Swap(props: Props) {
             {showForm && (
                 <>
                     <RowContainer>
-                        <SegmentedControlContainer>
-                            <RestoreTabs type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
-                        </SegmentedControlContainer>
+                        <div style={{ width: '100%', paddingRight: '10px' }}>
+                            <SegmentedControlContainer>
+                                <RestoreTabs type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
+                            </SegmentedControlContainer>
+                        </div>
+                        <ColumnContainer>
+                            <div style={{ width: '100%', paddingLeft: '10px' }}>
+                                <NumericInput
+                                    label={t('general.nouns.amount')}
+                                    amount={tokenAmount}
+                                    onChange={updateAmount}
+                                    errorText={error}
+                                    symbol={token.symbol}
+                                    scale={token.scale || 0}
+                                    precision={token.precision || 6}
+                                    maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
+                                    minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
+                                />
 
-                        <AmountContainer>
-                            <NumericInput
-                                label={t('general.nouns.amount')}
-                                amount={tokenAmount}
-                                onChange={updateAmount}
-                                errorText={error}
-                                symbol={token.symbol}
-                                scale={token.scale || 0}
-                                precision={token.precision || 6}
-                                maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
-                                minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
-                            />
-                        </AmountContainer>
-                    </RowContainer>
-                    <RowContainer>
-                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
-                            <>Cost on Dexter {formatAmount(dexterTokenCost)}</>
-                        )}
-                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
-                            <>Cost on QuipuSwap {formatAmount(quipuTokenCost)}</>
-                        )}
+                                <ColumnContainer>
+                                    <div style={{ alignItems: 'left' }}>
+                                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
+                                            <div>
+                                                Cost {quipuTokenCost > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenCost)} XTZ
+                                            </div>
+                                        )}
+                                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
+                                            <div>
+                                                Cost {dexterTokenCost > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenCost)} XTZ
+                                            </div>
+                                        )}
 
-                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
-                            <>Proceeds on Dexter {formatAmount(dexterTokenProceeds)}</>
-                        )}
-                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
-                            <>Proceeds on QuipuSwap {formatAmount(quipuTokenProceeds)}</>
-                        )}
+                                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
+                                            <div>
+                                                Proceeds {quipuTokenProceeds > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenProceeds)} XTZ
+                                            </div>
+                                        )}
+                                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
+                                            <div>
+                                                Proceeds {dexterTokenProceeds > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenProceeds)} XTZ
+                                            </div>
+                                        )}
+                                    </div>
+                                </ColumnContainer>
+                            </div>
+                        </ColumnContainer>
                     </RowContainer>
 
                     <PasswordButtonContainer>

@@ -41,6 +41,13 @@ export const InvokeButton = styled(Button)`
     padding: 0;
 `;
 
+export const SmallButton = styled(Button)`
+    width: 84px;
+    height: 24px;
+    align-self: center;
+    margin-top: auto;
+`;
+
 export const RowContainer = styled.div`
     display: flex;
     align-items: center;

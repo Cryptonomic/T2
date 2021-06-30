@@ -9,7 +9,7 @@ import { getPieceInfo } from '../../thunks';
 import { setModalOpen, setModalValue } from '../../../../reduxContent/modal/actions';
 
 import { InfoLink, Image, LinkIcon, PieceContainer, PieceId, PieceName, PieceDescription, PieceCreator, PieceDisplay, PieceInfo } from './style';
-import { InvokeButton } from '../../../components/style';
+import { SmallButton } from '../../../components/style';
 
 interface Props {
     objectId: number;
@@ -84,9 +84,11 @@ function ArtPiece(props: Props) {
                     </InfoLink>
                 )}
 
-                <InvokeButton buttonTheme="primary" onClick={transferTrigger}>
-                    Send
-                </InvokeButton>
+                <div style={{ paddingTop: '10px' }}>
+                    <SmallButton buttonTheme="primary" onClick={transferTrigger}>
+                        Send
+                    </SmallButton>
+                </div>
             </PieceInfo>
         </PieceContainer>
 

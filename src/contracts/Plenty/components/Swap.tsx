@@ -13,9 +13,9 @@ import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { RootState, AppState, SettingsState } from '../../../types/store';
 import { knownTokenContracts } from '../../../constants/Token';
 import { TokenKind } from '../../../types/general';
-import { Container, AmountContainer, PasswordButtonContainer, InvokeButton, RowContainer } from '../../components/style';
+import { Container, PasswordButtonContainer, InvokeButton, RowContainer } from '../../components/style';
 
-import { SegmentedControlContainer, SegmentedControl, SegmentedControlItem } from '../../components/Swap/style';
+import { SegmentedControlContainer, SegmentedControl, SegmentedControlItem, ColumnContainer } from '../../components/Swap/style';
 import {
     dexterPoolStorageMap,
     quipuPoolStorageMap,
@@ -245,38 +245,48 @@ function Swap(props: Props) {
     return (
         <Container>
             <RowContainer>
-                <SegmentedControlContainer>
-                    <RestoreTabs type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
-                </SegmentedControlContainer>
+                <div style={{ width: '100%', paddingRight: '10px' }}>
+                    <SegmentedControlContainer>
+                        <RestoreTabs type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
+                    </SegmentedControlContainer>
+                </div>
+                <ColumnContainer>
+                    <div style={{ width: '100%', paddingLeft: '10px' }}>
+                        <NumericInput
+                            label={t('general.nouns.amount')}
+                            amount={tokenAmount}
+                            onChange={updateAmount}
+                            errorText={error}
+                            symbol={token.symbol}
+                            scale={token.scale || 0}
+                            precision={token.precision || 6}
+                            maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
+                            minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
+                        />
 
-                <AmountContainer>
-                    <NumericInput
-                        label={t('general.nouns.amount')}
-                        amount={tokenAmount}
-                        onChange={updateAmount}
-                        errorText={error}
-                        symbol={token.symbol}
-                        scale={token.scale || 0}
-                        precision={token.precision || 6}
-                        maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
-                        minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
-                    />
-                </AmountContainer>
-            </RowContainer>
-            <RowContainer>
-                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
-                    <>Cost on Dexter {formatAmount(dexterTokenCost)}</>
-                )}
-                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
-                    <>Cost on QuipuSwap {formatAmount(quipuTokenCost)}</>
-                )}
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
+                            <>
+                                Cost {quipuTokenCost > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenCost)} XTZ
+                            </>
+                        )}
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
+                            <>
+                                Cost {dexterTokenCost > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenCost)} XTZ
+                            </>
+                        )}
 
-                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
-                    <>Proceeds on Dexter {formatAmount(dexterTokenProceeds)}</>
-                )}
-                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
-                    <>Proceeds on QuipuSwap {formatAmount(quipuTokenProceeds)}</>
-                )}
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
+                            <>
+                                Proceeds {quipuTokenProceeds > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenProceeds)} XTZ
+                            </>
+                        )}
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
+                            <>
+                                Proceeds {dexterTokenProceeds > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenProceeds)} XTZ
+                            </>
+                        )}
+                    </div>
+                </ColumnContainer>
             </RowContainer>
 
             <PasswordButtonContainer>
@@ -299,11 +309,11 @@ function Swap(props: Props) {
                 </PasswordButtonContainer>
             )}
 
-            <RowContainer>
+            {/* <RowContainer>
                 <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onHarvest()}>
                     Harvest Rewards
                 </InvokeButton>
-            </RowContainer>
+            </RowContainer> */}
         </Container>
     );
 }
