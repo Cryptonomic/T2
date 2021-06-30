@@ -260,8 +260,6 @@ function Swap(props: Props) {
                             symbol={token.symbol}
                             scale={token.scale || 0}
                             precision={token.precision || 6}
-                            maxValue={new BigNumber(token.balance).dividedBy(10 ** (token.scale || 0)).toNumber()}
-                            minValue={new BigNumber(1).dividedBy(10 ** (token.scale || 0)).toNumber()}
                         />
 
                         {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
