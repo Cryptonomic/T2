@@ -29,3 +29,15 @@ export const ColumnContainer = styled.div`
     justify-content: space-between;
     width: 100%;
 `;
+
+export const MessageContainer = styled.div`
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    height: 80px;
+    width: 100%;
+    margin: 10px
+    margin-bottom: 50px;
+    color: #4e71ab;
+    font-weight: 300;
+`;

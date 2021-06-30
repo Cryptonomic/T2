@@ -14,10 +14,10 @@ import { RootState, AppState, SettingsState } from '../../../types/store';
 import { knownTokenContracts } from '../../../constants/Token';
 import { TokenKind } from '../../../types/general';
 import { Container, PasswordButtonContainer, InvokeButton, RowContainer } from '../../components/style';
+import { InfoIcon } from '../../../featureModals/style';
 
-import { SegmentedControlContainer, SegmentedControl, SegmentedControlItem, ColumnContainer } from '../../components/Swap/style';
+import { SegmentedControlContainer, SegmentedControl, SegmentedControlItem, ColumnContainer, MessageContainer } from '../../components/Swap/style';
 import {
-    dexterPoolStorageMap,
     quipuPoolStorageMap,
     quipuPool2StorageMap,
     tokenPoolMap,
@@ -26,7 +26,7 @@ import {
     getXTZSellExchangeRate,
     applyFees,
 } from '../../components/Swap/util';
-import { buyDexter, sellDexter, buyQuipu, sellQuipu } from '../../components/Swap/thunks';
+import { buyQuipu, sellQuipu } from '../../components/Swap/thunks';
 import { harvestRewards } from '../thunks';
 
 interface Props {
@@ -64,9 +64,7 @@ function Swap(props: Props) {
     const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
 
     const [tokenAmount, setTokenAmount] = useState('');
-    const [dexterTokenCost, setDexterTokenCost] = useState(0.0);
     const [quipuTokenCost, setQuipuTokenCost] = useState(0.0);
-    const [dexterTokenProceeds, setDexterTokenProceeds] = useState(0.0);
     const [quipuTokenProceeds, setQuipuTokenProceeds] = useState(0.0);
     const [bestMarket, setBestMarket] = useState('');
 
@@ -106,23 +104,15 @@ function Swap(props: Props) {
     async function updateMarketPrice(tokenValue, side) {
         const tokenMetadata = knownTokenContracts.find((i) => i.address === token.address);
 
-        const dexterState = await getPoolState(tezosUrl, tokenPoolMap[token.address].dexterPool, dexterPoolStorageMap);
         const quipuState = await getPoolState(
             tezosUrl,
             tokenPoolMap[token.address].quipuPool,
             tokenMetadata?.kind === TokenKind.tzip12 ? quipuPool2StorageMap : quipuPoolStorageMap
         );
 
-        if (side === 'buy') {
-            let dexterCost = { xtzAmount: -1, rate: 0 };
-            if (dexterState) {
-                dexterCost = getXTZBuyExchangeRate(
-                    new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
-                    dexterState.tokenBalance,
-                    dexterState.coinBalance
-                );
-            }
+        setBestMarket('');
 
+        if (side === 'buy') {
             let quipuCost = { xtzAmount: -1, rate: 0 };
             if (quipuState) {
                 quipuCost = getXTZBuyExchangeRate(
@@ -132,26 +122,9 @@ function Swap(props: Props) {
                 );
             }
 
-            setDexterTokenCost(applyFees(dexterCost.xtzAmount, 'buy'));
             setQuipuTokenCost(applyFees(quipuCost.xtzAmount, 'buy'));
-
-            if ((dexterCost.xtzAmount > 0 && dexterCost.xtzAmount <= quipuCost.xtzAmount) || (quipuCost.xtzAmount < 0 && dexterCost.xtzAmount > 0)) {
-                setBestMarket('Dexter');
-            }
-
-            if ((quipuCost.xtzAmount > 0 && dexterCost.xtzAmount > quipuCost.xtzAmount) || (dexterCost.xtzAmount < 0 && quipuCost.xtzAmount > 0)) {
-                setBestMarket('QuipuSwap');
-            }
+            setBestMarket('QuipuSwap');
         } else if (side === 'sell') {
-            let dexterProceeds = { xtzAmount: -1, rate: 0 };
-            if (dexterState) {
-                dexterProceeds = getXTZSellExchangeRate(
-                    new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
-                    dexterState.tokenBalance,
-                    dexterState.coinBalance
-                );
-            }
-
             let quipuProceeds = { xtzAmount: -1, rate: 0 };
             if (quipuState) {
                 quipuProceeds = getXTZSellExchangeRate(
@@ -161,22 +134,8 @@ function Swap(props: Props) {
                 );
             }
 
-            setDexterTokenProceeds(applyFees(dexterProceeds.xtzAmount, 'sell'));
             setQuipuTokenProceeds(applyFees(quipuProceeds.xtzAmount, 'sell'));
-
-            if (
-                (dexterProceeds.xtzAmount > 0 && dexterProceeds.xtzAmount >= quipuProceeds.xtzAmount) ||
-                (quipuProceeds.xtzAmount < 0 && dexterProceeds.xtzAmount > 0)
-            ) {
-                setBestMarket('Dexter');
-            }
-
-            if (
-                (quipuProceeds.xtzAmount > 0 && dexterProceeds.xtzAmount < quipuProceeds.xtzAmount) ||
-                (dexterProceeds.xtzAmount < 0 && quipuProceeds.xtzAmount > 0)
-            ) {
-                setBestMarket('QuipuSwap');
-            }
+            setBestMarket('QuipuSwap');
         }
     }
 
@@ -187,33 +146,13 @@ function Swap(props: Props) {
             setLedgerModalOpen(true);
         }
 
-        if (tradeSide === 'buy' && bestMarket.toLowerCase() === 'dexter') {
-            await dispatch(
-                buyDexter(
-                    tokenPoolMap[token.address].dexterPool,
-                    token.address,
-                    new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
-                    new BigNumber(dexterTokenCost).toString(),
-                    passPhrase
-                )
-            );
-        } else if (tradeSide === 'buy' && bestMarket.toLowerCase() === 'quipuswap') {
+        if (tradeSide === 'buy' && bestMarket.toLowerCase() === 'quipuswap') {
             await dispatch(
                 buyQuipu(
                     tokenPoolMap[token.address].quipuPool,
                     token.address,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(quipuTokenCost).toString(),
-                    passPhrase
-                )
-            );
-        } else if (tradeSide === 'sell' && bestMarket.toLowerCase() === 'dexter') {
-            await dispatch(
-                sellDexter(
-                    tokenPoolMap[token.address].dexterPool,
-                    token.address,
-                    new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
-                    new BigNumber(dexterTokenProceeds).toString(),
                     passPhrase
                 )
             );
@@ -262,30 +201,25 @@ function Swap(props: Props) {
                             precision={token.precision || 6}
                         />
 
-                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
-                            <>
-                                Cost {quipuTokenCost > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenCost)} XTZ
-                            </>
-                        )}
                         {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
                             <>
-                                Cost {dexterTokenCost > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenCost)} XTZ
+                                Cost {'on QuipuSwap'} {formatAmount(quipuTokenCost)} XTZ
                             </>
                         )}
 
-                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
-                            <>
-                                Proceeds {quipuTokenProceeds > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenProceeds)} XTZ
-                            </>
-                        )}
                         {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
                             <>
-                                Proceeds {dexterTokenProceeds > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenProceeds)} XTZ
+                                Proceeds {'on QuipuSwap'} {formatAmount(quipuTokenProceeds)} XTZ
                             </>
                         )}
                     </div>
                 </ColumnContainer>
             </RowContainer>
+
+            <MessageContainer>
+                <InfoIcon color="info" iconName="info" />
+                {t('components.swap.outcome_warning')}
+            </MessageContainer>
 
             <PasswordButtonContainer>
                 {!isLedger && (
@@ -296,16 +230,11 @@ function Swap(props: Props) {
                         containerStyle={{ width: '47%', marginTop: '10px' }}
                     />
                 )}
+                {isLedger && ledgerModalOpen && <>Please confirm the operation on the Ledger device</>}
                 <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
                     {t(`general.verbs.${tradeSide}`)} {t('general.prepositions.on')} {bestMarket}
                 </InvokeButton>
             </PasswordButtonContainer>
-
-            {isLedger && ledgerModalOpen && (
-                <PasswordButtonContainer>
-                    <>Please confirm the operation on the Ledger device</>
-                </PasswordButtonContainer>
-            )}
 
             {/* <RowContainer>
                 <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onHarvest()}>

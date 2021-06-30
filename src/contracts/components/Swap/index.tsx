@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
@@ -15,8 +15,9 @@ import { RootState, AppState, SettingsState } from '../../../types/store';
 import { knownTokenContracts } from '../../../constants/Token';
 import { TokenKind } from '../../../types/general';
 import { Container, PasswordButtonContainer, InvokeButton, RowContainer } from '../style';
+import { InfoIcon } from '../../../featureModals/style';
 
-import { ColumnContainer, SegmentedControlContainer, SegmentedControl, SegmentedControlItem } from './style';
+import { ColumnContainer, SegmentedControlContainer, SegmentedControl, SegmentedControlItem, MessageContainer } from './style';
 import {
     dexterPoolStorageMap,
     quipuPoolStorageMap,
@@ -77,7 +78,18 @@ function Swap(props: Props) {
 
     const { isReady, token } = props;
 
-    const isDisabled = !isReady || isLoading || (!passPhrase && !isLedger);
+    const isDisabled = !isReady || isLoading || (!passPhrase && !isLedger) || bestMarket.length === 0;
+
+    useEffect(() => {
+        setTradeSide('buy');
+        setBestMarket('');
+        setTokenAmount('0');
+        setDexterTokenCost(0.0);
+        setQuipuTokenCost(0.0);
+        setDexterTokenProceeds(0.0);
+        setQuipuTokenProceeds(0.0);
+        setPassPhrase('');
+    }, [token.symbol]);
 
     const onTypeChange = (side: string) => {
         setTradeSide(side);
@@ -105,6 +117,12 @@ function Swap(props: Props) {
     }
 
     async function updateMarketPrice(tokenValue, side) {
+        setBestMarket('');
+
+        if (tokenValue.length === 0 || new BigNumber(tokenValue).toNumber() === 0) {
+            return;
+        }
+
         const tokenMetadata = knownTokenContracts.find((i) => i.address === token.address);
 
         const dexterState = await getPoolState(tezosUrl, tokenPoolMap[token.address].dexterPool, dexterPoolStorageMap);
@@ -238,80 +256,88 @@ function Swap(props: Props) {
     const error = isIssue ? <InputError error={warningMessage} /> : '';
     const showForm = isTradeable(token.address);
 
-    // TODO: needs a popup explaining slippage, fees
-    // TODO: needs a modal to accept disclaimer on actual amounts
+    if (!showForm) {
+        return (
+            <Container>
+                <EmptyState imageSrc={''} title={`Trading of ${token.displayName} is not supported yet.`} description={null} />
+            </Container>
+        );
+    }
+
     return (
         <Container>
-            {!showForm && <EmptyState imageSrc={''} title={`Trading of ${token.displayName} is not supported yet.`} description={null} />}
-            {showForm && (
-                <>
-                    <RowContainer>
-                        <div style={{ width: '100%', paddingRight: '10px' }}>
-                            <SegmentedControlContainer>
-                                <RestoreTabs type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
-                            </SegmentedControlContainer>
-                        </div>
+            <RowContainer>
+                <div style={{ width: '100%', paddingRight: '10px' }}>
+                    <SegmentedControlContainer>
+                        <RestoreTabs type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
+                    </SegmentedControlContainer>
+                </div>
+                <ColumnContainer>
+                    <div style={{ width: '100%', paddingLeft: '10px' }}>
+                        <NumericInput
+                            label={t('general.nouns.amount')}
+                            amount={tokenAmount}
+                            onChange={updateAmount}
+                            errorText={error}
+                            symbol={token.symbol}
+                            scale={token.scale || 0}
+                            precision={token.precision || 6}
+                        />
+
                         <ColumnContainer>
-                            <div style={{ width: '100%', paddingLeft: '10px' }}>
-                                <NumericInput
-                                    label={t('general.nouns.amount')}
-                                    amount={tokenAmount}
-                                    onChange={updateAmount}
-                                    errorText={error}
-                                    symbol={token.symbol}
-                                    scale={token.scale || 0}
-                                    precision={token.precision || 6}
-                                />
-
-                                <ColumnContainer>
-                                    <div style={{ alignItems: 'left' }}>
-                                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
-                                            <div>
-                                                Cost {quipuTokenCost > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenCost)} XTZ
-                                            </div>
-                                        )}
-                                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
-                                            <div>
-                                                Cost {dexterTokenCost > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenCost)} XTZ
-                                            </div>
-                                        )}
-
-                                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
-                                            <div>
-                                                Proceeds {quipuTokenProceeds > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenProceeds)} XTZ
-                                            </div>
-                                        )}
-                                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
-                                            <div>
-                                                Proceeds {dexterTokenProceeds > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenProceeds)} XTZ
-                                            </div>
-                                        )}
+                            <div style={{ alignItems: 'left' }}>
+                                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
+                                    <div>
+                                        Cost {quipuTokenCost > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenCost)} XTZ
                                     </div>
-                                </ColumnContainer>
+                                )}
+                                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
+                                    <div>
+                                        Cost {dexterTokenCost > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenCost)} XTZ
+                                    </div>
+                                )}
+
+                                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
+                                    <div>
+                                        Proceeds {quipuTokenProceeds > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenProceeds)} XTZ
+                                    </div>
+                                )}
+                                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
+                                    <div>
+                                        Proceeds {dexterTokenProceeds > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenProceeds)} XTZ
+                                    </div>
+                                )}
                             </div>
                         </ColumnContainer>
-                    </RowContainer>
+                    </div>
+                </ColumnContainer>
+            </RowContainer>
 
-                    <PasswordButtonContainer>
-                        {!isLedger && (
-                            <PasswordInput
-                                label={t('general.nouns.wallet_password')}
-                                password={passPhrase}
-                                onChange={(val) => setPassPhrase(val)}
-                                containerStyle={{ width: '47%', marginTop: '10px' }}
-                            />
-                        )}
-                        <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
-                            {t(`general.verbs.${tradeSide}`)} {t('general.prepositions.on')} {bestMarket}
-                        </InvokeButton>
-                    </PasswordButtonContainer>
-                    {isLedger && ledgerModalOpen && (
-                        <PasswordButtonContainer>
-                            <>Please confirm the operation on the Ledger device</>
-                        </PasswordButtonContainer>
+            <MessageContainer>
+                <InfoIcon color="info" iconName="info" />
+                {t('components.swap.outcome_warning')}
+            </MessageContainer>
+
+            <PasswordButtonContainer>
+                {!isLedger && (
+                    <PasswordInput
+                        label={t('general.nouns.wallet_password')}
+                        password={passPhrase}
+                        onChange={(val) => setPassPhrase(val)}
+                        containerStyle={{ width: '47%', marginTop: '10px' }}
+                    />
+                )}
+                {isLedger && ledgerModalOpen && <>Please confirm the operation on the Ledger device</>}
+                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
+                    {t(`general.verbs.${tradeSide}`)}
+                    {bestMarket && (
+                        <>
+                            {' '}
+                            {t('general.prepositions.on')} {bestMarket}{' '}
+                        </>
                     )}
-                </>
-            )}
+                </InvokeButton>
+            </PasswordButtonContainer>
         </Container>
     );
 }

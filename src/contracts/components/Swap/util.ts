@@ -1,5 +1,6 @@
 import { JSONPath } from 'jsonpath-plus';
 import bigInt from 'big-integer';
+import { BigNumber } from 'bignumber.js';
 
 import { KeyStore, Signer, TezosNodeReader, TezosConstants, TezosNodeWriter, TezosParameterFormat, Transaction } from 'conseiljs';
 
@@ -67,24 +68,24 @@ export function isTradeable(tokenAddress: string) {
  * @returns
  */
 export function applyFees(amount: number, side: string) {
-    return amount;
-    // const slippage = 0.01;
-    // const fee = 0.05;
-    // const feeThreshold = 500_000_000;
+    const slippage = 0.01;
+    const fee = 0.05;
+    const feeThreshold = '500000000';
 
-    // const ba = new BigNumber(amount);
-    // const bs = ba.multipliedBy(slippage);
+    const ba = new BigNumber(amount);
+    const bs = ba.multipliedBy(slippage);
     // const bf = ba.isGreaterThanOrEqualTo(feeThreshold) ? ba.multipliedBy(fee) : 0;
+    const bf = 0;
 
-    // if (side === 'buy') {
-    //     return ba.plus(bs).plus(bf).dp(0, 0).toNumber();
-    // }
+    if (side === 'buy') {
+        return ba.plus(bs).plus(bf).dp(0, 0).toNumber();
+    }
 
-    // if (side === 'sell') {
-    //     return ba.minus(bs).minus(bf).dp(0, 1).toNumber();
-    // }
+    if (side === 'sell') {
+        return ba.minus(bs).minus(bf).dp(0, 1).toNumber();
+    }
 
-    // return 0;
+    return 0;
 }
 
 export async function sendDexterBuy(
