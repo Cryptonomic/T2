@@ -103,9 +103,15 @@
       "hardenedRuntime": true,
       "entitlements": "./resources/entitlements.mac.plist",
       "entitlementsInherit": "./resources/entitlements.mac.plist",
+      "bundleVersion": "34",
       "target": [
+        "mas",
         "dmg"
       ]
+    },
+    "mas": {
+      "asar": false,
+      "entitlements": "resources/entitlements.mas.plist"
     },
     "dmg": {
       "contents": [
