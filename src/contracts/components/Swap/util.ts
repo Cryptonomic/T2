@@ -122,7 +122,6 @@ export async function sendDexterBuy(
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {
         console.log(`failed in sendDexterBuy ${JSON.stringify(err)}}`);
-        return undefined;
     }
 }
 
@@ -173,7 +172,6 @@ export async function sendDexterSell(
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {
         console.log(`failed in sendDexterSell ${JSON.stringify(err)}}`);
-        return undefined;
     }
 }
 
@@ -208,7 +206,6 @@ export async function sendQuipuBuy(
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {
         console.log(`failed in sendQuipuBuy ${JSON.stringify(err)}}`);
-        return undefined;
     }
 }
 
@@ -259,7 +256,6 @@ export async function sendQuipuSell(
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {
         console.log(`failed in sendQuipuSell ${JSON.stringify(err)}}`);
-        return undefined;
     }
 }
 

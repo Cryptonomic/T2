@@ -17,7 +17,6 @@ interface Props {
     price: number;
     receivedOn: Date;
     action: string;
-    transferTrigger: any;
 }
 
 const supportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
