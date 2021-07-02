@@ -128,6 +128,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 6,
         mapid: 3943,
         helpLink: 'https://plentydefi.com',
+        displayHelpLink: 'plentydefi.com',
     },
     {
         network: 'mainnet',
@@ -144,6 +145,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 5,
         mapid: 4178,
         helpLink: 'https://kalamint.io/',
+        displayHelpLink: 'kalamint.io',
     },
     {
         network: 'mainnet',
@@ -160,6 +162,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 8,
         round: 8,
         mapid: 5663,
+        helpLink: 'https://btctz.io/',
+        displayHelpLink: 'btctz.io',
     },
     {
         network: 'mainnet',
@@ -225,6 +229,9 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 18,
         round: 6,
         mapid: 3706,
+        hideOnLanding: true,
+        displayHelpLink: 'kolibri.finance',
+        helpLink: 'https://kolibri.finance',
     },
     {
         network: 'mainnet',
@@ -242,6 +249,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         mapid: 3686,
         balancePath: '$.args[1].int',
         helpLink: 'https://twitter.com/heh_hedgehoge',
+        displayHelpLink: '@heh_hedgehoge',
     },
     {
         network: 'mainnet',
@@ -257,7 +265,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 8,
         round: 8,
         mapid: 1777,
-        hideOnLanding: true,
+        helpLink: 'https://www.benderlabs.io/wrap-token',
+        displayHelpLink: 'benderlabs.io',
     },
     {
         network: 'mainnet',
@@ -352,6 +361,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 36,
         round: 2,
         mapid: 1600,
+        displayHelpLink: 'kolibri.finance/liquidity-pool',
+        helpLink: 'https://kolibri.finance/liquidity-pool',
     },
     {
         network: 'mainnet',
@@ -402,6 +413,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 3,
         mapid: 1798,
         balancePath: '$.args[1].int',
+        helpLink: 'https://www.smartlink.so/use-cases/',
+        displayHelpLink: 'smartlink.so',
     },
 ];
 
@@ -417,6 +430,8 @@ export const knownTokenDescription = {
     KDAO: 'Kolibri DAO',
     SMAK: 'SmartLink',
     FLAME: 'is the utility token of FlameDeFi.',
+    BTCtz: 'is a Bitcoin-pegged stablecoin.',
+    hDAO: ' is the hic et nunc governance token.',
 };
 
 export const knownContractNames = {
