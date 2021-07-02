@@ -11,6 +11,7 @@ export const ViewButton = styled(Button)`
     height: 24px;
     align-self: center;
     margin-top: auto;
+    cursor: pointer;
 `;
 
 export const BottomRowInner = styled.div`
@@ -55,7 +56,6 @@ const BoxStyles = css`
     flex-direction: column;
     padding: 16px 13px 16px 16px;
     box-shadow: 0px 1px 2px rgba(225, 225, 225, 0.44);
-    cursor: pointer;
     min-height: 200px;
     height: 100%;
     &:hover {
@@ -68,6 +68,7 @@ export const BoxFront = styled.div`
     height: 100%;
     backface-visibility: hidden;
     position: relative;
+    cursor: pointer;
     ${BoxStyles};
 `;
 
@@ -81,6 +82,7 @@ export const BoxBack = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
+    cursor: default;
     ${BoxStyles}
 `;
 
