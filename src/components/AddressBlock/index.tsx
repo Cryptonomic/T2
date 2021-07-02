@@ -43,6 +43,7 @@ const { Mnemonic } = KeyStoreType;
 
 const Container = styled.div`
     overflow: hidden;
+    cursor: default;
 `;
 
 const AddressLabel = styled.div`
@@ -53,6 +54,7 @@ const AddressLabel = styled.div`
     background: ${({ theme: { colors } }) => colors.gray1};
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 `;
 
 const AddDelegateLabel = styled(AddressLabel)<{ isActive?: boolean }>`
@@ -63,6 +65,18 @@ const AddDelegateLabel = styled(AddressLabel)<{ isActive?: boolean }>`
     margin-bottom: 1px;
     background: ${({ isActive, theme: { colors } }) => (isActive ? colors.blue1 : colors.gray1)};
     color: ${({ isActive, theme: { colors } }) => (isActive ? colors.white : colors.primary)};
+    cursor: pointer;
+`;
+
+const TitleLabel = styled(AddressLabel)<{ isActive?: boolean }>`
+    display: flex;
+    flex-direction: row;
+    font-size: 14px;
+    margin-top: 20px;
+    margin-bottom: 1px;
+    background: ${({ isActive, theme: { colors } }) => (isActive ? colors.blue1 : colors.gray1)};
+    color: ${({ isActive, theme: { colors } }) => (isActive ? colors.white : colors.primary)};
+    cursor: default;
 `;
 
 const AddressesTitle = styled.div`
@@ -171,7 +185,6 @@ function AddressBlock(props: Props) {
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
     const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
-    const [step, setStep] = useState(1);
     const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() => getLocalData('isHideDelegateTooltip'));
 
     const { publicKeyHash, balance, accounts, status, storeType } = accountBlock;
@@ -291,9 +304,12 @@ function AddressBlock(props: Props) {
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
                 />
             )}
-            <AddDelegateLabel>
-                <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
-            </AddDelegateLabel>
+
+            {delegatedAddresses.length > 0 && (
+                <TitleLabel>
+                    <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
+                </TitleLabel>
+            )}
 
             {delegatedAddresses.map((address, index) => {
                 const addressId = address.account_id;
@@ -320,12 +336,12 @@ function AddressBlock(props: Props) {
                 );
             })}
 
-            <AddressLabel>
+            <TitleLabel>
                 <AccountTitle>{t('general.nouns.total_balance')}</AccountTitle>
                 {ready || storeType === Mnemonic ? (
                     <AmountView color="primary" size={ms(0)} amount={balance + smartBalance} scale={6} precision={6} round={2} />
                 ) : null}
-            </AddressLabel>
+            </TitleLabel>
 
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'sign'} onClick={() => setIsModalOpen(true, 'sign')}>
                 <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
@@ -391,18 +407,21 @@ function AddressBlock(props: Props) {
                 );
             })}
 
-            <AddDelegateLabel>
-                <DelegateTitle>{t('components.interactModal.interact_contract')}</DelegateTitle>
-                {isManagerReady ? (
-                    <AddCircleWrapper active={1} onClick={() => onCheckInteractModal()} />
-                ) : (
+            {isManagerReady ? (
+                <AddDelegateLabel onClick={() => onCheckInteractModal()}>
+                    <DelegateTitle>{t('components.interactModal.interact_contract')}</DelegateTitle>
+                </AddDelegateLabel>
+            ) : (
+                <AddDelegateLabel>
+                    <DelegateTitle>{t('components.interactModal.interact_contract')}</DelegateTitle>
                     <Tooltip position="bottom" content={<NoFundTooltip>{t('components.addressBlock.not_ready_interact_tooltip')}</NoFundTooltip>}>
                         <IconButton size="small" color="primary">
                             <AddCircleWrapper active={0} />
                         </IconButton>
                     </Tooltip>
-                )}
-            </AddDelegateLabel>
+                </AddDelegateLabel>
+            )}
+
             {smartAddresses.map((address, index) => {
                 const addressId = address.account_id;
                 const isActive = !isModalOpen && addressId === selectedAccountHash;
