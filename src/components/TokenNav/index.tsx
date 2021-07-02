@@ -14,6 +14,7 @@ const Container = styled.div<{ isActive: boolean }>`
         return isActive ? colors.accent : colors.white;
     }};
     display: flex;
+    cursor: pointer;
 `;
 
 const SideImg = styled.img`
@@ -68,6 +69,7 @@ function TokenNav(props: Props) {
                         precision={token.precision}
                         round={token.round}
                         symbol={token.symbol}
+                        selectable={false}
                     />
                 </TokenBalance>
             </MainContainer>
