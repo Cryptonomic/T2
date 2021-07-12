@@ -383,7 +383,7 @@ function AddressBlock(props: Props) {
 
                 return (
                     <TokenNav
-                        key={token.address}
+                        key={`${token.address}_${index || 0}_${tokenType}`}
                         isActive={!isModalOpen && token.address === selectedAccountHash}
                         token={token}
                         onClick={() => goToAccount(token.address, index, tokenType)}
