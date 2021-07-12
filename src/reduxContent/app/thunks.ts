@@ -245,6 +245,15 @@ const queryTezosDomains = async (nodeUrl: string, address: string): Promise<stri
     }
 };
 
+const queryPrices = async () => {
+    return await fetchWithTimeout(`https://api.coingecko.com/api/v3/simple/price?ids=tezos&vs_currencies=usd,eur,jpy`, { timeout: 5000 })
+        .then((r) => r.json())
+        .then((j) => j.tezos)
+        .catch((e) => {
+            return { usd: '-1', eur: '-1', jpy: '-1' };
+        });
+};
+
 export const getBakerDetails = (accountAddress: string): string => {
     const [bakerName, setBakerName] = useState<string>('');
 
@@ -279,6 +288,25 @@ export const getTezosDomains = (accountAddress: string): string => {
     }, [domainName]);
 
     return domainName;
+};
+
+export const getPrices = (): { usd: string; eur: string; jpy: string } => {
+    const [prices, setPrices] = useState<any>({ usd: '-1', eur: '-1', jpy: '-1' });
+    const [priceTrigger, setPriceTrigger] = useState<string>('');
+
+    useEffect(() => {
+        const getData = async () => {
+            const priceResponse = await queryPrices();
+
+            setPrices(priceResponse);
+            setPriceTrigger(JSON.stringify(priceResponse));
+        };
+
+        getData();
+    }, [priceTrigger]);
+
+    const k = Object.keys(prices);
+    return { usd: prices.usd, eur: prices.eur, jpy: prices.jpy };
 };
 
 export function changeAccountThunk(accountHash: string, parentHash: string, accountIndex: number, parentIndex: number, addressType: AddressType) {

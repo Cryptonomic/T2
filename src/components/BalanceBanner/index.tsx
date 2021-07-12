@@ -14,7 +14,7 @@ import { AddressType } from '../../types/general';
 import keyIconSvg from '../../../resources/imgs/Key_Icon.svg';
 import { ms } from '../../styles/helpers';
 import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
-import { getBakerDetails, getTezosDomains } from '../../reduxContent/app/thunks';
+import { getBakerDetails, getTezosDomains, getPrices } from '../../reduxContent/app/thunks';
 
 import { RootState } from '../../types/store';
 
@@ -37,6 +37,9 @@ import {
     Gap,
     LinkIcon,
     LinkContainer,
+    Column,
+    Currencies,
+    CurrencySymbol,
 } from './style';
 
 interface Props {
@@ -66,6 +69,7 @@ function BalanceBanner(props: Props) {
 
     const bakerName = getBakerDetails(String(delegatedAddress));
     const domainName = getTezosDomains(String(publicKeyHash));
+    const xtzPrices = getPrices();
 
     let addressLabel = '';
     switch (selectedAccountType) {
@@ -132,14 +136,32 @@ function BalanceBanner(props: Props) {
                     </AddressTitle>
                 )}
                 <AddressInfo>
-                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
-                    {domainName && domainName.length > 0 && <>{domainName}</>}
+                    <Column>
+                        {domainName && domainName.length > 0 && <>{domainName}</>}
+                        <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
+                    </Column>
                     <Gap />
                     {isReady || storeType === Mnemonic ? (
                         <div style={{ marginLeft: 'auto' }}>
                             <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
                         </div>
                     ) : null}
+                    {selectedAccountType === AddressType.Manager && xtzPrices.usd !== '-1' && (
+                        <Currencies>
+                            <div>
+                                {((balance * Number(xtzPrices.usd)) / 1_000_000).toFixed(2)}
+                                <CurrencySymbol>USD</CurrencySymbol>
+                            </div>
+                            <div>
+                                {((balance * Number(xtzPrices.eur)) / 1_000_000).toFixed(2)}
+                                <CurrencySymbol>EUR</CurrencySymbol>
+                            </div>
+                            <div>
+                                {((balance * Number(xtzPrices.jpy)) / 1_000_000).toFixed(0)}
+                                <CurrencySymbol>JPY</CurrencySymbol>
+                            </div>
+                        </Currencies>
+                    )}
                 </AddressInfo>
                 {delegatedAddress && (
                     <DelegateContainer>

@@ -11,6 +11,7 @@ import AddressBlock from '../../components/AddressBlock';
 import BabylonDelegation from '../../contracts/BabylonDelegation';
 import GenericContract from '../../contracts/GenericContract';
 import TokenContract from '../../contracts/TokenContract';
+import Token2Contract from '../../contracts/Token2Contract';
 import ImplicitAccount from '../../contracts/ImplicitAccount';
 import TzBtcToken from '../../contracts/TzBtcToken';
 import WXTZToken from '../../contracts/WrappedTezos';
@@ -18,6 +19,7 @@ import KolibriToken from '../../contracts/KolibriToken';
 import HicNFT from '../../contracts/HicNFT';
 import BlndToken from '../../contracts/BlndToken';
 import StkrToken from '../../contracts/StkrToken';
+import PlentyToken from '../../contracts/Plenty';
 import TokensPage from '../TokensPage';
 
 import { sortArr } from '../../utils/array';
@@ -61,6 +63,10 @@ function HomeMain() {
                 return <StkrToken />;
             case AddressType.TokensPage:
                 return <TokensPage />;
+            case AddressType.plenty:
+                return <PlentyToken />;
+            case AddressType.Token2:
+                return <Token2Contract />;
             default:
                 return <GenericContract />;
         }

@@ -31,7 +31,10 @@
             "connect": "Connect",
             "authorize": "Authorize",
             "allow": "Allow",
-            "approve": "Approve"
+            "approve": "Approve",
+            "swap": "Trade",
+            "buy": "Buy",
+            "sell": "Sell"
         },
         "nouns": {
             "amount": "Amount",
@@ -83,12 +86,20 @@
             "voting": "Voting",
             "implementation": "Implementation",
             "vaults": "Vaults",
-            "collection": "Collection"
+            "collection": "Collection",
+            "quantity": "Quantity"
         },
         "errors": {
             "no_hex_data": "The provided string doesn't look like hex data",
             "no_ledger_detected": "Ledger device not found",
             "ledger_error": "Error communicating with Ledger device"
+        },
+        "prepositions": {
+            "to": "to",
+            "of": "of",
+            "from": "from",
+            "by": "by",
+            "on": "on"
         },
         "decimal_separator": ".",
         "back": "Back",
@@ -97,6 +108,7 @@
         "of": "of",
         "from": "from",
         "by": "by",
+        "on": "on",
         "get_started": "Get Started"
     },
     "components": {
@@ -469,6 +481,16 @@
         "withdrawDeposit": {
             "withdraw_warning": "To withdraw funds back to your manager account, {{managerAddress}}, please select a fee of at least 0.005 XTZ and ensure you have at least that amount in your manager account to cover the transaction.",
             "deposit_warning": "Transfer balance from the manager account at {{managerAddress}}."
+        },
+        "hicNFT": {
+            "modal": {
+                "title": "HicNFT Transfer",
+                "recipient_address": "Recipient Address",
+                "send": "Send"
+            }
+        },
+        "swap": {
+            "outcome_warning": "Note that token and XTZ trade outcomes are estimates and actual numbers may be different. Slippage is set to 1%."
         }
     },
     "containers": {

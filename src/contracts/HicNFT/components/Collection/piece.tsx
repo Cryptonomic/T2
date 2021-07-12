@@ -1,13 +1,15 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 
 import { openLink, formatDate } from '../../../../utils/general';
 import { formatAmount } from '../../../../utils/currency';
 
 import { getPieceInfo } from '../../thunks';
+import { setModalOpen, setModalValue } from '../../../../reduxContent/modal/actions';
 
 import { InfoLink, Image, LinkIcon, PieceContainer, PieceId, PieceName, PieceDescription, PieceCreator, PieceDisplay, PieceInfo } from './style';
+import { SmallButton } from '../../../components/style';
 
 interface Props {
     objectId: number;
@@ -28,6 +30,12 @@ function ArtPiece(props: Props) {
     const pieceInfo = getPieceInfo(objectId);
     const formattedPrice = formatAmount(price, 2);
     const formattedDate = formatDate(receivedOn);
+
+    const transferTrigger = () => {
+        // TODO: set necessary values for transfer modal
+        dispatch(setModalValue({ price, amount, objectId, receivedOn, info: pieceInfo }, 'piece'));
+        dispatch(setModalOpen(true, 'HicNFT'));
+    };
 
     return (
         <PieceContainer>
@@ -74,8 +82,16 @@ function ArtPiece(props: Props) {
                         <LinkIcon iconName="new-window" color="black" onClick={() => openLink(`https://www.hicetnunc.xyz/objkt/${objectId}`)} />
                     </InfoLink>
                 )}
+
+                <div style={{ paddingTop: '10px' }}>
+                    <SmallButton buttonTheme="primary" onClick={transferTrigger}>
+                        Send
+                    </SmallButton>
+                </div>
             </PieceInfo>
         </PieceContainer>
+
+        //
     );
 }
 

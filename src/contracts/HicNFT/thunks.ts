@@ -1,37 +1,35 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 
-import { Tzip7ReferenceTokenHelper } from 'conseiljs';
+import { MultiAssetTokenHelper } from 'conseiljs';
 
+import { knownTokenContracts } from '../../constants/Token';
 import { RootState } from '../../types/store';
 
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
-import { createTransaction, createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
+import { createTokenTransaction } from '../../utils/transaction';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
+import { findTokenIndex } from '../../utils/token';
+import { cloneDecryptedSigner } from '../../utils/wallet';
 
 import { ArtToken, Token, TokenKind } from '../../types/general';
 
-import { findTokenIndex } from '../../utils/token';
-
 import * as HicNFTUtil from './util';
 
-const { transferBalance } = Tzip7ReferenceTokenHelper;
-
-const GAS = 125000; // TODO
-const FREIGHT = 1000;
-
-export function transferThunk(destination: string, amount: number, fee: number, password: string) {
+export function transferThunk(destination: string, amount: number, tokenid: number, password: string, fee: number = 0, gas: number = 0, storage: number = 0) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
+        const { selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
+
+        const tokenAddress = knownTokenContracts.find((t) => t.displayName.toLowerCase() === 'hic et nunc')?.address || '';
 
         if (password !== walletPassword && !isLedger) {
             const error = 'components.messageBar.messages.incorrect_password';
@@ -42,20 +40,19 @@ export function transferThunk(destination: string, amount: number, fee: number, 
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await transferBalance(
+        const operationId = await MultiAssetTokenHelper.transfer(
             tezosUrl,
-            signer,
+            tokenAddress,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
             keyStore,
-            selectedAccountHash,
             fee,
             selectedParentHash,
-            destination,
-            amount,
-            GAS,
-            FREIGHT
+            [{ address: destination, tokenid, amount }],
+            gas,
+            storage
         ).catch((err) => {
             const errorObj = { name: err.message, ...err };
-            console.error(`transferBalance failed with ${JSON.stringify(errorObj)}`);
+            console.error(`transferThunk/MultiAssetTokenHelper failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
             return undefined;
         });
@@ -75,9 +72,10 @@ export function transferThunk(destination: string, amount: number, fee: number, 
             fee,
         });
 
-        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
+        const tokenIndex = findTokenIndex(tokens, tokenAddress);
 
         if (tokenIndex > -1) {
+            // in the token list in the config
             tokens[tokenIndex].transactions.push(transaction);
         }
 

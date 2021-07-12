@@ -105,6 +105,14 @@ const TokensPage = () => {
             tokenType = AddressType.STKR;
         }
 
+        if (addressType === TokenKind.plenty) {
+            tokenType = AddressType.plenty;
+        }
+
+        if (addressType === TokenKind.tzip12) {
+            tokenType = AddressType.Token2;
+        }
+
         const { publicKeyHash } = identities[selectedAccountIndex];
         dispatch(changeAccountThunk(addressId, publicKeyHash, index, selectedAccountIndex, tokenType));
     };
@@ -178,8 +186,8 @@ const TokensPage = () => {
                         <TokensTitle>Your Tokens</TokensTitle>
                         <BoxesGrid>
                             {activeTokens.map((token, index) => (
-                                <Box key={token.symbol} onMouseEnter={() => onHover(token.address)} onMouseLeave={() => onHover('')}>
-                                    <BoxBody hover={hover === token.address}>
+                                <Box key={token.symbol} onMouseEnter={() => onHover(`${token.address}_${index || 0}`)} onMouseLeave={() => onHover('')}>
+                                    <BoxBody hover={hover === `${token.address}_${index || 0}`}>
                                         <BoxFront>
                                             <BoxIcon>
                                                 <Img src={token.icon} />
@@ -222,8 +230,8 @@ const TokensPage = () => {
                         {<TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>}
                         <BoxesGrid>
                             {supportedTokens.map((token, index) => (
-                                <Box key={token.symbol} onMouseEnter={() => onHover(token.address)} onMouseLeave={() => onHover('')}>
-                                    <BoxBody hover={hover === token.address}>
+                                <Box key={token.symbol} onMouseEnter={() => onHover(`${token.address}_${index || 0}`)} onMouseLeave={() => onHover('')}>
+                                    <BoxBody hover={hover === `${token.address}_${index || 0}`}>
                                         <BoxFront>
                                             <BoxIconWrapper>
                                                 <BoxIcon>

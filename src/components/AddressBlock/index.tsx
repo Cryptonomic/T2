@@ -29,6 +29,7 @@ import BeaconConnectionRequest from '../../featureModals/Beacon/BeaconConnection
 import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
 import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
 import BeaconInfo from '../../featureModals/Beacon/BeaconInfo';
+import HicNFTTransferModal from '../../contracts/HicNFT/components/TransferModal';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
@@ -271,6 +272,7 @@ function AddressBlock(props: Props) {
     const isBeaconPermissionModalOpen = isModalOpen && activeModal === 'beaconPermission';
     const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
+    const isHicNFTModalOpen = isModalOpen && activeModal === 'HicNFT';
 
     return (
         <Container>
@@ -371,6 +373,14 @@ function AddressBlock(props: Props) {
                     tokenType = AddressType.STKR;
                 }
 
+                if (token.kind === TokenKind.plenty) {
+                    tokenType = AddressType.plenty;
+                }
+
+                if (token.kind === TokenKind.tzip12) {
+                    tokenType = AddressType.Token2;
+                }
+
                 return (
                     <TokenNav
                         key={token.address}
@@ -433,6 +443,8 @@ function AddressBlock(props: Props) {
             {isInteractModalOpen && (
                 <InteractContractModal open={isInteractModalOpen} onClose={() => setIsInteractModalOpen(false)} addresses={regularAddresses} />
             )}
+
+            {isHicNFTModalOpen && <HicNFTTransferModal open={isHicNFTModalOpen} onClose={() => setIsModalOpen(false, 'hicNFT')} />}
 
             {isDelegateModalOpen && (
                 <AddDelegateModal open={isDelegateModalOpen} onClose={() => setIsModalOpen(false, 'delegate_contract')} managerBalance={balance} />

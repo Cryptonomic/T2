@@ -57,7 +57,7 @@ function ActionPanel() {
                 const transactionSlice = processedTransactions.slice(firstNumber, lastNumber);
 
                 return (
-                    <Fragment>
+                    <>
                         <Transactions transactions={transactionSlice} selectedParentHash={selectedParentHash} token={selectedToken} />
                         {pageCount > 1 && (
                             <PageNumbers
@@ -69,7 +69,7 @@ function ActionPanel() {
                             />
                         )}
                         {isLoading && <Loader />}
-                    </Fragment>
+                    </>
                 );
             case COLLECTION:
             default: {
@@ -77,6 +77,7 @@ function ActionPanel() {
             }
         }
     }
+
     return (
         <Container>
             <BalanceBanner

@@ -294,6 +294,12 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             return undefined;
         }
 
+        if (Object.keys(knownContractNames).includes(transaction.destination)) {
+            if (transaction.parameters.entrypoint === 'GetReward') {
+                return <>&nbsp;to collect PLENTY pool rewards.</>;
+            }
+        }
+
         if (transaction.destination === 'KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9') {
             // hic et nunc Auction House
             if (transaction.parameters.entrypoint === 'collect') {
