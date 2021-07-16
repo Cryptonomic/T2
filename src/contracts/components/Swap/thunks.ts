@@ -71,6 +71,7 @@ async function callMarket(
     });
 
     if (operationId === undefined) {
+        dispatch(createMessageAction('components.messageBar.messages.started_token_failed', true));
         return false;
     }
 
