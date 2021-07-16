@@ -207,9 +207,13 @@ export function syncTokenThunk(tokenAddress) {
             const mapid = tokens[tokenIndex].mapid || 0;
 
             if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtz || tokens[tokenIndex].kind === TokenKind.ethtz) {
-                balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].balancePath);
                 detailsAsync = Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                    if (tokens[tokenIndex].address === 'KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH') {
+                        // TODO
+                        return { ...d, holders: keyCount, supply: 1000000000000000000000000 };
+                    }
                     return { ...d, holders: keyCount };
                 });
                 transAsync = tzip7Util.syncTokenTransactions(
@@ -424,12 +428,20 @@ export function syncWalletThunk() {
                     const mapid = token.mapid || -1;
                     let administrator = token.administrator;
 
-                    const details = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
+                    let details: any = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
                     administrator = details?.administrator || '';
+                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
+                    details = { ...details, holders: keyCount };
 
                     const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, token.balancePath).catch(
                         () => 0
                     );
+
+                    if (token.address === 'KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH' && details) {
+                        // TODO
+                        details.supply = 1000000000000000000000000;
+                    }
+
                     const transactions = await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
                     return { ...token, administrator, balance, transactions, details };
                 } else if (token.kind === TokenKind.tzbtc) {
@@ -486,7 +498,6 @@ export function syncWalletThunk() {
                     const artToken = token as ArtToken;
                     const administrator = '';
 
-                    // const details = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
                     const balance = await HicNFTUtil.getCollectionSize(token.mapid, selectedParentHash, mainNode);
                     const transactions = []; // await HicNFTUtil.getTokenTransactions('', selectedParentHash, selectedNode);
 
