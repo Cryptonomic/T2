@@ -300,7 +300,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             }
         }
 
-        if (transaction.destination === 'KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9') {
+        if (transaction.destination === 'KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9' || transaction.destination === 'KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn') {
             // hic et nunc Auction House
             if (transaction.parameters.entrypoint === 'collect') {
                 const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].int', json: transaction.parameters.value })[0]).toString();
@@ -392,6 +392,16 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 return (
                     <>
                         &nbsp;to receive <strong>{tokenAmount.toString()}</strong> {selectedTokenSymbol} at <strong>{holder}</strong>
+                    </>
+                );
+            } else if (transaction.parameters.entrypoint === 'approve') {
+                let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
+                approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]).dividedBy(6).toFixed();
+
+                return (
+                    <>
+                        &nbsp;to approve <strong>{approvedAddress}</strong> for <strong>{tokenAmount}</strong> liquidity tokens.
                     </>
                 );
             }
@@ -492,6 +502,26 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             }
         }
 
+        if (transaction.destination === 'KT1EpGgjQs73QfFJs9z7m1Mxm5MTnpC2tqse') {
+            // Kalamint
+            if (transaction.parameters.entrypoint === 'mint') {
+                const editions = Number(JSONPath({ path: '$.args[0].args[1].args[1].args[0].int', json: transaction.parameters.value })[0]);
+                const royalties = Number(JSONPath({ path: '$.args[0].args[1].args[0].args[1].int', json: transaction.parameters.value })[0]);
+                const itemTitle = JSONPath({ path: '$.args[1].args[0].args[1].args[0].string', json: transaction.parameters.value })[0].toString();
+
+                return (
+                    <>
+                        &nbsp;to mint <strong>{editions}</strong> NFT{editions > 1 ? 's' : ''} with royalties of <strong>{royalties}%</strong> titled{' '}
+                        <strong>{itemTitle}</strong>.
+                    </>
+                );
+            }
+        } else if (transaction.destination === 'KT1MiSxkVDFDrAMYCZZXdBEkNrf1NWzfnnRR') {
+            if (transaction.parameters.entrypoint === 'create_auction') {
+                // TODO
+            }
+        }
+
         return undefined;
     };
 
@@ -516,7 +546,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 </p>
                             )}
                             {isContract && (
-                                <p>
+                                <p style={{ maxHeight: 200, overflow: 'scroll' }}>
                                     <strong>{appMetadata.name}</strong> is requesting a contract call to the <strong>{operationParameters.entrypoint}</strong>{' '}
                                     function of <strong>{contractName}</strong>
                                     {new BigNumber(operationDetails[0].amount).toNumber() !== 0 && (
