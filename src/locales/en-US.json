@@ -374,7 +374,7 @@
                 "invoke_operation_failed": "Smart Contract operation failed",
                 "success_invoke_operation": "Successfully started contract invocation.",
                 "success_contract_origination": "Successfully started contract deployment.",
-                "started_token_failed": "Started token transaction failed.",
+                "started_token_failed": "Token transaction failed.",
                 "started_token_success": "Successfully started token transaction.",
                 "mint_operation_failed": "Mint operation failed.",
                 "mint_operation_success": "Successfully started mint token.",
@@ -487,6 +487,17 @@
                 "title": "HicNFT Transfer",
                 "recipient_address": "Recipient Address",
                 "send": "Send"
+            }
+        },
+        "plenty": {
+            "modal": {
+                "harvestTitle": "Harvest Pending Rewards"
+            },
+            "verbs": {
+                "harvest": "Harvest"
+            },
+            "nouns": {
+                "pending_rewards": "Pending Rewards"
             }
         },
         "swap": {
