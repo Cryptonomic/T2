@@ -1,4 +1,4 @@
-import { WrappedTezosHelper, OpenOvenResult, TezosNodeReader, TezosConseilClient, ConseilServerInfo } from 'conseiljs';
+import { WrappedTezosHelper, OpenOvenResult, TezosNodeReader, TezosConseilClient, TezosNodeWriter, TezosParameterFormat, ConseilServerInfo } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
@@ -11,6 +11,7 @@ import { getMainNode, getMainPath } from '../../utils/settings';
 
 import { findTokenIndex } from '../../utils/token';
 import { Vault, VaultToken } from '../../types/general';
+import { calcPendingRewards, getActivePools } from './util';
 
 export function transferThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
@@ -327,6 +328,65 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
         dispatch(updateTokensAction([...tokens]));
 
         dispatch(createMessageAction('Completed set delegate operation', false, operationId));
+
+        return true;
+    };
+}
+
+export async function estimatePendingRewards(tezosUrl, selectedParentHash): Promise<string> {
+    return await calcPendingRewards(tezosUrl, selectedParentHash);
+}
+
+export function harvestRewards(password: string) {
+    return async (dispatch, state) => {
+        const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
+        const { identities, walletPassword } = state().wallet;
+        const { selectedParentHash, isLedger, signer } = state().app;
+        const mainNode = getMainNode(nodesList, selectedNode);
+        const { tezosUrl } = mainNode;
+
+        if (password !== walletPassword && !isLedger) {
+            const error = 'components.messageBar.messages.incorrect_password';
+            dispatch(createMessageAction(error, true));
+            return false;
+        }
+
+        const mainPath = getMainPath(pathsList, selectedPath);
+        const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
+
+        const activePools = await getActivePools(tezosUrl, selectedParentHash);
+        const ops = activePools.map((p) =>
+            TezosNodeWriter.constructContractInvocationOperation(
+                selectedParentHash,
+                0,
+                p.contract,
+                0,
+                0,
+                0,
+                0,
+                'claim',
+                '{"prim":"Unit"}',
+                TezosParameterFormat.Micheline
+            )
+        );
+        const counter = await TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
+
+        const pricedOps = await TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
+
+        const operationId = await TezosNodeWriter.sendOperation(tezosUrl, pricedOps, isLedger ? signer : await cloneDecryptedSigner(signer, password)).catch(
+            (err) => {
+                const errorObj = { name: err.message, ...err };
+                console.error(`Plenty harvestRewards failed with ${JSON.stringify(errorObj)}`);
+                dispatch(createMessageAction(errorObj.name, true));
+                return undefined;
+            }
+        );
+
+        if (operationId === undefined) {
+            return false;
+        }
+
+        dispatch(createMessageAction('components.messageBar.messages.started_token_success', false, operationId?.operationGroupID));
 
         return true;
     };
