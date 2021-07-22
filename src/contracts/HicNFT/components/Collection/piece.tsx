@@ -32,7 +32,6 @@ function ArtPiece(props: Props) {
     const formattedDate = formatDate(receivedOn);
 
     const transferTrigger = () => {
-        // TODO: set necessary values for transfer modal
         dispatch(setModalValue({ price, amount, objectId, receivedOn, info: pieceInfo }, 'piece'));
         dispatch(setModalOpen(true, 'HicNFT'));
     };
