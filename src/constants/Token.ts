@@ -594,7 +594,7 @@ export const knownContractNames = {
     KT1EpGgjQs73QfFJs9z7m1Mxm5MTnpC2tqse: 'Kalamint Art House',
     KT1MiSxkVDFDrAMYCZZXdBEkNrf1NWzfnnRR: 'Kalamint Auction Factory',
 
-    KT1Jib9AmhYdbnef2F97uEHtApk2GhuHMQBq: 'StakerDAO STRK Liquidity Farm',
+    KT1Jib9AmhYdbnef2F97uEHtApk2GhuHMQBq: 'StakerDAO STKR Liquidity Farm',
     KT1EAvfbUsed9tbdVzaJKcLM2BSkv7q9oDG1: 'StakerDAO wXTZ Liquidity Farm',
     KT1SxyJctfkEJoHmDA4Vr4DoFexdgdiFp785: 'StakerDAO kUSD Liquidity Farm',
 
