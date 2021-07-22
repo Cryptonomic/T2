@@ -55,7 +55,8 @@ export const tokenPoolMap = {
     KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA: { dexterPool: '', quipuPool: 'KT1WtFb1mTsFRd1n1nAYMdrE2Ud9XREz5hjK' }, // QLkUSD
     KT1TwzD6zV3WeJ39ukuqxcfK2fJCnhvrdN1X: { dexterPool: '', quipuPool: 'KT1Gdix8LoDoQng7YqdPNhdP5V7JRX8FqWvM' }, // SMAK
     KT1Wa8yqRBpFCusJWgcQyjhRz7hUQAmFxW7j: { dexterPool: '', quipuPool: 'KT1Q93ftAUzvfMGPwC78nX8eouL1VzmHPd4d' }, // FLAME
-    KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH: { dexterPool: '', quipuPool: 'KT1NEa7CmaLaWgHNi6LkRi5Z1f4oHfdzRdGA' }, // FLAME
+    KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH: { dexterPool: '', quipuPool: 'KT1NEa7CmaLaWgHNi6LkRi5Z1f4oHfdzRdGA' }, // kDAO
+    KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW: { dexterPool: '', quipuPool: 'KT1EtjRRCBC2exyCRXz8UfV7jz7svnkqi7di' }, // uUSD
 };
 
 export function isTradeable(tokenAddress: string) {
