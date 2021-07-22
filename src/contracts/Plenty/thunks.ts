@@ -10,7 +10,7 @@ import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
 import { findTokenIndex } from '../../utils/token';
-import { getActivePools } from './util';
+import { calcPendingRewards, getActivePools } from './util';
 
 const { transferBalance } = Tzip7ReferenceTokenHelper;
 
@@ -76,6 +76,10 @@ export function transferThunk(destination: string, amount: number, fee: number, 
         dispatch(updateTokensAction([...tokens]));
         return true;
     };
+}
+
+export async function estimatePendingRewards(tezosUrl, selectedParentHash): Promise<string> {
+    return await calcPendingRewards(tezosUrl, selectedParentHash);
 }
 
 export function harvestRewards(password: string) {

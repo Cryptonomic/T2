@@ -63,7 +63,8 @@ export async function getActivePools(server: string, account: string): Promise<{
         maps.map(async (m) => {
             const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
             const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
-            return mapResult !== undefined;
+
+            return mapResult !== undefined && JSONPath({ path: '$.args[0].args[1].int', json: mapResult }).toString() !== '0';
         })
     );
 
@@ -81,7 +82,69 @@ export async function getActivePools(server: string, account: string): Promise<{
     });
 }
 
-export async function calcPendingRewards(server: string, account: string): Promise<number> {
-    await getActivePools(server, account);
-    return 0;
+export async function calcPendingRewards(server: string, account: string): Promise<string> {
+    const accountPools = await getActivePools(server, account);
+    const pendingRewards: BigNumber[] = [];
+
+    await Promise.all(
+        accountPools.map(async (p) => {
+            try {
+                const head = await TezosNodeReader.getBlockHead(server);
+                const poolState = await readPoolStorage(server, p.contract);
+                const accountState = await readUserPoolRecord(server, p.map, account);
+                const currentBlockLevel = head.header.level;
+
+                const durationSinceClaim = BigNumber.min(new BigNumber(currentBlockLevel), new BigNumber(poolState.periodFinish)).minus(
+                    poolState.lastUpdateTime
+                );
+                const rewardRate = new BigNumber(poolState.rewardRate).multipliedBy('1000000000000000000');
+                const rewardPerToken = new BigNumber(durationSinceClaim)
+                    .multipliedBy(rewardRate)
+                    .dividedBy(poolState.totalSupply)
+                    .plus(new BigNumber(poolState.rewardPerTokenStored));
+
+                let totalRewards = new BigNumber(accountState.balance).multipliedBy(rewardPerToken.minus(new BigNumber(accountState.tokenRewardsPaid)));
+                totalRewards = totalRewards.dividedBy('1000000000000000000').plus(new BigNumber(accountState.rewards));
+                totalRewards = totalRewards.dividedBy('1000000000000000000');
+
+                pendingRewards.push(totalRewards);
+            } catch (error) {
+                console.log(error);
+            }
+        })
+    );
+
+    return pendingRewards
+        .reduce((a, c) => {
+            a = a.plus(c);
+            return a;
+        })
+        .toFixed(6);
+}
+
+async function readPoolStorage(server, address) {
+    const storageResult = await TezosNodeReader.getContractStorage(server, address);
+
+    return {
+        periodFinish: new BigNumber(JSONPath({ path: '$.args[1].args[0].args[0].int', json: storageResult })[0]).toString(),
+        rewardRate: new BigNumber(JSONPath({ path: '$.args[1].args[1].int', json: storageResult })[0]).toString(),
+        lastUpdateTime: new BigNumber(JSONPath({ path: '$.args[0].args[2].int', json: storageResult })[0]).toString(),
+        totalSupply: new BigNumber(JSONPath({ path: '$.args[3].int', json: storageResult })[0]).toString(),
+        rewardPerTokenStored: new BigNumber(JSONPath({ path: '$.args[1].args[0].args[1].int', json: storageResult })[0]).toString(),
+    };
+}
+
+async function readUserPoolRecord(server, mapid, address) {
+    const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(address, 'address'), 'hex'));
+    const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
+
+    if (mapResult === undefined) {
+        throw new Error(`Map ${mapid} does not contain a record for ${address}`);
+    }
+
+    return {
+        balance: JSONPath({ path: '$.args[0].args[1].int', json: mapResult }),
+        rewards: JSONPath({ path: '$.args[2].int', json: mapResult }),
+        tokenRewardsPaid: JSONPath({ path: '$.args[3].int', json: mapResult }),
+    };
 }

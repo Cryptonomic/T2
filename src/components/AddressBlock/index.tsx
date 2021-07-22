@@ -30,6 +30,8 @@ import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
 import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
 import BeaconInfo from '../../featureModals/Beacon/BeaconInfo';
 import HicNFTTransferModal from '../../contracts/HicNFT/components/TransferModal';
+import PlentyHarvestModal from '../../contracts/Plenty/components/HarvestModal';
+import KolibriHarvestModal from '../../contracts/KolibriToken/components/HarvestModal';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
@@ -273,6 +275,8 @@ function AddressBlock(props: Props) {
     const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
     const isHicNFTModalOpen = isModalOpen && activeModal === 'HicNFT';
+    const isPlentyHarvestModalOpen = isModalOpen && activeModal === 'PlentyHarvest';
+    const isKolibriHarvestModalOpen = isModalOpen && activeModal === 'KolibriHarvest';
 
     return (
         <Container>
@@ -449,6 +453,9 @@ function AddressBlock(props: Props) {
             )}
 
             {isHicNFTModalOpen && <HicNFTTransferModal open={isHicNFTModalOpen} onClose={() => setIsModalOpen(false, 'hicNFT')} />}
+
+            {isPlentyHarvestModalOpen && <PlentyHarvestModal open={isPlentyHarvestModalOpen} onClose={() => setIsModalOpen(false, 'PlentyHarvest')} />}
+            {isKolibriHarvestModalOpen && <KolibriHarvestModal open={isKolibriHarvestModalOpen} onClose={() => setIsModalOpen(false, 'KolibriHarvest')} />}
 
             {isDelegateModalOpen && (
                 <AddDelegateModal open={isDelegateModalOpen} onClose={() => setIsModalOpen(false, 'delegate_contract')} managerBalance={balance} />

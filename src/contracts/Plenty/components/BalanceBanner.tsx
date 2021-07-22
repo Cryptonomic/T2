@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useStore, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
 
@@ -9,12 +9,19 @@ import Update from '../../../components/Update';
 import { ms } from '../../../styles/helpers';
 import { syncWalletThunk } from '../../../reduxContent/wallet/thunks';
 import { Token } from '../../../types/general';
+import { setModalOpen } from '../../../reduxContent/modal/actions';
+
+import { Column } from '../../../components/BalanceBanner/style';
 
 import { RootState } from '../../../types/store';
 
 import { AddressInfo, AddressInfoLink, AddressTitle, Container, LinkIcon, TopRow, BottomRow, Breadcrumbs, Gap } from '../../components/BalanceBanner/style';
 
 import { openLink } from '../../../utils/general';
+import { getMainNode } from '../../../utils/settings';
+
+import { SmallButton } from '../../components/style';
+import { estimatePendingRewards, harvestRewards } from '../thunks';
 
 interface Props {
     isReady: boolean;
@@ -30,6 +37,11 @@ function BalanceBanner(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { time, isWalletSyncing, selectedAccountIndex, selectedParentIndex } = useSelector((state: RootState) => state.app, shallowEqual);
+    const store = useStore<RootState>();
+    const { selectedNode, nodesList } = store.getState().settings;
+    const { selectedParentHash } = store.getState().app;
+    const { tezosUrl } = getMainNode(nodesList, selectedNode);
+
     const addressIndex = selectedAccountIndex + 1;
     const parentIndex = selectedParentIndex + 1;
 
@@ -37,8 +49,23 @@ function BalanceBanner(props: Props) {
 
     const breadcrumbs = t('components.balanceBanner.breadcrumbs', { parentIndex, addressLabel: displayName });
 
+    const [pendingRewards, setPendingRewards] = useState('0.0');
+    useEffect(() => {
+        updatePendingRewards();
+    }, [pendingRewards]);
+
+    function updatePendingRewards() {
+        const getData = async () => {
+            const rewards = await estimatePendingRewards(tezosUrl, selectedParentHash);
+            setPendingRewards(rewards);
+        };
+
+        getData();
+    }
+
     function onSyncWallet() {
         dispatch(syncWalletThunk());
+        updatePendingRewards();
     }
 
     function formatAmount(amount): string {
@@ -48,6 +75,10 @@ function BalanceBanner(props: Props) {
             .dividedBy(10 ** (token.scale || 0))
             .toNumber()
             .toLocaleString(undefined, { minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits });
+    }
+
+    function harvestTrigger() {
+        dispatch(setModalOpen(true, 'PlentyHarvest'));
     }
 
     return (
@@ -70,17 +101,29 @@ function BalanceBanner(props: Props) {
                     <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
                     <Gap />
                     <div style={{ marginLeft: 'auto' }}>
-                        <AmountView
-                            color="white"
-                            size={ms(4.5)}
-                            amount={balance}
-                            weight="light"
-                            symbol={token.symbol}
-                            showTooltip={true}
-                            scale={token.scale}
-                            precision={token.precision}
-                            round={token.round}
-                        />
+                        <Column>
+                            <AmountView
+                                color="white"
+                                size={ms(4.5)}
+                                amount={balance}
+                                weight="light"
+                                symbol={token.symbol}
+                                showTooltip={true}
+                                scale={token.scale}
+                                precision={token.precision}
+                                round={token.round}
+                            />
+                            {pendingRewards !== '0.0' && (
+                                <div style={{ float: 'right' }}>
+                                    <span style={{ marginRight: '5px' }}>
+                                        {t('components.plenty.nouns.pending_rewards')}: {pendingRewards}
+                                    </span>
+                                    <SmallButton buttonTheme="primary" onClick={() => harvestTrigger()}>
+                                        {t('components.plenty.verbs.harvest')}
+                                    </SmallButton>
+                                </div>
+                            )}
+                        </Column>
                     </div>
                 </AddressInfo>
                 <AddressInfo>

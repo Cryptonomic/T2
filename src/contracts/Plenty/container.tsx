@@ -19,7 +19,6 @@ import { Container, Tab, TabList, TabText, SectionContainer } from '../component
 import { getTokenSelector } from '../duck/selectors';
 
 import { transferThunk } from './thunks';
-import { calcPendingRewards } from './util';
 
 function ActionPanel() {
     const { t } = useTranslation();
