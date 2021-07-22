@@ -2,7 +2,7 @@ import { Tzip7ReferenceTokenHelper, TezosParameterFormat, TezosNodeWriter, Tezos
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
-import { createTransaction, createTokenTransaction } from '../../utils/transaction';
+import { createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
 import { cloneDecryptedSigner } from '../../utils/wallet';
