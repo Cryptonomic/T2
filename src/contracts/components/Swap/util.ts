@@ -46,6 +46,7 @@ export const tokenPoolMap = {
     KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn: { dexterPool: 'KT1BGQR7t4izzKZ7eRodKWTodAsM23P38v7N', quipuPool: 'KT1WBLrLE2vG8SedBqiSJFm4VVAZZBytJYHc' }, // tzbtc
     KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: { dexterPool: 'KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9', quipuPool: 'KT1WxgZ1ZSfMgmsSDDcUn8Xn577HwnQ7e1Lb' }, // usdtz
     KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH: { dexterPool: 'KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo', quipuPool: 'KT1W3VGRUjvS869r4ror8kdaxqJAZUbPyjMT' }, // wxtz
+    KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: { dexterPool: '', quipuPool: 'KT1BMEEPX7MWzwwadW3NCSZe9XGmFJ7rs7Dr' }, // stkr
     KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: { dexterPool: '', quipuPool: 'KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z' }, // plenty
     KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT: { dexterPool: '', quipuPool: 'KT1J3wTYb4xk5BsSBkg6ML55bX1xq7desS34' }, // kalam
     KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9: { dexterPool: '', quipuPool: 'KT1BgezWwHBxA9NrczwK9x3zfgFnUkc7JJ4b' }, // heh
