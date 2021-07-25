@@ -188,7 +188,6 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
 
 async function readPoolStorage(server, address) {
     const storageResult = await TezosNodeReader.getContractStorage(server, address);
-    console.log('DDDD', JSON.stringify(storageResult));
 
     return {
         lastBlockUpdate: JSONPath({ path: '$.args[1].args[1].int', json: storageResult })[0],
@@ -204,7 +203,7 @@ async function readPoolStorage(server, address) {
 async function readUserPoolRecord(server, mapid, address) {
     const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(address, 'address'), 'hex'));
     const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
-    console.log('map', JSON.stringify(mapResult));
+
     if (mapResult === undefined) {
         throw new Error(`Map ${mapid} does not contain a record for ${address}`);
     }
