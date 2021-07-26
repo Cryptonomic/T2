@@ -11,8 +11,10 @@ const pools = [
     'KT1MBqc3GHpApBXaBZyvY63LF6eoFyTWtySn',
     'KT1KyxPitU1xNbTriondmAFtPEcFhjSLV1hz',
     'KT1XherecVvrE6X4PV5RTwdEKNzA294ZE9T9',
+    'KT1GotpjdBaxt2GiMFcQExLEk9GTfYo4UoTa',
+    'KT18oB3x8SLxMJq2o9hKNupbZZ5ZMsgr2aho',
 ];
-const poolBalanceMaps = [4494, 4491, 4496, 4490, 4492, 4493];
+const poolBalanceMaps = [4494, 4491, 4496, 4490, 4492, 4493, 7985, 7988];
 
 export async function getSimpleStorage(server: string, address: string): Promise<{ mapid: number; supply: number; administrator: string; paused: boolean }> {
     const storageResult = await TezosNodeReader.getContractStorage(server, address);
