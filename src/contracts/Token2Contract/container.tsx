@@ -20,7 +20,7 @@ import Burn from '../components/Burn';
 import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
 import { getTokenSelector } from '../duck/selectors';
 
-import { transferThunk } from './thunks';
+import { transferThunk, mintThunk, burnThunk } from './thunks';
 
 function ActionPanel() {
     const { t } = useTranslation();
@@ -41,10 +41,10 @@ function ActionPanel() {
 
     function renderSection() {
         switch (activeTab) {
-            // case MINT:
-            // return <Mint isReady={true} token={selectedToken} tokenMintAction={mintThunk} />;
-            // case BURN:
-            // return <Burn isReady={true} token={selectedToken} tokenBurnAction={burnThunk} />;
+            case MINT:
+                return <Mint isReady={true} token={selectedToken} tokenMintAction={mintThunk} />;
+            case BURN:
+                return <Burn isReady={true} token={selectedToken} tokenBurnAction={burnThunk} />;
             case SEND:
                 return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
             case SWAP:

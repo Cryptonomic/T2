@@ -330,7 +330,7 @@ function Swap(props: Props) {
                 {isLedger && ledgerModalOpen && <>Please confirm the operation on the Ledger device</>}
                 <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
                     {t(`general.verbs.${tradeSide}`)}
-                    {bestMarket && (
+                    {bestMarket && bestMarket.length > 0 && (
                         <>
                             {' '}
                             {t('general.prepositions.on')} {bestMarket}{' '}

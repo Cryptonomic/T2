@@ -1,4 +1,17 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosMessageUtils, TezosNodeReader } from 'conseiljs';
+import {
+    ConseilQueryBuilder,
+    ConseilOperator,
+    ConseilSortDirection,
+    TezosConseilClient,
+    TezosMessageUtils,
+    TezosNodeReader,
+    TezosNodeWriter,
+    TezosConstants,
+    TezosContractUtils,
+    TezosParameterFormat,
+    Signer,
+    KeyStore,
+} from 'conseiljs';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
@@ -182,7 +195,7 @@ export async function getTokenTransactions(tokenAddress: string, managerAddress:
 }
 
 /**
- * Parses storage of contracts matching the smartpy FA2 implementation audited byt PWC.
+ * Parses storage of contracts matching the smartpy FA2 implementation audited by PWC.
  */
 export async function getSimpleStoragePWCA(tezosUrl: string, tokenAddress: string) {
     const storageResult = await TezosNodeReader.getContractStorage(tezosUrl, tokenAddress);
@@ -196,4 +209,73 @@ export async function getSimpleStoragePWCA(tezosUrl: string, tokenAddress: strin
         operators: Number(JSONPath({ path: '$.args[1].args[1].int', json: storageResult })[0]),
         tokenMetadata: Number(JSONPath({ path: '$.args[3].int', json: storageResult })[0]),
     };
+}
+
+export async function mintPWCA(
+    server: string,
+    address: string,
+    signer: Signer,
+    keystore: KeyStore,
+    fee: number,
+    destination: string,
+    amount: number,
+    tokenIndex: number = 0,
+    name?: string,
+    symbol?: string,
+    decimals?: number
+): Promise<string> {
+    const params = `{ "prim": "Left", "args": [ { "prim": "Right", "args": [ { "prim": "Left", "args": [ { "prim": "Pair", "args": [ { "prim": "Pair", "args": [ { "string": "${destination}" }, { "prim": "Pair", "args": [ { "int": "${amount}" }, { "int": "${
+        decimals || 0
+    }" } ] } ] }, { "prim": "Pair", "args": [ { "string": "${name || ''}" }, { "prim": "Pair", "args": [ { "string": "${
+        symbol || ''
+    }" }, { "int": "${tokenIndex}" } ] } ] } ] } ] } ] } ] }`;
+
+    const nodeResult = await TezosNodeWriter.sendContractInvocationOperation(
+        server,
+        signer,
+        keystore,
+        address,
+        0,
+        fee,
+        0,
+        0,
+        'default',
+        params,
+        TezosParameterFormat.Micheline,
+        TezosConstants.HeadBranchOffset,
+        true
+    );
+
+    return TezosContractUtils.clearRPCOperationGroupHash(nodeResult.operationGroupID);
+}
+
+export async function burnPWCA(
+    server: string,
+    address: string,
+    signer: Signer,
+    keystore: KeyStore,
+    fee: number,
+    destination: string,
+    amount: number,
+    tokenIndex: number = 0
+): Promise<string> {
+    const params = `{ "prim": "Left", "args": [ { "prim": "Left", "args": [ { "prim": "Right", "args": [ { "prim": "Pair", "args": [ { "string": "${destination}" }, { "prim": "Pair", "args": [ { "int": "${amount}" }, { "int": "${tokenIndex}" } ] } ] } ] } ] } ] }`;
+
+    const r = await TezosNodeWriter.sendContractInvocationOperation(
+        server,
+        signer,
+        keystore,
+        address,
+        0,
+        fee,
+        0,
+        0,
+        'default',
+        params,
+        TezosParameterFormat.Micheline,
+        TezosConstants.HeadBranchOffset,
+        true
+    );
+
+    return TezosContractUtils.clearRPCOperationGroupHash(r.operationGroupID);
 }

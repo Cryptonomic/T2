@@ -48,21 +48,6 @@ function Mint(props: Props) {
 
     const isDisabled = !isReady || isLoading || isAddressIssue || !newAddress || (!passPhrase && !isLedger);
 
-    function getBalanceState() {
-        const realAmount = !amount ? Number(amount) : 0;
-        if (token.balance < realAmount) {
-            return {
-                isIssue: true,
-                warningMessage: t('components.send.warnings.total_exceeds'),
-            };
-        }
-
-        return {
-            isIssue: false,
-            warningMessage: '',
-        };
-    }
-
     async function onAction() {
         dispatch(setIsLoadingAction(true));
 
@@ -80,9 +65,6 @@ function Mint(props: Props) {
             onAction();
         }
     }
-
-    const { isIssue, warningMessage } = getBalanceState();
-    const error = isIssue ? <InputError error={warningMessage} /> : '';
 
     return (
         <Container onKeyDown={(event) => onEnterPress(event.key)}>
@@ -107,7 +89,7 @@ function Mint(props: Props) {
                         label={t('general.nouns.amount')}
                         amount={amount}
                         onChange={(val) => setAmount(val)}
-                        errorText={error}
+                        errorText={''}
                         symbol={token.symbol}
                         scale={token.scale || 0}
                         precision={token.precision || 6}

@@ -5,13 +5,14 @@ import { useTranslation } from 'react-i18next';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 
 import PaginationList from '../../components/PaginationList';
-import { TRANSACTIONS, SEND, VAULTS } from '../../constants/TabConstants';
+import { TRANSACTIONS, SEND, SWAP } from '../../constants/TabConstants';
 import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 
 import BalanceBanner from '../components/BalanceBanner';
 import Transactions from '../components/TransactionContainer';
 import Send from '../components/Send';
+import Swap from '../components/Swap';
 import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
 import { getTokenSelector } from '../duck/selectors';
 import { transferThunk } from './thunks';
@@ -21,12 +22,9 @@ const ActionPanel = () => {
     const dispatch = useDispatch();
     const selectedToken = useSelector(getTokenSelector);
     const { selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-    // const { activeTab, displayName, transactions, vaultList } = selectedToken as VaultToken;
     const { activeTab, displayName, transactions } = selectedToken;
-    const tabs = [TRANSACTIONS, SEND /*, VAULTS*/];
+    const tabs = [TRANSACTIONS, SEND, SWAP];
     const transactionList = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
-
-    // TODO(keefertaylor): Sort ovens in a deterministic way.
 
     const onChangeTab = (newTab: string) => {
         dispatch(updateActiveTabThunk(newTab, true));
@@ -51,6 +49,7 @@ const ActionPanel = () => {
             </TabList>
             <SectionContainer>
                 {activeTab === SEND && <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />}
+                {activeTab === SWAP && <Swap isReady={true} token={selectedToken} />}
                 {activeTab === TRANSACTIONS && (
                     <PaginationList
                         list={transactionList}

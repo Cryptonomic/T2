@@ -234,7 +234,7 @@ const queryHarpoon = async (accountAddress: string): Promise<HarpoonInfo> => {
     }
 };
 
-const queryTezosDomains = async (nodeUrl: string, address: string): Promise<string> => {
+export const queryTezosDomains = async (nodeUrl: string, address: string): Promise<string> => {
     try {
         const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(address, 'address'), 'hex'));
         const mapResult = await TezosNodeReader.getValueForBigMapKey(nodeUrl, 1265, packedKey);
@@ -245,7 +245,7 @@ const queryTezosDomains = async (nodeUrl: string, address: string): Promise<stri
     }
 };
 
-const queryPrices = async () => {
+export const queryPrices = async () => {
     return await fetchWithTimeout(`https://api.coingecko.com/api/v3/simple/price?ids=tezos&vs_currencies=usd,eur,jpy`, { timeout: 5000 })
         .then((r) => r.json())
         .then((j) => j.tezos)

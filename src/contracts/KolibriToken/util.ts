@@ -1,8 +1,13 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient } from 'conseiljs';
+import { JSONPath } from 'jsonpath-plus';
+import { BigNumber } from 'bignumber.js';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosNodeReader, TezosMessageUtils } from 'conseiljs';
 
 import * as status from '../../constants/StatusTypes';
 import { Node } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
+
+const farms = ['KT1RB179ddATKbCi7E8ben91bo2hqRRPrNQf', 'KT1HDXjPtjv7Y7XtJxrNc5rNjnegTi2ZzNfv', 'KT18oxtA5uyhyYXyAVhTa7agJmxHCTjHpiF7'];
+const farmBalanceMaps = [7264, 7262, 7263];
 
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[]) {
     let newTransactions: any[] = (
@@ -54,6 +59,68 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
     });
 
     return syncTransactionsWithState(newTransactions, stateTransactions);
+}
+
+export async function getActivePools(server: string, account: string): Promise<{ contract: string; map: number }[]> {
+    const hasKey = await Promise.all(
+        farmBalanceMaps.map(async (m) => {
+            const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
+            const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
+
+            return mapResult !== undefined && JSONPath({ path: '$.args[1].int', json: mapResult }).toString() !== '0';
+        })
+    );
+
+    const activeContracts: string[] = [];
+    const activeMaps: number[] = [];
+    hasKey.map((b, i) => {
+        if (b) {
+            activeContracts.push(farms[i]);
+            activeMaps.push(farmBalanceMaps[i]);
+        }
+    });
+
+    return activeContracts.map((c, i) => {
+        return { contract: c, map: activeMaps[i] };
+    });
+}
+
+export async function calcPendingRewards(server: string, account: string): Promise<string> {
+    const accountPools = await getActivePools(server, account);
+    const pendingRewards: BigNumber[] = [];
+
+    await Promise.all(
+        accountPools.map(async (p) => {
+            try {
+                const head = await TezosNodeReader.getBlockHead(server);
+                const poolState = await readPoolStorage(server, p.contract);
+                const userState = await readUserPoolRecord(server, p.map, account);
+                const currentBlockLevel = head.header.level;
+
+                const nextBlock = new BigNumber(currentBlockLevel + 1);
+                const multiplier = nextBlock.minus(poolState.lastBlockUpdate);
+                const outstandingReward = multiplier.times(poolState.rewardPerBlock);
+                const claimedRewards = new BigNumber(poolState.paidClaimedRewards).plus(poolState.unpaidClaimedRewards);
+                const totalRewards = outstandingReward.plus(claimedRewards);
+                const plannedRewards = new BigNumber(poolState.rewardPerBlock).times(poolState.totalRewardBlocks);
+                const totalRewardsExhausted = totalRewards.isGreaterThan(plannedRewards);
+                const reward = totalRewardsExhausted ? plannedRewards.minus(claimedRewards) : outstandingReward;
+                const lpMantissa = new BigNumber(10).pow(36);
+                const accRewardPerShareEnd = new BigNumber(poolState.accumulatedRewardPerShare).plus(reward.times(lpMantissa).div(poolState.lpTokenBalance));
+                const accumulatedRewardPerShare = accRewardPerShareEnd.minus(userState.tokenRewardsPaid);
+                pendingRewards.push(accumulatedRewardPerShare.times(userState.balance).dividedBy(lpMantissa).dividedBy(new BigNumber(10).pow(18)));
+            } catch (error) {
+                console.log(error);
+            }
+        })
+    );
+
+    return pendingRewards
+        .reduce((a, c) => {
+            a = a.plus(c);
+            return a;
+        })
+        .toFixed(6);
 }
 
 async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
@@ -117,4 +184,32 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
         .then((transactions) => {
             return transactions.sort((a, b) => a.timestamp - b.timestamp);
         });
+}
+
+async function readPoolStorage(server, address) {
+    const storageResult = await TezosNodeReader.getContractStorage(server, address);
+
+    return {
+        lastBlockUpdate: JSONPath({ path: '$.args[1].args[1].int', json: storageResult })[0],
+        rewardPerBlock: JSONPath({ path: '$.args[1].args[2].int', json: storageResult })[0],
+        paidClaimedRewards: JSONPath({ path: '$.args[1].args[0].args[1].int', json: storageResult })[0],
+        unpaidClaimedRewards: JSONPath({ path: '$.args[1].args[0].args[2].int', json: storageResult })[0],
+        totalRewardBlocks: JSONPath({ path: '$.args[1].args[3].int', json: storageResult })[0],
+        accumulatedRewardPerShare: JSONPath({ path: '$.args[1].args[0].args[0].int', json: storageResult })[0],
+        lpTokenBalance: JSONPath({ path: '$.args[2].int', json: storageResult })[0],
+    };
+}
+
+async function readUserPoolRecord(server, mapid, address) {
+    const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(address, 'address'), 'hex'));
+    const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
+
+    if (mapResult === undefined) {
+        throw new Error(`Map ${mapid} does not contain a record for ${address}`);
+    }
+
+    return {
+        balance: JSONPath({ path: '$.args[1].int', json: mapResult })[0],
+        tokenRewardsPaid: JSONPath({ path: '$.args[0].int', json: mapResult })[0],
+    };
 }

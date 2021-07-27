@@ -21,7 +21,7 @@ import { openLink } from '../../../utils/general';
 import { getMainNode } from '../../../utils/settings';
 
 import { SmallButton } from '../../components/style';
-import { estimatePendingRewards, harvestRewards } from '../thunks';
+import { estimatePendingRewards } from '../thunks';
 
 interface Props {
     isReady: boolean;
@@ -78,7 +78,7 @@ function BalanceBanner(props: Props) {
     }
 
     function harvestTrigger() {
-        dispatch(setModalOpen(true, 'PlentyHarvest'));
+        dispatch(setModalOpen(true, 'KolibriHarvest'));
     }
 
     return (
@@ -116,7 +116,7 @@ function BalanceBanner(props: Props) {
                             {pendingRewards !== '0.0' && (
                                 <div style={{ float: 'right' }}>
                                     <span style={{ marginRight: '5px' }}>
-                                        {t('components.plenty.nouns.pending_rewards')}: {pendingRewards}
+                                        {t('components.plenty.nouns.pending_rewards')}: {pendingRewards} kDAO
                                     </span>
                                     <SmallButton buttonTheme="primary" onClick={() => harvestTrigger()}>
                                         {t('components.plenty.verbs.harvest')}

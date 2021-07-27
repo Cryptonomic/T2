@@ -22,6 +22,11 @@ import wmaticIcon from '../../resources/contracts/wmatic-icon.png';
 import btctzIcon from '../../resources/contracts/btctz-icon.png';
 import smakIcon from '../../resources/contracts/smak-icon.png';
 import flameIcon from '../../resources/contracts/flame-icon.png';
+import cloverIcon from '../../resources/contracts/clover-icon.png';
+import wcelIcon from '../../resources/contracts/wcel-icon.png';
+import uusdIcon from '../../resources/contracts/uusd-icon.png';
+import crunchIcon from '../../resources/contracts/crunch-icon.png';
+import crdaoIcon from '../../resources/contracts/crdao-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -213,8 +218,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1HASEjnrp915toQ7RSJGW5YYcv5X7hvQbn',
-        displayName: 'kDAO Token',
+        address: 'KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH',
+        displayName: 'Kolibri DAO Token',
         symbol: 'kDAO',
         balance: 0,
         transactions: [],
@@ -224,7 +229,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 18,
         precision: 18,
         round: 6,
-        mapid: 3706,
+        mapid: 7250,
+        balancePath: '$.int',
     },
     {
         network: 'mainnet',
@@ -257,7 +263,6 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 8,
         round: 8,
         mapid: 1777,
-        hideOnLanding: true,
     },
     {
         network: 'mainnet',
@@ -289,6 +294,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 18,
         precision: 8,
         round: 8,
+        mapid: 1772,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        displayName: 'Wrapped Celcius',
+        symbol: 'wCEL',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: wcelIcon,
+        tokenIndex: 2,
+        scale: 4,
+        precision: 4,
+        round: 4,
         mapid: 1772,
     },
     {
@@ -355,6 +376,55 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW',
+        displayName: 'youves uUSD',
+        symbol: 'uUSD',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        tokenIndex: 0,
+        icon: uusdIcon,
+        scale: 12,
+        precision: 12,
+        round: 2,
+        mapid: 7706,
+        balancePath: '$.int',
+        helpLink: 'https://app.youves.com',
+        displayHelpLink: 'app.youves.com',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng',
+        displayName: 'Crunch',
+        symbol: 'CRUNCH',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: crunchIcon,
+        scale: 8,
+        precision: 8,
+        round: 8,
+        mapid: 2809,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1XPFjZqCULSnqfKaaYy8hJjeY63UNSGwXg',
+        displayName: 'Crunchy DAO',
+        symbol: 'crDAO',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: crdaoIcon,
+        scale: 8,
+        precision: 8,
+        round: 8,
+        mapid: 4666,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1Wa8yqRBpFCusJWgcQyjhRz7hUQAmFxW7j',
         displayName: 'Flame Token',
         symbol: 'FLAME',
@@ -403,6 +473,23 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         mapid: 1798,
         balancePath: '$.args[1].int',
     },
+    {
+        network: 'mainnet',
+        address: 'KT18jyxMDSMJRPPaZjoe49SUkXxax9QZtcWH',
+        displayName: 'Four Leaf Clover',
+        symbol: 'CLOVER',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: cloverIcon,
+        scale: 6,
+        precision: 6,
+        round: 6,
+        mapid: 6114,
+        balancePath: '$.args[1].int',
+        helpLink: 'https://twitter.com/heh_hedgehoge',
+    },
 ];
 
 export const knownTokenDescription = {
@@ -414,7 +501,7 @@ export const knownTokenDescription = {
     STKR: 'is the governance token for StakerDAO, is built on the FA 1.2 token standard on Tezos',
     PLENTY: 'Plenty Farm DAO token',
     KALAM: 'Kalamint DAO',
-    KDAO: 'Kolibri DAO',
+    kDAO: 'is a governance token for the Kolibri ecosystem.',
     SMAK: 'SmartLink',
     FLAME: 'is the utility token of FlameDeFi.',
 };
@@ -434,8 +521,10 @@ export const knownContractNames = {
     KT1Nbc9cmx19qFrYYFpkiDoojVYL8UZJYVcj: 'GUTS Token',
     KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9: 'Hedgehoge Token',
     KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng: 'Crunchy.network Token',
-    KT1HASEjnrp915toQ7RSJGW5YYcv5X7hvQbn: 'kDAO Token',
+    KT1XPFjZqCULSnqfKaaYy8hJjeY63UNSGwXg: 'Crunchy.network DAO',
+    KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH: 'Kolibri DAO',
     KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: 'PLENTY DAO',
+    KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW: 'uUSD',
 
     KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU: 'Dexter ETHtz Pool',
     KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9: 'Dexter USDtz Pool',
@@ -458,11 +547,15 @@ export const knownContractNames = {
     KT1RsfuBee5o7GtYrdB7bzQ1M6oVgyBnxY4S: 'QuipuSwap wMATIC Pool',
     KT1WYQj3HEt3sxdsV4dMLA8RKzUnYAzXgguS: 'QuipuSwap GUTS Pool',
     KT1BgezWwHBxA9NrczwK9x3zfgFnUkc7JJ4b: 'QuipuSwap Hedgehoge Pool',
-    KT1RRgK6eXvCWCiEGWhRZCSVGzhDzwXEEjS4: 'QuipuSwap Crunchy Pool',
+    KT1CYDRyzipkmRgndFrrYfyiAuwKxkFXxfki: 'QuipuSwap Clover Pool',
+    KT1RRgK6eXvCWCiEGWhRZCSVGzhDzwXEEjS4: 'QuipuSwap CRUNCH Pool',
     KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z: 'QuipuSwap PLENTY Pool',
     KT1J3wTYb4xk5BsSBkg6ML55bX1xq7desS34: 'QuipuSwap KALAM Pool',
     KT1Gdix8LoDoQng7YqdPNhdP5V7JRX8FqWvM: 'QuipuSwap SMAK Pool',
     KT1Q93ftAUzvfMGPwC78nX8eouL1VzmHPd4d: 'QuipuSwap FLAME Pool',
+    KT1NEa7CmaLaWgHNi6LkRi5Z1f4oHfdzRdGA: 'QuipuSwap kDAO Pool',
+    KT1EtjRRCBC2exyCRXz8UfV7jz7svnkqi7di: 'QuipuSwap uUSD Pool',
+    KT1FHiJmJUgZMPtv5F8M4ZEa6cb1D9Lf758T: 'QuipuSwap crDAO Pool',
 
     KT1Lw8hCoaBrHeTeMXbqHPG4sS4K1xn7yKcD: 'QuipuSwap FA1.2 Pool Factory',
     KT1SwH9P1Tx8a58Mm6qBExQFTcy2rwZyZiXS: 'Quipuswap FA2 Pool Factory',
@@ -470,7 +563,8 @@ export const knownContractNames = {
     KT1CpeSQKdkhWi4pinYcseCFKmDhs5M74BkU: 'tzcolors Auction House',
     KT1FyaDqiMQWg7Exo7VUiXAgZbd2kCzo3d4s: 'tzcolors NFT',
 
-    KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9: 'hic et nunc Art House',
+    KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9: 'hic et nunc Art House v1',
+    KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn: 'hic et nunc Art House v1.1',
     KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton: 'hic et nunc NFT',
     KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: 'hic et nunc DAO',
 
@@ -502,7 +596,40 @@ export const knownContractNames = {
 
     KT1J5dqegz1qYaYc7X3KjynYL9St1wcZ8ZyV: 'Maelstrom Mixer',
 
+    KT1LXQT3b39wLSiFQ1rHatzALzeKsRGmd8gr: 'Wrap wAAVE Farm',
+    KT1Stv6ATejBZ2uD9eMm5HyQ3nrNrC32zpRL: 'Wrap wBUSD Farm',
+    KT1PUFe6Gc2k8HKFXFEpVSoCVjM9uWUY54h3: 'Wrap wCEL Farm',
+    KT1NSKpB8ppqABLAEDozUmcLv3QUceN5uHQi: 'Wrap wCOMP Farm',
+    KT1HLJ9E4nd8a6DnKdrZNXiEHihk5nyJJDoR: 'Wrap wCRO Farm',
+    KT1UfeNuqT3F6ntYwucDGPHwHdYa1pQbWfST: 'Wrap wDAI Farm',
+    KT1J82G1XVAA4oqjC44qskihdWerrneNVHnn: 'Wrap wETH Farm',
+    KT1KY55T9jVZwFaCpRcj62LQNwoVYgtRHG6F: 'Wrap wFTT Farm',
+    KT1U9pATbqyDL3ZXzTQnPN2LnaGN78UnpzUw: 'Wrap wHT Farm',
+    KT1BKu6MnA86QF7JDUPj8anAEPDJNDsUYs3v: 'Wrap wHUSD Farm',
+    KT1N7RC3hLLsKgmKhjnYBiVxY2jfYcohZzwR: 'Wrap wLEO Farm',
     KT1KENVgwsrAnXZHkm5MptHWhMYiXeG5hwa3: 'Wrap wLINK Farm',
+    KT19ohHrCtSv5u4RzU3SySZJPKGhcovkf9sS: 'Wrap wMKR Farm',
+    KT1GCNfU4RQ85VgQF3fsj69Lgw8Ucz7RGoph: 'Wrap wMATIC Farm',
+    KT1K5oY3YC16AgcxPYBDty96xyzVPa89X3yh: 'Wrap wOKB Farm',
+    KT1UxnT4id9zKz1tgK1UxwpigFi5ny7vTCu9: 'Wrap wPAX Farm',
+    KT1Ls37uwiU2vD7sSBRmUV7ccdNuvgRTxtCQ: 'Wrap wSUSHI Farm',
+    KT1UeEeeSfSd7uDWpbxBTBkBBpVeDrcqcUr7: 'Wrap wUNI Farm',
+    KT1HVrGpv4GUoSR6qCmkxmHzAFtwfKxzfcop: 'Wrap wUSDC Farm',
+    KT1DQg57yTJ7QKxzk6AkPtDGvZYTM5pX4GYE: 'Wrap wUSDT Farm',
+    KT1APj29bNiMdrxQ2Nah49MH89TweW84nSXQ: 'Wrap wWBTC Farm',
+
+    KT1EpGgjQs73QfFJs9z7m1Mxm5MTnpC2tqse: 'Kalamint Art House',
+    KT1MiSxkVDFDrAMYCZZXdBEkNrf1NWzfnnRR: 'Kalamint Auction Factory',
+
+    KT1Jib9AmhYdbnef2F97uEHtApk2GhuHMQBq: 'StakerDAO STKR Liquidity Farm',
+    KT1EAvfbUsed9tbdVzaJKcLM2BSkv7q9oDG1: 'StakerDAO wXTZ Liquidity Farm',
+    KT1SxyJctfkEJoHmDA4Vr4DoFexdgdiFp785: 'StakerDAO kUSD Liquidity Farm',
+
+    KT1KnuE87q1EKjPozJ5sRAjQA24FPsP57CE3: 'Crunchy.network Farms',
+
+    KT1HDXjPtjv7Y7XtJxrNc5rNjnegTi2ZzNfv: 'Kolibri kUSD Farm',
+    KT1RB179ddATKbCi7E8ben91bo2hqRRPrNQf: 'Kolibri kUSD Liquidity Farm',
+    KT18oxtA5uyhyYXyAVhTa7agJmxHCTjHpiF7: 'Kolibri QLPkUSD Farm',
 };
 
 export const knownMarketMetadata = [
@@ -564,7 +691,7 @@ export const knownMarketMetadata = [
     },
     {
         network: 'mainnet',
-        address: 'KT1CiSKXR68qYSxnbzjwvfeMCRburaSDonT2',
+        address: 'KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6',
         token: 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
         name: 'QuipuSwap kUSD Pool',
         scale: 18,
@@ -572,7 +699,7 @@ export const knownMarketMetadata = [
     },
     {
         network: 'mainnet',
-        address: 'KT1NABnnQ4pUTJHUwFLiVM2uuEu1RXihAVmB',
+        address: 'KT1W3VGRUjvS869r4ror8kdaxqJAZUbPyjMT',
         token: 'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH',
         name: 'QuipuSwap wXTZ Pool',
         scale: 6,
@@ -596,7 +723,7 @@ export const knownMarketMetadata = [
     },
     {
         network: 'mainnet',
-        address: 'KT1R5Fp415CJxSxxXToUj6QvxP1LHaYXaxV6',
+        address: 'KT1BMEEPX7MWzwwadW3NCSZe9XGmFJ7rs7Dr',
         token: 'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea',
         name: 'QuipuSwap STKR Pool',
         scale: 18,
@@ -705,5 +832,45 @@ export const knownMarketMetadata = [
         name: 'QuipuSwap FLAME Pool',
         scale: 6,
         symbol: 'FLAME',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1CYDRyzipkmRgndFrrYfyiAuwKxkFXxfki',
+        token: 'KT18jyxMDSMJRPPaZjoe49SUkXxax9QZtcWH',
+        name: 'QuipuSwap Clover Pool',
+        scale: 6,
+        symbol: 'CLOVER',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1NEa7CmaLaWgHNi6LkRi5Z1f4oHfdzRdGA',
+        token: 'KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH',
+        name: 'QuipuSwap kDAO Pool',
+        scale: 18,
+        symbol: 'kDAO',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1EtjRRCBC2exyCRXz8UfV7jz7svnkqi7di',
+        token: 'KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW',
+        name: 'QuipuSwap uUSD Pool',
+        scale: 12,
+        symbol: 'uUSD',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1FHiJmJUgZMPtv5F8M4ZEa6cb1D9Lf758T',
+        token: 'KT1XPFjZqCULSnqfKaaYy8hJjeY63UNSGwXg',
+        name: 'QuipuSwap crDAO Pool',
+        scale: 12,
+        symbol: 'crDAO',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1RRgK6eXvCWCiEGWhRZCSVGzhDzwXEEjS4',
+        token: 'KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng',
+        name: 'QuipuSwap CRUNCH Pool',
+        scale: 12,
+        symbol: 'CRUNCH',
     },
 ];

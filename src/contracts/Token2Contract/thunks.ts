@@ -11,6 +11,8 @@ import { getMainNode, getMainPath } from '../../utils/settings';
 
 import { findTokenIndex } from '../../utils/token';
 import { knownContractNames, knownTokenContracts, knownMarketMetadata } from '../../constants/Token';
+import { TokenKind } from '../../types/general';
+import { mintPWCA, burnPWCA } from './util';
 
 export function transferThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
@@ -94,7 +96,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
 }
 
 export function mintThunk(destination: string, amount: number, fee: number, password: string) {
-    /*return async (dispatch, state) => {
+    return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
         const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
@@ -107,27 +109,36 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
             return false;
         }
 
+        const idx = findTokenIndex(tokens, selectedAccountHash);
+        const selectedToken = tokens[idx];
+
         const mainPath = getMainPath(pathsList, selectedPath);
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const groupid: string = await mint(
-            tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
-            keyStore,
-            selectedAccountHash,
-            fee,
-            destination,
-            amount,
-            0,
-            0
-        ).catch((err) => {
-            console.log(err);
-            const errorObj = { name: err.message, ...err };
-            console.error(errorObj);
-            dispatch(createMessageAction(errorObj.name, true));
-            return '';
-        });
+        let groupid = '';
+        if (selectedToken.symbol.toLowerCase() === 'btctz') {
+            // Not meant for initial mint
+            groupid = await mintPWCA(
+                tezosUrl,
+                selectedAccountHash,
+                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                keyStore,
+                fee,
+                destination,
+                amount
+            ).catch((err) => {
+                console.log(err);
+                const errorObj = { name: err.message, ...err };
+                console.error(errorObj);
+                dispatch(createMessageAction(errorObj.name, true));
+                return '';
+            });
+        } else if (selectedToken.kind === TokenKind.tzip12 && selectedToken.tokenIndex === undefined) {
+            // SingleAssetTokenHelper.mint() TODO
+        } else if (selectedToken.kind === TokenKind.tzip12 && selectedToken.tokenIndex > -1) {
+            // MultiAssetTokenHelper.mint() TODO
+        }
 
         if (groupid.length === 0) {
             return false;
@@ -145,20 +156,16 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
             entryPoint: 'mint',
         });
 
-        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
-
-        if (tokenIndex > -1) {
-            tokens[tokenIndex].transactions.push(transaction);
-        }
+        selectedToken.transactions.push(transaction);
 
         dispatch(updateTokensAction([...tokens]));
 
         return true;
-    };*/
+    };
 }
 
 export function burnThunk(destination: string, amount: number, fee: number, password: string) {
-    /*return async (dispatch, state) => {
+    return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
         const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
@@ -175,22 +182,30 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const groupid: string = await burn(
-            tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
-            keyStore,
-            selectedAccountHash,
-            fee,
-            destination,
-            amount,
-            0,
-            0
-        ).catch((err) => {
-            const errorObj = { name: err.message, ...err };
-            console.error(errorObj);
-            dispatch(createMessageAction(errorObj.name, true));
-            return '';
-        });
+        const idx = findTokenIndex(tokens, selectedAccountHash);
+        const selectedToken = tokens[idx];
+
+        let groupid = '';
+        if (selectedToken.symbol.toLowerCase() === 'btctz') {
+            groupid = await burnPWCA(
+                tezosUrl,
+                selectedAccountHash,
+                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                keyStore,
+                fee,
+                destination,
+                amount
+            ).catch((err) => {
+                const errorObj = { name: err.message, ...err };
+                console.error(errorObj);
+                dispatch(createMessageAction(errorObj.name, true));
+                return '';
+            });
+        } else if (selectedToken.kind === TokenKind.tzip12 && selectedToken.tokenIndex === undefined) {
+            // SingleAssetTokenHelper.mint()
+        } else if (selectedToken.kind === TokenKind.tzip12 && selectedToken.tokenIndex > -1) {
+            // MultiAssetTokenHelper.mint()
+        }
 
         if (groupid.length === 0) {
             return false;
@@ -208,14 +223,10 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
             entryPoint: 'burn',
         });
 
-        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
-
-        if (tokenIndex > -1) {
-            tokens[tokenIndex].transactions.push(transaction);
-        }
+        selectedToken.transactions.push(transaction);
 
         dispatch(updateTokensAction([...tokens]));
 
         return true;
-    };*/
+    };
 }

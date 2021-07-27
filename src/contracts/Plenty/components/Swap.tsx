@@ -27,7 +27,6 @@ import {
     applyFees,
 } from '../../components/Swap/util';
 import { buyQuipu, sellQuipu } from '../../components/Swap/thunks';
-import { harvestRewards } from '../thunks';
 
 interface Props {
     isReady: boolean;
@@ -172,15 +171,9 @@ function Swap(props: Props) {
         dispatch(setIsLoadingAction(false));
     }
 
-    async function onHarvest() {
-        await dispatch(harvestRewards(passPhrase));
-    }
-
     const { isIssue, warningMessage } = getBalanceState();
     const error = isIssue ? <InputError error={warningMessage} /> : '';
 
-    // TODO: needs a popup explaining slippage, fees
-    // TODO: needs a modal to accept disclaimer on actual amounts
     return (
         <Container>
             <RowContainer>
@@ -232,15 +225,15 @@ function Swap(props: Props) {
                 )}
                 {isLedger && ledgerModalOpen && <>Please confirm the operation on the Ledger device</>}
                 <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
-                    {t(`general.verbs.${tradeSide}`)} {t('general.prepositions.on')} {bestMarket}
+                    {t(`general.verbs.${tradeSide}`)}
+                    {bestMarket && bestMarket.length > 0 && (
+                        <>
+                            {' '}
+                            {t('general.prepositions.on')} {bestMarket}{' '}
+                        </>
+                    )}
                 </InvokeButton>
             </PasswordButtonContainer>
-
-            {/* <RowContainer>
-                <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onHarvest()}>
-                    Harvest Rewards
-                </InvokeButton>
-            </RowContainer> */}
         </Container>
     );
 }

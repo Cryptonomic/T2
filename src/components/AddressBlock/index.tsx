@@ -30,6 +30,8 @@ import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
 import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
 import BeaconInfo from '../../featureModals/Beacon/BeaconInfo';
 import HicNFTTransferModal from '../../contracts/HicNFT/components/TransferModal';
+import PlentyHarvestModal from '../../contracts/Plenty/components/HarvestModal';
+import KolibriHarvestModal from '../../contracts/KolibriToken/components/HarvestModal';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
@@ -273,6 +275,8 @@ function AddressBlock(props: Props) {
     const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
     const isHicNFTModalOpen = isModalOpen && activeModal === 'HicNFT';
+    const isPlentyHarvestModalOpen = isModalOpen && activeModal === 'PlentyHarvest';
+    const isKolibriHarvestModalOpen = isModalOpen && activeModal === 'KolibriHarvest';
 
     return (
         <Container>
@@ -291,9 +295,11 @@ function AddressBlock(props: Props) {
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
                 />
             )}
-            <AddDelegateLabel>
-                <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
-            </AddDelegateLabel>
+            {delegatedAddresses.length > 0 && (
+                <AddDelegateLabel>
+                    <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
+                </AddDelegateLabel>
+            )}
 
             {delegatedAddresses.map((address, index) => {
                 const addressId = address.account_id;
@@ -320,12 +326,14 @@ function AddressBlock(props: Props) {
                 );
             })}
 
-            <AddressLabel>
-                <AccountTitle>{t('general.nouns.total_balance')}</AccountTitle>
-                {ready || storeType === Mnemonic ? (
-                    <AmountView color="primary" size={ms(0)} amount={balance + smartBalance} scale={6} precision={6} round={2} />
-                ) : null}
-            </AddressLabel>
+            {delegatedAddresses.length > 0 && (
+                <AddressLabel>
+                    <AccountTitle>{t('general.nouns.total_balance')}</AccountTitle>
+                    {ready || storeType === Mnemonic ? (
+                        <AmountView color="primary" size={ms(0)} amount={balance + smartBalance} scale={6} precision={6} round={2} />
+                    ) : null}
+                </AddressLabel>
+            )}
 
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'sign'} onClick={() => setIsModalOpen(true, 'sign')}>
                 <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
@@ -445,6 +453,9 @@ function AddressBlock(props: Props) {
             )}
 
             {isHicNFTModalOpen && <HicNFTTransferModal open={isHicNFTModalOpen} onClose={() => setIsModalOpen(false, 'hicNFT')} />}
+
+            {isPlentyHarvestModalOpen && <PlentyHarvestModal open={isPlentyHarvestModalOpen} onClose={() => setIsModalOpen(false, 'PlentyHarvest')} />}
+            {isKolibriHarvestModalOpen && <KolibriHarvestModal open={isKolibriHarvestModalOpen} onClose={() => setIsModalOpen(false, 'KolibriHarvest')} />}
 
             {isDelegateModalOpen && (
                 <AddDelegateModal open={isDelegateModalOpen} onClose={() => setIsModalOpen(false, 'delegate_contract')} managerBalance={balance} />

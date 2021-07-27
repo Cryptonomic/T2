@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { createMessageAction } from '../../../../reduxContent/message/actions';
-
-import Loader from '../../../../components/Loader';
 import { RootState, AppState } from '../../../../types/store';
-import { AddressInfoLink, ModalWrapper, ModalContainer, CloseIconWrapper, ModalTitle } from '../../../../featureModals/style';
+import { ModalWrapper, ModalContainer, CloseIconWrapper, ModalTitle } from '../../../../featureModals/style';
 
 import { LinkIcon } from '../Collection/style';
 import { Container, AmountContainer, PasswordContainer, InvokeButton } from './style';

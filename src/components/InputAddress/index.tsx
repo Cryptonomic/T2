@@ -12,6 +12,7 @@ import TezosIcon from '../TezosIcon';
 import Tooltip from '../Tooltip';
 import { ms } from '../../styles/helpers';
 
+import { queryTezosDomains } from '../../reduxContent/app/thunks';
 import { getAddressType } from '../../utils/account';
 import { getMainNode } from '../../utils/settings';
 import { AddressType } from '../../types/general';
@@ -67,6 +68,7 @@ function InputAddress(props: Props) {
     const { label, onChange, operationType, address, tooltip, onIssue, onAddressType } = props;
     const { t } = useTranslation();
     const [error, setError] = useState('');
+    const [domainName, setDomainName] = useState('');
     const { selectedNode, nodesList } = useSelector((state: RootState) => state.settings, shallowEqual);
     const addressPrefixes = /^(tz1|tz2|tz3|KT1)/;
 
@@ -118,6 +120,7 @@ function InputAddress(props: Props) {
     };
 
     const onValidateAddress = async (addressText) => {
+        setDomainName('');
         const charMatch = /[1-9A-HJ-NP-Za-km-z]{36}/;
         const { firstCharactersRegEx, regErrorTxt } = getRegExState();
         let errorState = true;
@@ -162,6 +165,15 @@ function InputAddress(props: Props) {
         }
 
         setError(newError);
+
+        if (!errorState) {
+            const mainNode = getMainNode(nodesList, selectedNode);
+            const { tezosUrl } = mainNode;
+            const domainResponse = await queryTezosDomains(tezosUrl, String(addressText));
+            setDomainName(domainResponse);
+        } else {
+            setDomainName('');
+        }
     };
 
     const inputDebounce = debounce(300, onValidateAddress);
@@ -176,6 +188,7 @@ function InputAddress(props: Props) {
                     </TextfieldTooltip>
                 </Tooltip>
             )}
+            {domainName && domainName.length > 0 && <div style={{ marginTop: '-40px' }}>{domainName}</div>}
         </DelegateContainer>
     );
 }
