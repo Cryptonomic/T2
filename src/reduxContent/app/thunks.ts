@@ -309,9 +309,16 @@ export const getPrices = (): { usd: string; eur: string; jpy: string } => {
     return { usd: prices.usd, eur: prices.eur, jpy: prices.jpy };
 };
 
-export function changeAccountThunk(accountHash: string, parentHash: string, accountIndex: number, parentIndex: number, addressType: AddressType) {
+export function changeAccountThunk(
+    accountHash: string,
+    parentHash: string,
+    accountIndex: number,
+    parentIndex: number,
+    addressType: AddressType,
+    tokenName?: string
+) {
     return async (dispatch) => {
-        dispatch(changeAccountAction(accountHash, parentHash, accountIndex, parentIndex, addressType));
+        dispatch(changeAccountAction(accountHash, parentHash, accountIndex, parentIndex, addressType, tokenName));
         dispatch(syncAccountOrIdentityThunk(accountHash, parentHash, addressType));
     };
 }

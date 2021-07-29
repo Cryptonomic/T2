@@ -96,7 +96,8 @@ export function changeAccountAction(
     parentHash: string,
     accountIndex: number,
     parentIndex: number,
-    accountType: AddressType
+    accountType: AddressType,
+    tokenName = ''
 ): ChangeAccountAction {
     const payload: ChangeAccountType = {
         selectedAccountHash: accountHash,
@@ -104,6 +105,7 @@ export function changeAccountAction(
         selectedParentIndex: parentIndex,
         selectedAccountIndex: accountIndex,
         selectedAccountType: accountType,
+        selectedTokenName: tokenName,
     };
     return { type: CHANGE_ACCOUNT_HASH, payload };
 }
