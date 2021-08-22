@@ -19,6 +19,8 @@ import wrapIcon from '../../resources/contracts/wrap-icon.png';
 import wusdcIcon from '../../resources/contracts/wusdc-icon.png';
 import wlinkIcon from '../../resources/contracts/wlink-icon.png';
 import wmaticIcon from '../../resources/contracts/wmatic-icon.png';
+import wwbtcIcon from '../../resources/contracts/wwbtc-icon.png';
+import wbusdIcon from '../../resources/contracts/wbusd-icon.png';
 import btctzIcon from '../../resources/contracts/btctz-icon.png';
 import smakIcon from '../../resources/contracts/smak-icon.png';
 import flameIcon from '../../resources/contracts/flame-icon.png';
@@ -88,15 +90,35 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balance: 0,
         transactions: [],
         activeTab: COLLECTION,
-        kind: TokenKind.objkt,
+        kind: TokenKind.objkt, // TODO: rename to nft
         icon: hicetnuncIcon,
         scale: 0,
         precision: 0,
         round: 0,
         mapid: 511,
+        nftMetadataMap: 514,
         helpLink: 'https://www.hicetnunc.xyz/',
         displayHelpLink: 'hicetnunc.xyz',
-        marketAddress: 'KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9',
+        marketAddress: 'KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1EpGgjQs73QfFJs9z7m1Mxm5MTnpC2tqse',
+        displayName: 'Kalamint',
+        symbol: 'object',
+        balance: 0,
+        transactions: [],
+        activeTab: COLLECTION,
+        kind: TokenKind.objkt,
+        icon: kalamIcon,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        mapid: 857,
+        nftMetadataMap: 861,
+        helpLink: 'https://kalamint.io/',
+        displayHelpLink: 'kalamint.io',
+        marketAddress: 'KT1EpGgjQs73QfFJs9z7m1Mxm5MTnpC2tqse',
     },
     {
         network: 'mainnet',
@@ -330,6 +352,38 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        displayName: 'Wrapped BUSD',
+        symbol: 'wBUSD',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: wbusdIcon,
+        tokenIndex: 1,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 1772,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        displayName: 'Wrapped wBTC',
+        symbol: 'wwBTC',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: wwbtcIcon,
+        tokenIndex: 19,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 1772,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
         displayName: 'tzBTC',
         symbol: 'tzBTC',
@@ -525,12 +579,15 @@ export const knownContractNames = {
     KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH: 'Kolibri DAO',
     KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: 'PLENTY DAO',
     KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW: 'uUSD',
+    KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ: 'Wrap Tokens Container',
 
     KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU: 'Dexter ETHtz Pool',
     KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9: 'Dexter USDtz Pool',
     KT1BGQR7t4izzKZ7eRodKWTodAsM23P38v7N: 'Dexter tzBTC Pool',
     KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo: 'Dexter wXTZ Pool',
     KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6: 'Dexter kUSD Pool',
+
+    KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5: 'Granada tzBTC Pool',
 
     KT1WxgZ1ZSfMgmsSDDcUn8Xn577HwnQ7e1Lb: 'QuipuSwap USDtz Pool',
     KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6: 'QuipuSwap kUSD Pool',
@@ -556,6 +613,8 @@ export const knownContractNames = {
     KT1NEa7CmaLaWgHNi6LkRi5Z1f4oHfdzRdGA: 'QuipuSwap kDAO Pool',
     KT1EtjRRCBC2exyCRXz8UfV7jz7svnkqi7di: 'QuipuSwap uUSD Pool',
     KT1FHiJmJUgZMPtv5F8M4ZEa6cb1D9Lf758T: 'QuipuSwap crDAO Pool',
+    KT1DksKXvCBJN7Mw6frGj6y6F3CbABWZVpj1: 'QuipuSwap wWBTC Pool',
+    KT1UMAE2PBskeQayP5f2ZbGiVYF7h8bZ2gyp: 'QuipuSwap wBUSD Pool',
 
     KT1Lw8hCoaBrHeTeMXbqHPG4sS4K1xn7yKcD: 'QuipuSwap FA1.2 Pool Factory',
     KT1SwH9P1Tx8a58Mm6qBExQFTcy2rwZyZiXS: 'Quipuswap FA2 Pool Factory',
@@ -566,7 +625,8 @@ export const knownContractNames = {
     KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9: 'hic et nunc Art House v1',
     KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn: 'hic et nunc Art House v1.1',
     KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton: 'hic et nunc NFT',
-    KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: 'hic et nunc DAO',
+    KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: 'hDAO Token',
+    KT1NrAnSjrjp3Bycaw8YKPrDq2aXUTHhq8MF: 'hic et nunc DAO',
 
     KT1H28iie4mW9LmmJeYLjH6zkC8wwSmfHf5P: 'TzButton Round 2',
 
@@ -592,7 +652,16 @@ export const knownContractNames = {
     KT1MBqc3GHpApBXaBZyvY63LF6eoFyTWtySn: 'Plenty 1.1 USDtz Pool',
     KT1KyxPitU1xNbTriondmAFtPEcFhjSLV1hz: 'Plenty 1.1 wLINK Pool',
     KT1XherecVvrE6X4PV5RTwdEKNzA294ZE9T9: 'Plenty 1.1 wMATIC Pool',
+    KT18oB3x8SLxMJq2o9hKNupbZZ5ZMsgr2aho: 'Plenty 1.1 WRAP Pool',
     KT1WfLprabHVTnNhWFigmopAduUpxG5HKvNf: 'Plenty KALAM Pond',
+    KT1GotpjdBaxt2GiMFcQExLEk9GTfYo4UoTa: 'Plenty WRAP Pond',
+
+    KT1XXAavg3tTj12W1ADvd3EEnm1pu6XTmiEF: 'Plenty 1.2 wBUSD Pool',
+    KT1PuPNtDFLR6U7e7vDuxunDoKasVT6kMSkz: 'Plenty 1.2 wUSDC Pool',
+    KT19Dskaofi6ZTkrw3Tq4pK7fUqHqCz4pTZ3: 'Plenty 1.2 wWBTC Pool',
+    KT1KJhxkCpZNwAFQURDoJ79hGqQgSC9UaWpG: 'Plenty wBUSD LP Farm',
+    KT1Kp3KVT4nHFmSuL8bvETkgQzseUYP3LDBy: 'Plenty wUSDC LP Farm',
+    KT1M82a7arHVwcwaswnNUUuCnQ45xjjGKNd1: 'Plenty wwBTC LP Farm',
 
     KT1J5dqegz1qYaYc7X3KjynYL9St1wcZ8ZyV: 'Maelstrom Mixer',
 
@@ -630,6 +699,8 @@ export const knownContractNames = {
     KT1HDXjPtjv7Y7XtJxrNc5rNjnegTi2ZzNfv: 'Kolibri kUSD Farm',
     KT1RB179ddATKbCi7E8ben91bo2hqRRPrNQf: 'Kolibri kUSD Liquidity Farm',
     KT18oxtA5uyhyYXyAVhTa7agJmxHCTjHpiF7: 'Kolibri QLPkUSD Farm',
+
+    KT1FvqJwEDWb1Gwc55Jd1jjTHRVWbYKUUpyq: 'objkt NFT Market',
 };
 
 export const knownMarketMetadata = [
@@ -659,6 +730,14 @@ export const knownMarketMetadata = [
     },
     {
         network: 'mainnet',
+        address: 'KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5',
+        token: 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
+        name: 'Granada tzBTC Pool',
+        scale: 8,
+        symbol: 'tzBTC',
+    },
+    {
+        network: 'mainnet',
         address: 'KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo',
         token: 'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH',
         name: 'Dexter wXTZ Pool',
@@ -675,7 +754,7 @@ export const knownMarketMetadata = [
     },
     {
         network: 'mainnet',
-        address: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton', // KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9
+        address: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton', // KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn
         token: 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton',
         name: 'hic et nunc NFT',
         scale: 0,
@@ -816,6 +895,30 @@ export const knownMarketMetadata = [
         name: 'QuipuSwap wMATIC Pool',
         scale: 18,
         symbol: 'wMATIC',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1DksKXvCBJN7Mw6frGj6y6F3CbABWZVpj1',
+        token: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        name: 'QuipuSwap wwBTC Pool',
+        scale: 8,
+        symbol: 'wwBTC',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1UMAE2PBskeQayP5f2ZbGiVYF7h8bZ2gyp',
+        token: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        name: 'QuipuSwap wBUSD Pool',
+        scale: 18,
+        symbol: 'wBUSD',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT19Dskaofi6ZTkrw3Tq4pK7fUqHqCz4pTZ3',
+        token: 'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ',
+        name: 'QuipuSwap wUSDC Pool',
+        scale: 6,
+        symbol: 'wUSDC',
     },
     {
         network: 'mainnet',
