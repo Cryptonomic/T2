@@ -29,6 +29,7 @@ import wcelIcon from '../../resources/contracts/wcel-icon.png';
 import uusdIcon from '../../resources/contracts/uusd-icon.png';
 import crunchIcon from '../../resources/contracts/crunch-icon.png';
 import crdaoIcon from '../../resources/contracts/crdao-icon.png';
+import quipuIcon from '../../resources/contracts/quipu-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -361,8 +362,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         kind: TokenKind.tzip12,
         icon: wbusdIcon,
         tokenIndex: 1,
-        scale: 6,
-        precision: 6,
+        scale: 18,
+        precision: 18,
         round: 2,
         mapid: 1772,
     },
@@ -377,9 +378,9 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         kind: TokenKind.tzip12,
         icon: wwbtcIcon,
         tokenIndex: 19,
-        scale: 6,
-        precision: 6,
-        round: 2,
+        scale: 8,
+        precision: 8,
+        round: 8,
         mapid: 1772,
     },
     {
@@ -397,6 +398,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 8,
         mapid: 31,
         helpLink: 'https://tzbtc.io/',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb',
+        displayName: 'Quipu Governance Token',
+        symbol: 'QUIPU',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: quipuIcon,
+        scale: 6,
+        precision: 6,
+        round: 6,
+        mapid: 12043,
+        balancePath: '$.args[0][0].args[1].int',
     },
     {
         network: 'mainnet',
@@ -580,6 +597,7 @@ export const knownContractNames = {
     KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: 'PLENTY DAO',
     KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW: 'uUSD',
     KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ: 'Wrap Tokens Container',
+    KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb: 'Quipu Governance Token',
 
     KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU: 'Dexter ETHtz Pool',
     KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9: 'Dexter USDtz Pool',
