@@ -8,8 +8,11 @@ const farms = [
     'KT1KJhxkCpZNwAFQURDoJ79hGqQgSC9UaWpG',
     'KT1Kp3KVT4nHFmSuL8bvETkgQzseUYP3LDBy',
     'KT1M82a7arHVwcwaswnNUUuCnQ45xjjGKNd1',
+    'KT1UP9XHQigWMqNXYp9YXaCS1hV9jJkCF4h4',
+    'KT1UqnQ6b1EwQgYiKss4mDL7aktAHnkdctTQ',
+    'KT1VCrmywPNf8ZHH95HKHvYA4bBQJPa8g2sr',
 ];
-const farmBalanceMaps = [4488, 4503, 10768, 11019, 11057];
+const farmBalanceMaps = [4488, 4503, 10768, 11019, 11057, 11823, 11819, 11821];
 const pools = [
     'KT1QqjR4Fj9YegB37PQEqXUPHmFbhz6VJtwE',
     'KT19asUVzBNidHgTHp8MP31YSphooMb3piWR',

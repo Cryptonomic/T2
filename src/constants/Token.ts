@@ -680,6 +680,9 @@ export const knownContractNames = {
     KT1KJhxkCpZNwAFQURDoJ79hGqQgSC9UaWpG: 'Plenty wBUSD LP Farm',
     KT1Kp3KVT4nHFmSuL8bvETkgQzseUYP3LDBy: 'Plenty wUSDC LP Farm',
     KT1M82a7arHVwcwaswnNUUuCnQ45xjjGKNd1: 'Plenty wwBTC LP Farm',
+    KT1UP9XHQigWMqNXYp9YXaCS1hV9jJkCF4h4: 'Plenty wMATIC LP Farm',
+    KT1UqnQ6b1EwQgYiKss4mDL7aktAHnkdctTQ: 'Plenty wLINK LP Farm',
+    KT1VCrmywPNf8ZHH95HKHvYA4bBQJPa8g2sr: 'Plenty USDtz LP Farm',
 
     KT1J5dqegz1qYaYc7X3KjynYL9St1wcZ8ZyV: 'Maelstrom Mixer',
 
