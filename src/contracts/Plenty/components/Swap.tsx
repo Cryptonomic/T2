@@ -150,6 +150,7 @@ function Swap(props: Props) {
                 buyQuipu(
                     tokenPoolMap[token.address].quipuPool,
                     token.address,
+                    -1,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(quipuTokenCost).toString(),
                     passPhrase
@@ -160,6 +161,7 @@ function Swap(props: Props) {
                 sellQuipu(
                     tokenPoolMap[token.address].quipuPool,
                     token.address,
+                    -1,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(quipuTokenProceeds).toString(),
                     passPhrase

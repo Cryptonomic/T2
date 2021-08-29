@@ -20,6 +20,7 @@ import { InfoIcon } from '../../../featureModals/style';
 import { ColumnContainer, SegmentedControlContainer, SegmentedControl, SegmentedControlItem, MessageContainer } from './style';
 import {
     dexterPoolStorageMap,
+    granadaPoolStorageMap,
     quipuPoolStorageMap,
     quipuPool2StorageMap,
     tokenPoolMap,
@@ -28,6 +29,7 @@ import {
     getXTZSellExchangeRate,
     applyFees,
     isTradeable,
+    PoolState,
 } from './util';
 import { buyDexter, sellDexter, buyQuipu, sellQuipu } from './thunks';
 
@@ -80,6 +82,8 @@ function Swap(props: Props) {
 
     const isDisabled = !isReady || isLoading || (!passPhrase && !isLedger) || bestMarket.length === 0;
 
+    const tokenPoolConfig = token.tokenIndex !== undefined ? tokenPoolMap[`${token.address}+${token.tokenIndex}`] : tokenPoolMap[token.address];
+
     useEffect(() => {
         setTradeSide('buy');
         setBestMarket('');
@@ -125,10 +129,15 @@ function Swap(props: Props) {
 
         const tokenMetadata = knownTokenContracts.find((i) => i.address === token.address);
 
-        const dexterState = await getPoolState(tezosUrl, tokenPoolMap[token.address].dexterPool, dexterPoolStorageMap);
+        let dexterState: PoolState | undefined;
+        if (token.symbol.toLocaleLowerCase() === 'tzbtc') {
+            dexterState = await getPoolState(tezosUrl, tokenPoolConfig.granadaPool, granadaPoolStorageMap);
+        } else {
+            dexterState = await getPoolState(tezosUrl, tokenPoolConfig.dexterPool, dexterPoolStorageMap);
+        }
         const quipuState = await getPoolState(
             tezosUrl,
-            tokenPoolMap[token.address].quipuPool,
+            tokenPoolConfig.quipuPool,
             tokenMetadata?.kind === TokenKind.tzip12 ? quipuPool2StorageMap : quipuPoolStorageMap
         );
 
@@ -209,8 +218,9 @@ function Swap(props: Props) {
         if (tradeSide === 'buy' && bestMarket.toLowerCase() === 'dexter') {
             await dispatch(
                 buyDexter(
-                    tokenPoolMap[token.address].dexterPool,
+                    token.symbol.toLocaleLowerCase() === 'tzbtc' ? tokenPoolConfig.granadaPool : tokenPoolConfig.dexterPool,
                     token.address,
+                    token.tokenIndex || -1,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(dexterTokenCost).toString(),
                     passPhrase
@@ -219,18 +229,21 @@ function Swap(props: Props) {
         } else if (tradeSide === 'buy' && bestMarket.toLowerCase() === 'quipuswap') {
             await dispatch(
                 buyQuipu(
-                    tokenPoolMap[token.address].quipuPool,
+                    tokenPoolConfig.quipuPool,
                     token.address,
+                    token.tokenIndex || -1,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(quipuTokenCost).toString(),
                     passPhrase
                 )
             );
         } else if (tradeSide === 'sell' && bestMarket.toLowerCase() === 'dexter') {
+            console.log('tokenPoolConfig', tokenPoolConfig);
             await dispatch(
                 sellDexter(
-                    tokenPoolMap[token.address].dexterPool,
+                    token.symbol.toLocaleLowerCase() === 'tzbtc' ? tokenPoolConfig.granadaPool : tokenPoolConfig.dexterPool,
                     token.address,
+                    token.tokenIndex || -1,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(dexterTokenProceeds).toString(),
                     passPhrase
@@ -239,8 +252,9 @@ function Swap(props: Props) {
         } else if (tradeSide === 'sell' && bestMarket.toLowerCase() === 'quipuswap') {
             await dispatch(
                 sellQuipu(
-                    tokenPoolMap[token.address].quipuPool,
+                    tokenPoolConfig.quipuPool,
                     token.address,
+                    token.tokenIndex || -1,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(quipuTokenProceeds).toString(),
                     passPhrase
@@ -254,7 +268,7 @@ function Swap(props: Props) {
 
     const { isIssue, warningMessage } = getBalanceState();
     const error = isIssue ? <InputError error={warningMessage} /> : '';
-    const showForm = isTradeable(token.address);
+    const showForm = isTradeable(token.address, token.tokenIndex);
 
     if (!showForm) {
         return (
@@ -288,7 +302,8 @@ function Swap(props: Props) {
                             <div style={{ alignItems: 'left' }}>
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
                                     <div>
-                                        Cost {quipuTokenCost > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenCost)} XTZ
+                                        Cost {quipuTokenCost > 0 ? (token.symbol.toLocaleLowerCase() === 'tzbtc' ? ' on GranadaSwap' : 'on Dexter') : ''}{' '}
+                                        {formatAmount(dexterTokenCost)} XTZ
                                     </div>
                                 )}
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
@@ -299,7 +314,9 @@ function Swap(props: Props) {
 
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
                                     <div>
-                                        Proceeds {quipuTokenProceeds > 0 ? 'on Dexter' : ''} {formatAmount(dexterTokenProceeds)} XTZ
+                                        Proceeds{' '}
+                                        {quipuTokenProceeds > 0 ? (token.symbol.toLocaleLowerCase() === 'tzbtc' ? ' on GranadaSwap' : 'on Dexter') : ''}{' '}
+                                        {formatAmount(dexterTokenProceeds)} XTZ
                                     </div>
                                 )}
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
@@ -333,7 +350,8 @@ function Swap(props: Props) {
                     {bestMarket && bestMarket.length > 0 && (
                         <>
                             {' '}
-                            {t('general.prepositions.on')} {bestMarket}{' '}
+                            {t('general.prepositions.on')}{' '}
+                            {bestMarket === 'Dexter' && token.symbol.toLocaleLowerCase() === 'tzbtc' ? 'Granada Swap' : bestMarket}
                         </>
                     )}
                 </InvokeButton>
