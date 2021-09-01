@@ -167,6 +167,7 @@ function AddressBlock(props: Props) {
     const dispatch = useDispatch();
     const selectedAccountHash = useSelector<RootState, string>((state) => state.app.selectedAccountHash);
     const selectedAccountType = useSelector<RootState, number>((state) => state.app.selectedAccountType);
+    const selectedTokenName = useSelector<RootState, string>((state) => state.app.selectedTokenName);
     const isModalOpen = useSelector<RootState, boolean>((state) => state.modal.open);
     const activeModal = useSelector<RootState, string>((state) => state.modal.activeModal);
     const selectedNode = useSelector(getSelectedNode);
@@ -202,8 +203,8 @@ function AddressBlock(props: Props) {
         setIsSecurityModalOpen(false);
     };
 
-    function goToAccount(addressId, index, addressType) {
-        dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType));
+    function goToAccount(addressId, index, addressType, tokenName = '') {
+        dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType, tokenName));
     }
 
     function setIsModalOpen(open, active) {
@@ -392,9 +393,9 @@ function AddressBlock(props: Props) {
                 return (
                     <TokenNav
                         key={`${token.address}_${index || 0}_${tokenType}`}
-                        isActive={!isModalOpen && token.address === selectedAccountHash}
+                        isActive={!isModalOpen && token.address === selectedAccountHash && selectedTokenName === token.displayName}
                         token={token}
-                        onClick={() => goToAccount(token.address, index, tokenType)}
+                        onClick={() => goToAccount(token.address, index, tokenType, token.displayName)}
                     />
                 );
             })}

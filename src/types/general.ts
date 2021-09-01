@@ -169,6 +169,7 @@ export interface VaultToken extends Token {
 
 export interface ArtToken extends Token {
     marketAddress: string;
+    nftMetadataMap: number;
 }
 
 /**

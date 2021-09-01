@@ -68,13 +68,21 @@ function BalanceBanner(props: Props) {
         updatePendingRewards();
     }
 
-    function formatAmount(amount): string {
-        const minDigits = Math.min(token.round || 0, 18);
-        const maxDigits = Math.min(token.precision || 0, 18);
-        return new BigNumber(amount)
-            .dividedBy(10 ** (token.scale || 0))
-            .toNumber()
-            .toLocaleString(undefined, { minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits });
+    function formatAmount(amount: number): string {
+        const numeric = Number(amount);
+        if (numeric > 100_000) {
+            return new BigNumber(amount)
+                .dividedBy(10 ** (token.scale || 0))
+                .toNumber()
+                .toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        } else {
+            const minDigits = Math.min(token.round || 0, 18);
+            const maxDigits = Math.min(token.precision || 0, 18);
+            return new BigNumber(amount)
+                .dividedBy(10 ** (token.scale || 0))
+                .toNumber()
+                .toLocaleString(undefined, { minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits });
+        }
     }
 
     function harvestTrigger() {
