@@ -722,6 +722,9 @@ export const knownContractNames = {
     KT18oxtA5uyhyYXyAVhTa7agJmxHCTjHpiF7: 'Kolibri QLPkUSD Farm',
 
     KT1FvqJwEDWb1Gwc55Jd1jjTHRVWbYKUUpyq: 'objkt NFT Market',
+
+    KT1Pu8f3sau4NZcssm4uXXMYLpHZzQ5UQ1Dz: 'twitz Minter',
+    KT1DeFSmknfCG5TveB5DSvrg34hqLcqETNuF: 'twitz NFT',
 };
 
 export const knownMarketMetadata = [
