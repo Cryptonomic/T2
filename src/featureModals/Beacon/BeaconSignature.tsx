@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
-import styled from 'styled-components';
 import { BeaconMessageType, SignPayloadResponse, BeaconErrorType, BeaconResponseInputMessage, SigningType } from '@airgap/beacon-sdk';
 import { TezosMessageUtils } from 'conseiljs';
 import { SoftSigner } from 'conseiljs-softsigner';
@@ -19,47 +18,7 @@ import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
 
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
-
-export const PromptContainer = styled.div`
-    align-items: center;
-    color: #979797;
-    display: flex;
-    font-size: 24px;
-    justify-content: center;
-    height: 80px;
-    margin-top: 30px;
-    width: 100%;
-`;
-
-const WrapPassword = styled.div`
-    margin-top: 3px;
-`;
-
-const TooltipContainer = styled.div`
-    padding: 10px;
-    color: #000;
-    font-size: 14px;
-    max-width: 312px;
-`;
-
-const TooltipTitle = styled.div`
-    font-size: 16px;
-    font-weight: 700;
-    color: ${({ theme: { colors } }) => colors.primary};
-`;
-
-const TooltipContent = styled.div`
-    margin-top: 8px;
-    font-size: 14px;
-    line-height: 21px;
-    width: 270px;
-    font-weight: 300;
-    color: ${({ theme: { colors } }) => colors.black};
-`;
-
-const BoldSpan = styled.span`
-    font-weight: 500;
-`;
+import { WrapPassword } from './style';
 
 interface Props {
     open: boolean;
