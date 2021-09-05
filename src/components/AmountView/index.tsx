@@ -4,7 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import { ms } from '../../styles/helpers';
 import CopyIcon from '../CopyButton';
 import Tooltip from '../Tooltip';
-import { Amount, CopyContent, Icon, SelectableText } from './style';
+import { Amount, CopyContent, Icon, NonSelectableText, SelectableText } from './style';
 
 interface ContentProps {
     formattedAmount: string;
@@ -32,10 +32,13 @@ interface Props {
     round: number;
     showTooltip?: boolean;
     symbol?: string;
+    selectable?: boolean;
 }
 
 const AmountView = (props: Props) => {
-    const { size, color, amount, iconName, weight, showTooltip, scale, precision, round, symbol } = props;
+    const { size, color, amount, iconName, weight, showTooltip, scale, precision, round, symbol, selectable } = props;
+
+    const textCursor = selectable === undefined || selectable ? SelectableText : NonSelectableText;
 
     function getRealValue() {
         return {
@@ -68,13 +71,13 @@ const AmountView = (props: Props) => {
 
     return showTooltip ? ( // TODO: there is probably a react-ey way of doing this
         <Tooltip position="bottom" content={<Content formattedAmount={fullAmount} />}>
-            <Amount color={color} size={size} weight={weight} style={SelectableText}>
+            <Amount color={color} size={size} weight={weight} style={textCursor}>
                 {truncatedAmount}
                 {getIcon()}
             </Amount>
         </Tooltip>
     ) : (
-        <Amount color={color} size={size} weight={weight} style={SelectableText}>
+        <Amount color={color} size={size} weight={weight} style={textCursor}>
             {truncatedAmount}
             {getIcon()}
         </Amount>

@@ -17,8 +17,8 @@ export const Amount = styled.span<Pick<AmountProps, 'size' | 'weight' | 'style' 
     font-weight: ${({
         weight = 'normal',
         theme: {
-            typo: { weights }
-        }
+            typo: { weights },
+        },
     }) => weights[weight]};
     display: inline-flex;
     align-items: center;
@@ -32,7 +32,11 @@ export const Amount = styled.span<Pick<AmountProps, 'size' | 'weight' | 'style' 
 
 export const SelectableText = {
     userSelect: 'text',
-    cursor: 'text'
+    cursor: 'text',
+};
+
+export const NonSelectableText = {
+    cursor: 'inherit',
 };
 
 export const Icon = styled(TezosIcon)`

@@ -27,6 +27,7 @@ import SignVerifyModal from '../../featureModals/SignVerify';
 import AuthModal from '../../featureModals/Auth';
 import BeaconConnectionRequest from '../../featureModals/Beacon/BeaconConnectionRequest';
 import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
+import BeaconSignature from '../../featureModals/Beacon/BeaconSignature';
 import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
 import BeaconInfo from '../../featureModals/Beacon/BeaconInfo';
 import HicNFTTransferModal from '../../contracts/HicNFT/components/TransferModal';
@@ -45,6 +46,7 @@ const { Mnemonic } = KeyStoreType;
 
 const Container = styled.div`
     overflow: hidden;
+    cursor: default;
 `;
 
 const AddressLabel = styled.div`
@@ -55,6 +57,7 @@ const AddressLabel = styled.div`
     background: ${({ theme: { colors } }) => colors.gray1};
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 `;
 
 const AddDelegateLabel = styled(AddressLabel)<{ isActive?: boolean }>`
@@ -65,6 +68,7 @@ const AddDelegateLabel = styled(AddressLabel)<{ isActive?: boolean }>`
     margin-bottom: 1px;
     background: ${({ isActive, theme: { colors } }) => (isActive ? colors.blue1 : colors.gray1)};
     color: ${({ isActive, theme: { colors } }) => (isActive ? colors.white : colors.primary)};
+    cursor: pointer;
 `;
 
 const AddressesTitle = styled.div`
@@ -76,6 +80,17 @@ const AddressesTitle = styled.div`
 const DelegateTitle = styled(AddressesTitle)`
     font-size: ${ms(-0.7)};
     font-weight: 500;
+`;
+
+const TitleLabel = styled(AddressLabel)<{ isActive?: boolean }>`
+    display: flex;
+    flex-direction: row;
+    font-size: 14px;
+    margin-top: 20px;
+    margin-bottom: 1px;
+    background: ${({ isActive, theme: { colors } }) => (isActive ? colors.blue1 : colors.gray1)};
+    color: ${({ isActive, theme: { colors } }) => (isActive ? colors.white : colors.primary)};
+    cursor: default;
 `;
 
 const AccountTitle = styled(H3)`
@@ -174,7 +189,6 @@ function AddressBlock(props: Props) {
     const tokens = useSelector((state: RootState) => state.wallet.tokens);
     const [isInteractModalOpen, setIsInteractModalOpen] = useState(false);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
-    const [step, setStep] = useState(1);
     const [isHideDelegateTooltip, setIsDelegateTooltip] = useState(() => getLocalData('isHideDelegateTooltip'));
 
     const { publicKeyHash, balance, accounts, status, storeType } = accountBlock;
@@ -272,6 +286,7 @@ function AddressBlock(props: Props) {
     const isAuthModalOpen = isModalOpen && activeModal === 'auth';
     const isBeaconRegistrationModalOpen = isModalOpen && activeModal === 'beaconRegistration';
     const isBeaconAuthorizeModalOpen = isModalOpen && activeModal === 'beaconAuthorize';
+    const isBeaconSignatureModalOpen = isModalOpen && activeModal === 'beaconSignature';
     const isBeaconPermissionModalOpen = isModalOpen && activeModal === 'beaconPermission';
     const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
@@ -297,9 +312,9 @@ function AddressBlock(props: Props) {
                 />
             )}
             {delegatedAddresses.length > 0 && (
-                <AddDelegateLabel>
+                <TitleLabel>
                     <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
-                </AddDelegateLabel>
+                </TitleLabel>
             )}
 
             {delegatedAddresses.map((address, index) => {
@@ -328,12 +343,12 @@ function AddressBlock(props: Props) {
             })}
 
             {delegatedAddresses.length > 0 && (
-                <AddressLabel>
+                <TitleLabel>
                     <AccountTitle>{t('general.nouns.total_balance')}</AccountTitle>
                     {ready || storeType === Mnemonic ? (
                         <AmountView color="primary" size={ms(0)} amount={balance + smartBalance} scale={6} precision={6} round={2} />
                     ) : null}
-                </AddressLabel>
+                </TitleLabel>
             )}
 
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'sign'} onClick={() => setIsModalOpen(true, 'sign')}>
@@ -400,18 +415,21 @@ function AddressBlock(props: Props) {
                 );
             })}
 
-            <AddDelegateLabel>
-                <DelegateTitle>{t('components.interactModal.interact_contract')}</DelegateTitle>
-                {isManagerReady ? (
-                    <AddCircleWrapper active={1} onClick={() => onCheckInteractModal()} />
-                ) : (
+            {isManagerReady ? (
+                <AddDelegateLabel onClick={() => onCheckInteractModal()}>
+                    <DelegateTitle>{t('components.interactModal.interact_contract')}</DelegateTitle>
+                </AddDelegateLabel>
+            ) : (
+                <AddDelegateLabel>
+                    <DelegateTitle>{t('components.interactModal.interact_contract')}</DelegateTitle>
                     <Tooltip position="bottom" content={<NoFundTooltip>{t('components.addressBlock.not_ready_interact_tooltip')}</NoFundTooltip>}>
                         <IconButton size="small" color="primary">
                             <AddCircleWrapper active={0} />
                         </IconButton>
                     </Tooltip>
-                )}
-            </AddDelegateLabel>
+                </AddDelegateLabel>
+            )}
+
             {smartAddresses.map((address, index) => {
                 const addressId = address.account_id;
                 const isActive = !isModalOpen && addressId === selectedAccountHash;
@@ -444,6 +462,9 @@ function AddressBlock(props: Props) {
             )}
             {isBeaconAuthorizeModalOpen && (
                 <BeaconAuthorize open={isBeaconAuthorizeModalOpen} onClose={() => setIsModalOpen(false, 'beaconAuthorize')} managerBalance={balance} />
+            )}
+            {isBeaconSignatureModalOpen && (
+                <BeaconSignature open={isBeaconSignatureModalOpen} onClose={() => setIsModalOpen(false, 'beaconSignature')} managerBalance={balance} />
             )}
             {isBeaconPermissionModalOpen && <BeaconPermission open={isBeaconPermissionModalOpen} onClose={() => setIsModalOpen(false, 'beaconPermission')} />}
 
