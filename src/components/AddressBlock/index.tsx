@@ -463,9 +463,7 @@ function AddressBlock(props: Props) {
             {isBeaconAuthorizeModalOpen && (
                 <BeaconAuthorize open={isBeaconAuthorizeModalOpen} onClose={() => setIsModalOpen(false, 'beaconAuthorize')} managerBalance={balance} />
             )}
-            {isBeaconSignatureModalOpen && (
-                <BeaconSignature open={isBeaconSignatureModalOpen} onClose={() => setIsModalOpen(false, 'beaconSignature')} managerBalance={balance} />
-            )}
+            {isBeaconSignatureModalOpen && <BeaconSignature open={isBeaconSignatureModalOpen} onClose={() => setIsModalOpen(false, 'beaconSignature')} />}
             {isBeaconPermissionModalOpen && <BeaconPermission open={isBeaconPermissionModalOpen} onClose={() => setIsModalOpen(false, 'beaconPermission')} />}
 
             {isBeaconInfoModalOpen && <BeaconInfo open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />}

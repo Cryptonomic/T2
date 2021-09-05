@@ -22,11 +22,10 @@ import { WrapPassword } from './style';
 
 interface Props {
     open: boolean;
-    managerBalance: number;
     onClose: () => void;
 }
 
-const BeaconSignature = ({ open, managerBalance, onClose }: Props) => {
+const BeaconSignature = ({ open, onClose }: Props) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { signer, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
