@@ -233,6 +233,7 @@
     "jsonpath-plus": "5.0.3",
     "lodash": "4.17.21",
     "moment": "2.27.0",
+    "nft-image-proxy": "1.0.2",
     "polished": "3.6.5",
     "qrcode": "1.4.4",
     "react": "16.13.1",
