@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { proxyFetch, ImageProxyServer, ImageProxyDataType } from 'nft-image-proxy';
 
+import { imageProxyURL, imageAPIKey } from '../../../../config.json';
 import { openLink, formatDate } from '../../../../utils/general';
 import { formatAmount } from '../../../../utils/currency';
 
@@ -38,11 +39,7 @@ function ArtPiece(props: Props) {
 
     useEffect(() => {
         const _getProxyInfo = async () => {
-            const server: ImageProxyServer = {
-                url: 'https://imgproxy-prod.cryptonomic-infra.tech',
-                apikey: 'pdaIFkzVAUOV2UKk2Xt9N4XAUxEOxPGFVOghjkRibZrNl0KhIiC4D7LVE22uqAXf',
-                version: '1.0.0',
-            };
+            const server: ImageProxyServer = { url: imageProxyURL, apikey: imageAPIKey, version: '1.0.0' };
 
             proxyFetch(server, pieceInfo.artifactUrl, ImageProxyDataType.Json, false).then((d: any) => {
                 if (d.rpc_status === 'Ok') {
