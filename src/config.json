@@ -14,5 +14,7 @@
     "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/master/version.json",
     "tokensSupportURL": "",
     "logLevel": "debug",
+    "imageProxyURL": "",
+    "imageAPIKey": "",
     "customProtocols": ["tezori", "tezos", "galleon"]
 }
