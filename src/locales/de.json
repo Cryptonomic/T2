@@ -78,7 +78,8 @@
             "voting": "Voting",
             "implementation": "Implementation",
             "vaults": "Vaults",
-            "collection": "Collection"
+            "collection": "Collection",
+            "nft_gallery": "NFT Gallery"
         },
         "errors": {
             "no_hex_data": "Die angegebene Zeichenfolge sieht nicht wie Hex-Daten aus",

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { RootState } from '../../types/store';
 import { getAddressType } from '../../utils/account';
-import { AddressType } from '../../types/general';
+import { AddressType, Account, Identity } from '../../types/general';
 import { TRANSACTIONS } from '../../constants/TabConstants';
 
 const selectedAccountHashSelector = (state: RootState) => state.app.selectedAccountHash;
@@ -11,8 +11,21 @@ const identitiesSelector = (state: RootState) => state.wallet.identities;
 
 const tokensSelector = (state: RootState) => state.wallet.tokens;
 
-const defaultAccount = {
-    // TODO: define type
+interface IRegularAddress {
+    pkh: string;
+    balance: number;
+}
+
+export interface AccountSelector extends Partial<Account>, Partial<Identity> {
+    balance: number;
+    regularAddresses: IRegularAddress[];
+    script: string;
+    secretKey: string;
+    storage: string;
+    transactions: any[];
+}
+
+const defaultAccount: AccountSelector = {
     balance: 0,
     activeTab: TRANSACTIONS,
     storeType: 0,
@@ -29,7 +42,7 @@ export const getAccountSelector = createSelector(
     selectedAccountHashSelector,
     selectedParentHashSelector,
     identitiesSelector,
-    (accountHash, parentHash, identities) => {
+    (accountHash, parentHash, identities): AccountSelector => {
         const selectedIdentity = identities.find((identity) => identity.publicKeyHash === parentHash);
         if (selectedIdentity) {
             const { accounts, publicKeyHash, balance, secretKey } = selectedIdentity;
