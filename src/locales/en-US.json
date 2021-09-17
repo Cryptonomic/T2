@@ -87,7 +87,8 @@
             "implementation": "Implementation",
             "vaults": "Vaults",
             "collection": "Collection",
-            "quantity": "Quantity"
+            "quantity": "Quantity",
+            "nft_gallery": "NFT Gallery"
         },
         "errors": {
             "no_hex_data": "The provided string doesn't look like hex data",

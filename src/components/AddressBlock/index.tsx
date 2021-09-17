@@ -181,6 +181,7 @@ function AddressBlock(props: Props) {
     let regularAddresses = [{ pkh: publicKeyHash, balance }];
     const isManagerActive = publicKeyHash === selectedAccountHash && selectedAccountType === AddressType.Manager;
     const isTokensPageActive = selectedAccountType === AddressType.TokensPage;
+    const isNFTGallerysPageActive = selectedAccountType === AddressType.NFTGallery;
 
     function hideDelegateTooltip() {
         setIsDelegateTooltip(true);
@@ -344,6 +345,10 @@ function AddressBlock(props: Props) {
             <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
                 <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
                 <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'beaconInfo' ? '#FFFFFF' : '#132C57' }} />
+            </AddDelegateLabel>
+
+            <AddDelegateLabel isActive={!isModalOpen && isNFTGallerysPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.NFTGallery)}>
+                <DelegateTitle>{t('general.nouns.nft_gallery')}</DelegateTitle>
             </AddDelegateLabel>
 
             <AddDelegateLabel isActive={!isModalOpen && isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
