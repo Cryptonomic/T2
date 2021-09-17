@@ -64,6 +64,7 @@ export enum AddressType {
     TokensPage,
     FA2Token,
     plenty,
+    NFTGallery,
 }
 
 export interface RegularAddress {

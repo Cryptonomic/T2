@@ -21,6 +21,7 @@ import BlndToken from '../../contracts/BlndToken';
 import StkrToken from '../../contracts/StkrToken';
 import PlentyToken from '../../contracts/Plenty';
 import TokensPage from '../TokensPage';
+import NFTGallery from '../NFTGallery';
 
 import { sortArr } from '../../utils/array';
 
@@ -66,6 +67,8 @@ function HomeMain() {
                 return <PlentyToken />;
             case AddressType.Token2:
                 return <Token2Contract />;
+            case AddressType.NFTGallery:
+                return <NFTGallery />;
             default:
                 return <GenericContract />;
         }
