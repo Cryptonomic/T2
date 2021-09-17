@@ -1,7 +1,7 @@
 const { app, ipcMain, Menu, BrowserWindow, shell } = require('electron');
 const os = require('os');
 
-const { helpUrl, customProtocols } = require('./config.json');
+const { helpUrl, aboutUrl, customProtocols } = require('./config.json');
 
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
@@ -114,16 +114,23 @@ app.on('ready', async () => {
         ],
     });
 
-    let helpSubmenu = [];
-
-    if (!isMac) {
-        helpSubmenu.push({ role: 'about', label: 'About', click: async () => await shell.openExternal(helpUrl) });
-    }
-
     menuTemplate.push({
         role: 'help',
         submenu: [
-            ...helpSubmenu,
+            ...(!isMac
+                ? [
+                      {
+                          role: 'about',
+                          label: 'About',
+                          click: async () => {
+                              if (!aboutUrl.startsWith('https://')) {
+                                  throw new Error('Invalid URL provided, only https scheme is accepted');
+                              }
+                              await shell.openExternal(aboutUrl);
+                          },
+                      },
+                  ]
+                : []),
             {
                 label: 'Learn More',
                 click: async () => {
