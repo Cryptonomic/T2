@@ -15,5 +15,5 @@
     "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/master/version.json",
     "tokensSupportURL": "",
     "logLevel": "debug",
-    "customProtocols": ["tezori", "tezos", "galleon"]
+    "customProtocols": ["tezori", "tezos"]
 }
