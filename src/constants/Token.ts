@@ -177,7 +177,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1BzmcWWUV1dnGF58AZ67GySwsniPL2PKYq',
+        address: 'KT18tB7SoF5wf2stnM3AGowrAKESCUkTjd2v',
         displayName: 'BTCtez',
         symbol: 'BTCtz',
         balance: 0,
@@ -189,7 +189,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 8,
         precision: 8,
         round: 8,
-        mapid: 5663,
+        mapid: 14702,
         helpLink: 'https://btctz.io/',
         displayHelpLink: 'btctz.io',
     },

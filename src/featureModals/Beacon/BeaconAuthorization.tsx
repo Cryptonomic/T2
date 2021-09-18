@@ -561,15 +561,18 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 </div>
                             )}
 
-                            {!isLedger && (
+                            {feeError === '' && !isLedger && (
                                 <WrapPassword>
                                     <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
                                 </WrapPassword>
                             )}
 
-                            <p className="subtitleText">
-                                Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
-                            </p>
+                            {feeError === '' && (
+                                <p className="subtitleText">
+                                    Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact
+                                    with.
+                                </p>
+                            )}
                         </div>
                     </Container>
                     {beaconLoading && <Loader />}
