@@ -169,14 +169,11 @@ function Liquidity(props: Props) {
                 addLiquidityThunk(tokenPoolMap[token.address].granadaPool, poolShare.toString(), cashRequirement.toString(), wholeTokens, passPhrase)
             );
         } else if (tradeSide === 'remove' && marketState) {
-            // await dispatch(
-            //     removeLiquidityThunk(
-            //         tokenPoolMap[token.address].granadaPool,
-            //         poolShare,
-            //         cashAmount,
-            //         scaledTokenAmount,
-            //         passPhrase)
-            // );
+            const poolShare = new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString();
+            const poolCashShare = calcPoolShare(poolShare, marketState.coinBalance, marketState.liquidityBalance).toString();
+            const poolTokenShare = calcPoolShare(poolShare, marketState.tokenBalance, marketState.liquidityBalance).toString();
+
+            await dispatch(removeLiquidityThunk(tokenPoolMap[token.address].granadaPool, poolShare, poolCashShare, poolTokenShare, passPhrase));
         }
 
         setLedgerModalOpen(false);
