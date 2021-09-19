@@ -25,8 +25,8 @@ import {
     quipuPool2StorageMap,
     tokenPoolMap,
     getPoolState,
-    getXTZBuyExchangeRate,
-    getXTZSellExchangeRate,
+    getTokenToCashExchangeRate,
+    getTokenToCashInverse,
     applyFees,
     isTradeable,
     PoolState,
@@ -142,66 +142,66 @@ function Swap(props: Props) {
         );
 
         if (side === 'buy') {
-            let dexterCost = { xtzAmount: -1, rate: 0 };
+            let dexterCost = { cashAmount: -1, rate: 0 };
             if (dexterState) {
-                dexterCost = getXTZBuyExchangeRate(
+                dexterCost = getTokenToCashInverse(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     dexterState.tokenBalance,
                     dexterState.coinBalance
                 );
             }
 
-            let quipuCost = { xtzAmount: -1, rate: 0 };
+            let quipuCost = { cashAmount: -1, rate: 0 };
             if (quipuState) {
-                quipuCost = getXTZBuyExchangeRate(
+                quipuCost = getTokenToCashInverse(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     quipuState.tokenBalance,
                     quipuState.coinBalance
                 );
             }
 
-            setDexterTokenCost(applyFees(dexterCost.xtzAmount, 'buy'));
-            setQuipuTokenCost(applyFees(quipuCost.xtzAmount, 'buy'));
+            setDexterTokenCost(applyFees(dexterCost.cashAmount, 'buy'));
+            setQuipuTokenCost(applyFees(quipuCost.cashAmount, 'buy'));
 
-            if ((dexterCost.xtzAmount > 0 && dexterCost.xtzAmount <= quipuCost.xtzAmount) || (quipuCost.xtzAmount < 0 && dexterCost.xtzAmount > 0)) {
+            if ((dexterCost.cashAmount > 0 && dexterCost.cashAmount <= quipuCost.cashAmount) || (quipuCost.cashAmount < 0 && dexterCost.cashAmount > 0)) {
                 setBestMarket('Dexter');
             }
 
-            if ((quipuCost.xtzAmount > 0 && dexterCost.xtzAmount > quipuCost.xtzAmount) || (dexterCost.xtzAmount < 0 && quipuCost.xtzAmount > 0)) {
+            if ((quipuCost.cashAmount > 0 && dexterCost.cashAmount > quipuCost.cashAmount) || (dexterCost.cashAmount < 0 && quipuCost.cashAmount > 0)) {
                 setBestMarket('QuipuSwap');
             }
         } else if (side === 'sell') {
-            let dexterProceeds = { xtzAmount: -1, rate: 0 };
+            let dexterProceeds = { cashAmount: -1, rate: 0 };
             if (dexterState) {
-                dexterProceeds = getXTZSellExchangeRate(
+                dexterProceeds = getTokenToCashExchangeRate(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     dexterState.tokenBalance,
                     dexterState.coinBalance
                 );
             }
 
-            let quipuProceeds = { xtzAmount: -1, rate: 0 };
+            let quipuProceeds = { cashAmount: -1, rate: 0 };
             if (quipuState) {
-                quipuProceeds = getXTZSellExchangeRate(
+                quipuProceeds = getTokenToCashExchangeRate(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     quipuState.tokenBalance,
                     quipuState.coinBalance
                 );
             }
 
-            setDexterTokenProceeds(applyFees(dexterProceeds.xtzAmount, 'sell'));
-            setQuipuTokenProceeds(applyFees(quipuProceeds.xtzAmount, 'sell'));
+            setDexterTokenProceeds(applyFees(dexterProceeds.cashAmount, 'sell'));
+            setQuipuTokenProceeds(applyFees(quipuProceeds.cashAmount, 'sell'));
 
             if (
-                (dexterProceeds.xtzAmount > 0 && dexterProceeds.xtzAmount >= quipuProceeds.xtzAmount) ||
-                (quipuProceeds.xtzAmount < 0 && dexterProceeds.xtzAmount > 0)
+                (dexterProceeds.cashAmount > 0 && dexterProceeds.cashAmount >= quipuProceeds.cashAmount) ||
+                (quipuProceeds.cashAmount < 0 && dexterProceeds.cashAmount > 0)
             ) {
                 setBestMarket('Dexter');
             }
 
             if (
-                (quipuProceeds.xtzAmount > 0 && dexterProceeds.xtzAmount < quipuProceeds.xtzAmount) ||
-                (dexterProceeds.xtzAmount < 0 && quipuProceeds.xtzAmount > 0)
+                (quipuProceeds.cashAmount > 0 && dexterProceeds.cashAmount < quipuProceeds.cashAmount) ||
+                (dexterProceeds.cashAmount < 0 && quipuProceeds.cashAmount > 0)
             ) {
                 setBestMarket('QuipuSwap');
             }

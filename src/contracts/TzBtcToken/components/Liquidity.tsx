@@ -18,54 +18,55 @@ import { InfoIcon } from '../../../featureModals/style';
 
 import { SegmentedControlContainer, SegmentedControl, SegmentedControlItem, ColumnContainer, MessageContainer } from '../../components/Swap/style';
 import {
-    quipuPoolStorageMap,
-    quipuPool2StorageMap,
+    granadaPoolStorageMap,
     tokenPoolMap,
     getPoolState,
-    getTokenToCashExchangeRate,
-    getTokenToCashInverse,
+    calcPoolShare,
+    calcCashLiquidityRequirement,
     applyFees,
+    calcProposedShare,
 } from '../../components/Swap/util';
-import { buyQuipu, sellQuipu } from '../../components/Swap/thunks';
+import { addLiquidityThunk, removeLiquidityThunk } from '../thunks';
 
 interface Props {
     isReady: boolean;
     token: Token;
 }
 
-interface Props1 {
+interface ActionSelectorProps {
     type: string;
     changeFunc: (val: string) => void;
 }
 
-const RestoreTabs = (props: Props1) => {
+const ActionSelector = (props: ActionSelectorProps) => {
     const { t } = useTranslation();
     const { type, changeFunc } = props;
 
     return (
         <SegmentedControl>
-            <SegmentedControlItem active={type === 'buy'} onClick={() => changeFunc('buy')}>
-                {t('general.verbs.buy')}
+            <SegmentedControlItem active={type === 'add'} onClick={() => changeFunc('add')}>
+                {t('general.verbs.add')}
             </SegmentedControlItem>
-            <SegmentedControlItem active={type === 'sell'} onClick={() => changeFunc('sell')}>
-                {t('general.verbs.sell')}
+            <SegmentedControlItem active={type === 'remove'} onClick={() => changeFunc('remove')}>
+                {t('general.verbs.remove')}
             </SegmentedControlItem>
         </SegmentedControl>
     );
 };
 
-function Swap(props: Props) {
+function Liquidity(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
-    const [tradeSide, setTradeSide] = useState('buy');
+    const [tradeSide, setTradeSide] = useState('add');
     const [passPhrase, setPassPhrase] = useState('');
     const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
 
     const [tokenAmount, setTokenAmount] = useState('');
-    const [quipuTokenCost, setQuipuTokenCost] = useState(0.0);
-    const [quipuTokenProceeds, setQuipuTokenProceeds] = useState(0.0);
-    const [bestMarket, setBestMarket] = useState('');
+    const [cashMatch, setCashMatch] = useState(0.0);
+    const [poolPercent, setPoolPercent] = useState('0.000%');
+    const [tokenShare, setTokenShare] = useState(0.0);
+    const [cashShare, setCashShare] = useState(0.0);
 
     const { isLoading, isLedger } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
     const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((state: RootState) => state.settings, shallowEqual);
@@ -77,7 +78,7 @@ function Swap(props: Props) {
 
     const onTypeChange = (side: string) => {
         setTradeSide(side);
-        updateMarketPrice(tokenAmount, side);
+        updateCashRequirement(tokenAmount);
     };
 
     function getBalanceState() {
@@ -95,47 +96,59 @@ function Swap(props: Props) {
         };
     }
 
-    async function updateAmount(val) {
+    async function updateAmount(val: string) {
         setTokenAmount(val);
-        updateMarketPrice(val, tradeSide);
+
+        if (tradeSide === 'add') {
+            updateCashRequirement(val);
+        } else if (tradeSide === 'remove') {
+            updatePoolShare(val);
+        }
     }
 
-    async function updateMarketPrice(tokenValue, side) {
-        const tokenMetadata = knownTokenContracts.find((i) => i.address === token.address);
+    async function updateCashRequirement(tokenValue: string) {
+        const marketState = await getPoolState(tezosUrl, tokenPoolMap[token.address].granadaPool, granadaPoolStorageMap);
 
-        const quipuState = await getPoolState(
-            tezosUrl,
-            tokenPoolMap[token.address].quipuPool,
-            tokenMetadata?.kind === TokenKind.tzip12 ? quipuPool2StorageMap : quipuPoolStorageMap
-        );
+        let cashRequirement = 0;
+        let proposedShare = '0.000%';
+        if (marketState) {
+            cashRequirement = calcCashLiquidityRequirement(
+                new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
+                marketState.tokenBalance,
+                marketState.coinBalance
+            );
 
-        setBestMarket('');
-
-        if (side === 'buy') {
-            let quipuCost = { cashAmount: -1, rate: 0 };
-            if (quipuState) {
-                quipuCost = getTokenToCashExchangeRate(
-                    new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
-                    quipuState.tokenBalance,
-                    quipuState.coinBalance
-                );
-            }
-
-            setQuipuTokenCost(applyFees(quipuCost.cashAmount, 'buy'));
-            setBestMarket('QuipuSwap');
-        } else if (side === 'sell') {
-            let quipuProceeds = { cashAmount: -1, rate: 0 };
-            if (quipuState) {
-                quipuProceeds = getTokenToCashInverse(
-                    new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
-                    quipuState.tokenBalance,
-                    quipuState.coinBalance
-                );
-            }
-
-            setQuipuTokenProceeds(applyFees(quipuProceeds.cashAmount, 'sell'));
-            setBestMarket('QuipuSwap');
+            const proposedShareInt = calcProposedShare(cashRequirement.toString(), marketState.coinBalance, marketState.liquidityBalance);
+            proposedShare = new BigNumber(proposedShareInt).dividedBy(marketState.liquidityBalance).multipliedBy(100).toFixed(3) + '%';
         }
+
+        setCashMatch(applyFees(cashRequirement, 'buy', 0));
+        setPoolPercent(proposedShare);
+    }
+
+    async function updatePoolShare(poolShare: string) {
+        const marketState = await getPoolState(tezosUrl, tokenPoolMap[token.address].granadaPool, granadaPoolStorageMap);
+
+        let poolPart = { cashShare: -1, tokenShare: -1 };
+        if (marketState) {
+            poolPart.cashShare = calcPoolShare(
+                new BigNumber(poolShare).multipliedBy(10 ** 6).toString(),
+                marketState.coinBalance,
+                marketState.liquidityBalance
+            );
+            poolPart.tokenShare = calcPoolShare(
+                new BigNumber(poolShare).multipliedBy(10 ** 6).toString(),
+                marketState.tokenBalance,
+                marketState.liquidityBalance
+            );
+
+            if (poolPart.cashShare > Number(marketState.coinBalance) || poolPart.tokenShare > Number(marketState.tokenBalance)) {
+                poolPart = { cashShare: -1, tokenShare: -1 };
+            }
+        }
+
+        setTokenShare(poolPart.tokenShare);
+        setCashShare(poolPart.cashShare);
     }
 
     async function onSend() {
@@ -145,28 +158,25 @@ function Swap(props: Props) {
             setLedgerModalOpen(true);
         }
 
-        if (tradeSide === 'buy' && bestMarket.toLowerCase() === 'quipuswap') {
+        const marketState = await getPoolState(tezosUrl, tokenPoolMap[token.address].granadaPool, granadaPoolStorageMap);
+
+        if (tradeSide === 'add' && marketState) {
+            const wholeTokens = new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString();
+            const cashRequirement = calcCashLiquidityRequirement(wholeTokens, marketState.tokenBalance, marketState.coinBalance);
+            const poolShare = calcProposedShare(cashRequirement.toString(), marketState.coinBalance, marketState.liquidityBalance);
+
             await dispatch(
-                buyQuipu(
-                    tokenPoolMap[token.address].quipuPool,
-                    token.address,
-                    -1,
-                    new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
-                    new BigNumber(quipuTokenCost).toString(),
-                    passPhrase
-                )
+                addLiquidityThunk(tokenPoolMap[token.address].granadaPool, poolShare.toString(), cashRequirement.toString(), wholeTokens, passPhrase)
             );
-        } else if (tradeSide === 'sell' && bestMarket.toLowerCase() === 'quipuswap') {
-            await dispatch(
-                sellQuipu(
-                    tokenPoolMap[token.address].quipuPool,
-                    token.address,
-                    -1,
-                    new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
-                    new BigNumber(quipuTokenProceeds).toString(),
-                    passPhrase
-                )
-            );
+        } else if (tradeSide === 'remove' && marketState) {
+            // await dispatch(
+            //     removeLiquidityThunk(
+            //         tokenPoolMap[token.address].granadaPool,
+            //         poolShare,
+            //         cashAmount,
+            //         scaledTokenAmount,
+            //         passPhrase)
+            // );
         }
 
         setLedgerModalOpen(false);
@@ -181,7 +191,7 @@ function Swap(props: Props) {
             <RowContainer>
                 <div style={{ width: '100%', paddingRight: '10px' }}>
                     <SegmentedControlContainer>
-                        <RestoreTabs type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
+                        <ActionSelector type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
                     </SegmentedControlContainer>
                 </div>
                 <ColumnContainer>
@@ -191,20 +201,20 @@ function Swap(props: Props) {
                             amount={tokenAmount}
                             onChange={updateAmount}
                             errorText={error}
-                            symbol={token.symbol}
+                            symbol={tradeSide === 'add' ? token.symbol : 'LP Tokens'}
                             scale={token.scale || 0}
                             precision={token.precision || 6}
                         />
 
-                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'add' && (
                             <>
-                                Cost {'on QuipuSwap'} {formatAmount(quipuTokenCost)} XTZ
+                                Required deposit {formatAmount(cashMatch)} XTZ, {poolPercent} of pool
                             </>
                         )}
 
-                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
+                        {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'remove' && (
                             <>
-                                Proceeds {'on QuipuSwap'} {formatAmount(quipuTokenProceeds)} XTZ
+                                Proceeds: {formatAmount(cashShare, 6, 6, false)} XTZ, {formatAmount(tokenShare, 8, 8, false)} {token.symbol}
                             </>
                         )}
                     </div>
@@ -227,17 +237,11 @@ function Swap(props: Props) {
                 )}
                 {isLedger && ledgerModalOpen && <>Please confirm the operation on the Ledger device</>}
                 <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onSend()}>
-                    {t(`general.verbs.${tradeSide}`)}
-                    {bestMarket && bestMarket.length > 0 && (
-                        <>
-                            {' '}
-                            {t('general.prepositions.on')} {bestMarket}{' '}
-                        </>
-                    )}
+                    {t(`general.verbs.${tradeSide}`)} Liquidity
                 </InvokeButton>
             </PasswordButtonContainer>
         </Container>
     );
 }
 
-export default Swap;
+export default Liquidity;

@@ -34,7 +34,9 @@
             "approve": "Approve",
             "swap": "Trade",
             "buy": "Buy",
-            "sell": "Sell"
+            "sell": "Sell",
+            "add": "Add",
+            "remove": "Remove"
         },
         "nouns": {
             "amount": "Amount",
@@ -87,7 +89,8 @@
             "implementation": "Implementation",
             "vaults": "Vaults",
             "collection": "Collection",
-            "quantity": "Quantity"
+            "quantity": "Quantity",
+            "liquidity": "Liquidity"
         },
         "errors": {
             "no_hex_data": "The provided string doesn't look like hex data",
