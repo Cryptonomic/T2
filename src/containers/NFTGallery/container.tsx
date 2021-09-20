@@ -1,6 +1,9 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+
+import { NFT_GALLERY_TABS } from './constants';
+import { NFTGalleryTabType } from './types';
 
 import { NFTGallery } from './components';
 
@@ -19,6 +22,8 @@ import { RootState } from '../../types/store';
  * <NFTGallery />
  */
 const NFTGalleryContainer = () => {
+    const [activeTab, setActiveTab] = useState<NFTGalleryTabType>(NFT_GALLERY_TABS.COLLECTED);
+
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
@@ -34,7 +39,16 @@ const NFTGalleryContainer = () => {
     const { time, isWalletSyncing } = useSelector((state: RootState) => state.app);
     const onSyncWallet = () => dispatch(syncWalletThunk());
 
-    return <NFTGallery selectedAccount={selectedAccount} isWalletSyncing={isWalletSyncing} onSyncWallet={onSyncWallet} time={time} />;
+    return (
+        <NFTGallery
+            activeTab={activeTab}
+            selectedAccount={selectedAccount}
+            isWalletSyncing={isWalletSyncing}
+            onSyncWallet={onSyncWallet}
+            onChangePageTab={(value) => setActiveTab(value as NFTGalleryTabType)}
+            time={time}
+        />
+    );
 };
 
 export default NFTGalleryContainer;
