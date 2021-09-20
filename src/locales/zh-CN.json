@@ -338,6 +338,12 @@
                 "burn_operation_success": "Successfully started burn token."
             }
         },
+        "nftGallery": {
+            "tabs": {
+                "collected": "Collected",
+                "minted": "Minted"
+            }
+        },
         "pdfReader": {
             "loading": "正在加载。。。"
         },
