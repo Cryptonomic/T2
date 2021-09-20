@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
-import styled from 'styled-components';
 import { BeaconMessageType, OperationResponseInput, BeaconErrorType, BeaconResponseInputMessage } from '@airgap/beacon-sdk';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
@@ -24,47 +23,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
 
 import { estimateOperationGroupFee, sendOperations, queryHicEtNuncSwap } from './thunks';
-
-export const PromptContainer = styled.div`
-    align-items: center;
-    color: #979797;
-    display: flex;
-    font-size: 24px;
-    justify-content: center;
-    height: 80px;
-    margin-top: 30px;
-    width: 100%;
-`;
-
-const WrapPassword = styled.div`
-    margin-top: 3px;
-`;
-
-const TooltipContainer = styled.div`
-    padding: 10px;
-    color: #000;
-    font-size: 14px;
-    max-width: 312px;
-`;
-
-const TooltipTitle = styled.div`
-    font-size: 16px;
-    font-weight: 700;
-    color: ${({ theme: { colors } }) => colors.primary};
-`;
-
-const TooltipContent = styled.div`
-    margin-top: 8px;
-    font-size: 14px;
-    line-height: 21px;
-    width: 270px;
-    font-weight: 300;
-    color: ${({ theme: { colors } }) => colors.black};
-`;
-
-const BoldSpan = styled.span`
-    font-weight: 500;
-`;
+import { WrapPassword } from './style';
 
 interface Props {
     open: boolean;
@@ -602,15 +561,18 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 </div>
                             )}
 
-                            {!isLedger && (
+                            {feeError === '' && !isLedger && (
                                 <WrapPassword>
                                     <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
                                 </WrapPassword>
                             )}
 
-                            <p className="subtitleText">
-                                Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
-                            </p>
+                            {feeError === '' && (
+                                <p className="subtitleText">
+                                    Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact
+                                    with.
+                                </p>
+                            )}
                         </div>
                     </Container>
                     {beaconLoading && <Loader />}

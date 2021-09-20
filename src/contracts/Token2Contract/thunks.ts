@@ -12,7 +12,7 @@ import { getMainNode, getMainPath } from '../../utils/settings';
 import { findTokenIndex } from '../../utils/token';
 import { knownContractNames, knownTokenContracts, knownMarketMetadata } from '../../constants/Token';
 import { TokenKind } from '../../types/general';
-import { mintPWCA, burnPWCA } from './util';
+import { mintYV, burnYV } from './util';
 
 export function transferThunk(destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
@@ -119,7 +119,7 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
         let groupid = '';
         if (selectedToken.symbol.toLowerCase() === 'btctz') {
             // Not meant for initial mint
-            groupid = await mintPWCA(
+            groupid = await mintYV(
                 tezosUrl,
                 selectedAccountHash,
                 isLedger ? signer : await cloneDecryptedSigner(signer, password),
@@ -187,7 +187,7 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
 
         let groupid = '';
         if (selectedToken.symbol.toLowerCase() === 'btctz') {
-            groupid = await burnPWCA(
+            groupid = await burnYV(
                 tezosUrl,
                 selectedAccountHash,
                 isLedger ? signer : await cloneDecryptedSigner(signer, password),

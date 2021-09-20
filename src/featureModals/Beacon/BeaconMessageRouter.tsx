@@ -47,8 +47,6 @@ export const BeaconMessageRouter = () => {
             dispatch(setModalOpen(false, 'beaconRegistration'));
             dispatch(setModalOpen(true, 'beaconPermission'));
         } else if (message.type === BeaconMessageType.OperationRequest) {
-            console.log('Beacon.OperationRequest', message);
-
             if (message.sourceAddress !== selectedParentHash) {
                 dispatch(createMessageAction('Beacon requestor address did not match', true));
                 return;
@@ -60,7 +58,7 @@ export const BeaconMessageRouter = () => {
             }
 
             if (!message.operationDetails.length) {
-                dispatch(createMessageAction('Beacon key did not match', true));
+                dispatch(createMessageAction('Beacon invalid operation', true));
                 return;
             }
 
@@ -71,6 +69,16 @@ export const BeaconMessageRouter = () => {
 
             dispatch(setModalValue(message, 'beaconAuthorize'));
             dispatch(setModalOpen(true, 'beaconAuthorize'));
+        } else if (message.type === BeaconMessageType.SignPayloadRequest) {
+            if (message.sourceAddress !== selectedParentHash) {
+                dispatch(createMessageAction('Beacon requestor address did not match', true));
+                return;
+            }
+
+            dispatch(setModalValue(message, 'beaconSignature'));
+            dispatch(setModalOpen(true, 'beaconSignature'));
+        } else {
+            console.log(`unsupported beacon message, ${JSON.stringify(message)}`);
         }
     };
 

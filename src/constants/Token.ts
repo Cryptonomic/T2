@@ -156,6 +156,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 6,
         mapid: 3943,
         helpLink: 'https://plentydefi.com',
+        displayHelpLink: 'plentydefi.com',
     },
     {
         network: 'mainnet',
@@ -172,10 +173,11 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 5,
         mapid: 4178,
         helpLink: 'https://kalamint.io/',
+        displayHelpLink: 'kalamint.io',
     },
     {
         network: 'mainnet',
-        address: 'KT1BzmcWWUV1dnGF58AZ67GySwsniPL2PKYq',
+        address: 'KT18tB7SoF5wf2stnM3AGowrAKESCUkTjd2v',
         displayName: 'BTCtez',
         symbol: 'BTCtz',
         balance: 0,
@@ -187,7 +189,9 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 8,
         precision: 8,
         round: 8,
-        mapid: 5663,
+        mapid: 14702,
+        helpLink: 'https://btctz.io/',
+        displayHelpLink: 'btctz.io',
     },
     {
         network: 'mainnet',
@@ -254,6 +258,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 6,
         mapid: 7250,
         balancePath: '$.int',
+        displayHelpLink: 'kolibri.finance',
+        helpLink: 'https://kolibri.finance',
     },
     {
         network: 'mainnet',
@@ -271,6 +277,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         mapid: 3686,
         balancePath: '$.args[1].int',
         helpLink: 'https://twitter.com/heh_hedgehoge',
+        displayHelpLink: '@heh_hedgehoge',
     },
     {
         network: 'mainnet',
@@ -286,6 +293,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 8,
         round: 8,
         mapid: 1777,
+        helpLink: 'https://www.benderlabs.io/wrap-token',
+        displayHelpLink: 'benderlabs.io',
     },
     {
         network: 'mainnet',
@@ -444,6 +453,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 36,
         round: 2,
         mapid: 1600,
+        helpLink: 'https://kolibri.finance/liquidity-pool',
+        displayHelpLink: 'kolibri.finance/liquidity-pool',
     },
     {
         network: 'mainnet',
@@ -543,6 +554,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 3,
         mapid: 1798,
         balancePath: '$.args[1].int',
+        helpLink: 'https://www.smartlink.so/use-cases/',
+        displayHelpLink: 'smartlink.so',
     },
     {
         network: 'mainnet',
@@ -575,6 +588,8 @@ export const knownTokenDescription = {
     kDAO: 'is a governance token for the Kolibri ecosystem.',
     SMAK: 'SmartLink',
     FLAME: 'is the utility token of FlameDeFi.',
+    BTCtz: 'is a Bitcoin-pegged stablecoin.',
+    hDAO: ' is the hic et nunc governance token.',
 };
 
 export const knownContractNames = {
@@ -722,6 +737,9 @@ export const knownContractNames = {
     KT18oxtA5uyhyYXyAVhTa7agJmxHCTjHpiF7: 'Kolibri QLPkUSD Farm',
 
     KT1FvqJwEDWb1Gwc55Jd1jjTHRVWbYKUUpyq: 'objkt NFT Market',
+
+    KT1Pu8f3sau4NZcssm4uXXMYLpHZzQ5UQ1Dz: 'twitz Minter',
+    KT1DeFSmknfCG5TveB5DSvrg34hqLcqETNuF: 'twitz NFT',
 };
 
 export const knownMarketMetadata = [

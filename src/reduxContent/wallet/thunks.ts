@@ -263,7 +263,7 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].kind
                 );
             } else if (tokens[tokenIndex].kind === TokenKind.objkt) {
-                balanceAsync = HicNFTUtil.getCollectionSize(511, selectedParentHash, mainNode);
+                balanceAsync = HicNFTUtil.getCollectionSize(tokens[tokenIndex].mapid, selectedParentHash, mainNode);
                 detailsAsync = await HicNFTUtil.getTokenInfo(mainNode, 515).then((r) => {
                     return { holders: r.holders, supply: r.totalBalance };
                 });
@@ -311,8 +311,6 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].kind
                 );
             } else if (tokens[tokenIndex].kind === TokenKind.tzip12) {
-                console.log(`(syncTokenThunk) processing token: ${JSON.stringify(tokens[tokenIndex])}`);
-
                 if (tokens[tokenIndex].tokenIndex !== undefined) {
                     balanceAsync = MultiAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].tokenIndex || 0);
                 } else {
@@ -322,7 +320,7 @@ export function syncTokenThunk(tokenAddress) {
                 if (tokens[tokenIndex].symbol.toLowerCase() === 'btctz') {
                     // TODO
                     detailsAsync = token2Util
-                        .getSimpleStoragePWCA(mainNode.tezosUrl, tokens[tokenIndex].address)
+                        .getSimpleStorageYV(mainNode.tezosUrl, tokens[tokenIndex].address, selectedParentHash)
                         .then(async (d) => {
                             const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
 
@@ -355,7 +353,11 @@ export function syncTokenThunk(tokenAddress) {
                         tokens[tokenIndex]
                     )}`
                 );
-                tokens[tokenIndex] = { ...tokens[tokenIndex], balance, transactions, details };
+
+                let administrator = tokens[tokenIndex].administrator;
+                administrator = details?.administrator || '';
+
+                tokens[tokenIndex] = { ...tokens[tokenIndex], administrator, balance, transactions, details };
             } catch (awaitError) {
                 console.log('awaitError', awaitError);
             }
@@ -571,7 +573,7 @@ export function syncWalletThunk() {
                     let details: any = {};
                     if (token.symbol.toLowerCase() === 'btctz') {
                         // TODO
-                        details = await token2Util.getSimpleStoragePWCA(mainNode.tezosUrl, token.address).catch(() => undefined);
+                        details = await token2Util.getSimpleStorageYV(mainNode.tezosUrl, token.address, selectedParentHash).catch(() => undefined);
                     } else {
                         details = await MultiAssetTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined); // supply, paused
                     }

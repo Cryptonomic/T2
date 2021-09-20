@@ -168,6 +168,9 @@
                     "operation_request": "Operation Request",
                     "sign": "Sign"
                 }
+            },
+            "signature": {
+                "title": "Signature Request"
             }
         },
         "interactModal": {
