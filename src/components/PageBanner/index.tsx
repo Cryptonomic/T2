@@ -1,18 +1,9 @@
 import React from 'react';
+
+import { PageBannerProps } from './types';
 import { PageBanner as PageBannerContainer, PageBannerRow, PageTitle, Breadcrumbs, Link, LinkIcon } from './style';
 
 import Update from '../Update';
-
-export interface PageBannerProps {
-    breadcrumbs?: string;
-    isAddressReady: boolean;
-    isWalletSyncing: boolean;
-    onClickLink?: () => void;
-    linkText?: string;
-    onSyncWallet?: () => void;
-    time: Date;
-    title?: string;
-}
 
 /**
  * Render the blue banner used on the top of the views.
@@ -58,7 +49,7 @@ export interface PageBannerProps {
  *  title={t('general.nouns.nft_gallery')}
  * />
  */
-export const PageBanner = ({
+const PageBanner = ({
     breadcrumbs,
     isAddressReady,
     isWalletSyncing,
@@ -89,3 +80,5 @@ export const PageBanner = ({
         </PageBannerContainer>
     );
 };
+
+export { PageBanner, PageBannerProps };
