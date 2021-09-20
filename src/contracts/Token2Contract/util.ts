@@ -210,7 +210,7 @@ export async function getSimpleStorageYV(tezosUrl: string, tokenAddress: string,
             'hex'
         )
     );
-    const mapResult = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 14701, packedKey);
+    const mapResult = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 16593, packedKey);
     let administrator = '';
     if (mapResult !== undefined) {
         administrator = accountAddress || '';
