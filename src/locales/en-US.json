@@ -508,6 +508,9 @@
         },
         "swap": {
             "outcome_warning": "Note that token and XTZ trade outcomes are estimates and actual numbers may be different. Slippage is set to 1%."
+        },
+        "liquidity": {
+            "description": "Offering liquidity on an exchange may generate yield. Note that outcomes are estimates and actual balances my be different. Slippage is set to 1%."
         }
     },
     "containers": {

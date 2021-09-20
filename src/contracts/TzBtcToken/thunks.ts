@@ -1,4 +1,4 @@
-import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosParameterFormat, Transaction, TzbtcTokenHelper } from 'conseiljs';
+import { TezosConstants, TezosMessageUtils, TezosNodeReader, TezosNodeWriter, TezosParameterFormat, Transaction, TzbtcTokenHelper } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
@@ -90,9 +90,9 @@ export function addLiquidityThunk(destination: string, poolShare: string, cashAm
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
         const expiration = new Date(Date.now() + 5 * 60 * 1000);
-        const params = `{ "prim": "Pair","args": [ { "string": "${
+        const params = `{ "prim": "Pair","args": [ { "bytes": "${TezosMessageUtils.writeAddress(
             keyStore.publicKeyHash
-        }" }, { "prim": "Pair", "args": [ { "int": "${poolShare}" }, { "prim": "Pair", "args": [ { "int": "${tokenAmount}" }, { "string": "${expiration.toISOString()}" } ] } ] } ] }`;
+        )}" }, { "prim": "Pair", "args": [ { "int": "${poolShare}" }, { "prim": "Pair", "args": [ { "int": "${tokenAmount}" }, { "string": "${expiration.toISOString()}" } ] } ] } ] }`;
 
         const ops: Transaction[] = [];
         ops.push(constructFA1ApprovalOperation(keyStore.publicKeyHash, 0, { fee: 0, gas: 0, storage: 0 }, selectedAccountHash, destination));
@@ -106,7 +106,7 @@ export function addLiquidityThunk(destination: string, poolShare: string, cashAm
                 0,
                 0,
                 0,
-                'removeLiquidity',
+                'addLiquidity',
                 params,
                 TezosParameterFormat.Micheline
             )
@@ -114,20 +114,27 @@ export function addLiquidityThunk(destination: string, poolShare: string, cashAm
 
         const counter = await TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
         const pricedOps = await TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
-        const r = await TezosNodeWriter.sendOperation(tezosUrl, pricedOps, signer, TezosConstants.HeadBranchOffset).catch((err) => {
-            const errorObj = { name: err.message, ...err };
-            console.error(`Plenty harvestRewards failed with ${JSON.stringify(errorObj)}`);
-            dispatch(createMessageAction(errorObj.name, true));
-            return undefined;
-        });
+        try {
+            const operationResult = await TezosNodeWriter.sendOperation(
+                tezosUrl,
+                pricedOps,
+                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                TezosConstants.HeadBranchOffset
+            );
 
-        if (r === undefined) {
+            if (operationResult === undefined) {
+                return false;
+            }
+
+            dispatch(
+                createMessageAction('components.messageBar.messages.started_token_success', false, operationResult?.operationGroupID.replace(/\\|"|\n|\r/g, ''))
+            );
+
+            return true;
+        } catch (err) {
+            dispatch(createMessageAction(`Failed to submit operation with ${err}`, true));
             return false;
         }
-
-        dispatch(createMessageAction('components.messageBar.messages.started_token_success', false, r?.operationGroupID.replace(/\\|"|\n|\r/g, '')));
-
-        return true;
     };
 }
 
@@ -157,7 +164,7 @@ export function removeLiquidityThunk(destination: string, poolShare: string, cas
         try {
             const r = await TezosNodeWriter.sendContractInvocationOperation(
                 tezosUrl,
-                signer,
+                isLedger ? signer : await cloneDecryptedSigner(signer, password),
                 keyStore,
                 destination,
                 0,
@@ -172,17 +179,14 @@ export function removeLiquidityThunk(destination: string, poolShare: string, cas
             );
 
             operationId = r.operationGroupID.replace(/\\|"|\n|\r/g, '');
+
+            dispatch(createMessageAction('components.messageBar.messages.started_token_success', false, operationId));
+
+            return true;
         } catch (err) {
             console.log(`failed in removeLiquidityThunk ${JSON.stringify(err)}}`);
-        }
-
-        if (operationId === undefined) {
             dispatch(createMessageAction('components.messageBar.messages.started_token_failed', true));
             return false;
         }
-
-        dispatch(createMessageAction('components.messageBar.messages.started_token_success', false, operationId));
-
-        return true;
     };
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'bignumber.js';
@@ -27,6 +27,7 @@ import {
     calcProposedShare,
 } from '../../components/Swap/util';
 import { addLiquidityThunk, removeLiquidityThunk } from '../thunks';
+import { getAccountBalance } from '../util';
 
 interface Props {
     isReady: boolean;
@@ -61,6 +62,7 @@ function Liquidity(props: Props) {
     const [tradeSide, setTradeSide] = useState('add');
     const [passPhrase, setPassPhrase] = useState('');
     const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
+    const [ammTokenBalance, setAMMTokenBalance] = useState('0.0');
 
     const [tokenAmount, setTokenAmount] = useState('');
     const [cashMatch, setCashMatch] = useState(0.0);
@@ -68,7 +70,7 @@ function Liquidity(props: Props) {
     const [tokenShare, setTokenShare] = useState(0.0);
     const [cashShare, setCashShare] = useState(0.0);
 
-    const { isLoading, isLedger } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
+    const { isLoading, isLedger, selectedParentHash, isWalletSyncing } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
     const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((state: RootState) => state.settings, shallowEqual);
     const tezosUrl = getMainNode(nodesList, selectedNode).tezosUrl;
 
@@ -80,6 +82,17 @@ function Liquidity(props: Props) {
         setTradeSide(side);
         updateCashRequirement(tokenAmount);
     };
+
+    useEffect(() => {
+        const getAMMTokenBalance = async () => {
+            const balance = await getAccountBalance(tezosUrl, 9563, selectedParentHash).catch(() => {
+                return 0;
+            }); // TODO: 9563
+            setAMMTokenBalance(new BigNumber(balance).dividedBy(10 ** 6).toString());
+        };
+
+        getAMMTokenBalance();
+    }, [isWalletSyncing]);
 
     function getBalanceState() {
         const realAmount = 0; // !amount ? Number(amount) : 0;
@@ -169,7 +182,7 @@ function Liquidity(props: Props) {
                 addLiquidityThunk(tokenPoolMap[token.address].granadaPool, poolShare.toString(), cashRequirement.toString(), wholeTokens, passPhrase)
             );
         } else if (tradeSide === 'remove' && marketState) {
-            const poolShare = new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString();
+            const poolShare = new BigNumber(tokenAmount).multipliedBy(10 ** 6).toString();
             const poolCashShare = calcPoolShare(poolShare, marketState.coinBalance, marketState.liquidityBalance).toString();
             const poolTokenShare = calcPoolShare(poolShare, marketState.tokenBalance, marketState.liquidityBalance).toString();
 
@@ -185,8 +198,14 @@ function Liquidity(props: Props) {
 
     return (
         <Container>
+            <MessageContainer>
+                <InfoIcon color="info" iconName="info" />
+                {t('components.liquidity.description')}
+            </MessageContainer>
+
             <RowContainer>
                 <div style={{ width: '100%', paddingRight: '10px' }}>
+                    {Number(ammTokenBalance) > 0 && <>Current LP token balance: {ammTokenBalance}</>}
                     <SegmentedControlContainer>
                         <ActionSelector type={tradeSide} changeFunc={(val) => onTypeChange(val)} />
                     </SegmentedControlContainer>
@@ -199,8 +218,8 @@ function Liquidity(props: Props) {
                             onChange={updateAmount}
                             errorText={error}
                             symbol={tradeSide === 'add' ? token.symbol : 'LP Tokens'}
-                            scale={token.scale || 0}
-                            precision={token.precision || 6}
+                            scale={tradeSide === 'add' ? token.scale || 0 : 6}
+                            precision={tradeSide === 'add' ? token.precision || 6 : 6}
                         />
 
                         {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'add' && (
@@ -217,11 +236,6 @@ function Liquidity(props: Props) {
                     </div>
                 </ColumnContainer>
             </RowContainer>
-
-            <MessageContainer>
-                <InfoIcon color="info" iconName="info" />
-                {t('components.swap.outcome_warning')}
-            </MessageContainer>
 
             <PasswordButtonContainer>
                 {!isLedger && (
