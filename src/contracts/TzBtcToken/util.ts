@@ -1,4 +1,5 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient } from 'conseiljs';
+import { JSONPath } from 'jsonpath-plus';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosMessageUtils, TezosNodeReader } from 'conseiljs';
 
 import * as status from '../../constants/StatusTypes';
 import { Node } from '../../types/general';
@@ -116,4 +117,16 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
         .then((transactions) => {
             return transactions.sort((a, b) => a.timestamp - b.timestamp);
         });
+}
+
+export async function getAccountBalance(server: string, mapid: number, account: string): Promise<number> {
+    const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
+    const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
+
+    if (mapResult === undefined) {
+        throw new Error(`Map ${mapid} does not contain a record for ${account}`);
+    }
+
+    const jsonresult = JSONPath({ path: '$.int', json: mapResult });
+    return Number(jsonresult[0]);
 }

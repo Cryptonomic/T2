@@ -81,8 +81,7 @@ export function isTradeable(tokenAddress: string, tokenIndex?: number) {
  * @param side buy | sell
  * @returns
  */
-export function applyFees(amount: number, side: string) {
-    const slippage = 0.01;
+export function applyFees(amount: number, side: string, slippage: number = 0.01) {
     const fee = 0.05;
     const feeThreshold = '500000000';
 
@@ -299,43 +298,33 @@ export async function sendQuipuSell(
     }
 }
 
-/**
- * Token/XTZ exchange rate for a given token sale.
- *
- * @param tokenAmount Proposed token deposit
- * @param tokenBalance Current token balance in the pool
- * @param xtzBalance Current XTZ balance in the pool
- */
-export function getXTZSellExchangeRate(
+export function getTokenToCashExchangeRate(
     tokenAmount: string,
     tokenBalance: string,
-    xtzBalance: string,
+    cashBalance: string,
     tokenDecimals: number = 6,
     exchangeMultiplier: number = 997
 ) {
-    const n = bigInt(tokenAmount).multiply(bigInt(xtzBalance)).multiply(bigInt(exchangeMultiplier));
+    const n = bigInt(tokenAmount).multiply(bigInt(cashBalance)).multiply(bigInt(exchangeMultiplier));
     const d = bigInt(tokenBalance)
         .multiply(bigInt(1000))
         .add(bigInt(tokenAmount).multiply(bigInt(exchangeMultiplier)));
 
-    const amount = n.divide(d);
-    const rate = amount.divmod(bigInt(tokenAmount));
-    const ff = rate.remainder.multiply(bigInt(10 ** tokenDecimals)).divide(bigInt(tokenAmount));
+    const cashAmount = n.divide(d);
+    const dm = cashAmount.divmod(bigInt(tokenAmount));
+    const f = dm.remainder.multiply(bigInt(10 ** tokenDecimals)).divide(bigInt(tokenAmount));
 
-    return {
-        xtzAmount: amount.toJSNumber(),
-        rate: parseFloat(`${rate.quotient.toJSNumber()}.${ff.toJSNumber()}`),
-    };
+    return { cashAmount: cashAmount.toJSNumber(), rate: parseFloat(`${dm.quotient.toJSNumber()}.${f.toJSNumber()}`) };
 }
 
-export function getXTZBuyExchangeRate(
+export function getTokenToCashInverse(
     tokenAmount: string,
     tokenBalance: string,
-    xtzBalance: string,
+    cashBalance: string,
     tokenDecimals: number = 6,
     exchangeMultiplier: number = 997
 ) {
-    const n = bigInt(tokenAmount).multiply(bigInt(xtzBalance)).multiply(bigInt(1000));
+    const n = bigInt(tokenAmount).multiply(bigInt(cashBalance)).multiply(bigInt(1000));
     const d = bigInt(tokenBalance)
         .multiply(bigInt(exchangeMultiplier))
         .subtract(bigInt(tokenAmount).multiply(bigInt(exchangeMultiplier)));
@@ -344,10 +333,23 @@ export function getXTZBuyExchangeRate(
     const rate = amount.divmod(bigInt(tokenAmount));
     const ff = rate.remainder.multiply(bigInt(10 ** tokenDecimals)).divide(bigInt(tokenAmount));
 
-    return {
-        xtzAmount: amount.toJSNumber(),
-        rate: parseFloat(`${rate.quotient.toJSNumber()}.${ff.toJSNumber()}`),
-    };
+    return { cashAmount: amount.toJSNumber(), rate: parseFloat(`${rate.quotient.toJSNumber()}.${ff.toJSNumber()}`) };
+}
+
+export function calcTokenLiquidityRequirement(cashDeposit: string, tokenBalance: string, cashBalance: string): number {
+    return bigInt(cashDeposit).multiply(bigInt(tokenBalance)).divide(bigInt(cashBalance)).toJSNumber();
+}
+
+export function calcCashLiquidityRequirement(tokenDeposit: string, tokenBalance: string, cashBalance: string): number {
+    return bigInt(tokenDeposit).multiply(bigInt(cashBalance)).divide(bigInt(tokenBalance)).toJSNumber();
+}
+
+export function calcPoolShare(poolShare: string, partBalance: string, liquidityBalance: string): number {
+    return bigInt(partBalance).multiply(poolShare).divide(liquidityBalance).toJSNumber();
+}
+
+export function calcProposedShare(cashDeposit: string, cashBalance: string, liquidityBalance: string): number {
+    return bigInt(cashDeposit).multiply(liquidityBalance).divide(cashBalance).toJSNumber();
 }
 
 export async function getPoolState(server: string, address: string, storageMap: PoolStorageMap): Promise<PoolState | undefined> {

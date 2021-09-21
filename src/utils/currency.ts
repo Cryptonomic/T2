@@ -18,9 +18,14 @@ export function tezToUtez(amount: number | string): number {
 /**
  * Assumes the input amount to be in µtz. The amount is multiplied by 1_000_000 and then formatted to the requested number of decimal places.
  */
-export function formatAmount(amount, decimal: number = 6) {
+export function formatAmount(amount, decimal: number = 6, scale: number = 6, allowNegative = true): string {
     const b = new BigNumber(amount);
-    const m = b.dividedBy(utez);
+
+    if (!allowNegative && b.isLessThan(0)) {
+        return 'invalid';
+    }
+
+    const m = b.dividedBy(10 ** scale);
 
     return m.toFixed(decimal);
 }
