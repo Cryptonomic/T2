@@ -2,8 +2,10 @@ import React, { FunctionComponent, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { NFT_GALLERY_TABS } from '../constants';
-import { NFTGalleryProps, NFTGalleryTabType } from '../types';
+import { NFTTokenProps, NFTGalleryProps, NFTGalleryTabType } from '../types';
 
+import { Gallery, GalleryItem } from '../../../components/Gallery';
+import { GalleryThumb as NFTGalleryThumb } from '../../../components/NFT';
 import { PageBanner } from '../../../components/PageBanner';
 import { TabMenu, Tab, TabText } from '../../../components/TabMenu';
 import TabPanel from '../../../components/TabPanel';
@@ -12,6 +14,22 @@ import { Container } from '../../../contracts/components/TabContainer/style';
 import { openLink, isReady } from '../../../utils/general';
 
 import { tokensSupportURL } from '../../../config.json';
+
+/* ------- MOCK  ------------ */
+const tokens: NFTTokenProps[] = [];
+const mintedTokens: NFTTokenProps[] = [];
+for (let i = 0; i < 10; i++) {
+    const width = 200 + Math.round(Math.random() * 200);
+    const height = 200 + Math.round(Math.random() * 300);
+    const url = i % 4 === 0 ? 'http://placekitten-wrongurl.com' : 'http://placekitten.com';
+    tokens.push({
+        address: 'tzs98zsdsdasdasd3242cs8d',
+        title: `The image title ${i}`,
+        price: Math.floor(Math.random() * 100000) / 10000,
+        image: `${url}/${width}/${height}`,
+    });
+}
+/* -------------------------- */
 
 /**
  * Renders the <NFTGallery /> component with the address bar and the <Gallery /> component.
@@ -89,11 +107,36 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                     );
                 })}
             </TabMenu>
-            {pageTabs.map((tab) => (
-                <TabPanel key={`pb-tab-panel-${tab.value}`} index={tab.value} value={activeTab}>
-                    <p>{tab.label}</p>
-                </TabPanel>
-            ))}
+            {pageTabs.map((tab) => {
+                console.log(tab);
+                const displayTokens = tab.value === 'COLLECTED' ? tokens : mintedTokens;
+                return (
+                    <TabPanel key={`pb-tab-panel-${tab.value}`} index={tab.value} value={activeTab}>
+                        <Gallery
+                            cols={1}
+                            breakpoints={{
+                                sm: {
+                                    breakpoint: '768px',
+                                    cols: 2,
+                                    itemPadding: '0 8px',
+                                },
+                                md: {
+                                    breakpoint: '991px',
+                                    cols: 3,
+                                    itemPadding: '0 16px',
+                                },
+                            }}
+                            isEmpty={!displayTokens || displayTokens.length === 0}
+                        >
+                            {displayTokens.map((token, index) => (
+                                <GalleryItem key={`gallery-item-${tab.value}-${index}`}>
+                                    <NFTGalleryThumb address={token.address} image={token.image} title={token.title} price={token.price} />
+                                </GalleryItem>
+                            ))}
+                        </Gallery>
+                    </TabPanel>
+                );
+            })}
         </Container>
     );
 };

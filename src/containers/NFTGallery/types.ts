@@ -18,3 +18,10 @@ export interface NFTGalleryProps {
     onChangePageTab: (value: NFTGalleryTabType) => void;
     time: Date;
 }
+
+export interface NFTTokenProps {
+    address: string;
+    title: string;
+    price: number;
+    image: string;
+}

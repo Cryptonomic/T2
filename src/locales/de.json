@@ -275,6 +275,12 @@
             "required_minium_fee": "Bitte beachten Sie, dass die für diese Transaktion erforderliche Mindestgebühr <1> <0>{{fee}}</0> XTZ</1> beträgt.",
             "minimum_fee_error": "Die benutzerdefinierte Gebühr, ist unter der Netzwerk-Minimalgebühr"
         },
+        "image": {
+            "view_on": "View on {{provider}}",
+            "errors": {
+                "file_cannot_load": "File cannot load."
+            }
+        },
         "inputAddress": {
             "setting_delegate": "Setze einen Delegierten",
             "contents": {

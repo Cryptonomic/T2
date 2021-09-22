@@ -274,6 +274,12 @@
             "required_minium_fee": "请记住这笔交易的最低所需费用是<1> <0>{{fee}}</0> XTZ</1>。",
             "minimum_fee_error": "你的自定义费用低于Tezos网络最低费用。"
         },
+        "image": {
+            "view_on": "View on {{provider}}",
+            "errors": {
+                "file_cannot_load": "File cannot load."
+            }
+        },
         "inputAddress": {
             "setting_delegate": "设置一个烘培者(Baker)",
             "contents": {

@@ -275,6 +275,12 @@
             "required_minium_fee": "Merci de garder à l`esprit que la commission minimale requise pour cette transaction est de<1> <0>{{fee}}</0> XTZ</1>.",
             "minimum_fee_error": "Votre commission customisée est inférieure à la commission minimale du réseau Tezos."
         },
+        "image": {
+            "view_on": "View on {{provider}}",
+            "errors": {
+                "file_cannot_load": "File cannot load."
+            }
+        },
         "inputAddress": {
             "setting_delegate": "Paramétrer un délégué",
             "contents": {

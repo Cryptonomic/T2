@@ -275,6 +275,12 @@
             "required_minium_fee": "Por favor ten en cuenta que la tasa mínima requerida para la transacción es<1> <0>{{fee}}</0> XTZ</1>.",
             "minimum_fee_error": "Tu tasa personalizada es menor al mínimo de la red Tezos."
         },
+        "image": {
+            "view_on": "View on {{provider}}",
+            "errors": {
+                "file_cannot_load": "File cannot load."
+            }
+        },
         "inputAddress": {
             "setting_delegate": "Configurar un Baker",
             "contents": {
