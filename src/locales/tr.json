@@ -274,6 +274,12 @@
             "required_minium_fee": "Bu işlem için<1> <0>{{fee}}</0> XTZ</1>'den düşük bir ücret giremezsiniz.",
             "minimum_fee_error": "Girdiğiniz ücret Tezos'un minimum ücretinden düşük."
         },
+        "image": {
+            "view_on": "View on {{provider}}",
+            "errors": {
+                "file_cannot_load": "File cannot load."
+            }
+        },
         "inputAddress": {
             "setting_delegate": "Fırıncı Seçimi",
             "contents": {
