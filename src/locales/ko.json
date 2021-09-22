@@ -275,6 +275,12 @@
             "required_minium_fee": "이 거래에 필요한 최소 수수료는 <1> <0>{{fee}}</0> XTZ</1> 입니다.",
             "minimum_fee_error": "사용자 정의 요금은 Tezos 네트워크 최소 비용보다 낮습니다."
         },
+        "image": {
+            "view_on": "View on {{provider}}",
+            "errors": {
+                "file_cannot_load": "File cannot load."
+            }
+        },
         "inputAddress": {
             "setting_delegate": "베이커 설정하기",
             "contents": {

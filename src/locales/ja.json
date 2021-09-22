@@ -275,6 +275,12 @@
             "required_minium_fee": "この取引に必要な最低費用<1> <0>{{fee}}</0> XTZ</1>を覚えておいてください。",
             "minimum_fee_error": "カスタム費用は以下のTezosネットワーク最小料金です。"
         },
+        "image": {
+            "view_on": "View on {{provider}}",
+            "errors": {
+                "file_cannot_load": "File cannot load."
+            }
+        },
         "inputAddress": {
             "setting_delegate": "Baker設定",
             "contents": {
