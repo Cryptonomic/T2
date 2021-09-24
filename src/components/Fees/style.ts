@@ -1,4 +1,4 @@
-import MenuItem from '@material-ui/core/MenuItem';
+import MenuItem from '@mui/material/MenuItem';
 import styled from 'styled-components';
 
 import { ms } from '../../styles/helpers';

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Typography from '@material-ui/core/Typography';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 import { TezosParameterFormat } from 'conseiljs';
 import CustomSelect from '../CustomSelect';

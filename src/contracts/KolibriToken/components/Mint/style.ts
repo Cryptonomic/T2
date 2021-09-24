@@ -1,4 +1,4 @@
-import AddCircle from '@material-ui/icons/AddCircle';
+import AddCircle from '@mui/icons-material/AddCircle';
 import styled from 'styled-components';
 import { ms } from '../../../../styles/helpers';
 import Button from '../../../../components/Button';

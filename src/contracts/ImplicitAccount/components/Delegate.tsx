@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
 import { OperationKindType } from 'conseiljs';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 import { READY } from '../../../constants/StatusTypes';
 import InputAddress from '../../../components/InputAddress';

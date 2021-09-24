@@ -1,10 +1,10 @@
 import React, { useState, Fragment } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/lab/Autocomplete';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import Chip from '@material-ui/core/Chip';
-import CloseIcon from '@material-ui/icons/Close';
+import Chip from '@mui/material/Chip';
+import CloseIcon from '@mui/icons-material/Close';
 
 import seedJson from './seed.json';
 
@@ -118,13 +118,13 @@ function SeedInput(props: Props) {
             autoComplete={true}
             autoHighlight={true}
             options={seedJson}
-            closeIcon=""
+            clearIcon=""
             popupIcon=""
             inputValue={inputVal}
             value={seeds}
             onInputChange={onChangeInput}
             onChange={onChangeItems}
-            getOptionSelected={() => false}
+            isOptionEqualToValue={() => false}
             filterOptions={(options, state) => {
                 const { inputValue } = state;
                 if (inputValue.length < 2) {
@@ -139,7 +139,7 @@ function SeedInput(props: Props) {
                     const isBad = badWords.indexOf(option) > -1 ? 1 : 0;
                     return (
                         <ChipWrapper
-                            key={index}
+                            key={`ac-idx-${index}`}
                             variant="outlined"
                             color="primary"
                             size="small"

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import Fab from '@material-ui/core/Fab';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
+import Fab from '@mui/material/Fab';
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
 
 import TezosIcon from '../../components/TezosIcon/';
 

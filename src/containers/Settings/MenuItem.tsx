@@ -1,5 +1,5 @@
 import React from 'react';
-import Close from '@material-ui/icons/Close';
+import Close from '@mui/icons-material/Close';
 
 import { OptionLabel, NodeName, NodeUrl, RemoveIconBtn, CheckIcon } from './styles';
 
@@ -22,7 +22,7 @@ const SettingsMenuItem = (props: Props) => {
                 {url && <NodeUrl>{url}</NodeUrl>}
             </OptionLabel>
             {isRemove && (
-                <RemoveIconBtn aria-label="delete" onClick={event => onClick(event, name)}>
+                <RemoveIconBtn aria-label="delete" onClick={(event) => onClick(event, name)}>
                     <Close />
                 </RemoveIconBtn>
             )}

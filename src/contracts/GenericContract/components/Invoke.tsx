@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import MenuItem from '@material-ui/core/MenuItem';
+import MenuItem from '@mui/material/MenuItem';
 import { TezosParameterFormat, OperationKindType } from 'conseiljs';
 
 import TezosNumericInput from '../../../components/TezosNumericInput';

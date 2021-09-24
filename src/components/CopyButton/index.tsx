@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { clipboard } from 'electron';
 import styled, { css } from 'styled-components';
-import ContentCopy from '@material-ui/icons/FileCopyOutlined';
-import { Tooltip, Button, IconButton } from '@material-ui/core';
+import ContentCopy from '@mui/icons-material/FileCopyOutlined';
+import { Tooltip, Button, IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 const Container = styled(Button)<{ realcolor: string }>`
@@ -65,13 +65,16 @@ function CopyButton(props: Props) {
             onClose={() => setIsShowed(false)}
             PopperProps={{
                 popperOptions: {
-                    modifiers: {
-                        offset: {
+                    modifiers: [
+                        {
+                            name: 'offset',
                             enabled: true,
-                            offset: '50px, 0px'
-                        }
-                    }
-                }
+                            options: {
+                                offset: '50px, 0px',
+                            },
+                        },
+                    ],
+                },
             }}
         >
             {title ? (

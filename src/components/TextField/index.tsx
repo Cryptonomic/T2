@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { InputLabel, Input, FormControl, FormHelperText } from '@material-ui/core';
+import { InputLabel, Input, FormControl, FormHelperText } from '@mui/material';
 import NumberFormat from 'react-number-format';
 
 const Container = styled(FormControl)`
@@ -78,7 +78,9 @@ function TextField(props: Props) {
     const { label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
     return (
         <Container disabled={disabled}>
-            <LabelWrapper htmlFor="custom-input">{label}</LabelWrapper>
+            <LabelWrapper htmlFor="custom-input" variant="standard">
+                {label}
+            </LabelWrapper>
             <InputWrapper
                 id="custom-input"
                 key={label}

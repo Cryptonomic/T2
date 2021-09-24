@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import { useTranslation } from 'react-i18next';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 import { ms } from '../../styles/helpers';
 
@@ -116,7 +116,7 @@ interface Props {
     onClick?: () => void;
 }
 
-const Address: React.SFC<Props> = props => {
+const Address: React.SFC<Props> = (props) => {
     const { t } = useTranslation();
     const { isManager, isContract, isActive, balance, index, accountId, onClick } = props;
     const firstLine = getFirstLine(isManager, isContract, isActive, index, accountId, t);
