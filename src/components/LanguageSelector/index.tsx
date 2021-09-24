@@ -50,12 +50,10 @@ function LanguageSelector(props: Props) {
     return (
         <SelectContainer>
             <LabelWrapper>{t('general.nouns.language')}</LabelWrapper>
-            <div ref={domRef}>
-                <SelectWrapper onClick={() => setOpen(!open)}>
-                    <SelectContent>{localesMap[locale]}</SelectContent>
-                    <SelectIcon />
-                </SelectWrapper>
-            </div>
+            <SelectWrapper onClick={() => setOpen(!open)} ref={domRef}>
+                <SelectContent>{localesMap[locale]}</SelectContent>
+                <SelectIcon />
+            </SelectWrapper>
 
             <Popover
                 open={open}
@@ -75,10 +73,8 @@ function LanguageSelector(props: Props) {
                 }}
                 onClose={() => setOpen(false)}
             >
-                <GroupContainerWrapper>
-                    <div ref={setLanguageScrollRef}>
-                        <ScrollContainer>{renderOptions()}</ScrollContainer>
-                    </div>
+                <GroupContainerWrapper ref={setLanguageScrollRef}>
+                    <ScrollContainer>{renderOptions()}</ScrollContainer>
                 </GroupContainerWrapper>
             </Popover>
         </SelectContainer>

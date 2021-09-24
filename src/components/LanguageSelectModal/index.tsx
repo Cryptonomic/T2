@@ -82,24 +82,23 @@ function LanguageSelectModal(props: Props) {
                         <LanguageLogo src={languageLogoIcon} />
                         <GroupContainerWrapper>
                             {isTopFade && <FadeTop />}
-                            <div ref={setLanguageScrollRef}>
-                                <RadioGroupContainer
-                                    value={selectedLanguage}
-                                    onChange={(event) => onLanguageChange(event.target.value)}
-                                    onScroll={onScrollChange}
-                                >
-                                    {Object.keys(localesMap).map((key) => {
-                                        return (
-                                            <FormControlLabelWrapper
-                                                value={key}
-                                                key={key}
-                                                control={<CustomRadio icon={<NonCheckedCircle />} checkedIcon={<CheckedCircle />} />}
-                                                label={localesMap[key]}
-                                            />
-                                        );
-                                    })}
-                                </RadioGroupContainer>
-                            </div>
+                            <RadioGroupContainer
+                                ref={setLanguageScrollRef}
+                                value={selectedLanguage}
+                                onChange={(event) => onLanguageChange(event.target.value)}
+                                onScroll={onScrollChange}
+                            >
+                                {Object.keys(localesMap).map((key) => {
+                                    return (
+                                        <FormControlLabelWrapper
+                                            value={key}
+                                            key={key}
+                                            control={<CustomRadio icon={<NonCheckedCircle />} checkedIcon={<CheckedCircle />} />}
+                                            label={localesMap[key]}
+                                        />
+                                    );
+                                })}
+                            </RadioGroupContainer>
 
                             {isBottomFade && <FadeBottom />}
                         </GroupContainerWrapper>
