@@ -106,7 +106,6 @@ const CustomTextArea = (props: Props) => {
                 onChange={(event) => onChange(event.target.value)}
                 multiline={true}
                 rows={5}
-                maxRows={5}
                 defaultValue={defaultValue}
                 {...other}
             />
