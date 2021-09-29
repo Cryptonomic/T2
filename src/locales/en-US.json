@@ -301,6 +301,9 @@
             "secretKeyNotice": "Be careful when handling the unencrypted secret key. Anyone with your secret key has full access to your balance and can sign operations on your behalf! Click to reveal your secret key.",
             "hardwareSignerNotice": "Hardware signers like the Ledger Nano S store the secret key on the device and do not provide it externally."
         },
+        "errorsBar": {
+            "more_errors": "...and {{counter}} more errors."
+        },
         "fees": {
             "low_fee": "Low Fee",
             "medium_fee": "Medium Fee",
@@ -390,9 +393,23 @@
             }
         },
         "nftGallery": {
+            "fields": {
+                "artifactUrl": "image URL"
+            },
+            "modal": {
+                "tabs": {
+                    "more_info": "More info",
+                    "send": "Send"
+                }
+            },
             "tabs": {
                 "collected": "Collected",
                 "minted": "Minted"
+            },
+            "errors": {
+                "something_went_wrong": "Something went wrong!",
+                "unsupported_data_format": "The {{field}} from {{provider}} is invalid.",
+                "unsupported_provider": "The {{provider}} data format is invalid."
             }
         },
         "pdfReader": {

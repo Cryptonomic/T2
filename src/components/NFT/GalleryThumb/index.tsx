@@ -31,12 +31,14 @@ const ImageFailedBox: FunctionComponent<ImageFailedBoxProps> = ({ provider, url 
                 <FailedIcon />
                 <FailedMessage>{t('components.image.errors.file_cannot_load')}</FailedMessage>
             </ImageFailedTop>
-            <ImageFailedBottom>
-                <ImageFailedLink onClick={() => openLink(url)}>
-                    {t('components.image.view_on', { provider })}
-                    <LinkIcon />
-                </ImageFailedLink>
-            </ImageFailedBottom>
+            {provider ? (
+                <ImageFailedBottom>
+                    <ImageFailedLink onClick={() => openLink(url)}>
+                        {t('components.image.view_on', { provider })}
+                        <LinkIcon />
+                    </ImageFailedLink>
+                </ImageFailedBottom>
+            ) : null}
         </ImageFailed>
     );
 };
@@ -46,21 +48,23 @@ const ImageFailedBox: FunctionComponent<ImageFailedBoxProps> = ({ provider, url 
  *
  * The component is used with the Gallery component.
  *
- * @param {string} address - the token address.
- * @param {string} image - the URL for the image.
- * @param {number} price - the asset's price.
- * @param {string} title - the token's title.
+ * @param {NFTObject} nftObject - the NFT object.
+ * @param {(nftObject: NFTObject) => void} [onClick] - when user clicks on the thumb title.
  */
-export const GalleryThumb: FunctionComponent<GalleryThumbProps> = ({ address, image, price, title }) => {
+export const GalleryThumb: FunctionComponent<GalleryThumbProps> = ({ nftObject, onClick }) => {
     const { t } = useTranslation();
 
-    const displayAddress = `${address.slice(0, 6)}...${address.slice(address.length - 3, address.length)}`;
+    const { objectId, action, name, description, price, amount, receivedOn, artifactUrl, artifactType, creators, provider } = nftObject;
+
+    const displayAddress = `${creators.slice(0, 6)}...${creators.slice(creators.length - 3, creators.length)}`;
+
+    const failedMedia = <ImageFailedBox provider={provider} url={'https://google.com'} />;
 
     return (
         <ThumbContainer>
-            <ImageStyled src={image} alt={title} ImageFailedBox={<ImageFailedBox provider={'Hic et nunc'} url={'https://google.com'} />} />
-            <TopRow>
-                <Title>{title}</Title>
+            {artifactUrl ? <ImageStyled src={artifactUrl} alt={name || ''} ImageFailedBox={failedMedia} /> : { failedMedia }}
+            <TopRow onClick={() => onClick(nftObject)}>
+                <Title>{name}</Title>
                 <span>
                     {price}
                     <TezosIconStyled color="black3" iconName="tezos" size="20px" />

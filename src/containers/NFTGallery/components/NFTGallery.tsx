@@ -1,45 +1,38 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { NFT_GALLERY_TABS } from '../constants';
-import { NFTTokenProps, NFTGalleryProps, NFTGalleryTabType } from '../types';
+import { NFT_PAGE_TABS, NFT_PROVIDERS } from '../constants';
+import { LoaderWrapper } from '../style';
+import { NFTGalleryProps, NFTGalleryTabType, NFTObject } from '../types';
 
 import { Gallery, GalleryItem } from '../../../components/Gallery';
+import Loader from '../../../components/Loader';
 import { GalleryThumb as NFTGalleryThumb } from '../../../components/NFT';
 import { PageBanner } from '../../../components/PageBanner';
 import { TabMenu, Tab, TabText } from '../../../components/TabMenu';
 import TabPanel from '../../../components/TabPanel';
 import { Container } from '../../../contracts/components/TabContainer/style';
 
-import { openLink, isReady } from '../../../utils/general';
+import { openLink } from '../../../utils/general';
 
 import { tokensSupportURL } from '../../../config.json';
 
-/* ------- MOCK  ------------ */
-const tokens: NFTTokenProps[] = [];
-const mintedTokens: NFTTokenProps[] = [];
-for (let i = 0; i < 10; i++) {
-    const width = 200 + Math.round(Math.random() * 200);
-    const height = 200 + Math.round(Math.random() * 300);
-    const url = i % 4 === 0 ? 'http://placekitten-wrongurl.com' : 'http://placekitten.com';
-    tokens.push({
-        address: 'tzs98zsdsdasdasd3242cs8d',
-        title: `The image title ${i}`,
-        price: Math.floor(Math.random() * 100000) / 10000,
-        image: `${url}/${width}/${height}`,
-    });
-}
-/* -------------------------- */
+import { NFTErrors } from './NFTErrors';
+import { NFTModal } from './NFTModal';
 
 /**
  * Renders the <NFTGallery /> component with the address bar and the <Gallery /> component.
  *
+ * @param {NFTCollections} collections - the NFT objects grouped by the action type (ie. 'collected', 'minted').
  * @param {NFTGalleryTabType} activeTab - the currently selected tab (collected, minted, etc.).
  * @param {(value: NFTGalleryTabType) => void} onChangePageTab - trigger when user clicks on the page tab menu item.
  * @param {AccountSelector} selectedAccount - the user's account (getAccountSelector).
+ * @param {boolean} isAddressReady - is the address data loaded?
  * @param {boolean} isWalletSyncing - is the wallet syncing?
  * @param {() => void} onSyncWallet - trigger when user clicks on the update icon to sync the wallet.
- * @param {Date} time - displays ToolTip if true
+ * @param {Date} time - displays ToolTip if true.
+ * @param {boolean} [loading] - display the loader while collections are being loaded.
+ * @param {NFTError[] | null} [errors] - the list of API errors.
  *
  * @returns {ReactElement} returns <NFTGallery /> component
  *
@@ -58,24 +51,69 @@ for (let i = 0; i < 10; i++) {
  * />
  */
 export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
-    selectedAccount,
+    collections,
+    loading,
+    errors,
     isWalletSyncing,
+    isAddressReady,
     onSyncWallet,
     activeTab,
     onChangePageTab,
     time,
+    currentNFTObject,
+    setCurrentNFTObject,
 }): ReactElement => {
     const { t } = useTranslation();
-
-    const { storeType, status } = selectedAccount;
-    const isAddressReady = isReady(status, storeType);
 
     const onClickLink = (link: string) => openLink(link);
 
     /**
      * Build the page tabs options (collected, minted, etc.):
      */
-    const pageTabs = Object.keys(NFT_GALLERY_TABS).map((tab) => ({ value: tab, label: t(`components.nftGallery.tabs.${tab.toLowerCase()}`) }));
+    const pageTabs = Object.keys(NFT_PAGE_TABS).map((tab) => ({ value: tab, label: t(`components.nftGallery.tabs.${tab.toLowerCase()}`) }));
+
+    /**
+     * Render the loader until the data is fetched. Then, render Tab Panels for the each tokens group.
+     */
+    const renderContent = () => {
+        if (loading) {
+            return (
+                <LoaderWrapper>
+                    <Loader />
+                </LoaderWrapper>
+            );
+        }
+
+        return pageTabs.map((tab) => {
+            const displayTokens = tab.value.toLowerCase() in collections ? collections[tab.value.toLowerCase()] : [];
+            return (
+                <TabPanel key={`pb-tab-panel-${tab.value}`} index={tab.value} value={activeTab}>
+                    <Gallery
+                        cols={1}
+                        breakpoints={{
+                            sm: {
+                                breakpoint: '768px',
+                                cols: 2,
+                                itemPadding: '0 8px',
+                            },
+                            md: {
+                                breakpoint: '991px',
+                                cols: 3,
+                                itemPadding: '0 16px',
+                            },
+                        }}
+                        isEmpty={!displayTokens || displayTokens.length === 0}
+                    >
+                        {displayTokens.map((token, index) => (
+                            <GalleryItem key={`gallery-item-${tab.value}-${index}`}>
+                                <NFTGalleryThumb nftObject={token} onClick={(nftObj) => setCurrentNFTObject(nftObj)} />
+                            </GalleryItem>
+                        ))}
+                    </Gallery>
+                </TabPanel>
+            );
+        });
+    };
 
     return (
         <Container>
@@ -107,36 +145,12 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                     );
                 })}
             </TabMenu>
-            {pageTabs.map((tab) => {
-                console.log(tab);
-                const displayTokens = tab.value === 'COLLECTED' ? tokens : mintedTokens;
-                return (
-                    <TabPanel key={`pb-tab-panel-${tab.value}`} index={tab.value} value={activeTab}>
-                        <Gallery
-                            cols={1}
-                            breakpoints={{
-                                sm: {
-                                    breakpoint: '768px',
-                                    cols: 2,
-                                    itemPadding: '0 8px',
-                                },
-                                md: {
-                                    breakpoint: '991px',
-                                    cols: 3,
-                                    itemPadding: '0 16px',
-                                },
-                            }}
-                            isEmpty={!displayTokens || displayTokens.length === 0}
-                        >
-                            {displayTokens.map((token, index) => (
-                                <GalleryItem key={`gallery-item-${tab.value}-${index}`}>
-                                    <NFTGalleryThumb address={token.address} image={token.image} title={token.title} price={token.price} />
-                                </GalleryItem>
-                            ))}
-                        </Gallery>
-                    </TabPanel>
-                );
-            })}
+
+            <NFTErrors errors={errors} />
+
+            {renderContent()}
+
+            <NFTModal nftObject={currentNFTObject} onClose={() => setCurrentNFTObject(null)} />
         </Container>
     );
 };
