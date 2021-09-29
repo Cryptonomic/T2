@@ -1,11 +1,11 @@
+import { NFTActionType, NFTProviderType, NFTObject } from '../../../containers/NFTGallery/types';
+
 export interface GalleryThumbProps {
-    image: string;
-    title: string;
-    price: number;
-    address: string;
+    nftObject: NFTObject;
+    onClick: (nftObject: NFTObject) => void;
 }
 
 export interface ImageFailedBoxProps {
-    provider: string;
+    provider?: string;
     url: string;
 }
