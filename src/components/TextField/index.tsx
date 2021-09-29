@@ -76,9 +76,16 @@ interface Props {
 
 function TextField(props: Props) {
     const { label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
+
+    // Don't shrink the label if the numeric input gets the NaN value:
+    const labelProps: { shrink?: boolean } = {};
+    if (type === 'number' && other.value !== undefined && other.value !== '') {
+        labelProps.shrink = other.value && other.value !== 'NaN' ? true : false;
+    }
+
     return (
         <Container disabled={disabled}>
-            <LabelWrapper htmlFor="custom-input" variant="standard">
+            <LabelWrapper htmlFor="custom-input" variant="standard" {...labelProps}>
                 {label}
             </LabelWrapper>
             <InputWrapper
