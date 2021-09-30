@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js';
 import { KeyStore, Signer, TezosNodeReader, TezosConstants, TezosNodeWriter, TezosParameterFormat, Transaction } from 'conseiljs';
 
 import { knownTokenContracts } from '../../../constants/Token';
-import { TokenKind } from '../../../types/general';
+import { ArtToken, VaultToken, Token, TokenKind } from '../../../types/general';
 
 export interface PoolState {
     coinBalance: string;
@@ -26,6 +26,7 @@ export interface OperationFee {
 }
 
 export const dexterPoolStorageMap = { coinBalancePath: '$.args[4].int', tokenBalancePath: '$.args[3].int', liquidityBalancePath: '$.args[1].args[2].int' };
+export const granadaPoolStorageMap = { coinBalancePath: '$.args[1].int', tokenBalancePath: '$.args[0].int', liquidityBalancePath: '$.args[2].int' };
 export const quipuPoolStorageMap = {
     coinBalancePath: '$.args[1].args[0].args[1].args[2].int',
     tokenBalancePath: '$.args[1].args[0].args[2].args[1].int',
@@ -43,7 +44,7 @@ const dexterExpirationPadding = 5 * 60 * 1000;
 export const tokenPoolMap = {
     KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8: { dexterPool: 'KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU', quipuPool: 'KT1Evsp2yA19Whm24khvFPcwimK6UaAJu8Zo' }, // ethtz
     KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: { dexterPool: 'KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6', quipuPool: 'KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6' }, // kusd
-    KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn: { dexterPool: 'KT1BGQR7t4izzKZ7eRodKWTodAsM23P38v7N', quipuPool: 'KT1WBLrLE2vG8SedBqiSJFm4VVAZZBytJYHc' }, // tzbtc
+    KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn: { granadaPool: 'KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5', quipuPool: 'KT1WBLrLE2vG8SedBqiSJFm4VVAZZBytJYHc' }, // tzbtc
     KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: { dexterPool: 'KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9', quipuPool: 'KT1WxgZ1ZSfMgmsSDDcUn8Xn577HwnQ7e1Lb' }, // usdtz
     KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH: { dexterPool: 'KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo', quipuPool: 'KT1W3VGRUjvS869r4ror8kdaxqJAZUbPyjMT' }, // wxtz
     KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: { dexterPool: '', quipuPool: 'KT1BMEEPX7MWzwwadW3NCSZe9XGmFJ7rs7Dr' }, // stkr
@@ -58,9 +59,19 @@ export const tokenPoolMap = {
     KT1Wa8yqRBpFCusJWgcQyjhRz7hUQAmFxW7j: { dexterPool: '', quipuPool: 'KT1Q93ftAUzvfMGPwC78nX8eouL1VzmHPd4d' }, // FLAME
     KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH: { dexterPool: '', quipuPool: 'KT1NEa7CmaLaWgHNi6LkRi5Z1f4oHfdzRdGA' }, // kDAO
     KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW: { dexterPool: '', quipuPool: 'KT1EtjRRCBC2exyCRXz8UfV7jz7svnkqi7di' }, // uUSD
+    'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ+19': { dexterPool: '', quipuPool: 'KT1DksKXvCBJN7Mw6frGj6y6F3CbABWZVpj1' }, // wwBTC
+    'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ+17': { dexterPool: '', quipuPool: 'KT1U2hs5eNdeCpHouAvQXGMzGFGJowbhjqmo' }, // wUSDC
+    'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ+1': { dexterPool: '', quipuPool: 'KT1UMAE2PBskeQayP5f2ZbGiVYF7h8bZ2gyp' }, // wBUSD
+    'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ+11': { dexterPool: '', quipuPool: 'KT1RsfuBee5o7GtYrdB7bzQ1M6oVgyBnxY4S' }, // wMATIC
+    'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ+10': { dexterPool: '', quipuPool: 'KT1Lpysr4nzcFegC9ci9kjoqVidwoanEmJWt' }, // wLINK
+    KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb: { dexterPool: '', quipuPool: 'KT1X3zxdTzPB9DgVzA3ad6dgZe9JEamoaeRy' }, // QUIPU
 };
 
-export function isTradeable(tokenAddress: string) {
+export function isTradeable(tokenAddress: string, tokenIndex?: number) {
+    if (tokenIndex !== undefined) {
+        return Object.keys(tokenPoolMap).includes(`${tokenAddress}+${tokenIndex}`);
+    }
+
     return Object.keys(tokenPoolMap).includes(tokenAddress);
 }
 
@@ -70,8 +81,7 @@ export function isTradeable(tokenAddress: string) {
  * @param side buy | sell
  * @returns
  */
-export function applyFees(amount: number, side: string) {
-    const slippage = 0.01;
+export function applyFees(amount: number, side: string, slippage: number = 0.01) {
     const fee = 0.05;
     const feeThreshold = '500000000';
 
@@ -96,14 +106,21 @@ export async function sendDexterBuy(
     keyStore: KeyStore,
     signer: Signer,
     tokenAddress: string,
+    tokenIndex: number,
     poolAddress: string,
     notional: string,
     size: string
 ): Promise<string | undefined> {
     const expiration = new Date(Date.now() + dexterExpirationPadding);
-    const params = `{ "prim": "Pair", "args": [ { "string": "${
-        keyStore.publicKeyHash
-    }" }, { "prim": "Pair", "args": [ { "int": "${size}" }, { "string":"${expiration.toISOString()}" } ] } ] }`;
+
+    let buyParams: string;
+    if (tokenAddress === 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn') {
+        buyParams = `{"prim":"Pair","args":[{"string":"${keyStore.publicKeyHash}"},{"int":"${size}"},{"string":"${expiration.toISOString()}"}]}`;
+    } else {
+        buyParams = `{ "prim": "Pair", "args": [ { "string": "${
+            keyStore.publicKeyHash
+        }" }, { "prim": "Pair", "args": [ { "int": "${size}" }, { "string":"${expiration.toISOString()}" } ] } ] }`;
+    }
 
     try {
         const r = await TezosNodeWriter.sendContractInvocationOperation(
@@ -116,7 +133,7 @@ export async function sendDexterBuy(
             0,
             0,
             'xtzToToken',
-            params,
+            buyParams,
             TezosParameterFormat.Micheline,
             TezosConstants.HeadBranchOffset,
             true
@@ -133,6 +150,7 @@ export async function sendDexterSell(
     keyStore: KeyStore,
     signer: Signer,
     tokenAddress: string,
+    tokenIndex: number,
     poolAddress: string,
     notional: string,
     size: string
@@ -153,9 +171,19 @@ export async function sendDexterSell(
     );
 
     const expiration = new Date(Date.now() + dexterExpirationPadding);
-    const sellParams = `{ "prim": "Pair","args": [ { "prim": "Pair", "args": [ { "string": "${keyStore.publicKeyHash}" }, { "string": "${
-        keyStore.publicKeyHash
-    }" } ] }, {"int": "${size}" }, { "int": "${notional}" }, { "string": "${expiration.toISOString()}" } ] }`;
+
+    let sellParams: string;
+    if (tokenAddress === 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn') {
+        // TODO
+        sellParams = `{"prim":"Pair","args":[{"string":"${
+            keyStore.publicKeyHash
+        }"},{"prim":"Pair","args":[{"int":"${size}"},{"prim":"Pair","args":[{"int":"${notional}"},{"string":"${expiration.toISOString()}"}]}]}]}`;
+    } else {
+        sellParams = `{ "prim": "Pair", "args": [ { "prim": "Pair", "args": [ { "string": "${keyStore.publicKeyHash}" }, { "string": "${
+            keyStore.publicKeyHash
+        }" } ] }, {"int": "${size}" }, { "int": "${notional}" }, { "string": "${expiration.toISOString()}" } ] }`;
+    }
+
     const sellOp = TezosNodeWriter.constructContractInvocationOperation(
         keyStore.publicKeyHash,
         nextCounter + 1,
@@ -183,6 +211,7 @@ export async function sendQuipuBuy(
     keyStore: KeyStore,
     signer: Signer,
     tokenAddress: string,
+    tokenIndex: number,
     poolAddress: string,
     notional: string,
     size: string
@@ -217,11 +246,18 @@ export async function sendQuipuSell(
     keyStore: KeyStore,
     signer: Signer,
     tokenAddress: string,
+    tokenIndex: number,
     poolAddress: string,
     notional: string,
     size: string
 ): Promise<string | undefined> {
-    const selectedToken = knownTokenContracts.filter((t) => t.address === tokenAddress)[0];
+    let selectedToken: Token | VaultToken | ArtToken;
+
+    if (tokenIndex > -1) {
+        selectedToken = knownTokenContracts.filter((t) => t.address === tokenAddress && t.tokenIndex === tokenIndex)[0];
+    } else {
+        selectedToken = knownTokenContracts.filter((t) => t.address === tokenAddress)[0];
+    }
 
     const nextCounter = (await TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
 
@@ -262,43 +298,33 @@ export async function sendQuipuSell(
     }
 }
 
-/**
- * Token/XTZ exchange rate for a given token sale.
- *
- * @param tokenAmount Proposed token deposit
- * @param tokenBalance Current token balance in the pool
- * @param xtzBalance Current XTZ balance in the pool
- */
-export function getXTZSellExchangeRate(
+export function getTokenToCashExchangeRate(
     tokenAmount: string,
     tokenBalance: string,
-    xtzBalance: string,
+    cashBalance: string,
     tokenDecimals: number = 6,
     exchangeMultiplier: number = 997
 ) {
-    const n = bigInt(tokenAmount).multiply(bigInt(xtzBalance)).multiply(bigInt(exchangeMultiplier));
+    const n = bigInt(tokenAmount).multiply(bigInt(cashBalance)).multiply(bigInt(exchangeMultiplier));
     const d = bigInt(tokenBalance)
         .multiply(bigInt(1000))
         .add(bigInt(tokenAmount).multiply(bigInt(exchangeMultiplier)));
 
-    const amount = n.divide(d);
-    const rate = amount.divmod(bigInt(tokenAmount));
-    const ff = rate.remainder.multiply(bigInt(10 ** tokenDecimals)).divide(bigInt(tokenAmount));
+    const cashAmount = n.divide(d);
+    const dm = cashAmount.divmod(bigInt(tokenAmount));
+    const f = dm.remainder.multiply(bigInt(10 ** tokenDecimals)).divide(bigInt(tokenAmount));
 
-    return {
-        xtzAmount: amount.toJSNumber(),
-        rate: parseFloat(`${rate.quotient.toJSNumber()}.${ff.toJSNumber()}`),
-    };
+    return { cashAmount: cashAmount.toJSNumber(), rate: parseFloat(`${dm.quotient.toJSNumber()}.${f.toJSNumber()}`) };
 }
 
-export function getXTZBuyExchangeRate(
+export function getTokenToCashInverse(
     tokenAmount: string,
     tokenBalance: string,
-    xtzBalance: string,
+    cashBalance: string,
     tokenDecimals: number = 6,
     exchangeMultiplier: number = 997
 ) {
-    const n = bigInt(tokenAmount).multiply(bigInt(xtzBalance)).multiply(bigInt(1000));
+    const n = bigInt(tokenAmount).multiply(bigInt(cashBalance)).multiply(bigInt(1000));
     const d = bigInt(tokenBalance)
         .multiply(bigInt(exchangeMultiplier))
         .subtract(bigInt(tokenAmount).multiply(bigInt(exchangeMultiplier)));
@@ -307,10 +333,23 @@ export function getXTZBuyExchangeRate(
     const rate = amount.divmod(bigInt(tokenAmount));
     const ff = rate.remainder.multiply(bigInt(10 ** tokenDecimals)).divide(bigInt(tokenAmount));
 
-    return {
-        xtzAmount: amount.toJSNumber(),
-        rate: parseFloat(`${rate.quotient.toJSNumber()}.${ff.toJSNumber()}`),
-    };
+    return { cashAmount: amount.toJSNumber(), rate: parseFloat(`${rate.quotient.toJSNumber()}.${ff.toJSNumber()}`) };
+}
+
+export function calcTokenLiquidityRequirement(cashDeposit: string, tokenBalance: string, cashBalance: string): number {
+    return bigInt(cashDeposit).multiply(bigInt(tokenBalance)).divide(bigInt(cashBalance)).toJSNumber();
+}
+
+export function calcCashLiquidityRequirement(tokenDeposit: string, tokenBalance: string, cashBalance: string): number {
+    return bigInt(tokenDeposit).multiply(bigInt(cashBalance)).divide(bigInt(tokenBalance)).toJSNumber();
+}
+
+export function calcPoolShare(poolShare: string, partBalance: string, liquidityBalance: string): number {
+    return bigInt(partBalance).multiply(poolShare).divide(liquidityBalance).toJSNumber();
+}
+
+export function calcProposedShare(cashDeposit: string, cashBalance: string, liquidityBalance: string): number {
+    return bigInt(cashDeposit).multiply(liquidityBalance).divide(cashBalance).toJSNumber();
 }
 
 export async function getPoolState(server: string, address: string, storageMap: PoolStorageMap): Promise<PoolState | undefined> {

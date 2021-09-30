@@ -16,6 +16,7 @@ export interface AppState {
     selectedParentIndex: number;
     selectedAccountIndex: number;
     selectedAccountType: AddressType;
+    selectedTokenName: string;
     signer: Signer | null;
     beaconClient: boolean;
     beaconMessage: BeaconRequestOutputMessage | null;

@@ -34,7 +34,9 @@
             "approve": "Approve",
             "swap": "Trade",
             "buy": "Buy",
-            "sell": "Sell"
+            "sell": "Sell",
+            "add": "Add",
+            "remove": "Remove"
         },
         "nouns": {
             "amount": "Amount",
@@ -87,7 +89,8 @@
             "implementation": "Implementation",
             "vaults": "Vaults",
             "collection": "Collection",
-            "quantity": "Quantity"
+            "quantity": "Quantity",
+            "liquidity": "Liquidity"
         },
         "errors": {
             "no_hex_data": "The provided string doesn't look like hex data",
@@ -168,6 +171,9 @@
                     "operation_request": "Operation Request",
                     "sign": "Sign"
                 }
+            },
+            "signature": {
+                "title": "Signature Request"
             }
         },
         "interactModal": {
@@ -502,6 +508,9 @@
         },
         "swap": {
             "outcome_warning": "Note that token and XTZ trade outcomes are estimates and actual numbers may be different. Slippage is set to 1%."
+        },
+        "liquidity": {
+            "description": "Offering liquidity on an exchange may generate yield. Note that outcomes are estimates and actual balances my be different. Slippage is set to 1%."
         }
     },
     "containers": {

@@ -35,6 +35,7 @@ const initState: AppState = {
     selectedParentIndex: 0,
     selectedAccountIndex: 0,
     selectedAccountType: AddressType.Manager,
+    selectedTokenName: '',
     signer: null,
     beaconMessage: null,
     beaconLoading: false,

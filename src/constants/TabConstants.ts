@@ -16,3 +16,4 @@ export const VERIFY = 'general.verbs.verify';
 export const DETAILS = 'general.nouns.details';
 export const VAULTS = 'general.nouns.vaults';
 export const COLLECTION = 'general.nouns.collection';
+export const LIQUIDITY = 'general.nouns.liquidity';

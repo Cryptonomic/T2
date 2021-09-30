@@ -153,6 +153,7 @@ body {
     padding: 0;
     font-family: 'Roboto', sans-serif;
     background-color: #edf0f7;
+    cursor: default;
 }
 
 div#root {
@@ -166,7 +167,7 @@ div#root {
 :not(input):not(textarea)::before {
     -webkit-user-select: none;
     user-select: none;
-    cursor: default;
+    cursor: inherit;
 }
 
 .carousel .control-dots {

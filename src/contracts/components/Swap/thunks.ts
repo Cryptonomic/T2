@@ -6,32 +6,33 @@ import { getMainNode, getMainPath } from '../../../utils/settings';
 
 import { sendDexterBuy, sendDexterSell, sendQuipuBuy, sendQuipuSell } from './util';
 
-export function buyDexter(marketAddress: string, tokenAddress: string, tokenAmount: string, coinAmount: string, password: string) {
+export function buyDexter(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterBuy);
+        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterBuy);
     };
 }
 
-export function sellDexter(marketAddress: string, tokenAddress: string, tokenAmount: string, coinAmount: string, password: string) {
+export function sellDexter(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterSell);
+        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterSell);
     };
 }
 
-export function buyQuipu(marketAddress: string, tokenAddress: string, tokenAmount: string, coinAmount: string, password: string) {
+export function buyQuipu(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuBuy);
+        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuBuy);
     };
 }
 
-export function sellQuipu(marketAddress: string, tokenAddress: string, tokenAmount: string, coinAmount: string, password: string) {
+export function sellQuipu(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuSell);
+        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuSell);
     };
 }
 
 async function callMarket(
     tokenAddress: string,
+    tokenIndex: number,
     marketAddress: string,
     tokenAmount: string,
     coinAmount: string,
@@ -60,6 +61,7 @@ async function callMarket(
         keyStore,
         isLedger ? signer : await cloneDecryptedSigner(signer, password),
         tokenAddress,
+        tokenIndex,
         marketAddress,
         coinAmount,
         tokenAmount

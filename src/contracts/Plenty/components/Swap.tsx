@@ -22,8 +22,8 @@ import {
     quipuPool2StorageMap,
     tokenPoolMap,
     getPoolState,
-    getXTZBuyExchangeRate,
-    getXTZSellExchangeRate,
+    getTokenToCashExchangeRate,
+    getTokenToCashInverse,
     applyFees,
 } from '../../components/Swap/util';
 import { buyQuipu, sellQuipu } from '../../components/Swap/thunks';
@@ -112,28 +112,28 @@ function Swap(props: Props) {
         setBestMarket('');
 
         if (side === 'buy') {
-            let quipuCost = { xtzAmount: -1, rate: 0 };
+            let quipuCost = { cashAmount: -1, rate: 0 };
             if (quipuState) {
-                quipuCost = getXTZBuyExchangeRate(
+                quipuCost = getTokenToCashExchangeRate(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     quipuState.tokenBalance,
                     quipuState.coinBalance
                 );
             }
 
-            setQuipuTokenCost(applyFees(quipuCost.xtzAmount, 'buy'));
+            setQuipuTokenCost(applyFees(quipuCost.cashAmount, 'buy'));
             setBestMarket('QuipuSwap');
         } else if (side === 'sell') {
-            let quipuProceeds = { xtzAmount: -1, rate: 0 };
+            let quipuProceeds = { cashAmount: -1, rate: 0 };
             if (quipuState) {
-                quipuProceeds = getXTZSellExchangeRate(
+                quipuProceeds = getTokenToCashInverse(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     quipuState.tokenBalance,
                     quipuState.coinBalance
                 );
             }
 
-            setQuipuTokenProceeds(applyFees(quipuProceeds.xtzAmount, 'sell'));
+            setQuipuTokenProceeds(applyFees(quipuProceeds.cashAmount, 'sell'));
             setBestMarket('QuipuSwap');
         }
     }
@@ -150,6 +150,7 @@ function Swap(props: Props) {
                 buyQuipu(
                     tokenPoolMap[token.address].quipuPool,
                     token.address,
+                    -1,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(quipuTokenCost).toString(),
                     passPhrase
@@ -160,6 +161,7 @@ function Swap(props: Props) {
                 sellQuipu(
                     tokenPoolMap[token.address].quipuPool,
                     token.address,
+                    -1,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(quipuTokenProceeds).toString(),
                     passPhrase

@@ -195,23 +195,39 @@ export async function getTokenTransactions(tokenAddress: string, managerAddress:
 }
 
 /**
- * Parses storage of contracts matching the smartpy FA2 implementation audited by PWC.
+ * Parses storage of contracts matching the youves FA2 implementation in smartpy.
  */
-export async function getSimpleStoragePWCA(tezosUrl: string, tokenAddress: string) {
+export async function getSimpleStorageYV(tezosUrl: string, tokenAddress: string, accountAddress?: string) {
     const storageResult = await TezosNodeReader.getContractStorage(tezosUrl, tokenAddress);
 
+    const packedKey = TezosMessageUtils.encodeBigMapKey(
+        Buffer.from(
+            TezosMessageUtils.writePackedData(
+                `
+    { "prim": "Pair", "args": [ { "bytes": "${TezosMessageUtils.writeAddress(accountAddress || '')}" }, { "int": "0" } ] }`,
+                ''
+            ),
+            'hex'
+        )
+    );
+    const mapResult = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 16593, packedKey);
+    let administrator = '';
+    if (mapResult !== undefined) {
+        administrator = accountAddress || '';
+    }
+
     return {
-        administrator: JSONPath({ path: '$.args[0].args[0].string', json: storageResult })[0],
-        tokens: Number(JSONPath({ path: '$.args[0].args[1].int', json: storageResult })[0]),
-        ledger: Number(JSONPath({ path: '$.args[0].args[2].int', json: storageResult })[0]),
-        metadata: Number(JSONPath({ path: '$.args[3].int', json: storageResult })[0]),
-        paused: JSONPath({ path: '$.args[2].prim', json: storageResult })[0].toString().toLowerCase().startsWith('t'),
-        operators: Number(JSONPath({ path: '$.args[1].args[1].int', json: storageResult })[0]),
-        tokenMetadata: Number(JSONPath({ path: '$.args[3].int', json: storageResult })[0]),
+        administrator,
+        tokens: -1,
+        ledger: Number(JSONPath({ path: '$.args[0].args[1].int', json: storageResult })[0]),
+        metadata: Number(JSONPath({ path: '$.args[0].args[2].int', json: storageResult })[0]),
+        paused: false, // TODO
+        operators: Number(JSONPath({ path: '$.args[1].args[0].int', json: storageResult })[0]),
+        tokenMetadata: Number(JSONPath({ path: '$.args[2].int', json: storageResult })[0]),
     };
 }
 
-export async function mintPWCA(
+export async function mintYV(
     server: string,
     address: string,
     signer: Signer,
@@ -219,16 +235,11 @@ export async function mintPWCA(
     fee: number,
     destination: string,
     amount: number,
-    tokenIndex: number = 0,
-    name?: string,
-    symbol?: string,
-    decimals?: number
+    tokenIndex: number = 0
 ): Promise<string> {
-    const params = `{ "prim": "Left", "args": [ { "prim": "Right", "args": [ { "prim": "Left", "args": [ { "prim": "Pair", "args": [ { "prim": "Pair", "args": [ { "string": "${destination}" }, { "prim": "Pair", "args": [ { "int": "${amount}" }, { "int": "${
-        decimals || 0
-    }" } ] } ] }, { "prim": "Pair", "args": [ { "string": "${name || ''}" }, { "prim": "Pair", "args": [ { "string": "${
-        symbol || ''
-    }" }, { "int": "${tokenIndex}" } ] } ] } ] } ] } ] } ] }`;
+    const params = `{ "prim": "Pair", "args": [ {"bytes": "${TezosMessageUtils.writeAddress(
+        destination
+    )}"}, { "prim": "Pair", "args": [ { "int": "${tokenIndex}" }, { "int": "${amount}" } ] } ] }`;
 
     const nodeResult = await TezosNodeWriter.sendContractInvocationOperation(
         server,
@@ -239,7 +250,7 @@ export async function mintPWCA(
         fee,
         0,
         0,
-        'default',
+        'mint',
         params,
         TezosParameterFormat.Micheline,
         TezosConstants.HeadBranchOffset,
@@ -249,7 +260,7 @@ export async function mintPWCA(
     return TezosContractUtils.clearRPCOperationGroupHash(nodeResult.operationGroupID);
 }
 
-export async function burnPWCA(
+export async function burnYV(
     server: string,
     address: string,
     signer: Signer,
@@ -259,7 +270,9 @@ export async function burnPWCA(
     amount: number,
     tokenIndex: number = 0
 ): Promise<string> {
-    const params = `{ "prim": "Left", "args": [ { "prim": "Left", "args": [ { "prim": "Right", "args": [ { "prim": "Pair", "args": [ { "string": "${destination}" }, { "prim": "Pair", "args": [ { "int": "${amount}" }, { "int": "${tokenIndex}" } ] } ] } ] } ] } ] }`;
+    const params = `{ "prim": "Pair", "args": [ { "bytes": "${TezosMessageUtils.writeAddress(
+        destination
+    )}" }, { "prim": "Pair", "args": [ { "int": "${tokenIndex}" }, { "int": "${amount}" } ] } ] }`;
 
     const r = await TezosNodeWriter.sendContractInvocationOperation(
         server,
@@ -270,7 +283,7 @@ export async function burnPWCA(
         fee,
         0,
         0,
-        'default',
+        'burn',
         params,
         TezosParameterFormat.Micheline,
         TezosConstants.HeadBranchOffset,

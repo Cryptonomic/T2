@@ -5,6 +5,7 @@ import { AddressType } from '../../types/general';
 import { TRANSACTIONS } from '../../constants/TabConstants';
 
 const selectedAccountHashSelector = (state: RootState) => state.app.selectedAccountHash;
+const selectedTokenNameSelector = (state: RootState) => state.app.selectedTokenName;
 const selectedParentHashSelector = (state: RootState) => state.app.selectedParentHash;
 const identitiesSelector = (state: RootState) => state.wallet.identities;
 
@@ -65,6 +66,8 @@ export const getAccountSelector = createSelector(
 
 export const getTokenSelector = createSelector(
     selectedAccountHashSelector,
+    selectedTokenNameSelector,
     tokensSelector,
-    (accountHash, tokens) => tokens.find((token) => token.address === accountHash) || tokens[0]
+    (accountHash, tokenName, tokens) =>
+        tokens.find((token) => token.address === accountHash && (tokenName === '' || token.displayName === tokenName)) || tokens[0]
 );

@@ -93,6 +93,7 @@ export interface ChangeAccountType {
     selectedParentIndex: number;
     selectedAccountIndex: number;
     selectedAccountType: AddressType;
+    selectedTokenName: string;
 }
 
 export interface ChangeAccountAction {
