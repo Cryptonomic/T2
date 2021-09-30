@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import Notifications from '@material-ui/icons/Notifications';
-import IconButton from '@material-ui/core/IconButton';
+import Notifications from '@mui/icons-material/Notifications';
+import IconButton from '@mui/material/IconButton';
 import { H4 } from '../../../components/Heading';
 import TezosIcon from '../../../components/TezosIcon';
 import Button from '../../../components/Button';

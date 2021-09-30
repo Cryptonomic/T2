@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { KeyStoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 import KeyDetails from '../../featureModals/KeyDetails';
 import TezosAddress from '../TezosAddress';

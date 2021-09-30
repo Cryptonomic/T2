@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
-import Drawer from '@material-ui/core/Drawer';
+import Drawer from '@mui/material/Drawer';
 import i18n from 'i18next';
 
 import LandingCar from '../Landing';

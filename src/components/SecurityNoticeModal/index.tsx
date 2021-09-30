@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Modal from '@material-ui/core/Modal';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Modal from '@mui/material/Modal';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { useTranslation } from 'react-i18next';
 import Button from '../Button';
 import TezosIcon from '../TezosIcon';
@@ -147,11 +147,11 @@ function SecurityNoticeModal(props: Props) {
                     </LinkContainer>
                     <FormGroupWrapper>
                         <FormControlLabelWrapper
-                            control={<CheckBoxWrapper checked={isUnderstand} onChange={e => setIsUnderstand(e.target.checked)} value="understand" />}
+                            control={<CheckBoxWrapper checked={isUnderstand} onChange={(e) => setIsUnderstand(e.target.checked)} value="understand" />}
                             label={t('components.securityNoticeModal.understand_check')}
                         />
                         <FormControlLabelWrapper
-                            control={<CheckBoxWrapper checked={isNotShowMessage} onChange={e => setIsNotShowMessage(e.target.checked)} value="showmessage" />}
+                            control={<CheckBoxWrapper checked={isNotShowMessage} onChange={(e) => setIsNotShowMessage(e.target.checked)} value="showmessage" />}
                             label={t('components.securityNoticeModal.dont_message')}
                         />
                     </FormGroupWrapper>

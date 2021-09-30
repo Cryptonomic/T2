@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import IconButton from '@material-ui/core/IconButton';
-import AddCircle from '@material-ui/icons/AddCircle';
-import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@mui/material/IconButton';
+import AddCircle from '@mui/icons-material/AddCircle';
+import CloseIcon from '@mui/icons-material/Close';
 import { KeyStoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';

@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
-import mStyled from '@material-ui/styles/styled';
-import { withStyles } from '@material-ui/styles';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import InputBase from '@material-ui/core/InputBase';
-import FormControl from '@material-ui/core/FormControl';
+import { styled as mStyled } from '@mui/system';
+import { withStyles } from '@mui/styles';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import InputBase from '@mui/material/InputBase';
+import FormControl from '@mui/material/FormControl';
 import Button from '../../components/Button';
 
 export const ViewButton = styled(Button)`

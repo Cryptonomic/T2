@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Warning from '@material-ui/icons/Warning';
+import Warning from '@mui/icons-material/Warning';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 

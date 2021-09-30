@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import Switch from '@material-ui/core/Switch';
+import Switch from '@mui/material/Switch';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';

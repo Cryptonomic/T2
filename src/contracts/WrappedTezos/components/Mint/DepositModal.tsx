@@ -3,7 +3,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { OperationKindType } from 'conseiljs';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 import TextField from '../../../../components/TextField';
 import TezosNumericInput from '../../../../components/TezosNumericInput';
 import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';

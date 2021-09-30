@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { InputLabel, Input, FormControl, FormHelperText } from '@material-ui/core';
+import { InputLabel, Input, FormControl, FormHelperText } from '@mui/material';
 import NumberFormat from 'react-number-format';
 
 const Container = styled(FormControl)`
@@ -76,9 +76,18 @@ interface Props {
 
 function TextField(props: Props) {
     const { label, type, onChange, errorText, disabled, right, endAdornment, readOnly, ...other } = props;
+
+    // Don't shrink the label if the numeric input gets the NaN value:
+    const labelProps: { shrink?: boolean } = {};
+    if (type === 'number' && other.value !== undefined && other.value !== '') {
+        labelProps.shrink = other.value && other.value !== 'NaN' ? true : false;
+    }
+
     return (
         <Container disabled={disabled}>
-            <LabelWrapper htmlFor="custom-input">{label}</LabelWrapper>
+            <LabelWrapper htmlFor="custom-input" variant="standard" {...labelProps}>
+                {label}
+            </LabelWrapper>
             <InputWrapper
                 id="custom-input"
                 key={label}

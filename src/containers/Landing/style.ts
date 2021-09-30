@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
-import ArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import ArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import { Button, RadioGroup, Radio, FormControlLabel, Checkbox, FormGroup } from '@material-ui/core';
+import ArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import ArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import { Button, RadioGroup, Radio, FormControlLabel, Checkbox, FormGroup } from '@mui/material';
 
 export const Container = styled.div`
     text-align: center;

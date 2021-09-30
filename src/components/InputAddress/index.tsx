@@ -3,7 +3,7 @@ import { useSelector, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import { debounce } from 'throttle-debounce';
 import { useTranslation } from 'react-i18next';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, ConseilDataClient } from 'conseiljs';
 
