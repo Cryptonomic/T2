@@ -17,5 +17,6 @@
     "logLevel": "debug",
     "imageProxyURL": "",
     "imageAPIKey": "",
-    "customProtocols": ["tezori", "tezos", "galleon"]
+    "wertUrl": "",
+    "customProtocols": ["tezori", "tezos"]
 }

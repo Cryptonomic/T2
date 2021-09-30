@@ -15,9 +15,10 @@ import keyIconSvg from '../../../resources/imgs/Key_Icon.svg';
 import { ms } from '../../styles/helpers';
 import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
 import { getBakerDetails, getTezosDomains, getPrices } from '../../reduxContent/app/thunks';
-
+import { wertUrl } from '../../config.json';
 import { RootState } from '../../types/store';
 
+const { shell } = require('electron');
 const { Mnemonic } = KeyStoreType;
 
 import {
@@ -40,6 +41,7 @@ import {
     Column,
     Currencies,
     CurrencySymbol,
+    WertButton,
 } from './style';
 
 interface Props {
@@ -107,6 +109,13 @@ function BalanceBanner(props: Props) {
         openLink(`https://harpoon.arronax.io/${delegatedAddress}`);
     }
 
+    const openWertUrl = async () => {
+        let url = wertUrl;
+        url = url + publicKeyHash;
+        url = url + '&currency=USD&currency_amount=100';
+        await shell.openExternal(url);
+    };
+
     return (
         <Container>
             <TopRow isReady={isReady}>
@@ -143,7 +152,10 @@ function BalanceBanner(props: Props) {
                     <Gap />
                     {isReady || storeType === Mnemonic ? (
                         <div style={{ marginLeft: 'auto' }}>
-                            <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
+                            <div>
+                                <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
+                            </div>
+                            <WertButton onClick={openWertUrl}>Buy Tezos</WertButton>
                         </div>
                     ) : null}
                     {selectedAccountType === AddressType.Manager && xtzPrices.usd !== '-1' && (
