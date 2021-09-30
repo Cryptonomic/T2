@@ -15,7 +15,7 @@ import keyIconSvg from '../../../resources/imgs/Key_Icon.svg';
 import { ms } from '../../styles/helpers';
 import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
 import { getBakerDetails, getTezosDomains, getPrices } from '../../reduxContent/app/thunks';
-
+import { wertUrl } from '../../config.json';
 import { RootState } from '../../types/store';
 
 const { shell } = require('electron');
@@ -110,7 +110,7 @@ function BalanceBanner(props: Props) {
     }
 
     const openWertUrl = async () => {
-        let url = 'https://widget.wert.io/01EMHNZQFMYEPJACS7B6FFH09Y/widget/login?click_id=12345&commodity=XTZ&address=';
+        let url = wertUrl;
         url = url + publicKeyHash;
         url = url + '&currency=USD&currency_amount=100';
         await shell.openExternal(url);

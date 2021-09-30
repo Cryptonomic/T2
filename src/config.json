@@ -14,5 +14,6 @@
     "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/master/version.json",
     "tokensSupportURL": "",
     "logLevel": "debug",
+    "wertUrl": "https://widget.wert.io/01EMHNZQFMYEPJACS7B6FFH09Y/widget/login?click_id=12345&commodity=XTZ&address=",
     "customProtocols": ["tezori", "tezos"]
 }
