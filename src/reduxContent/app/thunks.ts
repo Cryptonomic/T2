@@ -258,13 +258,20 @@ export const getBakerDetails = (accountAddress: string): string => {
     const [bakerName, setBakerName] = useState<string>('');
 
     useEffect(() => {
+        let isSubscribed = true;
         const getData = async () => {
             const bakingbadResponse = await queryBakingBad(accountAddress);
 
-            setBakerName(bakingbadResponse.name);
+            if (isSubscribed) {
+                setBakerName(bakingbadResponse.name);
+            }
         };
 
         getData();
+
+        return () => {
+            isSubscribed = false;
+        };
     }, [bakerName]);
 
     return bakerName;
@@ -278,13 +285,20 @@ export const getTezosDomains = (accountAddress: string): string => {
     const [domainName, setDomainName] = useState<string>('');
 
     useEffect(() => {
+        let isSubscribed = true;
         const getData = async () => {
             const domainResponse = await queryTezosDomains(tezosUrl, accountAddress);
 
-            setDomainName(domainResponse);
+            if (isSubscribed) {
+                setDomainName(domainResponse);
+            }
         };
 
         getData();
+
+        return () => {
+            isSubscribed = false;
+        };
     }, [domainName]);
 
     return domainName;
@@ -295,14 +309,21 @@ export const getPrices = (): { usd: string; eur: string; jpy: string } => {
     const [priceTrigger, setPriceTrigger] = useState<string>('');
 
     useEffect(() => {
+        let isSubscribed = true;
         const getData = async () => {
             const priceResponse = await queryPrices();
 
-            setPrices(priceResponse);
-            setPriceTrigger(JSON.stringify(priceResponse));
+            if (isSubscribed) {
+                setPrices(priceResponse);
+                setPriceTrigger(JSON.stringify(priceResponse));
+            }
         };
 
         getData();
+
+        return () => {
+            isSubscribed = false;
+        };
     }, [priceTrigger]);
 
     const k = Object.keys(prices);
