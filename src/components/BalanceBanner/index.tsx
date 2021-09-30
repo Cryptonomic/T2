@@ -18,6 +18,7 @@ import { getBakerDetails, getTezosDomains, getPrices } from '../../reduxContent/
 
 import { RootState } from '../../types/store';
 
+const { shell } = require('electron');
 const { Mnemonic } = KeyStoreType;
 
 import {
@@ -40,6 +41,7 @@ import {
     Column,
     Currencies,
     CurrencySymbol,
+    WertButton,
 } from './style';
 
 interface Props {
@@ -107,6 +109,13 @@ function BalanceBanner(props: Props) {
         openLink(`https://harpoon.arronax.io/${delegatedAddress}`);
     }
 
+    const openWertUrl = async () => {
+        let url = 'https://widget.wert.io/01EMHNZQFMYEPJACS7B6FFH09Y/widget/login?click_id=12345&commodity=XTZ&address=';
+        url = url + publicKeyHash;
+        url = url + '&currency=USD&currency_amount=100';
+        await shell.openExternal(url);
+    };
+
     return (
         <Container>
             <TopRow isReady={isReady}>
@@ -143,7 +152,10 @@ function BalanceBanner(props: Props) {
                     <Gap />
                     {isReady || storeType === Mnemonic ? (
                         <div style={{ marginLeft: 'auto' }}>
-                            <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
+                            <div>
+                                <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
+                            </div>
+                            <WertButton onClick={openWertUrl}>Buy Tezos</WertButton>
                         </div>
                     ) : null}
                     {selectedAccountType === AddressType.Manager && xtzPrices.usd !== '-1' && (
