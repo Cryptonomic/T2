@@ -17,6 +17,6 @@
     "logLevel": "debug",
     "imageProxyURL": "",
     "imageAPIKey": "",
-    "wertUrl": "https://widget.wert.io/01EMHNZQFMYEPJACS7B6FFH09Y/widget/login?click_id=12345&commodity=XTZ&address=",
+    "wertUrl": "",
     "customProtocols": ["tezori", "tezos"]
 }
