@@ -47,7 +47,7 @@ export interface NFTError {
  */
 export interface NFTObject {
     action: NFTActionType;
-    objectId: string | number;
+    objectId: number;
     receivedOn: Date;
     price: number;
     amount: number;
@@ -129,4 +129,5 @@ export interface NFTMoreInfoProps {
  */
 export interface NFTSendProps {
     nftObject?: NFTObject | null;
+    closeModal: () => void;
 }

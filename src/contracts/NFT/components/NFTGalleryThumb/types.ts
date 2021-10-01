@@ -1,4 +1,4 @@
-import { NFTActionType, NFTProviderType, NFTObject } from '../../../containers/NFTGallery/types';
+import { NFTActionType, NFTProviderType, NFTObject } from '../../types';
 
 export interface GalleryThumbProps {
     nftObject: NFTObject;

@@ -1,3 +1,3 @@
-import NFTGallery from './container';
+import NFTGallery from '../../contracts/NFT/container';
 
 export default NFTGallery;

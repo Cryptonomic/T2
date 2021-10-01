@@ -1,10 +1,10 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { NFT_ERRORS } from '../constants';
-import { NFTErrorsProps, NFTError } from '../types';
+import { NFT_ERRORS } from '../../constants';
+import { NFTErrorsProps, NFTError } from '../../types';
 
-import { ErrorsBar } from '../../../components/ErrorsBar';
+import { ErrorsBar } from '../../../../components/ErrorsBar';
 
 /**
  * Renders the bar containing the list of errors.

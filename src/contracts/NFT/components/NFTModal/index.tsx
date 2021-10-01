@@ -1,15 +1,18 @@
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import CloseIcon from '@material-ui/icons/Close';
 
-import { NFT_MODAL_TABS } from '../constants';
-import { ModalWrapper, ModalBox } from '../style';
-import { NFTModalProps, NFTModalTabType } from '../types';
+import { CloseButton, StyledModalBox, StyledTabMenu } from './style';
 
-import { NFTMoreInfo } from './NFTMoreInfo';
-import { NFTSend } from './NFTSend';
+import { NFT_MODAL_TABS } from '../../constants';
+import { ModalWrapper } from '../../../components/style';
+import { NFTModalProps, NFTModalTabType } from '../../types';
 
-import { Tab, TabMenu, TabText, TAB_SIZES } from '../../../components/TabMenu';
-import TabPanel from '../../../components/TabPanel';
+import { NFTMoreInfo } from '../NFTMoreInfo';
+import { NFTSend } from '../NFTSend';
+
+import { Tab, TabText, TAB_SIZES } from '../../../../components/TabMenu';
+import TabPanel from '../../../../components/TabPanel';
 
 /**
  * Renders the modal showing the NFT object details and allowing to send the token.
@@ -37,8 +40,8 @@ export const NFTModal: FunctionComponent<NFTModalProps> = ({ nftObject, onClose 
 
     return (
         <ModalWrapper open={!!nftObject} onClose={onModalClose} aria-labelledby="NFT Object details." aria-describedby="See NFT object details and send token.">
-            <ModalBox>
-                <TabMenu count={2}>
+            <StyledModalBox>
+                <StyledTabMenu count={2}>
                     {tabs.map((tab, index) => (
                         <Tab
                             key={`nft-modal-tab-${index}`}
@@ -51,16 +54,19 @@ export const NFTModal: FunctionComponent<NFTModalProps> = ({ nftObject, onClose 
                             <TabText ready={true}>{tab.label}</TabText>
                         </Tab>
                     ))}
-                </TabMenu>
+                </StyledTabMenu>
+                <CloseButton onClick={onClose}>
+                    <CloseIcon />
+                </CloseButton>
 
                 <TabPanel index={NFT_MODAL_TABS.MORE_INFO} value={activeTab}>
                     <NFTMoreInfo nftObject={nftObject} />
                 </TabPanel>
 
                 <TabPanel index={NFT_MODAL_TABS.SEND} value={activeTab}>
-                    <NFTSend nftObject={nftObject} />
+                    <NFTSend nftObject={nftObject} closeModal={onClose} />
                 </TabPanel>
-            </ModalBox>
+            </StyledModalBox>
         </ModalWrapper>
     );
 };
