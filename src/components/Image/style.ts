@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components';
-import WarningIcon from '@material-ui/icons/Warning';
+import WarningIcon from '@material-ui/icons/ReportProblemRounded';
 
 /**
  * Style of the img tag.

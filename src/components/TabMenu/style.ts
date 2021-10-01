@@ -3,6 +3,7 @@ import { lighten } from 'polished';
 import Button from '../Button';
 import { ms } from '../../styles/helpers';
 
+import { TAB_SIZES } from './constants';
 import { TabMenuProps, TabProps, TabTextProps } from './types';
 
 /**
@@ -53,9 +54,21 @@ import { TabMenuProps, TabProps, TabTextProps } from './types';
 export const TabMenu = styled.div<TabMenuProps>`
     background-color: ${({ theme: { colors } }) => colors.accent};
     display: grid;
-    grid-template-columns: ${({ count }) => (count && count > 4 ? `repeat(${count}, 1fr)` : 'repeat(4, 1fr)')};
+    grid-template-columns: ${({ count }) => (count && count > 2 ? `repeat(${count}, 1fr)` : 'repeat(4, 1fr)')};
     grid-column-gap: 50px;
 `;
+
+/**
+ * Pre-defined styles used to adjust the sizing and spacing of the tab
+ */
+const TAB_SIZE_STYLES = {
+    MD: {
+        padding: `${ms(-1)} ${ms(1)}`,
+    },
+    LG: {
+        padding: `${ms(1)} ${ms(1)}`,
+    },
+};
 
 /**
  * The tab menu item style.
@@ -89,7 +102,7 @@ export const Tab = styled(Button)<TabProps>`
     cursor: ${({ ready }) => (ready !== false ? 'pointer' : 'initial')};
     text-align: center;
     font-weight: 500;
-    padding: ${ms(-1)} ${ms(1)};
+    padding: ${({ size = TAB_SIZES.MD }) => (size in TAB_SIZE_STYLES ? TAB_SIZE_STYLES[size].padding : TAB_SIZE_STYLES[TAB_SIZES.MD].padding)};
     border-radius: 0;
 `;
 
