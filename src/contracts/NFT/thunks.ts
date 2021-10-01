@@ -20,7 +20,7 @@ import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
 /**
  * Sync the NFT.
  */
-export const syncWallet = () => (dispatch) => {
+export const syncNFT = () => (dispatch) => {
     /**
      * @todo the sync action
      */
