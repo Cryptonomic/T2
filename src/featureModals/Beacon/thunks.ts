@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 
-import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation } from 'conseiljs';
+import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation, Origination } from 'conseiljs';
 
 import { cloneDecryptedSigner } from '../../utils/wallet';
 
@@ -161,6 +161,22 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
                     storage_limit: TezosConstants.DefaultDelegationStorageLimit.toString(),
                     gas_limit: TezosConstants.DefaultDelegationGasLimit.toString(),
                     delegate: o.delegate,
+                };
+
+                formedOperations.push(op);
+
+                break;
+            }
+            case 'origination': {
+                const op: Origination = {
+                    kind: 'origination',
+                    source: publicKeyHash,
+                    fee: '0',
+                    counter: counter.toString(),
+                    storage_limit: TezosConstants.DefaultDelegationStorageLimit.toString(),
+                    gas_limit: TezosConstants.DefaultDelegationGasLimit.toString(),
+                    balance: '0',
+                    script: o.script,
                 };
 
                 formedOperations.push(op);

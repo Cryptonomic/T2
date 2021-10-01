@@ -5,6 +5,10 @@ import { BeaconMessageType, OperationResponseInput, BeaconErrorType, BeaconRespo
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+
 import { beaconClient } from './BeaconMessageRouter';
 
 import Loader from '../../components/Loader';
@@ -23,7 +27,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
 
 import { estimateOperationGroupFee, sendOperations, queryHicEtNuncSwap } from './thunks';
-import { WrapPassword } from './style';
+import { WrapPassword, OperationDetailHeader } from './style';
 
 interface Props {
     open: boolean;
@@ -44,15 +48,17 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
     const [fee, setFee] = useState('0');
     const [feeError, setFeeError] = useState('');
+    const [showOperationDetails, setShowOperationDetails] = useState(false);
 
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
     const isDelegation = operationDetails[0].kind === 'delegation';
+    const isOrigination = operationDetails[0].kind === 'origination';
     const { destination, amount, parameters } = operationDetails[0];
     const operationParameters = parameters || { value: { prim: 'Unit' }, entrypoint: 'default' };
 
     const estimatedMinimumFee = estimateOperationGroupFee(selectedParentHash, operationDetails);
-
+    console.log('aaaa', JSON.stringify(operationDetails));
     const onCancel = async () => {
         try {
             const response: BeaconResponseInputMessage = {
@@ -85,7 +91,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
             const utezFee = tezToUtez(parseFloat(fee));
 
-            if (isContract) {
+            if (isContract || isDelegation || isOrigination) {
                 // TODO: errors from here don't always bubble up
                 const operationResult = await dispatch(sendOperations(password, operationDetails, utezFee));
 
@@ -493,12 +499,13 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {operationDetails.length === 1 && <h3>{t('components.Beacon.authorization.title', { network: network.type })}</h3>}
                             {operationDetails.length > 1 && <h3>{t('components.Beacon.authorization.title_plural', { network: network.type })}</h3>}
                             <p className="linkAddress">{website}</p>
+                            {isOrigination && <p>{appMetadata.name} is requesting a contract deployment</p>}
                             {isDelegation && (
                                 <p>
                                     {appMetadata.name} is requesting a delegation to <strong>{operationDetails[0].delegate}</strong>
                                 </p>
                             )}
-                            {!isContract && !isDelegation && (
+                            {!isContract && !isDelegation && !isOrigination && (
                                 <p>
                                     {appMetadata.name} is requesting a transaction of <strong>{formatAmount(operationDetails[0].amount, 6)}</strong>
                                     <strong>{'\ua729'}</strong> to <strong>{operationDetails[0].destination}</strong>
@@ -529,10 +536,15 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 </p>
                             )}
 
-                            <div>
-                                <p className="inputLabel">Raw Operation Content</p>
-                                <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
-                            </div>
+                            <>
+                                <OperationDetailHeader onClick={() => setShowOperationDetails(!showOperationDetails)}>
+                                    Raw Operation Content
+                                    {showOperationDetails ? <ExpandLess /> : <ExpandMore />}
+                                </OperationDetailHeader>
+                                <Collapse in={showOperationDetails} timeout="auto" unmountOnExit={true}>
+                                    <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
+                                </Collapse>
+                            </>
 
                             {feeError === '' && (
                                 <div className="feeContainer">

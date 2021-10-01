@@ -62,7 +62,7 @@ export const BeaconMessageRouter = () => {
                 return;
             }
 
-            if (!message.operationDetails.filter((o) => o.kind === 'transaction' || o.kind === 'delegation').length) {
+            if (!message.operationDetails.filter((o) => o.kind === 'transaction' || o.kind === 'delegation' || o.kind === 'origination').length) {
                 dispatch(createMessageAction(`Unsupported Beacon operation, ${message.operationDetails[0].kind}`, true));
                 return;
             }
