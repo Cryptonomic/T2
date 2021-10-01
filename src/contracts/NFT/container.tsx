@@ -6,7 +6,7 @@ import { NFTObject, NFTGalleryTabType } from './types';
 
 import { NFTGallery } from './components';
 
-import { getNFTCollections, syncWallet } from './thunks';
+import { getNFTCollections, syncNFT } from './thunks';
 
 import { getAccountSelector, AccountSelector } from '../duck/selectors';
 
@@ -44,7 +44,7 @@ const NFTGalleryContainer = () => {
     /**
      * Sync the wallet.
      */
-    const onSyncWallet = () => dispatch(syncWallet());
+    const onSyncWallet = () => dispatch(syncNFT());
 
     return (
         <NFTGallery
