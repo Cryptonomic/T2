@@ -2,6 +2,9 @@ import {
     ConseilQueryBuilder,
     ConseilOperator,
     ConseilSortDirection,
+    KeyStore,
+    MultiAssetTokenHelper,
+    Signer,
     TezosConseilClient,
     TezosMessageUtils,
     TezosNodeReader,
@@ -11,6 +14,7 @@ import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
 import { NFT_ACTION_TYPES, NFT_ERRORS, NFT_PROVIDERS } from './constants';
+import { TransferNFTError } from './exceptions';
 import { NFTObject, NFTCollections, NFTError, GetNFTCollections } from './types';
 
 import { Node, Token, TokenKind } from '../../types/general';
@@ -264,6 +268,60 @@ export async function getCollections(tokenMapId: number, managerAddress: string,
 
     // 5. Return the response:
     return { collections: grouped, errors };
+}
+
+/**
+ * Transfer the NFT object to the given address.
+ *
+ * @param {string} server - Tezos URL
+ * @param {string} address - token address
+ * @param {Signer} signer - the signer
+ * @param {KeyStore} keystore - the keystore
+ * @param {number} fee - the fee
+ * @param {string} source - the source hash
+ * @param {TransferPair[]} transfers - list of transfers containing address, tokenid and amount.
+ * @param {number} [gas] - the gas
+ * @param {number} [freight] - the storage
+ */
+export async function transferNFT(
+    server: string,
+    address: string,
+    signer: Signer,
+    keystore: KeyStore,
+    fee: number,
+    source: string,
+    transfers: {
+        address: string;
+        tokenid: number;
+        amount: number;
+    }[],
+    gas?: number,
+    freight?: number
+): Promise<string> {
+    /** MOCK */
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve('some_operation_id');
+            // reject(new TransferNFTError('components.messageBar.messages.nft_send_transaction_failed', transfers))
+        }, 300);
+    });
+    /** END MOCK */
+
+    // try {
+    //     return await MultiAssetTokenHelper.transfer(
+    //         server,
+    //         address,
+    //         signer,
+    //         keystore,
+    //         fee,
+    //         source,
+    //         transfers,
+    //         gas,
+    //         freight
+    //     );
+    // } catch(err) {
+    //     throw new TransferNFTError('components.messageBar.messages.nft_send_transaction_failed', transfers);
+    // }
 }
 
 /**

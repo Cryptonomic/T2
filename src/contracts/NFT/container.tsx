@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 
 import { NFT_ACTION_TYPES } from './constants';
 import { NFTObject, NFTGalleryTabType } from './types';
 
 import { NFTGallery } from './components';
 
-import { syncWalletThunk } from '../../reduxContent/wallet/thunks';
-import { getNFTCollections } from './thunks';
+import { getNFTCollections, syncWallet } from './thunks';
 
-import { getAccountSelector, AccountSelector } from '../../contracts/duck/selectors';
+import { getAccountSelector, AccountSelector } from '../duck/selectors';
 
 import { RootState } from '../../types/store';
 
@@ -25,7 +23,6 @@ import { isReady } from '../../utils/general';
  * <NFTGallery />
  */
 const NFTGalleryContainer = () => {
-    const { t } = useTranslation();
     const dispatch = useDispatch();
 
     /**
@@ -46,9 +43,8 @@ const NFTGalleryContainer = () => {
 
     /**
      * Sync the wallet.
-     * @todo: Currently it uses `syncWalletThunk()` from the wallet thunk to get NFT tokens.
      */
-    const onSyncWallet = () => dispatch(syncWalletThunk());
+    const onSyncWallet = () => dispatch(syncWallet());
 
     return (
         <NFTGallery

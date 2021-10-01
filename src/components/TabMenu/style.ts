@@ -54,7 +54,7 @@ import { TabMenuProps, TabProps, TabTextProps } from './types';
 export const TabMenu = styled.div<TabMenuProps>`
     background-color: ${({ theme: { colors } }) => colors.accent};
     display: grid;
-    grid-template-columns: ${({ count }) => (count && count > 4 ? `repeat(${count}, 1fr)` : 'repeat(4, 1fr)')};
+    grid-template-columns: ${({ count }) => (count && count > 2 ? `repeat(${count}, 1fr)` : 'repeat(4, 1fr)')};
     grid-column-gap: 50px;
 `;
 
