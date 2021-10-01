@@ -1,24 +1,24 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { NFT_PAGE_TABS, NFT_PROVIDERS } from '../constants';
-import { LoaderWrapper } from '../style';
-import { NFTGalleryProps, NFTGalleryTabType, NFTObject } from '../types';
+import { NFT_PAGE_TABS, NFT_PROVIDERS } from '../../constants';
+import { LoaderWrapper } from './style';
+import { NFTGalleryProps, NFTGalleryTabType, NFTObject } from '../../types';
 
-import { Gallery, GalleryItem } from '../../../components/Gallery';
-import Loader from '../../../components/Loader';
-import { GalleryThumb as NFTGalleryThumb } from '../../../components/NFT';
-import { PageBanner } from '../../../components/PageBanner';
-import { TabMenu, Tab, TabText } from '../../../components/TabMenu';
-import TabPanel from '../../../components/TabPanel';
-import { Container } from '../../../contracts/components/TabContainer/style';
+import { Gallery, GalleryItem } from '../../../../components/Gallery';
+import Loader from '../../../../components/Loader';
+import { NFTGalleryThumb } from '..';
+import { PageBanner } from '../../../../components/PageBanner';
+import { TabMenu, Tab, TabText } from '../../../../components/TabMenu';
+import TabPanel from '../../../../components/TabPanel';
+import { Container } from '../../../components/TabContainer/style';
 
-import { openLink } from '../../../utils/general';
+import { openLink } from '../../../../utils/general';
 
-import { tokensSupportURL } from '../../../config.json';
+import { tokensSupportURL } from '../../../../config.json';
 
-import { NFTErrors } from './NFTErrors';
-import { NFTModal } from './NFTModal';
+import { NFTErrors } from '../NFTErrors';
+import { NFTModal } from '../NFTModal';
 
 /**
  * Renders the <NFTGallery /> component with the address bar and the <Gallery /> component.

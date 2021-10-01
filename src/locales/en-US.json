@@ -5,6 +5,7 @@
             "authentication": "Authentication",
             "send": "Send",
             "copy_address": "Copy Address",
+            "copy_link": "Copy Link",
             "show": "Show",
             "hide": "Hide",
             "use_max": "Use Max",
@@ -389,10 +390,12 @@
                 "mint_operation_failed": "Mint operation failed.",
                 "mint_operation_success": "Successfully started mint token.",
                 "burn_operation_failed": "Burn operation failed.",
-                "burn_operation_success": "Successfully started burn token."
+                "burn_operation_success": "Successfully started burn token.",
+                "nft_send_transaction_failed": "The NFT transaction failed."
             }
         },
         "nftGallery": {
+            "custom_fee_tooltip": "We have already calculated the optimal fee for your transaction.",
             "fields": {
                 "artifactUrl": "image URL"
             },
@@ -400,7 +403,13 @@
                 "tabs": {
                     "more_info": "More info",
                     "send": "Send"
-                }
+                },
+                "recipient_address": "Recipient Address",
+                "send": "Send",
+                "token": "Token",
+                "collectedOn": "Collected on",
+                "collectedFor": "Collected for",
+                "quantity": "Quantity"
             },
             "tabs": {
                 "collected": "Collected",
@@ -410,6 +419,10 @@
                 "something_went_wrong": "Something went wrong!",
                 "unsupported_data_format": "The {{field}} from {{provider}} is invalid.",
                 "unsupported_provider": "The {{provider}} data format is invalid."
+            },
+            "providers": {
+                "HIC_ET_NUNC": "Hic et nunc",
+                "IPFS": "IPFS"
             }
         },
         "pdfReader": {
