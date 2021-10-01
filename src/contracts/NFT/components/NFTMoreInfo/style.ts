@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import MenuItem from '@mui/material/MenuItem';
+import MenuList from '@mui/material/MenuList';
 import TezosIcon from '../../../../components/TezosIcon';
 
 export const Container = styled.form`
@@ -106,18 +106,11 @@ export const StyledListItemIcon = styled(ListItemIcon)`
     }
 `;
 
-export const StyledMenuList = styled(MenuList)`
-    &&& {
-        min-width: 240px !important;
-        margin: 0;
-        padding: 0;
-    }
-`;
-
 export const StyledMenuItem = styled(MenuItem)`
     &&& {
         padding: 16px 6px;
         cursor: pointer !important;
+        min-width: 240px !important;
 
         li,
         div,

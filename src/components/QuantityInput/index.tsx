@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 import { ChangeButton, ControlsContainer, LabelText, LabelWrapper, Of, QuantityInputContainer, Value } from './style';
 import { QuantityInputProps } from './types';

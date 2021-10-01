@@ -1,13 +1,13 @@
 export interface GalleryBreakpointsProps {
     breakpoint: string;
     cols: number;
-    itemPadding?: string;
+    itempadding?: string;
 }
 
 export interface GalleryProps {
     cols?: number;
     breakpoints?: Record<string, GalleryBreakpointsProps>;
     containerPadding?: string;
-    itemPadding?: string;
+    itempadding?: string;
     isEmpty?: boolean;
 }

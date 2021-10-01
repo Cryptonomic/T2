@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CropFreeIcon from '@material-ui/icons/CropFree';
-import CloseIcon from '@material-ui/icons/Close';
+import CropFreeIcon from '@mui/icons-material/CropFree';
+import CloseIcon from '@mui/icons-material/Close';
 
 import {
     CloseModalButton,

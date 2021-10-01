@@ -21,7 +21,7 @@ export const GalleryContainer = styled.div<{ padding?: string }>`
  * To make a component responsive, use the `breakpoints` property.
  *
  * @param {number} [cols = 3] - number of columns.
- * @param {string} [itemPadding= '0 34px'] - the horizontal/vertical gap between gallery items.
+ * @param {string} [itempadding= '0 34px'] - the horizontal/vertical gap between gallery items.
  * @param {GalleryContainerBreakpointProps} [breakpoints] - add the responsivness to the gallery.
  */
 export const StyledMasonry = styled(Masonry)<GalleryProps>`
@@ -30,7 +30,7 @@ export const StyledMasonry = styled(Masonry)<GalleryProps>`
 
     & > li {
         width: ${({ cols }) => (cols && cols > 0 ? `${100 / cols}%` : '33.3333%')};
-        padding: ${({ itemPadding }) => itemPadding || '0'};
+        padding: ${({ itempadding }) => itempadding || '0'};
 
         ${({ breakpoints }) => {
             if (!breakpoints) {
@@ -44,9 +44,9 @@ export const StyledMasonry = styled(Masonry)<GalleryProps>`
                 @media all and (min-width: ${breakpoints[x].breakpoint}) {
                     width: ${breakpoints[x].cols && breakpoints[x].cols > 0 ? `${100 / breakpoints[x].cols}%` : '100%'};
                     ${
-                        breakpoints[x].itemPadding
+                        breakpoints[x].itempadding
                             ? `
-                        padding: ${breakpoints[x].itemPadding};
+                        padding: ${breakpoints[x].itempadding};
                     `
                             : ''
                     }

@@ -1,14 +1,14 @@
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import Menu from '@material-ui/core/Menu';
+import Divider from '@mui/material/Divider';
+import ListItemText from '@mui/material/ListItemText';
+import Menu from '@mui/material/Menu';
 
-import LinkIcon from '@material-ui/icons/Link';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import RemoveRedEyeOutlinedIcon from '@material-ui/icons/RemoveRedEyeOutlined';
+import LinkIcon from '@mui/icons-material/Link';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
 import {
     Attribute,
@@ -26,7 +26,6 @@ import {
     Title,
     StyledListItemIcon,
     StyledMenuItem,
-    StyledMenuList,
     StyledTezosIcon,
 } from './style';
 
@@ -95,7 +94,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                                 open={menuOpen}
                                 anchorEl={menuAnchorEl}
                                 onClose={handleMenuClose}
-                                style={{ marginTop: '100px', padding: '0' }}
+                                style={{ marginTop: '10px', padding: '0' }}
                                 anchorOrigin={{
                                     vertical: 'bottom',
                                     horizontal: 'right',
@@ -104,41 +103,39 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                                     vertical: 'top',
                                     horizontal: 'right',
                                 }}
+                                disableAutoFocus={true}
+                                disableEnforceFocus={true}
                             >
-                                <StyledMenuList>
-                                    <StyledMenuItem onClick={() => openArtifactLink(`https://www.hicetnunc.xyz/objkt/${nftObject.objectId}`)}>
+                                <StyledMenuItem onClick={() => openArtifactLink(`https://www.hicetnunc.xyz/objkt/${nftObject.objectId}`)}>
+                                    <StyledListItemIcon>
+                                        <RemoveRedEyeOutlinedIcon fontSize="small" />
+                                    </StyledListItemIcon>
+                                    <ListItemText>
+                                        {t(`components.image.view_on`, {
+                                            provider: t('components.nftGallery.providers.HIC_ET_NUNC'),
+                                        })}
+                                    </ListItemText>
+                                </StyledMenuItem>
+                                <Divider />
+                                {nftObject.artifactUrl && nftObject.artifactUrl.includes('/ipfs') ? (
+                                    <StyledMenuItem onClick={() => openArtifactLink(nftObject.artifactUrl!)}>
                                         <StyledListItemIcon>
-                                            <RemoveRedEyeOutlinedIcon fontSize="small" />
+                                            <OpenInNewIcon fontSize="small" />
                                         </StyledListItemIcon>
                                         <ListItemText>
                                             {t(`components.image.view_on`, {
-                                                provider: t('components.nftGallery.providers.HIC_ET_NUNC'),
+                                                provider: t('components.nftGallery.providers.IPFS'),
                                             })}
                                         </ListItemText>
                                     </StyledMenuItem>
-                                    <Divider />
-                                    {nftObject.artifactUrl && nftObject.artifactUrl.includes('/ipfs') ? (
-                                        <>
-                                            <StyledMenuItem onClick={() => openArtifactLink(nftObject.artifactUrl!)}>
-                                                <StyledListItemIcon>
-                                                    <OpenInNewIcon fontSize="small" />
-                                                </StyledListItemIcon>
-                                                <ListItemText>
-                                                    {t(`components.image.view_on`, {
-                                                        provider: t('components.nftGallery.providers.IPFS'),
-                                                    })}
-                                                </ListItemText>
-                                            </StyledMenuItem>
-                                            <Divider />
-                                        </>
-                                    ) : null}
-                                    <StyledMenuItem onClick={() => copyLink(nftObject.artifactUrl!)}>
-                                        <StyledListItemIcon>
-                                            <LinkIcon fontSize="small" />
-                                        </StyledListItemIcon>
-                                        <ListItemText>{t('general.verbs.copy_link')}</ListItemText>
-                                    </StyledMenuItem>
-                                </StyledMenuList>
+                                ) : null}
+                                {nftObject.artifactUrl && nftObject.artifactUrl.includes('/ipfs') ? <Divider /> : null}
+                                <StyledMenuItem onClick={() => copyLink(nftObject.artifactUrl!)}>
+                                    <StyledListItemIcon>
+                                        <LinkIcon fontSize="small" />
+                                    </StyledListItemIcon>
+                                    <ListItemText>{t('general.verbs.copy_link')}</ListItemText>
+                                </StyledMenuItem>
                             </Menu>
                         </div>
                     ) : null}
