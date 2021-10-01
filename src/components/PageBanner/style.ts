@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import mStyled from '@material-ui/styles/styled';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { styled as mStyled } from '@mui/styles';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { H4 } from '../Heading';
 import { ms } from '../../styles/helpers';
 

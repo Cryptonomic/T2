@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import mStyled from '@material-ui/styles/styled';
-import IconButton from '@material-ui/core/IconButton';
-import Modal from '@material-ui/core/Modal';
-import WarningIcon from '@material-ui/icons/ReportProblemRounded';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { styled as mStyled } from '@mui/styles';
+import IconButton from '@mui/material/IconButton';
+import Modal from '@mui/material/Modal';
+import WarningIcon from '@mui/icons-material/ReportProblemRounded';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Image } from '../Image';
 
 export const CloseModalButton = styled(IconButton)`

@@ -1,8 +1,6 @@
 import styled from 'styled-components';
-import mStyled from '@material-ui/styles/styled';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { styled as mStyled } from '@mui/styles';
 import Media from '../../../../components/Media';
-import { ImageFailed } from '../../../../components/Image/style';
 import TezosIcon from '../../../../components/TezosIcon';
 
 export const ThumbContainer = styled.article`

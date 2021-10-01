@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import IconButton from '@material-ui/core/IconButton';
-import InputLabel from '@material-ui/core/InputLabel';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
 
 export const ControlsContainer = styled.div`
     display: flex;

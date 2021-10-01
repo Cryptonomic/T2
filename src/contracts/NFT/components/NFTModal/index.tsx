@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { CloseButton, StyledModalBox, StyledTabMenu } from './style';
 

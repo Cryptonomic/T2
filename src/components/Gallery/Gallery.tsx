@@ -16,7 +16,7 @@ import EmptyState from '../EmptyState';
  *
  * @param {number} [cols = 3] - number of columns.
  * @param {string} [containerPadding= '0 12px'] - the padding of the gallery container wrapping the grid.
- * @param {string} [itemPadding= '0 16px'] - the padding of the grid items. It gives the gap between "columns".
+ * @param {string} [itempadding= '0 16px'] - the padding of the grid items. It gives the gap between "columns".
  * @param {GalleryContainerBreakpointProps} [breakpoints] - add responsivness to the gallery.
  * @param {boolean} [isEmpty] - set 'true' if the collection is empty to display the empty state.
  *
@@ -28,7 +28,7 @@ import EmptyState from '../EmptyState';
  *   'sm': {                // any human-friendly breakpoint name
  *      breakpoint: '500px', // (used with min-width media query)
  *      cols: 2,
- *      itemPadding: '0 20px' // (optional - the gap between columns)
+ *      itempadding: '0 20px' // (optional - the gap between columns)
  *   },
  *   'md': {
  *      breakpoint: '768px',
@@ -43,12 +43,12 @@ import EmptyState from '../EmptyState';
  * <Gallery
  *   cols={1}
  *   containerPadding='0 20px'
- *   itemPadding='0 8px'
+ *   itempadding='0 8px'
  *   breakpoints={{
  *       'md': {
  *           breakpoint: '768px',
  *           cols: 2,
- *           itemPadding: '0 16px'
+ *           itempadding: '0 16px'
  *       },
  *       'lg': {
  *           breakpoint: '967px',
@@ -63,7 +63,7 @@ import EmptyState from '../EmptyState';
  *   ))}
  * </Gallery>
  */
-export const Gallery: FunctionComponent<GalleryProps> = ({ children, cols, breakpoints, containerPadding = '0 12px', itemPadding = '0 16px', isEmpty }) => {
+export const Gallery: FunctionComponent<GalleryProps> = ({ children, cols, breakpoints, containerPadding = '0 12px', itempadding = '0 16px', isEmpty }) => {
     const { t } = useTranslation();
 
     return (
@@ -73,7 +73,7 @@ export const Gallery: FunctionComponent<GalleryProps> = ({ children, cols, break
                     <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />
                 </EmptyStateContainer>
             ) : (
-                <StyledMasonry cols={cols} breakpoints={breakpoints} itemPadding={itemPadding}>
+                <StyledMasonry cols={cols} breakpoints={breakpoints} itempadding={itempadding}>
                     {children}
                 </StyledMasonry>
             )}

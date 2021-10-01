@@ -94,12 +94,12 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                             sm: {
                                 breakpoint: '768px',
                                 cols: 2,
-                                itemPadding: '0 8px',
+                                itempadding: '0 8px',
                             },
                             md: {
                                 breakpoint: '991px',
                                 cols: 3,
-                                itemPadding: '0 16px',
+                                itempadding: '0 16px',
                             },
                         }}
                         isEmpty={!displayTokens || displayTokens.length === 0}

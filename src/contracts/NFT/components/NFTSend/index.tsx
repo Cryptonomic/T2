@@ -46,6 +46,7 @@ import { READY } from '../../../../constants/StatusTypes';
 import { RootState } from '../../../../types/store';
 
 import { useFetchFees } from '../../../../reduxContent/app/thunks';
+import { createMessageAction } from '../../../../reduxContent/message/actions';
 
 import { ms } from '../../../../styles/helpers';
 
@@ -69,6 +70,7 @@ export const NFTSend: FunctionComponent<NFTSendProps> = ({ nftObject, closeModal
     const { balance, status } = useSelector(getAccountSelector);
     const { newFees, miniFee, isFeeLoaded, isRevealed } = useFetchFees(OperationKindType.Transaction, true);
     const { isLedger, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { walletPassword } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
 
     /**
      * Update "fee" and "total" when fees are loaded:
@@ -97,7 +99,14 @@ export const NFTSend: FunctionComponent<NFTSendProps> = ({ nftObject, closeModal
      */
     const onSubmit = (e) => {
         e.preventDefault();
+
         if (!nftObject) {
+            return;
+        }
+
+        if (password !== walletPassword && !isLedger) {
+            const passerror = 'components.messageBar.messages.incorrect_password';
+            dispatch(createMessageAction(passerror, true));
             return;
         }
 

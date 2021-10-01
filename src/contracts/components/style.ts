@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { lighten } from 'polished';
 
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 
 import Button from '../../components/Button';
 import { ms } from '../../styles/helpers';

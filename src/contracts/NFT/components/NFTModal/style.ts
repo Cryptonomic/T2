@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 import { ModalBox } from '../../../components/style';
 import { TabMenu } from '../../../../components/TabMenu';
 

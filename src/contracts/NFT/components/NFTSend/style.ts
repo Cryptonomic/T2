@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import Button from '../../../../components/Button';
 import Media from '../../../../components/Media';
 
