@@ -249,6 +249,9 @@ export const NFTSend: FunctionComponent<NFTSendProps> = ({ nftObject, closeModal
                             enablePreview={false}
                             useNFTFailedBox={true}
                             nftProvider={nftObject.provider}
+                            thumbProps={{
+                                thumbnailUri: nftObject.thumbnailUri,
+                            }}
                         />
                         <AmountContainer>
                             <QuantityInput label={t('general.nouns.quantity')} min={1} max={nftObject.amount} value={amount} onChange={(v) => setAmount(v)} />

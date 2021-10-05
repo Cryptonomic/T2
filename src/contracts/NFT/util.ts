@@ -98,10 +98,25 @@ export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
         .map((c) => c.trim())
         .map((c) => `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}`)
         .join(', '); // TODO: use names where possible
-    const nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
     const nftArtifactType = nftDetailJson.formats[0].mimeType.toString();
+    let nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+    if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
+        nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+    }
+    /**
+     * @todo add thumbnail
+     */
+    // const nftThumbnailUri = `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.toString().slice(7)}`;
+    const nftThumbnailUri = undefined;
 
-    return { name: nftName, description: nftDescription, creators: nftCreators, artifactUrl: nftArtifact, artifactType: nftArtifactType };
+    return {
+        name: nftName,
+        description: nftDescription,
+        creators: nftCreators,
+        artifactUrl: nftArtifact,
+        artifactType: nftArtifactType,
+        thumbnailUri: nftThumbnailUri,
+    };
 }
 
 /**
@@ -206,7 +221,9 @@ export async function getCollections(tokenMapId: number, managerAddress: string,
                 action,
                 artifactUrl: objectDetails.artifactUrl,
                 artifactType: objectDetails.artifactType,
+                thumbnailUri: objectDetails.thumbnailUri,
                 creators: objectDetails.creators,
+                author: 'Some author test',
             } as NFTObject;
         })
     );

@@ -4,17 +4,16 @@ import WarningIcon from '@mui/icons-material/ReportProblemRounded';
 /**
  * Style of the img tag.
  */
-export const ImageStyled = styled.img`
+export const VideoStyled = styled.video`
     width: 100%;
     max-width: 100%;
-    height: ${({ hidden }) => (hidden ? '0px' : 'auto')};
     line-height: 0;
 `;
 
 /**
- * Style of the container wrapping the image, loader and error box.
+ * Style of the container wrapping the video, loader and error box.
  */
-export const ImageContainer = styled.div`
+export const VideoContainer = styled.div`
     position: relative;
     width: 100%;
     max-width: 100%;
@@ -35,10 +34,10 @@ const loaderAnimation = keyframes`
 /**
  * The loader.
  */
-export const ImageLoader = styled.div<{ visible: boolean }>`
+export const VideoLoader = styled.div<{ visible: boolean }>`
     width: 100%;
-    height: 100%;
     min-height: 200px;
+    height: 100%;
     display: ${({ visible }) => (visible ? 'block' : 'none')};
 
     animation-duration: 2s;
@@ -56,7 +55,7 @@ export const ImageLoader = styled.div<{ visible: boolean }>`
 /**
  * Style of the failed/error message box.
  */
-export const ImageFailed = styled.div`
+export const VideoFailed = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;

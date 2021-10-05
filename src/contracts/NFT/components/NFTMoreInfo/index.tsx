@@ -79,6 +79,14 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                         alt={nftObject.name}
                         useNFTFailedBox={true}
                         nftProvider={nftObject.provider}
+                        thumbProps={{
+                            thumbnailUri: nftObject.thumbnailUri,
+                        }}
+                        previewProps={{
+                            autoplay: true,
+                            controls: true,
+                            loop: true,
+                        }}
                     />
                 ) : null}
             </Col>

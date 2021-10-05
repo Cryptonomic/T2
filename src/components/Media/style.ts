@@ -4,7 +4,8 @@ import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
 import WarningIcon from '@mui/icons-material/ReportProblemRounded';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { Image } from '../Image';
+import Image from '../Image';
+import Video from '../Video';
 
 export const CloseModalButton = styled(IconButton)`
     &&& {
@@ -34,8 +35,9 @@ export const ModalBox = styled.div`
     max-height: 90vh;
 
     & img,
+    & video,
     div {
-        width: auto;
+        width: max-content;
         height: auto;
         max-width: 90vw;
         max-height: 90vh;
@@ -79,6 +81,22 @@ export const StyledImage = styled(Image)`
     & > img {
         border-radius: 8px;
     }
+`;
+
+export const StyledVideo = styled(Video)``;
+
+export const MediaTypeIconWrapper = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 10px;
+`;
+
+export const MediaTypeIconBadge = styled.div`
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.4);
+    color: ${({ theme: { colors } }) => colors.black1};
+    font-size: 16px;
 `;
 
 /**
