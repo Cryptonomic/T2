@@ -12,6 +12,8 @@ import { ImageStyled, ImageContainer, ImageLoader, ImageFailed, FailedIcon, Fail
  * @param {string} src - the img src.
  * @param {string} alt - the img alt property.
  * @param {JSX.Element | React.ReactNode} [ImageFailedBox] - the custom component displayed on error.
+ * @param {() => void} [onLoad] - on image load.
+ * @param {() => void} [onError] - on video fail.
  *
  * @example
  * <ImageStyled src={image} alt={title} ImageFailedBox={
@@ -21,24 +23,32 @@ import { ImageStyled, ImageContainer, ImageLoader, ImageFailed, FailedIcon, Fail
  *   />
  * } />
  */
-const Image: FunctionComponent<ImageProps> = ({ src, alt, className, ImageFailedBox }) => {
+const Image: FunctionComponent<ImageProps> = ({ src, alt, type, className, ImageFailedBox, onError, onLoad }) => {
     const [loaded, setLoaded] = useState(false);
     const [failed, setFailed] = useState(false);
 
     const { t } = useTranslation();
 
-    const onLoad = () => {
+    const onElementLoad = (_e) => {
         setLoaded(true);
+
+        if (onLoad) {
+            onLoad();
+        }
     };
 
-    const onError = () => {
+    const onElementError = (_e) => {
         setFailed(true);
+
+        if (onError) {
+            onError();
+        }
     };
 
     return (
         <ImageContainer className={className}>
             <ImageLoader className="loader" visible={!loaded && !failed} />
-            <ImageStyled src={src} alt={alt} onLoad={onLoad} onError={onError} hidden={!loaded || failed} />
+            <ImageStyled src={src} alt={alt} onLoad={onElementLoad} onError={onElementError} hidden={!loaded || failed} />
             {failed && ImageFailedBox ? ImageFailedBox : null}
             {failed && !ImageFailedBox ? (
                 <ImageFailed>
@@ -50,4 +60,5 @@ const Image: FunctionComponent<ImageProps> = ({ src, alt, className, ImageFailed
     );
 };
 
-export { Image, ImageProps };
+export default Image;
+export { ImageProps };

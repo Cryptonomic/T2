@@ -17,13 +17,32 @@ import { formatAmount } from '../../../../utils/currency';
 export const NFTGalleryThumb: FunctionComponent<GalleryThumbProps> = ({ nftObject, onClick }) => {
     const { t } = useTranslation();
 
-    const { name, price, artifactUrl, artifactType, creators, provider } = nftObject;
+    const { name, price, artifactUrl, artifactType, creators, provider, thumbnailUri } = nftObject;
 
     const displayAddress = `${creators.slice(0, 6)}...${creators.slice(creators.length - 3, creators.length)}`;
 
     return (
         <ThumbContainer>
-            <MediaStyled source={artifactUrl || ''} type={artifactType} alt={name || ''} enablePreview={false} useNFTFailedBox={true} nftProvider={provider} />
+            <MediaStyled
+                source={artifactUrl || ''}
+                type={artifactType}
+                alt={name || ''}
+                thumbProps={{
+                    autoplay: false,
+                    controls: false,
+                    loop: false,
+                    thumbnailUri,
+                }}
+                enablePreview={false}
+                previewProps={{
+                    autoplay: false,
+                    controls: false,
+                    loop: false,
+                    thumbnailUri,
+                }}
+                useNFTFailedBox={true}
+                nftProvider={provider}
+            />
             <TopRow onClick={() => onClick(nftObject)}>
                 <Title>{name}</Title>
                 <span>
