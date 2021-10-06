@@ -39,19 +39,23 @@ function ArtPiece(props: Props) {
 
     useEffect(() => {
         const _getProxyInfo = async () => {
-            const server: ImageProxyServer = { url: imageProxyURL, apikey: imageAPIKey, version: '1.0.0' };
+            if (imageProxyURL && imageProxyURL.length > 0) {
+                const server: ImageProxyServer = { url: imageProxyURL, apikey: imageAPIKey, version: '1.0.0' };
 
-            proxyFetch(server, pieceInfo.artifactUrl, ImageProxyDataType.Json, false).then((d: any) => {
-                if (d.rpc_status === 'Ok') {
-                    if (d.result.moderation_status === 'Allowed') {
-                        setProxiedContentURL(d.result.data);
-                    } else if (d.result.moderation_status === 'Blocked') {
-                        setProxyModerationMessage(`Image was hidden because of it contains the following labels: ${d.result.categories.join(', ')}`);
+                proxyFetch(server, pieceInfo.artifactUrl, ImageProxyDataType.Json, false).then((d: any) => {
+                    if (d.rpc_status === 'Ok') {
+                        if (d.result.moderation_status === 'Allowed') {
+                            setProxiedContentURL(d.result.data);
+                        } else if (d.result.moderation_status === 'Blocked') {
+                            setProxyModerationMessage(`Image was hidden because of it contains the following labels: ${d.result.categories.join(', ')}`);
+                        }
+                    } else if (d.rpc_status === 'Err') {
+                        setProxiedContentURL(pieceInfo.artifactUrl);
                     }
-                } else if (d.rpc_status === 'Err') {
-                    setProxiedContentURL(pieceInfo.artifactUrl);
-                }
-            });
+                });
+            } else {
+                setProxiedContentURL(pieceInfo.artifactUrl);
+            }
         };
 
         if (supportedTypes.includes(pieceInfo.artifactType)) {
