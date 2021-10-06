@@ -9,5 +9,4 @@ export const OperationDetailHeader = styled.div`
     color: rgba(0, 0, 0, 0.38);
     font-size: 12px;
     float: left;
-    height: 40px;
 `;

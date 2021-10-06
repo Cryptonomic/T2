@@ -58,7 +58,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const operationParameters = parameters || { value: { prim: 'Unit' }, entrypoint: 'default' };
 
     const estimatedMinimumFee = estimateOperationGroupFee(selectedParentHash, operationDetails);
-    console.log('aaaa', JSON.stringify(operationDetails));
+
     const onCancel = async () => {
         try {
             const response: BeaconResponseInputMessage = {
@@ -536,18 +536,22 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 </p>
                             )}
 
-                            <>
+                            <div>
                                 <OperationDetailHeader onClick={() => setShowOperationDetails(!showOperationDetails)}>
-                                    Raw Operation Content
-                                    {showOperationDetails ? <ExpandLess /> : <ExpandMore />}
+                                    <span>Raw Operation Content</span>
+                                    {showOperationDetails ? (
+                                        <ExpandLess style={{ verticalAlign: 'bottom' }} />
+                                    ) : (
+                                        <ExpandMore style={{ verticalAlign: 'bottom' }} />
+                                    )}
                                 </OperationDetailHeader>
-                                <Collapse in={showOperationDetails} timeout="auto" unmountOnExit={true}>
+                                <Collapse easing={'none'} enter={false} exit={false} in={showOperationDetails} timeout="auto" unmountOnExit={true}>
                                     <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
                                 </Collapse>
-                            </>
+                            </div>
 
                             {feeError === '' && (
-                                <div className="feeContainer">
+                                <div className="feeContainer" style={{ display: 'block', position: 'relative', top: '20px' }}>
                                     <TezosNumericInput
                                         decimalSeparator={t('general.decimal_separator')}
                                         label={'Operation Fee'}
