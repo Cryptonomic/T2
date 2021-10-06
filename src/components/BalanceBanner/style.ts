@@ -192,7 +192,7 @@ export const WertButton = styled.button`
     font-weight: 500;
     padding: 5px;
     letter-spacing: 0em;
-    text-decoration-line: underline;
+    text-decoration-line: none;
     color: ${({ theme: { colors } }) => colors.white};
     border: 1px solid white;
     background-color: ${({ theme: { colors } }) => colors.accent};

@@ -155,7 +155,7 @@ function BalanceBanner(props: Props) {
                             <div>
                                 <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
                             </div>
-                            <WertButton onClick={openWertUrl}>Buy Tezos</WertButton>
+                            {wertUrl.length > 0 && <WertButton onClick={openWertUrl}>Buy Tezos</WertButton>}
                         </div>
                     ) : null}
                     {selectedAccountType === AddressType.Manager && xtzPrices.usd !== '-1' && (
