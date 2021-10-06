@@ -68,6 +68,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
     }
 
     const menuOpen = Boolean(menuAnchorEl);
+    const author = nftObject.author ? nftObject.author : nftObject.creators;
 
     return (
         <Container>
@@ -150,7 +151,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                 </Header>
                 <Creator>
                     <Capitalize>{t('general.prepositions.by')}:</Capitalize>
-                    {nftObject.creators}
+                    {author}
                 </Creator>
                 <Description>{nftObject.description}</Description>
                 <CustomDivider />

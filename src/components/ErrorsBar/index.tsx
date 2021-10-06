@@ -1,7 +1,9 @@
-import React, { FunctionComponent, ReactElement } from 'react';
+import React, { FunctionComponent, ReactElement, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ErrorsBar as Bar, ErrorsList, ErrorMessage } from './style';
+import CloseIcon from '@mui/icons-material/Close';
+
+import { ErrorsBar as Bar, ErrorsList, ErrorMessage, CloseButton } from './style';
 import { ErrorsBarProps } from './types';
 
 /**
@@ -28,7 +30,7 @@ import { ErrorsBarProps } from './types';
  *
  * <ErrorsBar errors={errors} renderLimit={2} />
  */
-export const ErrorsBar: FunctionComponent<ErrorsBarProps> = ({ errors, renderLimit }): ReactElement => {
+export const ErrorsBar: FunctionComponent<ErrorsBarProps> = ({ errors, renderLimit, clearErrors }): ReactElement => {
     const { t } = useTranslation();
 
     if (!errors || errors.length === 0) {
@@ -59,6 +61,9 @@ export const ErrorsBar: FunctionComponent<ErrorsBarProps> = ({ errors, renderLim
                 ))}
             </ErrorsList>
             {moreErrorsCount > 0 ? <ErrorMessage>{t('components.errorsBar.more_errors', { counter: moreErrorsCount })}</ErrorMessage> : null}
+            <CloseButton onClick={clearErrors}>
+                <CloseIcon fontSize="inherit" />
+            </CloseButton>
         </Bar>
     );
 };

@@ -1,3 +1,4 @@
+import { Token } from '../../types/general';
 import { NFT_ACTION_TYPES, NFT_PAGE_TABS, NFT_MODAL_TABS, NFT_PROVIDERS, NFT_ERRORS } from './constants';
 
 /**
@@ -73,9 +74,17 @@ export interface NFTCollections {
 /**
  * The return data of the util's "get collections".
  */
+export interface GetNFTCollection {
+    collection: NFTObject[];
+    errors: NFTError[] | null;
+}
+
+/**
+ * The return data of the util's "get collections".
+ */
 export interface GetNFTCollections {
     collections: NFTCollections;
-    errors: NFTError[] | null;
+    errors: NFTError[];
 }
 
 /**
@@ -85,6 +94,7 @@ export interface GetNFTCollectionResponse {
     collections: NFTCollections;
     loading: boolean;
     errors: NFTError[] | null;
+    clearErrors: () => void;
 }
 
 /**
@@ -93,6 +103,7 @@ export interface GetNFTCollectionResponse {
 export interface NFTGalleryProps {
     activeTab: NFTGalleryTabType;
     collections: NFTCollections;
+    tokens: Token[];
     loading?: boolean;
     errors?: NFTError[] | null;
     isAddressReady: boolean;
@@ -102,6 +113,7 @@ export interface NFTGalleryProps {
     time: Date;
     currentNFTObject?: NFTObject | null;
     setCurrentNFTObject: (obj: NFTObject | undefined | null) => void;
+    clearErrors: () => void;
 }
 
 /**
@@ -109,6 +121,7 @@ export interface NFTGalleryProps {
  */
 export interface NFTErrorsProps {
     errors?: NFTError[] | null;
+    clearErrors?: () => void;
 }
 
 /**

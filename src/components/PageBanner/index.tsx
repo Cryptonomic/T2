@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import { PageBannerProps } from './types';
-import { PageBanner as PageBannerContainer, PageBannerRow, PageTitle, Breadcrumbs, Link, LinkIcon } from './style';
+import { PageBanner as PageBannerContainer, PageBannerRow, PageTitle, Breadcrumbs, Link, LinkIcon, TextLink } from './style';
 
 import Update from '../Update';
 
@@ -27,6 +27,7 @@ import Update from '../Update';
  *
  * Other elements:
  * @param {string} [title] - the page title
+ * @param {JSX.Element} [children] - the bottom part of the Page Banner.
  *
  * @example
  * import { AccountSelector } from '../../../contracts/duck/selectors';
@@ -49,7 +50,7 @@ import Update from '../Update';
  *  title={t('general.nouns.nft_gallery')}
  * />
  */
-const PageBanner = ({
+const PageBanner: FunctionComponent<PageBannerProps> = ({
     breadcrumbs,
     isAddressReady,
     isWalletSyncing,
@@ -58,7 +59,8 @@ const PageBanner = ({
     onSyncWallet,
     time,
     title,
-}: PageBannerProps) => {
+    children,
+}) => {
     return (
         <PageBannerContainer>
             <PageBannerRow opacity={isAddressReady ? '1' : '0.5'} justify={breadcrumbs ? 'space-between' : 'flex-end'} lightColor={true}>
@@ -77,8 +79,9 @@ const PageBanner = ({
                     </Link>
                 )}
             </PageBannerRow>
+            {children}
         </PageBannerContainer>
     );
 };
 
-export { PageBanner, PageBannerProps };
+export { PageBanner, PageBannerProps, PageBannerRow, Link, TextLink };

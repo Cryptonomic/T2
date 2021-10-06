@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { RootState } from '../../types/store';
 import { getAddressType } from '../../utils/account';
-import { AddressType, Account, Identity } from '../../types/general';
+import { AddressType, Account, Identity, TokenKind } from '../../types/general';
 import { TRANSACTIONS } from '../../constants/TabConstants';
 
 const selectedAccountHashSelector = (state: RootState) => state.app.selectedAccountHash;
@@ -84,3 +84,5 @@ export const getTokenSelector = createSelector(
     (accountHash, tokenName, tokens) =>
         tokens.find((token) => token.address === accountHash && (tokenName === '' || token.displayName === tokenName)) || tokens[0]
 );
+
+export const getNFTTokensSelector = createSelector(tokensSelector, (tokens) => tokens.filter((token) => [TokenKind.objkt].includes(token.kind)));

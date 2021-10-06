@@ -15,9 +15,11 @@ import { JSONPath } from 'jsonpath-plus';
 
 import { NFT_ACTION_TYPES, NFT_ERRORS, NFT_PROVIDERS } from './constants';
 import { TransferNFTError } from './exceptions';
-import { NFTObject, NFTCollections, NFTError, GetNFTCollections } from './types';
+import { NFTObject, NFTCollections, NFTError, GetNFTCollection, GetNFTCollections } from './types';
 
 import { Node, Token, TokenKind } from '../../types/general';
+
+import { getMainNode } from '../../utils/settings';
 
 /* ERRORS:
  * -----------------------
@@ -76,7 +78,7 @@ function makeLastPriceQuery(operations) {
 }
 
 /**
- * Get the NFT token details.
+ * Get the NFT object details.
  *
  * @param {string} tezosUrl - the Tezos URL
  * @param {number} objectId - the object ID
@@ -120,6 +122,47 @@ export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
 }
 
 /**
+ * Get collections for a given tokens.
+ *
+ * @param {Token[]} tokens - gets collections for these tokens.
+ * @param {string} managerAddress - the manager address.
+ * @param {Node} node - the selected node.
+ */
+export async function getNFTCollections(tokens: Token[], managerAddress: string, node: Node): Promise<GetNFTCollections> {
+    // Get collections for given tokens
+    const promises: Promise<any>[] = [];
+    tokens.map((token) => {
+        switch (token.displayName) {
+            case 'hic et nunc':
+                promises.push(getHicEtNuncCollection(token.mapid, managerAddress, node));
+                break;
+            case 'Kalamint':
+                promises.push(getKalamintCollection(token.mapid, managerAddress, node));
+                break;
+            default:
+                break;
+        }
+    });
+
+    const responses = await Promise.all(promises);
+
+    // Combine responses:
+    let errors: NFTError[] = [];
+    let collection: NFTObject[] = [];
+
+    responses.map((response) => {
+        if (response.errors && response.errors.length > 0) {
+            errors = errors.concat(response.errors);
+        }
+        if (response.collection && response.collection.length > 0) {
+            collection = collection.concat(response.collection);
+        }
+    });
+
+    return { collections: sortAndGroupCollection(collection), errors };
+}
+
+/**
  * Get the NFT collections grouped by type (ie. collected, minted).
  * Each token contains all details.
  *
@@ -129,7 +172,7 @@ export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
  *
  * @return {Promise<GetNFTCollections>} the list of NFT tokens grouped by type and the list of errors.
  */
-export async function getCollections(tokenMapId: number, managerAddress: string, node: Node): Promise<GetNFTCollections> {
+export async function getHicEtNuncCollection(tokenMapId: number, managerAddress: string, node: Node): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -223,25 +266,10 @@ export async function getCollections(tokenMapId: number, managerAddress: string,
                 artifactType: objectDetails.artifactType,
                 thumbnailUri: objectDetails.thumbnailUri,
                 creators: objectDetails.creators,
-                author: 'Some author test',
+                author: objectDetails.creators,
             } as NFTObject;
         })
     );
-
-    // 4. Sort and group tokens by its type ('Minted', 'Collected', etc.):
-    const sorted = collection.sort((a, b) => b.receivedOn.getTime() - a.receivedOn.getTime());
-    const grouped: NFTCollections = {
-        collected: [] as NFTObject[],
-        minted: [] as NFTObject[],
-    };
-
-    sorted.map((token) => {
-        if (token.action === NFT_ACTION_TYPES.MINTED) {
-            grouped.minted.push(token);
-        } else {
-            grouped.collected.push(token);
-        }
-    });
 
     /**
      * Fake errors:
@@ -255,36 +283,55 @@ export async function getCollections(tokenMapId: number, managerAddress: string,
     //         code: NFT_ERRORS.SOMETHING_WENT_WRONG
     //     }
     // );
-    // errors.push(
-    //     {
-    //         code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
-    //         data: [
-    //             {
-    //                 key: 'provider',
-    //                 value: 'Hic et nunc 22'
-    //             }
-    //         ]
-    //     }
-    // );
-    // errors.push(
-    //     {
-    //         code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,
-    //         data: [
-    //             {
-    //                 key: 'field',
-    //                 translate_value: 'components.nftGallery.fields.artifactUrl'
-    //             },
-    //             {
-    //                 key: 'provider',
-    //                 value: 'Hic et nunc'
-    //             }
-    //         ]
-    //     }
-    // );
+    errors.push({
+        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
+        data: [
+            {
+                key: 'provider',
+                value: 'Hic et nunc 22',
+            },
+        ],
+    });
+    errors.push({
+        code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,
+        data: [
+            {
+                key: 'field',
+                translate_value: 'components.nftGallery.fields.artifactUrl',
+            },
+            {
+                key: 'provider',
+                value: 'Hic et nunc',
+            },
+        ],
+    });
     /* END: Fake errors */
 
     // 5. Return the response:
-    return { collections: grouped, errors };
+    return { collection, errors };
+}
+
+/**
+ * Get the Kalamint collection.
+ * @param tokenMapId
+ * @param managerAddress
+ * @param node
+ */
+export async function getKalamintCollection(tokenMapId: number, managerAddress: string, node: Node): Promise<GetNFTCollections> {
+    /**
+     * @todo add fetching Kalamint collection
+     */
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve({
+                collections: {
+                    collected: [],
+                    minted: [],
+                },
+                errors: [],
+            });
+        }, 300);
+    });
 }
 
 /**
@@ -356,4 +403,26 @@ function chunkArray(arr: any[], len: number) {
     }
 
     return chunks;
+}
+
+/**
+ * Sort and group into [minted, collected, etc.] the collection of NFT objects
+ * @param {NFTObject[]} objects
+ */
+function sortAndGroupCollection(objects: NFTObject[]) {
+    const sorted = objects.sort((a, b) => b.receivedOn.getTime() - a.receivedOn.getTime());
+    const grouped: NFTCollections = {
+        collected: [] as NFTObject[],
+        minted: [] as NFTObject[],
+    };
+
+    sorted.map((token, index) => {
+        if (token.action === NFT_ACTION_TYPES.MINTED) {
+            grouped.minted.push(token);
+        } else {
+            grouped.collected.push(token);
+        }
+    });
+
+    return grouped;
 }
