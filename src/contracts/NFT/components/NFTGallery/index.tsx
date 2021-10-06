@@ -1,14 +1,14 @@
-import React, { FunctionComponent, ReactElement } from 'react';
+import React, { FunctionComponent, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { NFT_PAGE_TABS, NFT_PROVIDERS } from '../../constants';
-import { LoaderWrapper } from './style';
+import { LoaderWrapper, TokensCount } from './style';
 import { NFTGalleryProps, NFTGalleryTabType, NFTObject } from '../../types';
 
 import { Gallery, GalleryItem } from '../../../../components/Gallery';
 import Loader from '../../../../components/Loader';
 import { NFTGalleryThumb } from '..';
-import { PageBanner } from '../../../../components/PageBanner';
+import { PageBanner, PageBannerRow, TextLink as PageBannerLink } from '../../../../components/PageBanner';
 import { TabMenu, Tab, TabText } from '../../../../components/TabMenu';
 import TabPanel from '../../../../components/TabPanel';
 import { Container } from '../../../components/TabContainer/style';
@@ -19,11 +19,15 @@ import { tokensSupportURL } from '../../../../config.json';
 
 import { NFTErrors } from '../NFTErrors';
 import { NFTModal } from '../NFTModal';
+import { TokensDetailsModal } from '../../../../components/TokensDetailsModal';
+
+const PER_PAGE = 2;
 
 /**
  * Renders the <NFTGallery /> component with the address bar and the <Gallery /> component.
  *
  * @param {NFTCollections} collections - the NFT objects grouped by the action type (ie. 'collected', 'minted').
+ * @param {Token[]} tokens - tokens configswith details.
  * @param {NFTGalleryTabType} activeTab - the currently selected tab (collected, minted, etc.).
  * @param {(value: NFTGalleryTabType) => void} onChangePageTab - trigger when user clicks on the page tab menu item.
  * @param {AccountSelector} selectedAccount - the user's account (getAccountSelector).
@@ -33,6 +37,7 @@ import { NFTModal } from '../NFTModal';
  * @param {Date} time - displays ToolTip if true.
  * @param {boolean} [loading] - display the loader while collections are being loaded.
  * @param {NFTError[] | null} [errors] - the list of API errors.
+ * @param {() => void} [clearErrors] - on clear errors button click.
  *
  * @returns {ReactElement} returns <NFTGallery /> component
  *
@@ -52,6 +57,7 @@ import { NFTModal } from '../NFTModal';
  */
 export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
     collections,
+    tokens,
     loading,
     errors,
     isWalletSyncing,
@@ -62,8 +68,10 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
     time,
     currentNFTObject,
     setCurrentNFTObject,
+    clearErrors,
 }): ReactElement => {
     const { t } = useTranslation();
+    const [showTokensDetailsModal, setShowTokensDetailsModal] = useState(false);
 
     const onClickLink = (link: string) => openLink(link);
 
@@ -115,6 +123,8 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
         });
     };
 
+    const collectionsSize = collections.collected.reduce((a, c) => a + c.amount, 0) + collections.minted.reduce((a, c) => a + c.amount, 0);
+
     return (
         <Container>
             <PageBanner
@@ -125,7 +135,16 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                 onSyncWallet={onSyncWallet}
                 time={time}
                 title={t('general.nouns.nft_gallery')}
-            />
+            >
+                <PageBannerRow>
+                    {isAddressReady ? (
+                        <>
+                            <TokensCount>{t('components.nftGallery.tokensNumberInfo', { count: collectionsSize })}</TokensCount>
+                            <PageBannerLink onClick={() => setShowTokensDetailsModal(true)}>{t('general.verbs.see_more')}</PageBannerLink>
+                        </>
+                    ) : null}
+                </PageBannerRow>
+            </PageBanner>
             <TabMenu count={pageTabs.length}>
                 {pageTabs.map((tab) => {
                     return (
@@ -146,11 +165,18 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                 })}
             </TabMenu>
 
-            <NFTErrors errors={errors} />
+            <NFTErrors errors={errors} clearErrors={clearErrors} />
 
             {renderContent()}
 
             <NFTModal nftObject={currentNFTObject} onClose={() => setCurrentNFTObject(null)} />
+
+            <TokensDetailsModal
+                open={showTokensDetailsModal}
+                tokens={tokens}
+                onClose={() => setShowTokensDetailsModal(false)}
+                onBrowseObjects={(token) => console.log('---> browse', token)}
+            />
         </Container>
     );
 };

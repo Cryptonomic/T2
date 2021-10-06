@@ -8,3 +8,10 @@ export const LoaderWrapper = styled.div`
     padding: 80px 20px;
     position: relative;
 `;
+
+/**
+ * The number of tokens in the page banner.
+ */
+export const TokensCount = styled.span`
+    margin-right: 4px;
+`;

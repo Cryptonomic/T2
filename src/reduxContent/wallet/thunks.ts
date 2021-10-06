@@ -54,6 +54,7 @@ import {
 import * as HicNFTUtil from '../../contracts/HicNFT/util';
 
 import { setSignerThunk, setLedgerSignerThunk } from '../app/thunks';
+import { syncNFTThunk } from '../nft/thunks';
 
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { createWallet } from '../../utils/wallet';
@@ -85,7 +86,11 @@ export function automaticAccountRefresh() {
             clearAutomaticAccountRefresh();
         }
 
-        currentAccountRefreshInterval = setInterval(() => dispatch(syncWalletThunk()), 60_000);
+        currentAccountRefreshInterval = setInterval(() => {
+            dispatch(syncWalletThunk()).then(() => {
+                dispatch(syncNFTThunk());
+            });
+        }, 60_000);
     };
 }
 
@@ -618,6 +623,7 @@ export function syncWalletThunk() {
         dispatch(updateFetchedTimeAction(new Date()));
         await saveIdentitiesToLocal(state().wallet.identities);
         dispatch(setWalletIsSyncingAction(false));
+        return;
     };
 }
 

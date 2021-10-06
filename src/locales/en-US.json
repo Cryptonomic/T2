@@ -37,7 +37,8 @@
             "buy": "Buy",
             "sell": "Sell",
             "add": "Add",
-            "remove": "Remove"
+            "remove": "Remove",
+            "see_more": "See more"
         },
         "nouns": {
             "amount": "Amount",
@@ -402,6 +403,8 @@
         },
         "nftGallery": {
             "custom_fee_tooltip": "We have already calculated the optimal fee for your transaction.",
+            "tokensNumberInfo": "You have {{count}} object.",
+            "tokensNumberInfo_plural": "You have {{count}} objects.",
             "fields": {
                 "artifactUrl": "image URL"
             },
@@ -490,6 +493,15 @@
             "settings": "SETTINGS",
             "logout": "LOG OUT",
             "help": "HELP"
+        },
+        "tokensDetailsModal": {
+            "browse": "Browse objects",
+            "modalTitle": "Tokens",
+            "status": {
+                "active": "Active"
+            },
+            "tokenSupplyDetail": "Token supply is {{counter}}.",
+            "tokenHoldersDetail": "{{counter}} holders."
         },
         "termsModal": {
             "hi_there": "Hi there!",

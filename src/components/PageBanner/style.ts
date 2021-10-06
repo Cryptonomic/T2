@@ -64,6 +64,23 @@ export const Link = styled.div`
 `;
 
 /**
+ * The underlined text link for the PageBanner.
+ */
+export const TextLink = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: inherit;
+    line-height: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+
+    :hover {
+        text-decoration: none;
+        opacity: 0.7;
+    }
+`;
+
+/**
  * The SVG link icon.
  */
 export const LinkIcon = mStyled(OpenInNewIcon)({

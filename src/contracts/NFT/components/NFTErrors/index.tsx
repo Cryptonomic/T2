@@ -52,7 +52,7 @@ import { ErrorsBar } from '../../../../components/ErrorsBar';
  *
  * <NFTErrors errors={errors} />
  */
-export const NFTErrors: FunctionComponent<NFTErrorsProps> = ({ errors }): ReactElement => {
+export const NFTErrors: FunctionComponent<NFTErrorsProps> = ({ errors, clearErrors }): ReactElement => {
     const { t } = useTranslation();
 
     /**
@@ -88,5 +88,5 @@ export const NFTErrors: FunctionComponent<NFTErrorsProps> = ({ errors }): ReactE
         }
     };
 
-    return <ErrorsBar errors={errors ? errors?.map((e) => errorMessage(e)) : []} renderLimit={2} />;
+    return <ErrorsBar errors={errors ? errors?.map((e) => errorMessage(e)) : []} renderLimit={2} clearErrors={clearErrors} />;
 };
