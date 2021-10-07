@@ -83,7 +83,7 @@ async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: s
  *
  * @return
  */
-export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
+export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number) {
     const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 514, packedNftId);
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
@@ -128,6 +128,50 @@ export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
     };
 }
 
+export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: number) {
+    const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
+    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 860, packedNftId);
+    const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
+    const ipfsHash = Buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
+
+    const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+    const nftDetailJson = await nftDetails.json();
+
+    const nftName = nftDetailJson.name;
+    const nftDescription = nftDetailJson.description;
+    const nftCreators = nftDetailJson.creators
+        .map((c) => c.trim())
+        .map((c) => `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}`)
+        .join(', '); // TODO: use names where possible
+    const nftArtifactType = nftDetailJson.mimeType;
+
+    // TODO: check image mimetype explicitly
+
+    let nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.artifactUri.slice(7)}`;
+    if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
+        nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.artifactUri.slice(7)}`;
+    }
+    const nftThumbnailUri = `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.slice(7)}`;
+
+    // Check the proxy:
+    let nftArtifactModerationMessage;
+    const artifactProxy = await getNFTArtifactProxy(nftArtifact, nftArtifactType);
+    if (artifactProxy) {
+        nftArtifact = artifactProxy.content;
+        nftArtifactModerationMessage = artifactProxy.moderationMessage;
+    }
+
+    return {
+        name: nftName,
+        description: nftDescription,
+        creators: nftCreators,
+        artifactUrl: nftArtifact,
+        artifactType: nftArtifactType,
+        artifactModerationMessage: nftArtifactModerationMessage,
+        thumbnailUri: nftThumbnailUri,
+    };
+}
+
 /**
  * Get collections for a given tokens.
  *
@@ -137,14 +181,13 @@ export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
  * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
 export async function getNFTCollections(tokens: Token[], managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollections> {
-    // Get collections for given tokens
     const promises: Promise<any>[] = [];
     tokens.map((token) => {
-        switch (token.displayName) {
+        switch (token.displayName.toLowerCase()) {
             case 'hic et nunc':
                 promises.push(getHicEtNuncCollection(token.mapid, managerAddress, node, skipDetails));
                 break;
-            case 'Kalamint':
+            case 'kalamint':
                 promises.push(getKalamintCollection(token.mapid, managerAddress, node, skipDetails));
                 break;
             default:
@@ -210,11 +253,12 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
                 await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
                     result.map((row) => {
                         let amount = 0;
-                        const action = row.parameters_entrypoints;
+                        let action = row.parameters_entrypoints;
 
                         if (action === 'collect') {
                             amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
                         } else if (action === 'transfer') {
+                            action = 'collect';
                             amount = Number(
                                 row.parameters
                                     .toString()
@@ -223,6 +267,8 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
                                         '$1'
                                     )
                             );
+                        } else if (action === 'mint_OBJKT') {
+                            action = 'mint';
                         }
 
                         priceMap[row.operation_group_hash] = {
@@ -266,7 +312,7 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
             // Get the other object details, like name, description, artifactUrl, etc.
             if (!skipDetails) {
                 try {
-                    objectDetails = await getNFTObjectDetails(node.tezosUrl, objectId);
+                    objectDetails = await getHENNFTObjectDetails(node.tezosUrl, objectId);
 
                     nftObject = {
                         ...nftObject,
@@ -279,8 +325,16 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
                         creators: objectDetails.creators,
                         author: objectDetails.creators,
                     };
-                } catch {
-                    //
+                } catch (e) {
+                    errors.push({
+                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
+                        data: [
+                            {
+                                key: 'provider',
+                                value: 'Hic et nunc',
+                            },
+                        ],
+                    });
                 }
             }
 
@@ -300,28 +354,28 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
     //         code: NFT_ERRORS.SOMETHING_WENT_WRONG
     //     }
     // );
-    errors.push({
-        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
-        data: [
-            {
-                key: 'provider',
-                value: 'Hic et nunc 22',
-            },
-        ],
-    });
-    errors.push({
-        code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,
-        data: [
-            {
-                key: 'field',
-                translate_value: 'components.nftGallery.fields.artifactUrl',
-            },
-            {
-                key: 'provider',
-                value: 'Hic et nunc',
-            },
-        ],
-    });
+    // errors.push({
+    //     code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
+    //     data: [
+    //         {
+    //             key: 'provider',
+    //             value: 'Hic et nunc',
+    //         },
+    //     ],
+    // });
+    // errors.push({
+    //     code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,
+    //     data: [
+    //         {
+    //             key: 'field',
+    //             translate_value: 'components.nftGallery.fields.artifactUrl',
+    //         },
+    //         {
+    //             key: 'provider',
+    //             value: 'Hic et nunc',
+    //         },
+    //     ],
+    // });
     /* END: Fake errors */
 
     // 5. Return the response:
@@ -335,21 +389,126 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
  * @param node
  * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
-export async function getKalamintCollection(tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollections> {
-    /**
-     * @todo add fetching Kalamint collection
-     */
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve({
-                collections: {
-                    collected: [],
-                    minted: [],
-                },
-                errors: [],
-            });
-        }, 300);
-    });
+export async function getKalamintCollection(tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+    const { conseilUrl, apiKey, network } = node;
+    const errors: NFTError[] = []; // Store errors to display to the user.
+
+    // 1. Build and execute the query:
+    let collectionQuery = ConseilQueryBuilder.blankQuery();
+    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
+        `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+    ]);
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
+    collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
+
+    const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
+
+    const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
+    const queryChunks = chunkArray(operationGroupIds, 30);
+
+    // 2. Get prices:
+    const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
+
+    const priceMap: any = {};
+    await Promise.all(
+        priceQueries.map(
+            async (q) =>
+                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
+                    result.map((row) => {
+                        let amount = 0;
+                        let action = row.parameters_entrypoints;
+
+                        if (action === 'collect') {
+                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
+                        } else if (action === 'transfer') {
+                            action = 'collect';
+                            amount = Number(
+                                row.parameters
+                                    .toString()
+                                    .replace(
+                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
+                                        '$1'
+                                    )
+                            );
+                        } else if (action === 'mint_OBJKT') {
+                            action = 'mint';
+                        }
+
+                        priceMap[row.operation_group_hash] = {
+                            price: new BigNumber(row.amount),
+                            amount,
+                            timestamp: row.timestamp,
+                            action,
+                        };
+                    })
+                )
+        )
+    );
+
+    // 3. Parse tokens to the expected format and fetch missing details:
+    const collection = await Promise.all(
+        collectionResult.map(async (row) => {
+            let price = 0;
+            const objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
+            let objectDetails;
+            let receivedOn = new Date();
+            let action = '';
+
+            try {
+                const priceRecord = priceMap[row.operation_group_id];
+                price = priceRecord.price.toNumber();
+                receivedOn = new Date(priceRecord.timestamp);
+                action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
+            } catch {
+                //
+            }
+
+            let nftObject = {
+                objectId,
+                provider: NFT_PROVIDERS.KALAMINT,
+                amount: Number(row.value),
+                price: isNaN(price) ? 0 : price,
+                receivedOn,
+                action,
+            } as NFTObject;
+
+            // Get the other object details, like name, description, artifactUrl, etc.
+            if (!skipDetails) {
+                try {
+                    objectDetails = await getKalamintNFTObjectDetails(node.tezosUrl, objectId);
+
+                    nftObject = {
+                        ...nftObject,
+                        name: objectDetails.name,
+                        description: objectDetails.description,
+                        artifactUrl: objectDetails.artifactUrl,
+                        artifactType: objectDetails.artifactType,
+                        artifactModerationMessage: objectDetails.artifactModerationMessage,
+                        thumbnailUri: objectDetails.thumbnailUri,
+                        creators: objectDetails.creators,
+                        author: objectDetails.creators,
+                    };
+                } catch (e) {
+                    errors.push({
+                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
+                        data: [
+                            {
+                                key: 'provider',
+                                value: 'Kalamint',
+                            },
+                        ],
+                    });
+                }
+            }
+
+            return nftObject;
+        })
+    );
+
+    // 5. Return the response:
+    return { collection, errors };
 }
 
 /**

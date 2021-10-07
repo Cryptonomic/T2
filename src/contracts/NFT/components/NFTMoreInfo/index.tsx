@@ -29,6 +29,8 @@ import {
     StyledTezosIcon,
 } from './style';
 
+import { NFT_PROVIDERS } from '../../constants';
+
 import { NFTMoreInfoProps } from '../../types';
 
 import Media from '../../../../components/NFTMedia';
@@ -51,6 +53,14 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
 
     const handleMenuClose = () => {
         setMenuAnchorEl(null);
+    };
+
+    const openArtifactSite = (objectid: number) => {
+        if (nftObject?.provider === NFT_PROVIDERS.HIC_ET_NUNC) {
+            openArtifactLink(`https://www.hicetnunc.xyz/objkt/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.KALAMINT) {
+            openArtifactLink(`https://kalamint.io/token/${nftObject.objectId}`);
+        }
     };
 
     const openArtifactLink = (link: string) => {
@@ -116,13 +126,13 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                                 disableAutoFocus={true}
                                 disableEnforceFocus={true}
                             >
-                                <StyledMenuItem onClick={() => openArtifactLink(`https://www.hicetnunc.xyz/objkt/${nftObject.objectId}`)}>
+                                <StyledMenuItem onClick={() => openArtifactSite(nftObject.objectId)}>
                                     <StyledListItemIcon>
                                         <RemoveRedEyeOutlinedIcon fontSize="small" />
                                     </StyledListItemIcon>
                                     <ListItemText>
                                         {t(`components.image.view_on`, {
-                                            provider: t('components.nftGallery.providers.HIC_ET_NUNC'),
+                                            provider: t(`components.nftGallery.providers.${nftObject.provider}`),
                                         })}
                                     </ListItemText>
                                 </StyledMenuItem>

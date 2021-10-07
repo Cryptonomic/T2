@@ -380,6 +380,7 @@
             },
             "providers": {
                 "HIC_ET_NUNC": "Hic et nunc",
+                "KALAMINT": "Kalamint",
                 "IPFS": "IPFS"
             }
         },

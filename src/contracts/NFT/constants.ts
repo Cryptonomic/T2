@@ -16,6 +16,7 @@ export const NFT_PAGE_TABS = NFT_ACTION_TYPES;
  */
 export const NFT_PROVIDERS = {
     HIC_ET_NUNC: 'HIC_ET_NUNC',
+    KALAMINT: 'KALAMINT',
     IPFS: 'IPFS',
 } as const;
 
