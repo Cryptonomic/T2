@@ -28,7 +28,8 @@
             "burn": "Burn",
             "sign": "Sign",
             "verify": "Verify",
-            "copy": "Copy"
+            "copy": "Copy",
+            "see_more": "See more"
         },
         "nouns": {
             "amount": "Сумма",
@@ -352,6 +353,8 @@
         },
         "nftGallery": {
             "custom_fee_tooltip": "We have already calculated the optimal fee for your transaction.",
+            "tokensNumberInfo": "You have {{count}} object.",
+            "tokensNumberInfo_plural": "You have {{count}} objects.",
             "fields": {
                 "artifactUrl": "image URL"
             },
@@ -438,6 +441,15 @@
             "settings": "НАСТРОЙКИ",
             "logout": "ВЫЙТИ",
             "help": "HELP"
+        },
+        "tokensDetailsModal": {
+            "browse": "Browse objects",
+            "modalTitle": "Tokens",
+            "status": {
+                "active": "Active"
+            },
+            "tokenSupplyDetail": "Token supply is {{counter}}.",
+            "tokenHoldersDetail": "{{counter}} holders."
         },
         "termsModal": {
             "hi_there": "Привет!",

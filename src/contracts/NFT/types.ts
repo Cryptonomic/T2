@@ -54,6 +54,7 @@ export interface NFTObject {
     amount: number;
     artifactUrl?: string;
     artifactType?: string;
+    artifactModerationMessage?: string;
     thumbnailUri?: string;
     creators?: any;
     author?: string;

@@ -12,48 +12,19 @@ import {
 } from 'conseiljs';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
+import { proxyFetch, ImageProxyServer, ImageProxyDataType } from 'nft-image-proxy';
 
 import { NFT_ACTION_TYPES, NFT_ERRORS, NFT_PROVIDERS } from './constants';
 import { TransferNFTError } from './exceptions';
 import { NFTObject, NFTCollections, NFTError, GetNFTCollection, GetNFTCollections } from './types';
 
+import { imageProxyURL, imageAPIKey } from '../../config.json';
+
 import { Node, Token, TokenKind } from '../../types/general';
 
 import { getMainNode } from '../../utils/settings';
 
-/* ERRORS:
- * -----------------------
- * Errors are handled on two ways.
- *
- * The first of all, errors "not-harming" the response format or success are collected in the "errors" variable (NFTError).
- * The each error contains the "code" field (list of available codes is defined in ../constants.ts#NFT_ERRORS).
- * Then, the "code" is translated and rendered in the application. The translation comes from: components.nftGallery.errors.${code}.
- * If the additional data has to be passed to the translation, you can use optional "data" field:
- * {
- *   code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,  // -> t('components.nftGallery.errors.unsupported_data_format')
- *   data: [
- *     {
- *       key: 'provider'
- *       value: 'Hic et nunc' // uses the given string as it is when it is set with the "Value" field.
- *     },
- *     {
- *       key: 'field',
- *       translate_value: 'components.nftGallery.fields.artifactUrl' // uses the translation from a given path.
- *     }
- *   ]
- * }
- *
- * Translations:
- * components.nftGallery.errors.unsupported_data_format: The {{field}} from {{provider}} is invalid."
- * components.nftGallery.fields.artifactUrl: "image URL"
- *
- * Result:
- * "The image URL from Hic et nunc is invalid".
- *
- *
- * The second supported option to handle the errors is just to throw any exception. Then the thunk's try-catch
- * block produces the generic SOMETHING_WENT_WRONG error.
- */
+const proxySupportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
 
 /**
  * The last price query.
@@ -75,6 +46,33 @@ function makeLastPriceQuery(operations) {
     lastPriceQuery = ConseilQueryBuilder.setLimit(lastPriceQuery, operations.length);
 
     return lastPriceQuery;
+}
+
+/**
+ * Check the proxy for the NFT artifact.
+ *
+ * @param {string} [artifactUrl]
+ * @param {string} [artifactType]
+ */
+async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: string | null): Promise<{ content: string; moderationMessage: string } | null> {
+    if (!artifactType || proxySupportedTypes.includes(artifactType) || !artifactUrl || !imageProxyURL) {
+        return null;
+    }
+
+    const server: ImageProxyServer = { url: imageProxyURL, apikey: imageAPIKey, version: '1.0.0' };
+    let content = artifactUrl;
+    let moderationMessage = '';
+
+    const response: any = await proxyFetch(server, artifactUrl, ImageProxyDataType.Json, false);
+    if (response.rpc_status === 'Ok') {
+        if (response.result.moderation_status === 'Allowed') {
+            content = response.result.data;
+        } else if (response.result.moderation_status === 'Blocked') {
+            moderationMessage = `Image was hidden because of it contains the following labels: ${response.result.categories.join(', ')}`;
+        }
+    }
+
+    return { content, moderationMessage };
 }
 
 /**
@@ -111,12 +109,21 @@ export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
     // const nftThumbnailUri = `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.toString().slice(7)}`;
     const nftThumbnailUri = undefined;
 
+    // Check the proxy:
+    let nftArtifactModerationMessage;
+    const artifactProxy = await getNFTArtifactProxy(nftArtifact, nftArtifactType);
+    if (artifactProxy) {
+        nftArtifact = artifactProxy.content;
+        nftArtifactModerationMessage = artifactProxy.moderationMessage;
+    }
+
     return {
         name: nftName,
         description: nftDescription,
         creators: nftCreators,
         artifactUrl: nftArtifact,
         artifactType: nftArtifactType,
+        artifactModerationMessage: nftArtifactModerationMessage,
         thumbnailUri: nftThumbnailUri,
     };
 }
@@ -127,17 +134,18 @@ export async function getNFTObjectDetails(tezosUrl: string, objectId: number) {
  * @param {Token[]} tokens - gets collections for these tokens.
  * @param {string} managerAddress - the manager address.
  * @param {Node} node - the selected node.
+ * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
-export async function getNFTCollections(tokens: Token[], managerAddress: string, node: Node): Promise<GetNFTCollections> {
+export async function getNFTCollections(tokens: Token[], managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollections> {
     // Get collections for given tokens
     const promises: Promise<any>[] = [];
     tokens.map((token) => {
         switch (token.displayName) {
             case 'hic et nunc':
-                promises.push(getHicEtNuncCollection(token.mapid, managerAddress, node));
+                promises.push(getHicEtNuncCollection(token.mapid, managerAddress, node, skipDetails));
                 break;
             case 'Kalamint':
-                promises.push(getKalamintCollection(token.mapid, managerAddress, node));
+                promises.push(getKalamintCollection(token.mapid, managerAddress, node, skipDetails));
                 break;
             default:
                 break;
@@ -169,10 +177,11 @@ export async function getNFTCollections(tokens: Token[], managerAddress: string,
  * @param {number} tokenMapId
  * @param {string} managerAddress
  * @param {Node} node
+ * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  *
  * @return {Promise<GetNFTCollections>} the list of NFT tokens grouped by type and the list of errors.
  */
-export async function getHicEtNuncCollection(tokenMapId: number, managerAddress: string, node: Node): Promise<GetNFTCollection> {
+export async function getHicEtNuncCollection(tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -231,7 +240,7 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
     const collection = await Promise.all(
         collectionResult.map(async (row) => {
             let price = 0;
-            let objectId;
+            const objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
             let objectDetails;
             let receivedOn = new Date();
             let action = '';
@@ -245,29 +254,37 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
                 //
             }
 
-            // Get the other object details, like name, description, artifactUrl, etc.
-            try {
-                objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
-                objectDetails = await getNFTObjectDetails(node.tezosUrl, objectId);
-            } catch {
-                //
-            }
-
-            return {
+            let nftObject = {
                 objectId,
                 provider: NFT_PROVIDERS.HIC_ET_NUNC,
-                name: objectDetails.name,
-                description: objectDetails.description,
                 amount: Number(row.value),
                 price: isNaN(price) ? 0 : price,
                 receivedOn,
                 action,
-                artifactUrl: objectDetails.artifactUrl,
-                artifactType: objectDetails.artifactType,
-                thumbnailUri: objectDetails.thumbnailUri,
-                creators: objectDetails.creators,
-                author: objectDetails.creators,
             } as NFTObject;
+
+            // Get the other object details, like name, description, artifactUrl, etc.
+            if (!skipDetails) {
+                try {
+                    objectDetails = await getNFTObjectDetails(node.tezosUrl, objectId);
+
+                    nftObject = {
+                        ...nftObject,
+                        name: objectDetails.name,
+                        description: objectDetails.description,
+                        artifactUrl: objectDetails.artifactUrl,
+                        artifactType: objectDetails.artifactType,
+                        artifactModerationMessage: objectDetails.artifactModerationMessage,
+                        thumbnailUri: objectDetails.thumbnailUri,
+                        creators: objectDetails.creators,
+                        author: objectDetails.creators,
+                    };
+                } catch {
+                    //
+                }
+            }
+
+            return nftObject;
         })
     );
 
@@ -316,8 +333,9 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
  * @param tokenMapId
  * @param managerAddress
  * @param node
+ * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
-export async function getKalamintCollection(tokenMapId: number, managerAddress: string, node: Node): Promise<GetNFTCollections> {
+export async function getKalamintCollection(tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollections> {
     /**
      * @todo add fetching Kalamint collection
      */
@@ -332,6 +350,39 @@ export async function getKalamintCollection(tokenMapId: number, managerAddress: 
             });
         }, 300);
     });
+}
+
+/**
+ * Get the NFT token info
+ *
+ * @param {Node} node
+ * @param {number} mapId
+ */
+export async function getTokenInfo(node: Node, mapId: number = 515): Promise<{ holders: number; totalBalance: number }> {
+    const { conseilUrl, apiKey, network } = node;
+
+    let holdersQuery = ConseilQueryBuilder.blankQuery();
+    holdersQuery = ConseilQueryBuilder.addFields(holdersQuery, 'value');
+    holdersQuery = ConseilQueryBuilder.addPredicate(holdersQuery, 'big_map_id', ConseilOperator.EQ, [mapId]);
+    holdersQuery = ConseilQueryBuilder.setLimit(holdersQuery, 20_000);
+
+    const holdersResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', holdersQuery);
+
+    let holders = 0;
+    let totalBalance = new BigNumber(0);
+    holdersResult.forEach((r) => {
+        try {
+            const balance = new BigNumber(r.value);
+            if (balance.isGreaterThan(0)) {
+                totalBalance = totalBalance.plus(balance);
+            }
+            holders++;
+        } catch {
+            // eh
+        }
+    });
+
+    return { holders, totalBalance: totalBalance.toNumber() };
 }
 
 /**
@@ -386,6 +437,23 @@ export async function transferNFT(
     // } catch(err) {
     //     throw new TransferNFTError('components.messageBar.messages.nft_send_transaction_failed', transfers);
     // }
+}
+
+/**
+ * Get the NFT collection size.
+ * If you need a collection size for a specific token, pass the one-element array, ie: [token].
+ *
+ * @param {Token} tokens - the list of tokens
+ * @param {string} managerAddress - manager address
+ * @param {Node} node - selected node
+ *
+ * @return {Promise<number>}
+ */
+export async function getCollectionSize(tokens: Token[], managerAddress: string, node: Node): Promise<number> {
+    const { collections } = await getNFTCollections(tokens, managerAddress, node);
+    const tokenCount = collections.collected.reduce((a, c) => a + c.amount, 0) + collections.minted.reduce((a, c) => a + c.amount, 0);
+
+    return tokenCount;
 }
 
 /**

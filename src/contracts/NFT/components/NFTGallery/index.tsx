@@ -171,12 +171,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
 
             <NFTModal nftObject={currentNFTObject} onClose={() => setCurrentNFTObject(null)} />
 
-            <TokensDetailsModal
-                open={showTokensDetailsModal}
-                tokens={tokens}
-                onClose={() => setShowTokensDetailsModal(false)}
-                onBrowseObjects={(token) => console.log('---> browse', token)}
-            />
+            <TokensDetailsModal open={showTokensDetailsModal} tokens={tokens} onClose={() => setShowTokensDetailsModal(false)} />
         </Container>
     );
 };

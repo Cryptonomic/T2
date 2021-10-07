@@ -30,7 +30,6 @@ import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
 import BeaconSignature from '../../featureModals/Beacon/BeaconSignature';
 import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
 import BeaconInfo from '../../featureModals/Beacon/BeaconInfo';
-import HicNFTTransferModal from '../../contracts/HicNFT/components/TransferModal';
 import PlentyHarvestModal from '../../contracts/Plenty/components/HarvestModal';
 import KolibriHarvestModal from '../../contracts/KolibriToken/components/HarvestModal';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
@@ -291,7 +290,6 @@ function AddressBlock(props: Props) {
     const isBeaconPermissionModalOpen = isModalOpen && activeModal === 'beaconPermission';
     const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
-    const isHicNFTModalOpen = isModalOpen && activeModal === 'HicNFT';
     const isPlentyHarvestModalOpen = isModalOpen && activeModal === 'PlentyHarvest';
     const isKolibriHarvestModalOpen = isModalOpen && activeModal === 'KolibriHarvest';
 
@@ -371,54 +369,52 @@ function AddressBlock(props: Props) {
                 <ChevronRightIcon style={{ fill: !isModalOpen && isTokensPageActive ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
 
-            {tokens.map((token, index) => {
-                let tokenType = AddressType.Token;
+            {tokens
+                .filter((tk) => tk.kind !== TokenKind.objkt)
+                .map((token, index) => {
+                    let tokenType = AddressType.Token;
 
-                if (!token.balance) {
-                    return null;
-                }
+                    if (!token.balance) {
+                        return null;
+                    }
 
-                if (token.kind === TokenKind.wxtz) {
-                    tokenType = AddressType.wXTZ;
-                }
+                    if (token.kind === TokenKind.wxtz) {
+                        tokenType = AddressType.wXTZ;
+                    }
 
-                if (token.kind === TokenKind.tzbtc) {
-                    tokenType = AddressType.TzBTC;
-                }
+                    if (token.kind === TokenKind.tzbtc) {
+                        tokenType = AddressType.TzBTC;
+                    }
 
-                if (token.kind === TokenKind.kusd) {
-                    tokenType = AddressType.kUSD;
-                }
+                    if (token.kind === TokenKind.kusd) {
+                        tokenType = AddressType.kUSD;
+                    }
 
-                if (token.kind === TokenKind.objkt) {
-                    tokenType = AddressType.objkt;
-                }
+                    if (token.kind === TokenKind.blnd) {
+                        tokenType = AddressType.BLND;
+                    }
 
-                if (token.kind === TokenKind.blnd) {
-                    tokenType = AddressType.BLND;
-                }
+                    if (token.kind === TokenKind.stkr) {
+                        tokenType = AddressType.STKR;
+                    }
 
-                if (token.kind === TokenKind.stkr) {
-                    tokenType = AddressType.STKR;
-                }
+                    if (token.kind === TokenKind.plenty) {
+                        tokenType = AddressType.plenty;
+                    }
 
-                if (token.kind === TokenKind.plenty) {
-                    tokenType = AddressType.plenty;
-                }
+                    if (token.kind === TokenKind.tzip12) {
+                        tokenType = AddressType.Token2;
+                    }
 
-                if (token.kind === TokenKind.tzip12) {
-                    tokenType = AddressType.Token2;
-                }
-
-                return (
-                    <TokenNav
-                        key={`${token.address}_${index || 0}_${tokenType}`}
-                        isActive={!isModalOpen && token.address === selectedAccountHash && selectedTokenName === token.displayName}
-                        token={token}
-                        onClick={() => goToAccount(token.address, index, tokenType, token.displayName)}
-                    />
-                );
-            })}
+                    return (
+                        <TokenNav
+                            key={`${token.address}_${index || 0}_${tokenType}`}
+                            isActive={!isModalOpen && token.address === selectedAccountHash && selectedTokenName === token.displayName}
+                            token={token}
+                            onClick={() => goToAccount(token.address, index, tokenType, token.displayName)}
+                        />
+                    );
+                })}
 
             {isManagerReady ? (
                 <AddDelegateLabel onClick={() => onCheckInteractModal()}>
@@ -476,8 +472,6 @@ function AddressBlock(props: Props) {
             {isInteractModalOpen && (
                 <InteractContractModal open={isInteractModalOpen} onClose={() => setIsInteractModalOpen(false)} addresses={regularAddresses} />
             )}
-
-            {isHicNFTModalOpen && <HicNFTTransferModal open={isHicNFTModalOpen} onClose={() => setIsModalOpen(false, 'hicNFT')} />}
 
             {isPlentyHarvestModalOpen && <PlentyHarvestModal open={isPlentyHarvestModalOpen} onClose={() => setIsModalOpen(false, 'PlentyHarvest')} />}
             {isKolibriHarvestModalOpen && <KolibriHarvestModal open={isKolibriHarvestModalOpen} onClose={() => setIsModalOpen(false, 'KolibriHarvest')} />}

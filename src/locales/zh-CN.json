@@ -28,7 +28,8 @@
             "burn": "Burn",
             "sign": "Sign",
             "verify": "Verify",
-            "copy": "Copy"
+            "copy": "Copy",
+            "see_more": "See more"
         },
         "nouns": {
             "amount": "数额",
@@ -351,6 +352,8 @@
         },
         "nftGallery": {
             "custom_fee_tooltip": "We have already calculated the optimal fee for your transaction.",
+            "tokensNumberInfo": "You have {{count}} object.",
+            "tokensNumberInfo_plural": "You have {{count}} objects.",
             "fields": {
                 "artifactUrl": "image URL"
             },
@@ -437,6 +440,15 @@
             "settings": "设置",
             "logout": "登出",
             "help": "HELP"
+        },
+        "tokensDetailsModal": {
+            "browse": "Browse objects",
+            "modalTitle": "Tokens",
+            "status": {
+                "active": "Active"
+            },
+            "tokenSupplyDetail": "Token supply is {{counter}}.",
+            "tokenHoldersDetail": "{{counter}} holders."
         },
         "termsModal": {
             "hi_there": "你好！",

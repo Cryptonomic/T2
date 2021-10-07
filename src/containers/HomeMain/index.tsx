@@ -16,7 +16,6 @@ import ImplicitAccount from '../../contracts/ImplicitAccount';
 import TzBtcToken from '../../contracts/TzBtcToken';
 import WXTZToken from '../../contracts/WrappedTezos';
 import KolibriToken from '../../contracts/KolibriToken';
-import HicNFT from '../../contracts/HicNFT';
 import BlndToken from '../../contracts/BlndToken';
 import StkrToken from '../../contracts/StkrToken';
 import PlentyToken from '../../contracts/Plenty';
@@ -55,8 +54,6 @@ function HomeMain() {
                 return <WXTZToken />;
             case AddressType.kUSD:
                 return <KolibriToken />;
-            case AddressType.objkt:
-                return <HicNFT />;
             case AddressType.BLND:
                 return <BlndToken />;
             case AddressType.STKR:

@@ -51,8 +51,6 @@ import {
     changeAccountAction,
 } from '../app/actions';
 
-import * as HicNFTUtil from '../../contracts/HicNFT/util';
-
 import { setSignerThunk, setLedgerSignerThunk } from '../app/thunks';
 import { syncNFTThunk } from '../nft/thunks';
 
@@ -61,6 +59,7 @@ import { createWallet } from '../../utils/wallet';
 import { ACTIVATION } from '../../constants/TransactionTypes';
 import { Identity, Token, AddressType } from '../../types/general';
 
+import * as NFTUtil from '../../contracts/NFT/util';
 import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
 import * as tzip7Util from '../../contracts/TokenContract/util';
 import * as tzip12Util from '../../contracts/Token2Contract/util';
@@ -87,7 +86,12 @@ export function automaticAccountRefresh() {
         }
 
         currentAccountRefreshInterval = setInterval(() => {
+            // Sync the wallet:
             dispatch(syncWalletThunk()).then(() => {
+                // When wallet sync is done, try to sync NFT collections and tokens.
+                // The 'syncNFTThunk' not necessary runs anything, ie. it won't do anything
+                // if 'syncEnabled' flag is set to true in the NFT store.
+                // NFT sync is also very expensive so it's run less frequently than wallet sync.
                 dispatch(syncNFTThunk());
             });
         }, 60_000);
@@ -268,8 +272,8 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].kind
                 );
             } else if (tokens[tokenIndex].kind === TokenKind.objkt) {
-                balanceAsync = HicNFTUtil.getCollectionSize(tokens[tokenIndex].mapid, selectedParentHash, mainNode);
-                detailsAsync = await HicNFTUtil.getTokenInfo(mainNode, 515).then((r) => {
+                balanceAsync = NFTUtil.getCollectionSize([tokens[tokenIndex]], selectedParentHash, mainNode);
+                detailsAsync = await NFTUtil.getTokenInfo(mainNode, 515).then((r) => {
                     return { holders: r.holders, supply: r.totalBalance };
                 });
                 transAsync = [];
@@ -505,7 +509,7 @@ export function syncWalletThunk() {
                     const artToken = token as ArtToken;
                     const administrator = '';
 
-                    const balance = await HicNFTUtil.getCollectionSize(token.mapid, selectedParentHash, mainNode);
+                    const balance = await NFTUtil.getCollectionSize([token], selectedParentHash, mainNode);
                     const transactions = []; // await HicNFTUtil.getTokenTransactions('', selectedParentHash, selectedNode);
 
                     return { ...artToken, administrator, balance, transactions };

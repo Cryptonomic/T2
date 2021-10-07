@@ -31,7 +31,7 @@ import {
 
 import { NFTMoreInfoProps } from '../../types';
 
-import Media from '../../../../components/Media';
+import Media from '../../../../components/NFTMedia';
 
 import { formatAmount } from '../../../../utils/currency';
 import { openLink } from '../../../../utils/general';
@@ -88,6 +88,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                             controls: true,
                             loop: true,
                         }}
+                        artifactModerationMessage={nftObject.artifactModerationMessage}
                     />
                 ) : null}
             </Col>

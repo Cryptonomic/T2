@@ -74,14 +74,6 @@ export const getCollectionsThunk = () => async (dispatch, getState) => {
 export const syncNFTTokensDetailsThunk = () => async (dispatch, getState) => {
     const nftTokens = getState().wallet.tokens.filter((token) => [TokenKind.objkt].includes(token.kind));
     nftTokens.map(async (token) => {
-        console.log('FLAG --- sync token', token.displayName, token.address);
         await dispatch(syncTokenThunk(token.address));
-        console.log('FLAG --- sync token end', token.displayName);
     });
-    // for (let i=0; i < nftTokens.length; i++ ) {
-    //     const token = nftTokens[i];
-    //     console.log('FLAG --- sync token', token.displayName, token.address)
-    //     await dispatch(syncTokenThunk(token.address));
-    //     console.log('FLAG --- sync token end', token.displayName)
-    // }
 };

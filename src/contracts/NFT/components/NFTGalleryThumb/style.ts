@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { styled as mStyled } from '@mui/styles';
-import Media from '../../../../components/Media';
+import Media from '../../../../components/NFTMedia';
 import TezosIcon from '../../../../components/TezosIcon';
 
 export const ThumbContainer = styled.article`

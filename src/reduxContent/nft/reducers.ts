@@ -31,10 +31,10 @@ export function nftReducer(state: NFTState = defaultState, action: NFTActionType
             return { ...state, syncEnabled: action.payload.status };
         }
         case START_NFT_SYNC: {
-            return { ...state, isNFTSyncing: true };
+            return { ...state, isNFTSyncing: true, lastSyncAt: new Date() };
         }
         case END_NFT_SYNC: {
-            return { ...state, isNFTSyncing: false, lastSyncAt: new Date() };
+            return { ...state, isNFTSyncing: false };
         }
         case SET_NFT_COLLECTIONS_ARE_LOADING: {
             return { ...state, collectionsAreLoading: action.payload.loading };

@@ -102,6 +102,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         helpLink: 'https://www.hicetnunc.xyz/',
         displayHelpLink: 'hicetnunc.xyz',
         marketAddress: 'KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn',
+        hideOnLanding: true,
     },
     {
         network: 'mainnet',
@@ -121,6 +122,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         helpLink: 'https://kalamint.io/',
         displayHelpLink: 'kalamint.io',
         marketAddress: 'KT1EpGgjQs73QfFJs9z7m1Mxm5MTnpC2tqse',
+        hideOnLanding: true,
     },
     {
         network: 'mainnet',
