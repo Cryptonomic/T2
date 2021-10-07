@@ -54,7 +54,7 @@ export const CloseButton = styled(IconButton)`
         }
 
         @media all and (min-width: 768px) {
-            display: none;
+            display: block;
         }
     }
 `;
