@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from '@mui/material/Snackbar';
 import styled from 'styled-components';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import MessageContent from './MessageContent';
@@ -29,7 +29,7 @@ const SnackbarWrapper = styled(Snackbar)`
 
 function MessageBar() {
     const settings = useSelector<RootState, any>((state: RootState) => state.settings);
-    const { text, hash, isError, localeParam } = useSelector<RootState, MessageState>(state => state.message, shallowEqual);
+    const { text, hash, isError, localeParam } = useSelector<RootState, MessageState>((state) => state.message, shallowEqual);
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
 

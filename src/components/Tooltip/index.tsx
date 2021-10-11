@@ -1,12 +1,12 @@
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import styled from 'styled-components';
 import { lighten } from 'polished';
 
 import { ms } from '../../styles/helpers';
 import { TooltipProps } from './types';
 
-const StyledTooltip = styled(props => <Tooltip classes={{ popper: props.className, tooltip: 'tooltip' }} {...props} />)`
+const StyledTooltip = styled((props) => <Tooltip classes={{ popper: props.className, tooltip: 'tooltip' }} {...props} />)`
     & .tooltip {
         padding: ${ms(-2)};
         color: ${({ theme: { colors } }) => colors.primary};

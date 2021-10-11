@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { remote } from 'electron';
 import path from 'path';
 import { useTranslation } from 'react-i18next';
-import Button from '@material-ui/core/Button';
-import Fab from '@material-ui/core/Fab';
+import Button from '@mui/material/Button';
+import Fab from '@mui/material/Fab';
 
 import BackButton from '../../components/BackButton';
 import PasswordInput from '../../components/PasswordInput';

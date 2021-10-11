@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import InputAdornment from '@mui/material/InputAdornment';
 import { SoftSigner } from 'conseiljs-softsigner';
 import styled from 'styled-components';
 

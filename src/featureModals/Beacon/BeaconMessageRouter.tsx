@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { WalletClient, BeaconMessageType, BeaconRequestOutputMessage, ConnectionContext } from '@airgap/beacon-sdk';
-
+import { BeaconErrorType } from '@airgap/beacon-sdk';
 import { setBeaconMessageAction, setBeaconLoading, setBeaconClientAction } from '../../reduxContent/app/actions';
 import { setModalOpen, setModalValue } from '../../reduxContent/modal/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
@@ -54,6 +54,7 @@ export const BeaconMessageRouter = () => {
 
             if (connectedBlockchainNode.network !== message.network.type) {
                 dispatch(createMessageAction(`Beacon unexpected network: ${message.network.type}`, true));
+                beaconClient.respond({ id: message.id, type: BeaconMessageType.Error, errorType: BeaconErrorType.NETWORK_NOT_SUPPORTED });
                 return;
             }
 
@@ -62,8 +63,9 @@ export const BeaconMessageRouter = () => {
                 return;
             }
 
-            if (!message.operationDetails.filter((o) => o.kind === 'transaction' || o.kind === 'delegation').length) {
+            if (!message.operationDetails.filter((o) => o.kind === 'transaction' || o.kind === 'delegation' || o.kind === 'origination').length) {
                 dispatch(createMessageAction(`Unsupported Beacon operation, ${message.operationDetails[0].kind}`, true));
+                beaconClient.respond({ id: message.id, type: BeaconMessageType.Error, errorType: BeaconErrorType.UNKNOWN_ERROR });
                 return;
             }
 

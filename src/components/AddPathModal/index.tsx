@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import Fab from '@material-ui/core/Fab';
+import Fab from '@mui/material/Fab';
 import Modal from '../CustomModal';
 import TextField from '../TextField';
 import { ms } from '../../styles/helpers';

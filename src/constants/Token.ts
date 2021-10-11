@@ -30,6 +30,7 @@ import uusdIcon from '../../resources/contracts/uusd-icon.png';
 import crunchIcon from '../../resources/contracts/crunch-icon.png';
 import crdaoIcon from '../../resources/contracts/crdao-icon.png';
 import quipuIcon from '../../resources/contracts/quipu-icon.png';
+import gifIcon from '../../resources/contracts/gif-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -263,21 +264,20 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9',
-        displayName: 'Hedgehoge',
-        symbol: 'HEH',
+        address: 'KT1XTxpQvo7oRCqp85LikEZgAZ22uDxhbWJv',
+        displayName: 'GIF DAO',
+        symbol: 'GIF',
         balance: 0,
         transactions: [],
         activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip7,
-        icon: hehIcon,
-        scale: 6,
-        precision: 6,
-        round: 2,
-        mapid: 3686,
-        balancePath: '$.args[1].int',
-        helpLink: 'https://twitter.com/heh_hedgehoge',
-        displayHelpLink: '@heh_hedgehoge',
+        kind: TokenKind.tzip12,
+        icon: gifIcon,
+        scale: 9,
+        precision: 9,
+        round: 4,
+        mapid: 7654,
+        helpLink: 'https://gif.games',
+        displayHelpLink: 'gif.games',
     },
     {
         network: 'mainnet',
@@ -559,6 +559,24 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9',
+        displayName: 'Hedgehoge',
+        symbol: 'HEH',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: hehIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 3686,
+        balancePath: '$.args[1].int',
+        helpLink: 'https://twitter.com/heh_hedgehoge',
+        displayHelpLink: '@heh_hedgehoge',
+    },
+    {
+        network: 'mainnet',
         address: 'KT18jyxMDSMJRPPaZjoe49SUkXxax9QZtcWH',
         displayName: 'Four Leaf Clover',
         symbol: 'CLOVER',
@@ -590,6 +608,7 @@ export const knownTokenDescription = {
     FLAME: 'is the utility token of FlameDeFi.',
     BTCtz: 'is a Bitcoin-pegged stablecoin.',
     hDAO: ' is the hic et nunc governance token.',
+    GIF: ' is governance token of the gif.games ecosystem',
 };
 
 export const knownContractNames = {

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import i18n from 'i18next';
-import RootRef from '@material-ui/core/RootRef';
-import Popover from '@material-ui/core/Popover';
+import Popover from '@mui/material/Popover';
 import { useTranslation } from 'react-i18next';
 
 import localesMap from '../../constants/LocalesMap';
@@ -23,7 +22,7 @@ function LanguageSelector(props: Props) {
     const [open, setOpen] = useState(false);
 
     function renderOptions() {
-        return Object.keys(localesMap).map(key => {
+        return Object.keys(localesMap).map((key) => {
             return (
                 <ItemWrapper key={key} value={key} selected={locale === key} onClick={() => onLanguageChange(key)}>
                     <div> {localesMap[key]} </div>
@@ -51,35 +50,31 @@ function LanguageSelector(props: Props) {
     return (
         <SelectContainer>
             <LabelWrapper>{t('general.nouns.language')}</LabelWrapper>
-            <RootRef rootRef={domRef}>
-                <SelectWrapper onClick={() => setOpen(!open)}>
-                    <SelectContent>{localesMap[locale]}</SelectContent>
-                    <SelectIcon />
-                </SelectWrapper>
-            </RootRef>
+            <SelectWrapper onClick={() => setOpen(!open)} ref={domRef}>
+                <SelectContent>{localesMap[locale]}</SelectContent>
+                <SelectIcon />
+            </SelectWrapper>
 
             <Popover
                 open={open}
                 anchorEl={domRef.current}
                 anchorOrigin={{
                     vertical: 'center',
-                    horizontal: 'left'
+                    horizontal: 'left',
                 }}
                 transformOrigin={{
                     vertical: 'center',
-                    horizontal: 'left'
+                    horizontal: 'left',
                 }}
                 PaperProps={{
                     style: {
-                        width: domRef.current ? domRef.current.clientWidth : 300
-                    }
+                        width: domRef.current ? domRef.current.clientWidth : 300,
+                    },
                 }}
                 onClose={() => setOpen(false)}
             >
-                <GroupContainerWrapper>
-                    <RootRef rootRef={setLanguageScrollRef}>
-                        <ScrollContainer>{renderOptions()}</ScrollContainer>
-                    </RootRef>
+                <GroupContainerWrapper ref={setLanguageScrollRef}>
+                    <ScrollContainer>{renderOptions()}</ScrollContainer>
                 </GroupContainerWrapper>
             </Popover>
         </SelectContainer>

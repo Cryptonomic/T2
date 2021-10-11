@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import Notifications from '@material-ui/icons/Notifications';
-import IconButton from '@material-ui/core/IconButton';
+import Notifications from '@mui/icons-material/Notifications';
+import IconButton from '@mui/material/IconButton';
 import { H4 } from '../Heading';
 import TezosIcon from '../TezosIcon';
 import Button from '../Button';
@@ -192,7 +192,7 @@ export const WertButton = styled.span`
     font-weight: 500;
     padding-left: 5px;
     letter-spacing: 0em;
-    text-decoration-line: underline;
+    text-decoration-line: none;
     color: ${({ theme: { colors } }) => colors.white};
     background-color: ${({ theme: { colors } }) => colors.accent};
 `;

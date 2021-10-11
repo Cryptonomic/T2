@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { KeyStoreType } from 'conseiljs';
 import { useTranslation } from 'react-i18next';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 import KeyDetails from '../../featureModals/KeyDetails';
 import TezosAddress from '../TezosAddress';
@@ -155,8 +155,12 @@ function BalanceBanner(props: Props) {
                             <div>
                                 <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
                             </div>
-                            <WertButton onClick={openWertUrl}>Buy Tezos</WertButton>
-                            <LinkIcon iconName="new-window" color="white" />
+                            {wertUrl.length > 0 && (
+                                <>
+                                    <WertButton onClick={openWertUrl}>Buy Tezos</WertButton>
+                                    <LinkIcon iconName="new-window" color="white" />
+                                </>
+                            )}
                         </div>
                     ) : null}
                     {selectedAccountType === AddressType.Manager && xtzPrices.usd !== '-1' && (

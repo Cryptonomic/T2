@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import FormControl from '@material-ui/core/FormControl';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import CheckCircle from '@material-ui/icons/CheckCircle';
-import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
+import InputLabel from '@mui/material/InputLabel';
+import Input from '@mui/material/Input';
+import FormControl from '@mui/material/FormControl';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 
 import { useTranslation } from 'react-i18next';
 
@@ -146,7 +146,7 @@ function InputValid(props: Props) {
     return (
         <Container>
             <Content>
-                <LabelWrapper>{label}</LabelWrapper>
+                <LabelWrapper variant="standard">{label}</LabelWrapper>
                 <InputWrapper key={label} type={isShowed ? 'text' : 'password'} onChange={(event) => changFunc(event.target.value)} score={score} />
             </Content>
             <CheckContainer visibilityIcon={true}>
