@@ -341,25 +341,6 @@ function AddressBlock(props: Props) {
                 );
             })}
 
-            {delegatedAddresses.length > 0 && (
-                <TitleLabel>
-                    <AccountTitle>{t('general.nouns.total_balance')}</AccountTitle>
-                    {ready || storeType === Mnemonic ? (
-                        <AmountView color="primary" size={ms(0)} amount={balance + smartBalance} scale={6} precision={6} round={2} />
-                    ) : null}
-                </TitleLabel>
-            )}
-
-            <AddDelegateLabel isActive={isModalOpen && activeModal === 'sign'} onClick={() => setIsModalOpen(true, 'sign')}>
-                <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
-                <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'sign' ? '#FFFFFF' : '#132C57' }} />
-            </AddDelegateLabel>
-
-            <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
-                <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
-                <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'beaconInfo' ? '#FFFFFF' : '#132C57' }} />
-            </AddDelegateLabel>
-
             <AddDelegateLabel isActive={!isModalOpen && isNFTGallerysPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.NFTGallery)}>
                 <DelegateTitle>{t('general.nouns.nft_gallery')}</DelegateTitle>
             </AddDelegateLabel>
@@ -415,6 +396,25 @@ function AddressBlock(props: Props) {
                         />
                     );
                 })}
+
+            <AddDelegateLabel isActive={isModalOpen && activeModal === 'sign'} onClick={() => setIsModalOpen(true, 'sign')}>
+                <DelegateTitle>{t('general.nouns.sign_n_verify')}</DelegateTitle>
+                <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'sign' ? '#FFFFFF' : '#132C57' }} />
+            </AddDelegateLabel>
+
+            <AddDelegateLabel isActive={isModalOpen && activeModal === 'beaconInfo'} onClick={() => setIsModalOpen(true, 'beaconInfo')}>
+                <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
+                <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'beaconInfo' ? '#FFFFFF' : '#132C57' }} />
+            </AddDelegateLabel>
+
+            {delegatedAddresses.length > 0 && (
+                <TitleLabel>
+                    <AccountTitle>{t('general.nouns.total_balance')}</AccountTitle>
+                    {ready || storeType === Mnemonic ? (
+                        <AmountView color="primary" size={ms(0)} amount={balance + smartBalance} scale={6} precision={6} round={2} />
+                    ) : null}
+                </TitleLabel>
+            )}
 
             {isManagerReady ? (
                 <AddDelegateLabel onClick={() => onCheckInteractModal()}>
