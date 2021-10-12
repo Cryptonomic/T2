@@ -15,6 +15,7 @@ import { JSONPath } from 'jsonpath-plus';
 import { proxyFetch, ImageProxyServer, ImageProxyDataType } from 'nft-image-proxy';
 
 import { NFT_ACTION_TYPES, NFT_ERRORS, NFT_PROVIDERS } from './constants';
+import { TransferNFTError } from './exceptions';
 import { NFTObject, NFTCollections, NFTError, GetNFTCollection, GetNFTCollections } from './types';
 
 import { imageProxyURL, imageAPIKey } from '../../config.json';
@@ -564,30 +565,11 @@ export async function transferNFT(
     gas?: number,
     freight?: number
 ): Promise<string> {
-    /** MOCK */
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve('some_operation_id');
-            // reject(new TransferNFTError('components.messageBar.messages.nft_send_transaction_failed', transfers))
-        }, 300);
-    });
-    /** END MOCK */
-
-    // try {
-    //     return await MultiAssetTokenHelper.transfer(
-    //         server,
-    //         address,
-    //         signer,
-    //         keystore,
-    //         fee,
-    //         source,
-    //         transfers,
-    //         gas,
-    //         freight
-    //     );
-    // } catch(err) {
-    //     throw new TransferNFTError('components.messageBar.messages.nft_send_transaction_failed', transfers);
-    // }
+    try {
+        return await MultiAssetTokenHelper.transfer(server, address, signer, keystore, fee, source, transfers, gas, freight);
+    } catch (err) {
+        throw new TransferNFTError('components.messageBar.messages.nft_send_transaction_failed', transfers);
+    }
 }
 
 /**
