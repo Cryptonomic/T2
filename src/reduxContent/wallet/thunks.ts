@@ -357,11 +357,6 @@ export function syncTokenThunk(tokenAddress) {
 
             try {
                 const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
-                console.log(
-                    `(syncTokenThunk) token update for ${tokens[tokenIndex].symbol}: ${balance}t, ${JSON.stringify(details)}, existing: ${JSON.stringify(
-                        tokens[tokenIndex]
-                    )}`
-                );
 
                 let administrator = tokens[tokenIndex].administrator;
                 administrator = details?.administrator || '';
@@ -513,33 +508,10 @@ export function syncWalletThunk() {
                     const transactions = []; // await HicNFTUtil.getTokenTransactions('', selectedParentHash, selectedNode);
 
                     return { ...artToken, administrator, balance, transactions };
-                } else if (token.kind === TokenKind.blnd) {
+                } else if (token.kind === TokenKind.stkr || token.kind === TokenKind.blnd) {
                     let administrator = token.administrator;
 
                     let details: any = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch((e) => {
-                        console.log('Caught: ' + e);
-                        return undefined;
-                    });
-                    administrator = details?.administrator || '';
-
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
-                    details = { ...details, holders: keyCount };
-
-                    const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await tzip7Util.syncTokenTransactions(
-                        token.address,
-                        selectedParentHash,
-                        mainNode,
-                        token.transactions,
-                        token.kind
-                    ); /* TODO */
-
-                    return { ...token, administrator, balance, transactions, details };
-                } else if (token.kind === TokenKind.stkr) {
-                    let administrator = token.administrator;
-
-                    let details: any = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch((e) => {
-                        console.log('Caught: ' + e);
                         return undefined;
                     });
                     administrator = details?.administrator || '';
@@ -566,14 +538,13 @@ export function syncWalletThunk() {
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
 
-                    const balance = await plentyUtil.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await tzip7Util.syncTokenTransactions(
-                        token.address,
+                    const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
+                        mainNode.tezosUrl,
+                        token.mapid,
                         selectedParentHash,
-                        mainNode,
-                        token.transactions,
-                        token.kind
-                    ); /* TODO */
+                        token.balancePath
+                    ).catch(() => 0);
+                    const transactions = await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
 
                     return { ...token, administrator, balance, transactions, details };
                 } else if (token.kind === TokenKind.tzip12) {
