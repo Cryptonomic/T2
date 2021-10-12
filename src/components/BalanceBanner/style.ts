@@ -185,16 +185,14 @@ export const CurrencySymbol = styled.span`
     margin-left: 5px;
 `;
 
-export const WertButton = styled.button`
+export const WertButton = styled.span`
     font-family: Roboto;
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
-    padding: 5px;
+    padding-left: 5px;
     letter-spacing: 0em;
     text-decoration-line: none;
     color: ${({ theme: { colors } }) => colors.white};
-    border: 1px solid white;
     background-color: ${({ theme: { colors } }) => colors.accent};
-    border-radius: 5%;
 `;
