@@ -57,6 +57,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
 
     const openArtifactSite = (objectid: number) => {
         if (nftObject?.provider === NFT_PROVIDERS.HIC_ET_NUNC) {
+            // TODO: urls should be defined in token info
             openArtifactLink(`https://www.hicetnunc.xyz/objkt/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.KALAMINT) {
             openArtifactLink(`https://kalamint.io/token/${nftObject.objectId}`);

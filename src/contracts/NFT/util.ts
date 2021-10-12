@@ -15,14 +15,11 @@ import { JSONPath } from 'jsonpath-plus';
 import { proxyFetch, ImageProxyServer, ImageProxyDataType } from 'nft-image-proxy';
 
 import { NFT_ACTION_TYPES, NFT_ERRORS, NFT_PROVIDERS } from './constants';
-import { TransferNFTError } from './exceptions';
 import { NFTObject, NFTCollections, NFTError, GetNFTCollection, GetNFTCollections } from './types';
 
 import { imageProxyURL, imageAPIKey } from '../../config.json';
 
-import { Node, Token, TokenKind } from '../../types/general';
-
-import { getMainNode } from '../../utils/settings';
+import { Node, Token } from '../../types/general';
 
 const proxySupportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
 
@@ -143,14 +140,9 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
         .map((c) => c.trim())
         .map((c) => `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}`)
         .join(', '); // TODO: use names where possible
-    const nftArtifactType = nftDetailJson.mimeType;
+    const nftArtifactType = 'image/png'; // no mime type in kalamint metadata
 
-    // TODO: check image mimetype explicitly
-
-    let nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.artifactUri.slice(7)}`;
-    if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
-        nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.artifactUri.slice(7)}`;
-    }
+    let nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.artifactUri.slice(7)}`;
     const nftThumbnailUri = `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.slice(7)}`;
 
     // Check the proxy:
