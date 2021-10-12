@@ -5,6 +5,7 @@
             "authentication": "Authentication",
             "send": "Отправить",
             "copy_address": "Скопировать Адрес",
+            "copy_link": "Copy Link",
             "show": "Показать",
             "hide": "Скрыть",
             "use_max": "Использовать максимум",
@@ -27,7 +28,8 @@
             "burn": "Burn",
             "sign": "Sign",
             "verify": "Verify",
-            "copy": "Copy"
+            "copy": "Copy",
+            "see_more": "See more"
         },
         "nouns": {
             "amount": "Сумма",
@@ -78,7 +80,8 @@
             "voting": "Voting",
             "implementation": "Implementation",
             "vaults": "Vaults",
-            "collection": "Collection"
+            "collection": "Collection",
+            "nft_gallery": "NFT Gallery"
         },
         "errors": {
             "no_hex_data": "Введённая строка не является hex данными",
@@ -263,6 +266,9 @@
             "secretKeyNotice": "Be careful when handling the unencrypted secret key. Anyone with your secret key has full access to your balance and can sign operations on your behalf! Click to reveal your secret key.",
             "hardwareSignerNotice": "Hardware signers like the Ledger Nano S store the secret key on the device and do not provide it externally."
         },
+        "errorsBar": {
+            "more_errors": "...and {{counter}} more errors."
+        },
         "fees": {
             "low_fee": "Низкая Комиссия",
             "medium_fee": "Средняя Комиссия",
@@ -273,6 +279,12 @@
             "enter_custom_amount": "Внесите Уровнь Комиссии",
             "required_minium_fee": "Внимание! Требуется минимальный уровень комиссии для осуществления этой транзакции в размере<1> <0>{{fee}}</0> XTZ</1>.",
             "minimum_fee_error": "Ваш кастомный уровень комиссии ниже минимального уровня, установленного Tezos системой."
+        },
+        "image": {
+            "view_on": "View on {{provider}}",
+            "errors": {
+                "file_cannot_load": "File cannot load."
+            }
         },
         "inputAddress": {
             "setting_delegate": "Настройка Делегата",
@@ -335,7 +347,42 @@
                 "mint_operation_failed": "Mint operation failed.",
                 "mint_operation_success": "Successfully started mint token.",
                 "burn_operation_failed": "Burn operation failed.",
-                "burn_operation_success": "Successfully started burn token."
+                "burn_operation_success": "Successfully started burn token.",
+                "nft_send_transaction_failed": "The NFT transaction failed."
+            }
+        },
+        "nftGallery": {
+            "custom_fee_tooltip": "We have already calculated the optimal fee for your transaction.",
+            "tokensNumberInfo": "You have {{count}} object.",
+            "tokensNumberInfo_plural": "You have {{count}} objects.",
+            "fields": {
+                "artifactUrl": "image URL"
+            },
+            "modal": {
+                "tabs": {
+                    "more_info": "More info",
+                    "send": "Send"
+                },
+                "recipient_address": "Recipient Address",
+                "send": "Send",
+                "token": "Token",
+                "collectedOn": "Collected on",
+                "collectedFor": "Collected for",
+                "quantity": "Quantity"
+            },
+            "tabs": {
+                "collected": "Collected",
+                "minted": "Minted"
+            },
+            "errors": {
+                "something_went_wrong": "Something went wrong!",
+                "unsupported_data_format": "The {{field}} from {{provider}} is invalid.",
+                "unsupported_provider": "The {{provider}} data format is invalid."
+            },
+            "providers": {
+                "HIC_ET_NUNC": "Hic et nunc",
+                "KALAMINT": "Kalamint",
+                "IPFS": "IPFS"
             }
         },
         "pdfReader": {
@@ -395,6 +442,15 @@
             "settings": "НАСТРОЙКИ",
             "logout": "ВЫЙТИ",
             "help": "HELP"
+        },
+        "tokensDetailsModal": {
+            "browse": "Browse objects",
+            "modalTitle": "Tokens",
+            "status": {
+                "active": "Active"
+            },
+            "tokenSupplyDetail": "Token supply is {{counter}}.",
+            "tokenHoldersDetail": "{{counter}} holders."
         },
         "termsModal": {
             "hi_there": "Привет!",

@@ -51,15 +51,15 @@ import {
     changeAccountAction,
 } from '../app/actions';
 
-import * as HicNFTUtil from '../../contracts/HicNFT/util';
-
 import { setSignerThunk, setLedgerSignerThunk } from '../app/thunks';
+import { syncNFTThunk } from '../nft/thunks';
 
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { createWallet } from '../../utils/wallet';
 import { ACTIVATION } from '../../constants/TransactionTypes';
 import { Identity, Token, AddressType } from '../../types/general';
 
+import * as NFTUtil from '../../contracts/NFT/util';
 import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
 import * as tzip7Util from '../../contracts/TokenContract/util';
 import * as tzip12Util from '../../contracts/Token2Contract/util';
@@ -85,7 +85,16 @@ export function automaticAccountRefresh() {
             clearAutomaticAccountRefresh();
         }
 
-        currentAccountRefreshInterval = setInterval(() => dispatch(syncWalletThunk()), 60_000);
+        currentAccountRefreshInterval = setInterval(() => {
+            // Sync the wallet:
+            dispatch(syncWalletThunk()).then(() => {
+                // When wallet sync is done, try to sync NFT collections and tokens.
+                // The 'syncNFTThunk' not necessary runs anything, ie. it won't do anything
+                // if 'syncEnabled' flag is set to true in the NFT store.
+                // NFT sync is also very expensive so it's run less frequently than wallet sync.
+                dispatch(syncNFTThunk());
+            });
+        }, 60_000);
     };
 }
 
@@ -263,8 +272,8 @@ export function syncTokenThunk(tokenAddress) {
                     tokens[tokenIndex].kind
                 );
             } else if (tokens[tokenIndex].kind === TokenKind.objkt) {
-                balanceAsync = HicNFTUtil.getCollectionSize(tokens[tokenIndex].mapid, selectedParentHash, mainNode);
-                detailsAsync = await HicNFTUtil.getTokenInfo(mainNode, 515).then((r) => {
+                balanceAsync = NFTUtil.getCollectionSize([tokens[tokenIndex]], selectedParentHash, mainNode);
+                detailsAsync = await NFTUtil.getTokenInfo(mainNode, 515).then((r) => {
                     return { holders: r.holders, supply: r.totalBalance };
                 });
                 transAsync = [];
@@ -348,11 +357,6 @@ export function syncTokenThunk(tokenAddress) {
 
             try {
                 const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
-                console.log(
-                    `(syncTokenThunk) token update for ${tokens[tokenIndex].symbol}: ${balance}t, ${JSON.stringify(details)}, existing: ${JSON.stringify(
-                        tokens[tokenIndex]
-                    )}`
-                );
 
                 let administrator = tokens[tokenIndex].administrator;
                 administrator = details?.administrator || '';
@@ -500,37 +504,14 @@ export function syncWalletThunk() {
                     const artToken = token as ArtToken;
                     const administrator = '';
 
-                    const balance = await HicNFTUtil.getCollectionSize(token.mapid, selectedParentHash, mainNode);
+                    const balance = await NFTUtil.getCollectionSize([token], selectedParentHash, mainNode);
                     const transactions = []; // await HicNFTUtil.getTokenTransactions('', selectedParentHash, selectedNode);
 
                     return { ...artToken, administrator, balance, transactions };
-                } else if (token.kind === TokenKind.blnd) {
+                } else if (token.kind === TokenKind.stkr || token.kind === TokenKind.blnd) {
                     let administrator = token.administrator;
 
                     let details: any = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch((e) => {
-                        console.log('Caught: ' + e);
-                        return undefined;
-                    });
-                    administrator = details?.administrator || '';
-
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
-                    details = { ...details, holders: keyCount };
-
-                    const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await tzip7Util.syncTokenTransactions(
-                        token.address,
-                        selectedParentHash,
-                        mainNode,
-                        token.transactions,
-                        token.kind
-                    ); /* TODO */
-
-                    return { ...token, administrator, balance, transactions, details };
-                } else if (token.kind === TokenKind.stkr) {
-                    let administrator = token.administrator;
-
-                    let details: any = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch((e) => {
-                        console.log('Caught: ' + e);
                         return undefined;
                     });
                     administrator = details?.administrator || '';
@@ -557,14 +538,13 @@ export function syncWalletThunk() {
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
 
-                    const balance = await plentyUtil.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await tzip7Util.syncTokenTransactions(
-                        token.address,
+                    const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
+                        mainNode.tezosUrl,
+                        token.mapid,
                         selectedParentHash,
-                        mainNode,
-                        token.transactions,
-                        token.kind
-                    ); /* TODO */
+                        token.balancePath
+                    ).catch(() => 0);
+                    const transactions = await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
 
                     return { ...token, administrator, balance, transactions, details };
                 } else if (token.kind === TokenKind.tzip12) {
@@ -618,6 +598,7 @@ export function syncWalletThunk() {
         dispatch(updateFetchedTimeAction(new Date()));
         await saveIdentitiesToLocal(state().wallet.identities);
         dispatch(setWalletIsSyncingAction(false));
+        return;
     };
 }
 

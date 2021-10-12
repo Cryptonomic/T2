@@ -5,6 +5,7 @@
             "authentication": "Authentication",
             "send": "전송",
             "copy_address": "주소 복사",
+            "copy_link": "Copy Link",
             "show": "표시",
             "hide": "숨기기",
             "use_max": "최대 사용",
@@ -27,7 +28,8 @@
             "burn": "Burn",
             "sign": "Sign",
             "verify": "Verify",
-            "copy": "Copy"
+            "copy": "Copy",
+            "see_more": "See more"
         },
         "nouns": {
             "amount": "금액",
@@ -78,7 +80,8 @@
             "voting": "Voting",
             "implementation": "Implementation",
             "vaults": "Vaults",
-            "collection": "Collection"
+            "collection": "Collection",
+            "nft_gallery": "NFT Gallery"
         },
         "errors": {
             "no_hex_data": "입력 한 데이터가 잘못되었습니다.",
@@ -263,6 +266,9 @@
             "secretKeyNotice": "Be careful when handling the unencrypted secret key. Anyone with your secret key has full access to your balance and can sign operations on your behalf! Click to reveal your secret key.",
             "hardwareSignerNotice": "Hardware signers like the Ledger Nano S store the secret key on the device and do not provide it externally."
         },
+        "errorsBar": {
+            "more_errors": "...and {{counter}} more errors."
+        },
         "fees": {
             "low_fee": "낮은 비용",
             "medium_fee": "중간 비용",
@@ -273,6 +279,12 @@
             "enter_custom_amount": "사용자 정의 비용을 입력하세요",
             "required_minium_fee": "이 거래에 필요한 최소 수수료는 <1> <0>{{fee}}</0> XTZ</1> 입니다.",
             "minimum_fee_error": "사용자 정의 요금은 Tezos 네트워크 최소 비용보다 낮습니다."
+        },
+        "image": {
+            "view_on": "View on {{provider}}",
+            "errors": {
+                "file_cannot_load": "File cannot load."
+            }
         },
         "inputAddress": {
             "setting_delegate": "베이커 설정하기",
@@ -335,7 +347,42 @@
                 "mint_operation_failed": "Mint operation failed.",
                 "mint_operation_success": "Successfully started mint token.",
                 "burn_operation_failed": "Burn operation failed.",
-                "burn_operation_success": "Successfully started burn token."
+                "burn_operation_success": "Successfully started burn token.",
+                "nft_send_transaction_failed": "The NFT transaction failed."
+            }
+        },
+        "nftGallery": {
+            "custom_fee_tooltip": "We have already calculated the optimal fee for your transaction.",
+            "tokensNumberInfo": "You have {{count}} object.",
+            "tokensNumberInfo_plural": "You have {{count}} objects.",
+            "fields": {
+                "artifactUrl": "image URL"
+            },
+            "modal": {
+                "tabs": {
+                    "more_info": "More info",
+                    "send": "Send"
+                },
+                "recipient_address": "Recipient Address",
+                "send": "Send",
+                "token": "Token",
+                "collectedOn": "Collected on",
+                "collectedFor": "Collected for",
+                "quantity": "Quantity"
+            },
+            "tabs": {
+                "collected": "Collected",
+                "minted": "Minted"
+            },
+            "errors": {
+                "something_went_wrong": "Something went wrong!",
+                "unsupported_data_format": "The {{field}} from {{provider}} is invalid.",
+                "unsupported_provider": "The {{provider}} data format is invalid."
+            },
+            "providers": {
+                "HIC_ET_NUNC": "Hic et nunc",
+                "KALAMINT": "Kalamint",
+                "IPFS": "IPFS"
             }
         },
         "pdfReader": {
@@ -395,6 +442,15 @@
             "settings": "설정",
             "logout": "로그아웃",
             "help": "HELP"
+        },
+        "tokensDetailsModal": {
+            "browse": "Browse objects",
+            "modalTitle": "Tokens",
+            "status": {
+                "active": "Active"
+            },
+            "tokenSupplyDetail": "Token supply is {{counter}}.",
+            "tokenHoldersDetail": "{{counter}} holders."
         },
         "termsModal": {
             "hi_there": "안녕하세요!",

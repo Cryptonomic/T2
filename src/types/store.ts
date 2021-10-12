@@ -2,6 +2,7 @@ import { Signer } from 'conseiljs';
 import { BeaconRequestOutputMessage, ConnectionContext } from '@airgap/beacon-sdk';
 
 import { Path, Node, NodeStatus, Identity, Token, AddressType } from './general';
+import { NFTCollections, NFTError } from '../contracts/NFT/types';
 
 export interface AppState {
     isLoading: boolean;
@@ -56,6 +57,15 @@ export interface ModalState {
     values: any;
 }
 
+export interface NFTState {
+    isNFTSyncing: boolean;
+    syncEnabled: boolean;
+    lastSyncAt: Date | null;
+    collections: NFTCollections;
+    collectionsAreLoading: boolean;
+    getCollectionsErrors: NFTError[];
+}
+
 export interface RootState {
     router: any;
     wallet: WalletState;
@@ -63,4 +73,5 @@ export interface RootState {
     settings: SettingsState;
     app: AppState;
     modal: ModalState;
+    nft: NFTState;
 }

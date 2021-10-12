@@ -31,6 +31,9 @@ import crunchIcon from '../../resources/contracts/crunch-icon.png';
 import crdaoIcon from '../../resources/contracts/crdao-icon.png';
 import quipuIcon from '../../resources/contracts/quipu-icon.png';
 import gifIcon from '../../resources/contracts/gif-icon.png';
+import lunhIcon from '../../resources/contracts/lunh-icon.png';
+import wtzIcon from '../../resources/contracts/wtz-icon.png';
+import xplentyIcon from '../../resources/contracts/xplenty-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -102,6 +105,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         helpLink: 'https://www.hicetnunc.xyz/',
         displayHelpLink: 'hicetnunc.xyz',
         marketAddress: 'KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn',
+        hideOnLanding: true,
     },
     {
         network: 'mainnet',
@@ -121,6 +125,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         helpLink: 'https://kalamint.io/',
         displayHelpLink: 'kalamint.io',
         marketAddress: 'KT1EpGgjQs73QfFJs9z7m1Mxm5MTnpC2tqse',
+        hideOnLanding: true,
     },
     {
         network: 'mainnet',
@@ -156,6 +161,25 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 18,
         round: 6,
         mapid: 3943,
+        balancePath: '$.args[1].int',
+        helpLink: 'https://plentydefi.com',
+        displayHelpLink: 'plentydefi.com',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1Rpviewjg82JgjGfAKFneSupjAR1kUhbza',
+        displayName: 'xPlenty',
+        symbol: 'xPLENTY',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: xplentyIcon,
+        scale: 18,
+        precision: 18,
+        round: 6,
+        mapid: 18153,
+        balancePath: '$.int',
         helpLink: 'https://plentydefi.com',
         displayHelpLink: 'plentydefi.com',
     },
@@ -279,6 +303,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         helpLink: 'https://gif.games',
         displayHelpLink: 'gif.games',
     },
+    /*{
+        network: 'mainnet',
+        address: '',
+        displayName: 'Lung Euro',
+        symbol: 'EURL',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: lunhIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 83130,
+        tokenIndex: 0,
+    },*/
     {
         network: 'mainnet',
         address: 'KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd',
@@ -559,6 +599,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn',
+        displayName: 'WTZ',
+        symbol: 'WTZ',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: wtzIcon,
+        tokenIndex: 0,
+        scale: 6,
+        precision: 6,
+        round: 6,
+        mapid: 19486,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9',
         displayName: 'Hedgehoge',
         symbol: 'HEH',
@@ -629,7 +685,8 @@ export const knownContractNames = {
     KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng: 'Crunchy.network Token',
     KT1XPFjZqCULSnqfKaaYy8hJjeY63UNSGwXg: 'Crunchy.network DAO',
     KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH: 'Kolibri DAO',
-    KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: 'PLENTY DAO',
+    KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: 'PLENTY Token',
+    KT1Rpviewjg82JgjGfAKFneSupjAR1kUhbza: 'xPLENTY Token',
     KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW: 'uUSD',
     KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ: 'Wrap Tokens Container',
     KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb: 'Quipu Governance Token',

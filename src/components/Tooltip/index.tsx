@@ -41,7 +41,7 @@ const StyledTooltip = styled((props) => <Tooltip classes={{ popper: props.classN
 `;
 
 const TooltipWrapper = ({ children, content, position }: TooltipProps) => (
-    <StyledTooltip arrow={true} interactive={true} title={content} placement={position}>
+    <StyledTooltip arrow={true} title={content} placement={position}>
         {children}
     </StyledTooltip>
 );
