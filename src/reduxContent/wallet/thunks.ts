@@ -225,13 +225,13 @@ export function syncTokenThunk(tokenAddress) {
                     }
                     return { ...d, holders: keyCount };
                 });
-                transAsync = tzip7Util.syncTokenTransactions(
-                    tokenAddress,
-                    selectedParentHash,
-                    mainNode,
-                    tokens[tokenIndex].transactions,
-                    tokens[tokenIndex].kind
-                );
+                transAsync = []; // tzip7Util.syncTokenTransactions(
+                //     tokenAddress,
+                //     selectedParentHash,
+                //     mainNode,
+                //     tokens[tokenIndex].transactions,
+                //     tokens[tokenIndex].kind
+                // );
             } else if (tokens[tokenIndex].kind === TokenKind.tzbtc) {
                 balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
@@ -247,7 +247,8 @@ export function syncTokenThunk(tokenAddress) {
                 const vaultListBigMapId = vaultToken.vaultRegistryMapId;
 
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
+                transAsync = [];
+                // tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
                 detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
                     return { ...d, holders: keyCount };
@@ -264,13 +265,13 @@ export function syncTokenThunk(tokenAddress) {
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
                     return { ...d, holders: keyCount };
                 });
-                transAsync = tzip7Util.syncTokenTransactions(
-                    tokenAddress,
-                    selectedParentHash,
-                    mainNode,
-                    tokens[tokenIndex].transactions,
-                    tokens[tokenIndex].kind
-                );
+                transAsync = []; // tzip7Util.syncTokenTransactions(
+                //     tokenAddress,
+                //     selectedParentHash,
+                //     mainNode,
+                //     tokens[tokenIndex].transactions,
+                //     tokens[tokenIndex].kind
+                // );
             } else if (tokens[tokenIndex].kind === TokenKind.objkt) {
                 balanceAsync = NFTUtil.getCollectionSize([tokens[tokenIndex]], selectedParentHash, mainNode);
                 detailsAsync = await NFTUtil.getTokenInfo(mainNode, 515).then((r) => {
@@ -284,13 +285,13 @@ export function syncTokenThunk(tokenAddress) {
 
                     return { ...d, holders: keyCount };
                 });
-                transAsync = tzip7Util.syncTokenTransactions(
-                    tokenAddress,
-                    selectedParentHash,
-                    mainNode,
-                    tokens[tokenIndex].transactions,
-                    tokens[tokenIndex].kind
-                );
+                transAsync = []; // tzip7Util.syncTokenTransactions(
+                //     tokenAddress,
+                //     selectedParentHash,
+                //     mainNode,
+                //     tokens[tokenIndex].transactions,
+                //     tokens[tokenIndex].kind
+                // );
             } else if (tokens[tokenIndex].kind === TokenKind.stkr) {
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
@@ -298,13 +299,13 @@ export function syncTokenThunk(tokenAddress) {
 
                     return { ...d, holders: keyCount };
                 });
-                transAsync = tzip7Util.syncTokenTransactions(
-                    tokenAddress,
-                    selectedParentHash,
-                    mainNode,
-                    tokens[tokenIndex].transactions,
-                    tokens[tokenIndex].kind
-                );
+                transAsync = []; // tzip7Util.syncTokenTransactions(
+                //     tokenAddress,
+                //     selectedParentHash,
+                //     mainNode,
+                //     tokens[tokenIndex].transactions,
+                //     tokens[tokenIndex].kind
+                // );
             } else if (tokens[tokenIndex].kind === TokenKind.plenty) {
                 balanceAsync = plentyUtil.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = plentyUtil.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
@@ -312,13 +313,13 @@ export function syncTokenThunk(tokenAddress) {
 
                     return { ...d, holders: keyCount };
                 });
-                transAsync = tzip7Util.syncTokenTransactions(
-                    tokenAddress,
-                    selectedParentHash,
-                    mainNode,
-                    tokens[tokenIndex].transactions,
-                    tokens[tokenIndex].kind
-                );
+                transAsync = []; // tzip7Util.syncTokenTransactions(
+                //     tokenAddress,
+                //     selectedParentHash,
+                //     mainNode,
+                //     tokens[tokenIndex].transactions,
+                //     tokens[tokenIndex].kind
+                // );
             } else if (tokens[tokenIndex].kind === TokenKind.tzip12) {
                 if (tokens[tokenIndex].tokenIndex !== undefined) {
                     balanceAsync = MultiAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].tokenIndex || 0);
@@ -346,13 +347,13 @@ export function syncTokenThunk(tokenAddress) {
                         .catch(() => undefined); // supply, paused
                 }
 
-                transAsync = tzip12Util.syncTokenTransactions(
-                    tokenAddress,
-                    selectedParentHash,
-                    mainNode,
-                    tokens[tokenIndex].transactions,
-                    tokens[tokenIndex].kind
-                );
+                transAsync = []; // tzip12Util.syncTokenTransactions(
+                //     tokenAddress,
+                //     selectedParentHash,
+                //     mainNode,
+                //     tokens[tokenIndex].transactions,
+                //     tokens[tokenIndex].kind
+                // );
             }
 
             try {
@@ -448,20 +449,23 @@ export function syncWalletThunk() {
                         details.supply = 1000000000000000000000000;
                     }
 
-                    const transactions = await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
+                    const transactions = [];
+                    // await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
                     return { ...token, administrator, balance, transactions, details };
                 } else if (token.kind === TokenKind.tzbtc) {
                     const administrator = token.administrator || '';
 
                     const balance = await TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await tzbtcUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions); /* TODO */
+                    const transactions = [];
+                    // await tzbtcUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions); /* TODO */
 
                     return { ...token, administrator, balance, transactions };
                 } else if (token.kind === TokenKind.wxtz) {
                     const vaultToken = token as VaultToken;
 
                     const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await wxtzUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions);
+                    const transactions = [];
+                    // await wxtzUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions);
 
                     const coreContractAddress = vaultToken.vaultCoreAddress;
 
@@ -497,7 +501,8 @@ export function syncWalletThunk() {
                     details = { ...details, holders: keyCount };
 
                     const balance = await KolibriTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
+                    const transactions = [];
+                    // await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
 
                     return { ...token, administrator, balance, transactions, details };
                 } else if (token.kind === TokenKind.objkt) {
@@ -520,13 +525,13 @@ export function syncWalletThunk() {
                     details = { ...details, holders: keyCount };
 
                     const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
-                    const transactions = await tzip7Util.syncTokenTransactions(
-                        token.address,
-                        selectedParentHash,
-                        mainNode,
-                        token.transactions,
-                        token.kind
-                    ); /* TODO */
+                    const transactions = []; // await tzip7Util.syncTokenTransactions(
+                    //     token.address,
+                    //     selectedParentHash,
+                    //     mainNode,
+                    //     token.transactions,
+                    //     token.kind
+                    // ); /* TODO */
 
                     return { ...token, administrator, balance, transactions, details };
                 } else if (token.kind === TokenKind.plenty) {
@@ -544,7 +549,8 @@ export function syncWalletThunk() {
                         selectedParentHash,
                         token.balancePath
                     ).catch(() => 0);
-                    const transactions = await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
+                    const transactions = [];
+                    // await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
 
                     return { ...token, administrator, balance, transactions, details };
                 } else if (token.kind === TokenKind.tzip12) {
@@ -577,13 +583,13 @@ export function syncWalletThunk() {
                         );
                     }
 
-                    const transactions = await tzip12Util.syncTokenTransactions(
-                        token.address,
-                        selectedParentHash,
-                        mainNode,
-                        token.transactions,
-                        token.kind
-                    ); /* TODO */
+                    const transactions = []; // await tzip12Util.syncTokenTransactions(
+                    //     token.address,
+                    //     selectedParentHash,
+                    //     mainNode,
+                    //     token.transactions,
+                    //     token.kind
+                    // ); /* TODO */
 
                     return { ...token, administrator, balance, transactions, details };
                 } else {
