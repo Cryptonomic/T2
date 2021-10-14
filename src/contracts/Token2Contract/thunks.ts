@@ -40,8 +40,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
                 isLedger ? signer : await cloneDecryptedSigner(signer, password),
                 keyStore,
                 fee,
-                selectedParentHash,
-                [{ address: destination, tokenid: token.tokenIndex, amount }],
+                [{ source: selectedParentHash, txs: [{ destination, token_id: token.tokenIndex, amount }] }],
                 0,
                 0
             ).catch((err) => {
