@@ -566,7 +566,16 @@ export async function transferNFT(
     freight?: number
 ): Promise<string> {
     try {
-        return await MultiAssetTokenHelper.transfer(server, address, signer, keystore, fee, source, transfers, gas, freight);
+        const transferPairs = [
+            {
+                source,
+                txs: transfers.map((t) => {
+                    return { destination: t.address, token_id: t.tokenid, amount: t.amount };
+                }),
+            },
+        ];
+
+        return await MultiAssetTokenHelper.transfer(server, address, signer, keystore, fee, transferPairs, gas, freight);
     } catch (err) {
         throw new TransferNFTError('components.messageBar.messages.nft_send_transaction_failed', transfers);
     }
