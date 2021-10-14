@@ -1,6 +1,6 @@
 {
   "name": "tezori",
-  "version": "1.1.27-beta",
+  "version": "1.1.28-beta",
   "description": "An open-source wallet framework for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
@@ -103,7 +103,7 @@
       "hardenedRuntime": true,
       "entitlements": "./resources/entitlements.mac.plist",
       "entitlementsInherit": "./resources/entitlements.mac.plist",
-      "bundleVersion": "43",
+      "bundleVersion": "47",
       "target": [
         "mas",
         "dmg"
