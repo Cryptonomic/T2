@@ -31,7 +31,7 @@ import crunchIcon from '../../resources/contracts/crunch-icon.png';
 import crdaoIcon from '../../resources/contracts/crdao-icon.png';
 import quipuIcon from '../../resources/contracts/quipu-icon.png';
 import gifIcon from '../../resources/contracts/gif-icon.png';
-import lunhIcon from '../../resources/contracts/lunh-icon.png';
+import lughIcon from '../../resources/contracts/lugh-icon.png';
 import wtzIcon from '../../resources/contracts/wtz-icon.png';
 import xplentyIcon from '../../resources/contracts/xplenty-icon.png';
 
@@ -303,22 +303,6 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         helpLink: 'https://gif.games',
         displayHelpLink: 'gif.games',
     },
-    /*{
-        network: 'mainnet',
-        address: '',
-        displayName: 'Lung Euro',
-        symbol: 'EURL',
-        balance: 0,
-        transactions: [],
-        activeTab: TRANSACTIONS,
-        kind: TokenKind.tzip12,
-        icon: lunhIcon,
-        scale: 6,
-        precision: 6,
-        round: 2,
-        mapid: 83130,
-        tokenIndex: 0,
-    },*/
     {
         network: 'mainnet',
         address: 'KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd',
@@ -648,6 +632,24 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balancePath: '$.args[1].int',
         helpLink: 'https://twitter.com/heh_hedgehoge',
     },
+    /*{
+        network: 'mainnet',
+        address: 'XXXXX',
+        displayName: 'Lugh Euro',
+        symbol: 'EURL',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: lughIcon,
+        scale: 6,
+        precision: 6,
+        round: 6,
+        tokenIndex: 0,
+        mapid: XXXX,
+        balancePath: '$.args[0].int',
+        helpLink: 'https://lugh.io',
+    },*/
 ];
 
 export const knownTokenDescription = {

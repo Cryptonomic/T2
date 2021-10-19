@@ -322,7 +322,13 @@ export function syncTokenThunk(tokenAddress) {
                 // );
             } else if (tokens[tokenIndex].kind === TokenKind.tzip12) {
                 if (tokens[tokenIndex].tokenIndex !== undefined) {
-                    balanceAsync = MultiAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].tokenIndex || 0);
+                    balanceAsync = MultiAssetTokenHelper.getAccountBalance(
+                        mainNode.tezosUrl,
+                        mapid,
+                        selectedParentHash,
+                        tokens[tokenIndex].tokenIndex || 0,
+                        tokens[tokenIndex].balancePath
+                    );
                 } else {
                     balanceAsync = SingleAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].balancePath);
                 }
@@ -575,7 +581,8 @@ export function syncWalletThunk() {
                             mainNode.tezosUrl,
                             token.mapid,
                             selectedParentHash,
-                            token.tokenIndex || 0
+                            token.tokenIndex || 0,
+                            token.balancePath
                         ).catch(() => 0);
                     } else {
                         balance = await SingleAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash, token.balancePath).catch(
