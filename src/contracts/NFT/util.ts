@@ -66,7 +66,7 @@ async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: s
         if (response.result.moderation_status === 'Allowed') {
             content = response.result.data;
         } else if (response.result.moderation_status === 'Blocked') {
-            moderationMessage = `Image was hidden because of it contains the following labels: ${response.result.categories.join(', ')}`;
+            moderationMessage = `Image was hidden due to: ${response.result.categories.join(', ')}`;
         }
     }
 
