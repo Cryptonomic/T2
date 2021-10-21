@@ -53,7 +53,7 @@ function makeLastPriceQuery(operations) {
  * @param {string} [artifactType]
  */
 async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: string | null): Promise<{ content: string; moderationMessage: string } | null> {
-    if (!artifactType || proxySupportedTypes.includes(artifactType) || !artifactUrl || !imageProxyURL) {
+    if (!artifactType || !proxySupportedTypes.includes(artifactType) || !artifactUrl || !imageProxyURL) {
         return null;
     }
 
