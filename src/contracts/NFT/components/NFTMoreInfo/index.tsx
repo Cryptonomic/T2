@@ -61,6 +61,12 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
             openArtifactLink(`https://www.hicetnunc.xyz/objkt/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.KALAMINT) {
             openArtifactLink(`https://kalamint.io/token/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.KUMULUS_OBJKT) {
+            openArtifactLink(`https://objkt.com/asset/kumulus/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.GOGOS_OBJKT) {
+            openArtifactLink(`https://objkt.com/asset/gogos/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.NEONZ_OBJKT) {
+            openArtifactLink(`https://objkt.com/asset/neonz/${nftObject.objectId}`);
         }
     };
 
