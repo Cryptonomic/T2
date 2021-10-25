@@ -23,6 +23,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
  * @return {Promise<boolean>}
  */
 export const transferNFT = (
+    tokenAddress: string,
     destination: string,
     amount: number,
     tokenid: number,
@@ -32,12 +33,10 @@ export const transferNFT = (
     storage: number = 0
 ) => async (dispatch, state): Promise<boolean> => {
     const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
-    const { identities, walletPassword, tokens } = state().wallet;
+    const { identities, walletPassword } = state().wallet;
     const { selectedParentHash, isLedger, signer } = state().app;
     const mainNode = getMainNode(nodesList, selectedNode);
     const { tezosUrl } = mainNode;
-
-    const tokenAddress = knownTokenContracts.find((t) => t.displayName.toLowerCase() === 'hic et nunc')?.address || '';
 
     if (password !== walletPassword && !isLedger) {
         const error = 'components.messageBar.messages.incorrect_password';

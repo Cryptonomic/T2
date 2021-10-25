@@ -47,6 +47,7 @@ export interface NFTError {
  * The NFT object details, stored in the collections.
  */
 export interface NFTObject {
+    tokenAddress: string;
     action: NFTActionType;
     objectId: number;
     receivedOn: Date;

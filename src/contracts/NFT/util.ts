@@ -187,20 +187,19 @@ export async function getNFTCollections(tokens: Token[], managerAddress: string,
     tokens.map((token) => {
         switch (token.displayName.toLowerCase()) {
             case 'hic et nunc':
-                promises.push(getHicEtNuncCollection(token.mapid, managerAddress, node, skipDetails));
+                promises.push(getHicEtNuncCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
             case 'kalamint':
-                promises.push(getKalamintCollection(token.mapid, managerAddress, node, skipDetails));
+                promises.push(getKalamintCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
             case 'kumulus':
-                promises.push(getKumulusCollection(token.mapid, managerAddress, node, skipDetails));
+                promises.push(getKumulusCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
             case 'gogos':
-                promises.push(getGogoCollection(token.mapid, managerAddress, node, skipDetails));
+                promises.push(getGogoCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
             case 'neonz':
-                console.log('aaaa');
-                promises.push(getNeonzCollection(token.mapid, managerAddress, node, skipDetails));
+                promises.push(getNeonzCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
             default:
                 break;
@@ -236,7 +235,13 @@ export async function getNFTCollections(tokens: Token[], managerAddress: string,
  *
  * @return {Promise<GetNFTCollections>} the list of NFT tokens grouped by type and the list of errors.
  */
-export async function getHicEtNuncCollection(tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+export async function getHicEtNuncCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -313,6 +318,7 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
             }
 
             let nftObject = {
+                tokenAddress,
                 objectId,
                 provider: NFT_PROVIDERS.HIC_ET_NUNC,
                 amount: Number(row.value),
@@ -401,7 +407,13 @@ export async function getHicEtNuncCollection(tokenMapId: number, managerAddress:
  * @param node
  * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
-export async function getKalamintCollection(tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+export async function getKalamintCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -478,6 +490,7 @@ export async function getKalamintCollection(tokenMapId: number, managerAddress: 
             }
 
             let nftObject = {
+                tokenAddress,
                 objectId,
                 provider: NFT_PROVIDERS.KALAMINT,
                 amount: Number(row.value),
@@ -523,7 +536,13 @@ export async function getKalamintCollection(tokenMapId: number, managerAddress: 
     return { collection, errors };
 }
 
-export async function getKumulusCollection(tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+export async function getKumulusCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -598,6 +617,7 @@ export async function getKumulusCollection(tokenMapId: number, managerAddress: s
             }
 
             let nftObject = {
+                tokenAddress,
                 objectId,
                 provider: NFT_PROVIDERS.KUMULUS_OBJKT,
                 amount: 1,
@@ -687,7 +707,13 @@ export async function getKumulusNFTObjectDetails(tezosUrl: string, objectId: num
     };
 }
 
-export async function getGogoCollection(tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+export async function getGogoCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -762,6 +788,7 @@ export async function getGogoCollection(tokenMapId: number, managerAddress: stri
             }
 
             let nftObject = {
+                tokenAddress,
                 objectId,
                 provider: NFT_PROVIDERS.GOGOS_OBJKT,
                 amount: 1,
@@ -851,7 +878,13 @@ export async function getGogoNFTObjectDetails(tezosUrl: string, objectId: number
     };
 }
 
-export async function getNeonzCollection(tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+export async function getNeonzCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -926,6 +959,7 @@ export async function getNeonzCollection(tokenMapId: number, managerAddress: str
             }
 
             let nftObject = {
+                tokenAddress,
                 objectId,
                 provider: NFT_PROVIDERS.NEONZ_OBJKT,
                 amount: 1,
@@ -1064,7 +1098,7 @@ export async function getTokenInfo(node: Node, mapId: number = 515): Promise<{ h
  */
 export async function transferNFT(
     server: string,
-    address: string,
+    tokenAddress: string,
     signer: Signer,
     keystore: KeyStore,
     fee: number,
@@ -1087,7 +1121,7 @@ export async function transferNFT(
             },
         ];
 
-        return await MultiAssetTokenHelper.transfer(server, address, signer, keystore, fee, transferPairs, gas, freight);
+        return await MultiAssetTokenHelper.transfer(server, tokenAddress, signer, keystore, fee, transferPairs, gas, freight);
     } catch (err) {
         throw new TransferNFTError('components.messageBar.messages.nft_send_transaction_failed', transfers);
     }
