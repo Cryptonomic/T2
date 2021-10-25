@@ -13,13 +13,13 @@ import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 
 import Transactions from '../components/TransactionContainer';
-import Send from '../components/Send';
 import Swap from '../components/Swap';
 import Mint from '../components/Mint';
 import Burn from '../components/Burn';
 import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
 import { getTokenSelector } from '../duck/selectors';
 
+import Send from './Send';
 import { transferThunk, mintThunk, burnThunk } from './thunks';
 
 function ActionPanel() {

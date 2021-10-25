@@ -14,7 +14,7 @@ import { knownContractNames, knownTokenContracts, knownMarketMetadata } from '..
 import { TokenKind } from '../../types/general';
 import { mintYV, burnYV } from './util';
 
-export function transferThunk(destination: string, amount: number, fee: number, password: string) {
+export function transferThunk(tokenAddress: string, tokenIndex: number | undefined, destination: string, amount: number, fee: number, password: string) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
@@ -33,14 +33,14 @@ export function transferThunk(destination: string, amount: number, fee: number, 
         const token = knownTokenContracts.find((t) => t.address === selectedAccountHash);
 
         let operationId: string | undefined = '';
-        if (token !== undefined && token.tokenIndex !== undefined) {
+        if (token !== undefined && tokenIndex !== undefined) {
             operationId = await MultiAssetTokenHelper.transfer(
                 tezosUrl,
-                selectedAccountHash,
+                tokenAddress,
                 isLedger ? signer : await cloneDecryptedSigner(signer, password),
                 keyStore,
                 fee,
-                [{ source: selectedParentHash, txs: [{ destination, token_id: token.tokenIndex, amount }] }],
+                [{ source: selectedParentHash, txs: [{ destination, token_id: tokenIndex, amount }] }],
                 0,
                 0
             ).catch((err) => {
@@ -82,12 +82,6 @@ export function transferThunk(destination: string, amount: number, fee: number, 
             operation_group_hash: operationId,
             fee,
         });
-
-        const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
-
-        if (tokenIndex > -1) {
-            tokens[tokenIndex].transactions.push(transaction);
-        }
 
         dispatch(updateTokensAction([...tokens]));
         return true;
