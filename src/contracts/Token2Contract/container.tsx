@@ -45,12 +45,7 @@ function ActionPanel() {
                 return <Mint isReady={true} token={selectedToken} tokenMintAction={mintThunk} />;
             case BURN:
                 return <Burn isReady={true} token={selectedToken} tokenBurnAction={burnThunk} />;
-            case SEND:
-                return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
-            case SWAP:
-                return <Swap isReady={true} token={selectedToken} />;
-            case TRANSACTIONS:
-            default: {
+            case TRANSACTIONS: {
                 if (!transactions || transactions.length === 0) {
                     return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
@@ -80,6 +75,11 @@ function ActionPanel() {
                     </>
                 );
             }
+            case SWAP:
+                return <Swap isReady={true} token={selectedToken} />;
+            case SEND:
+            default:
+                return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
         }
     }
     return (
