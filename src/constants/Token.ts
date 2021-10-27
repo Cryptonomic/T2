@@ -34,6 +34,7 @@ import gifIcon from '../../resources/contracts/gif-icon.png';
 import lughIcon from '../../resources/contracts/lugh-icon.png';
 import wtzIcon from '../../resources/contracts/wtz-icon.png';
 import xplentyIcon from '../../resources/contracts/xplenty-icon.png';
+import ctezIcon from '../../resources/contracts/ctez-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -359,6 +360,24 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         mapid: 7654,
         helpLink: 'https://gif.games',
         displayHelpLink: 'gif.games',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4',
+        displayName: 'ctez',
+        symbol: 'ctez',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: ctezIcon,
+        scale: 18,
+        precision: 18,
+        round: 6,
+        mapid: 20920,
+        balancePath: '$.int',
+        displayHelpLink: 'ctez.app',
+        helpLink: 'https://ctez.app/',
     },
     {
         network: 'mainnet',
