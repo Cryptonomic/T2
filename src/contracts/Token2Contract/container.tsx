@@ -13,13 +13,13 @@ import { RootState } from '../../types/store';
 import { updateActiveTabThunk } from '../../reduxContent/wallet/thunks';
 
 import Transactions from '../components/TransactionContainer';
-import Send from '../components/Send';
 import Swap from '../components/Swap';
 import Mint from '../components/Mint';
 import Burn from '../components/Burn';
 import { Container, Tab, TabList, TabText, SectionContainer } from '../components/TabContainer/style';
 import { getTokenSelector } from '../duck/selectors';
 
+import Send from './Send';
 import { transferThunk, mintThunk, burnThunk } from './thunks';
 
 function ActionPanel() {
@@ -45,12 +45,7 @@ function ActionPanel() {
                 return <Mint isReady={true} token={selectedToken} tokenMintAction={mintThunk} />;
             case BURN:
                 return <Burn isReady={true} token={selectedToken} tokenBurnAction={burnThunk} />;
-            case SEND:
-                return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
-            case SWAP:
-                return <Swap isReady={true} token={selectedToken} />;
-            case TRANSACTIONS:
-            default: {
+            case TRANSACTIONS: {
                 if (!transactions || transactions.length === 0) {
                     return <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />;
                 }
@@ -80,6 +75,11 @@ function ActionPanel() {
                     </>
                 );
             }
+            case SWAP:
+                return <Swap isReady={true} token={selectedToken} />;
+            case SEND:
+            default:
+                return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
         }
     }
     return (

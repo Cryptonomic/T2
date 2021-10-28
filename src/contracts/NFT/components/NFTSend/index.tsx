@@ -110,7 +110,7 @@ export const NFTSend: FunctionComponent<NFTSendProps> = ({ nftObject, closeModal
             return;
         }
 
-        dispatch(transferNFT(address, amount, nftObject.objectId, password, fee));
+        dispatch(transferNFT(nftObject.tokenAddress, address, amount, nftObject.objectId, password, fee));
 
         closeModal();
     };

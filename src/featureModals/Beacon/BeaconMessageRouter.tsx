@@ -110,7 +110,6 @@ export const BeaconMessageRouter = () => {
             try {
                 await beaconClient.init();
                 await beaconClient.connect((message, connection) => dispatch(setBeaconMessageAction(message, connection)));
-                console.log('BeaconMessageRouter.Loaded');
             } catch (e) {
                 console.log('BeaconMessageRouter Error', e);
             }

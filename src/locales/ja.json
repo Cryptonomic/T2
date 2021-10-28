@@ -382,6 +382,10 @@
             "providers": {
                 "HIC_ET_NUNC": "Hic et nunc",
                 "KALAMINT": "Kalamint",
+                "KUMULUS_OBJKT": "objkt.com",
+                "GOGOS_OBJKT": "objkt.com",
+                "NEONZ_OBJKT": "objkt.com",
+                "PIXEL_POTUS": "pixelpotus.com",
                 "IPFS": "IPFS"
             }
         },
