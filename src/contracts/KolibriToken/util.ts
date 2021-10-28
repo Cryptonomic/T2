@@ -64,10 +64,14 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
 export async function getActivePools(server: string, account: string): Promise<{ contract: string; map: number }[]> {
     const hasKey = await Promise.all(
         farmBalanceMaps.map(async (m) => {
-            const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
-            const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
+            try {
+                const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
+                const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
 
-            return mapResult !== undefined && JSONPath({ path: '$.args[1].int', json: mapResult }).toString() !== '0';
+                return mapResult !== undefined && JSONPath({ path: '$.args[1].int', json: mapResult }).toString() !== '0';
+            } catch {
+                return false;
+            }
         })
     );
 

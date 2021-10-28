@@ -3,16 +3,55 @@ import { BigNumber } from 'bignumber.js';
 import { TezosMessageUtils, TezosNodeReader } from 'conseiljs';
 
 const farms = [
-    'KT1DjDZio7k2GJwCJCXwK82ing3n51AE55DW',
-    'KT1JQAZqShNMakSNXc2cgTzdAWZFemGcU6n1',
-    'KT1KJhxkCpZNwAFQURDoJ79hGqQgSC9UaWpG',
-    'KT1Kp3KVT4nHFmSuL8bvETkgQzseUYP3LDBy',
-    'KT1M82a7arHVwcwaswnNUUuCnQ45xjjGKNd1',
-    'KT1UP9XHQigWMqNXYp9YXaCS1hV9jJkCF4h4',
-    'KT1UqnQ6b1EwQgYiKss4mDL7aktAHnkdctTQ',
-    'KT1VCrmywPNf8ZHH95HKHvYA4bBQJPa8g2sr',
+    'KT1DjDZio7k2GJwCJCXwK82ing3n51AE55DW', // kalam quipu lp
+    'KT1JQAZqShNMakSNXc2cgTzdAWZFemGcU6n1', // plenty quipu lp
+    'KT1KJhxkCpZNwAFQURDoJ79hGqQgSC9UaWpG', // wbusd lp farm
+    'KT1Kp3KVT4nHFmSuL8bvETkgQzseUYP3LDBy', // wusdc lp farm
+    'KT1M82a7arHVwcwaswnNUUuCnQ45xjjGKNd1', // wwbtc lp farm
+    'KT1UP9XHQigWMqNXYp9YXaCS1hV9jJkCF4h4', // wmatic lp farm
+    'KT1UqnQ6b1EwQgYiKss4mDL7aktAHnkdctTQ', // wlink lp farm
+    'KT1VCrmywPNf8ZHH95HKHvYA4bBQJPa8g2sr', // usdtz lp farm
+    'KT1W3DtcPXbD7MMmtUdk3F352G6CYFSpwUUS', // hdao lp farm
+    'KT1EVfYFoSpte3PnE4tPoWuj1DhNPVQwrW5Y', // ethtz lp farm
+    'KT1CBh8BKFV6xAH42hEdyhkijbwzYSKW2ZZC', // wweth lp farm
+    'KT1MmAy4mSbZZVzPoYbK3M4z3GWUo54UTiQR', // kusd lp farm
+    'KT1FsMiweyRTog9GGNC22hiMTFVRPrGs3eto', // quipu lp farm
+    'KT1K9kLuhq9AJjDAgbJdKGBiP9927WsRnjP6', // wrap lp farm
+    'KT1CWNVmHs6RRbLzwA3P19h7Wa9smnDrAgpS', // uno lp farm
+    'KT1VwZPZ4bcPQYS1C4yRvmU4giQDXhEV81WD', // smak lp farm
+    'KT1UTvMuyRggQe9q1hrh7YLh7vxffX2egtS6', // kalam lp farm
+    'KT1RwFV1xQU2E9TsXe1qzkdwAgFWaKk8bfAa', // tzbtc lp farm
+    'KT1HSYQ9NLTQufuvNUwMhLY7B9TX8LDUfgsr', // uusd lp farm
+    'KT1UH21n4iwXu7gGrh34RKZfRewpcgQLdbXq', // gif lp farm
+    'KT1MkXtVBuCKtxqSh7APrg2d7ThGBmEf4hnw', // you lp farm
+    'KT1FJzDx9AwbuNHjhzQuUxxKUMA9BQ7DVfGn', // wdai lp farm
+    'KT1S4XjwGtk55TmsMqSdazEMrH4pGA3NMXhz', // wusdt lp farm
 ];
-const farmBalanceMaps = [4488, 4503, 10768, 11019, 11057, 11823, 11819, 11821];
+const farmBalanceMaps = [
+    4488,
+    4503,
+    10768,
+    11019,
+    11057,
+    11823,
+    11819,
+    11821,
+    13080,
+    13081,
+    13082,
+    13083,
+    13085,
+    14292,
+    14293,
+    14299,
+    14295,
+    14291,
+    15911,
+    17071,
+    20167,
+    20166,
+    20160,
+];
 const pools = [
     'KT1QqjR4Fj9YegB37PQEqXUPHmFbhz6VJtwE',
     'KT19asUVzBNidHgTHp8MP31YSphooMb3piWR',
@@ -72,10 +111,15 @@ export async function getActivePools(server: string, account: string): Promise<{
     const maps = farmBalanceMaps.concat(poolBalanceMaps);
     const hasKey = await Promise.all(
         maps.map(async (m) => {
-            const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
-            const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
+            try {
+                const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
+                const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
 
-            return mapResult !== undefined && JSONPath({ path: '$.args[0].args[1].int', json: mapResult }).toString() !== '0';
+                return mapResult !== undefined && JSONPath({ path: '$.args[0].args[1].int', json: mapResult }).toString() !== '0';
+            } catch (error) {
+                console.log(`getActivePools could not read Plenty map ${m}`);
+                return false;
+            }
         })
     );
 
@@ -118,7 +162,9 @@ export async function calcPendingRewards(server: string, account: string): Promi
                 totalRewards = totalRewards.dividedBy('1000000000000000000').plus(new BigNumber(accountState.rewards));
                 totalRewards = totalRewards.dividedBy('1000000000000000000');
 
-                pendingRewards.push(totalRewards);
+                if (!totalRewards.isNaN()) {
+                    pendingRewards.push(totalRewards);
+                }
             } catch (error) {
                 console.log(error);
             }

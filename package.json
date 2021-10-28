@@ -1,6 +1,6 @@
 {
   "name": "tezori",
-  "version": "1.1.28-beta",
+  "version": "1.1.29-beta",
   "description": "An open-source wallet framework for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
@@ -103,7 +103,7 @@
       "hardenedRuntime": true,
       "entitlements": "./resources/entitlements.mac.plist",
       "entitlementsInherit": "./resources/entitlements.mac.plist",
-      "bundleVersion": "47",
+      "bundleVersion": "48",
       "target": [
         "mas",
         "dmg"
@@ -217,7 +217,7 @@
     "webpack-merge": "4.2.2"
   },
   "dependencies": {
-    "@airgap/beacon-sdk": "2.3.2",
+    "@airgap/beacon-sdk": "2.3.5",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.0.1",

@@ -53,7 +53,7 @@ function makeLastPriceQuery(operations) {
  * @param {string} [artifactType]
  */
 async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: string | null): Promise<{ content: string; moderationMessage: string } | null> {
-    if (!artifactType || proxySupportedTypes.includes(artifactType) || !artifactUrl || !imageProxyURL) {
+    if (!artifactType || !proxySupportedTypes.includes(artifactType) || !artifactUrl || !imageProxyURL) {
         return null;
     }
 
@@ -66,7 +66,7 @@ async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: s
         if (response.result.moderation_status === 'Allowed') {
             content = response.result.data;
         } else if (response.result.moderation_status === 'Blocked') {
-            moderationMessage = `Image was hidden because of it contains the following labels: ${response.result.categories.join(', ')}`;
+            moderationMessage = `Image was hidden due to: ${response.result.categories.join(', ')}`;
         }
     }
 
@@ -97,10 +97,7 @@ export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number)
         .map((c) => `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}`)
         .join(', '); // TODO: use names where possible
     const nftArtifactType = nftDetailJson.formats[0].mimeType.toString();
-    let nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
-    if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
-        nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
-    }
+    let nftArtifact = nftDetailJson.formats[0].uri.toString();
     /**
      * @todo add thumbnail
      */
@@ -113,6 +110,12 @@ export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number)
     if (artifactProxy) {
         nftArtifact = artifactProxy.content;
         nftArtifactModerationMessage = artifactProxy.moderationMessage;
+    } else {
+        if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
+            nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+        } else {
+            nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+        }
     }
 
     return {
@@ -141,9 +144,9 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
         .map((c) => c.trim())
         .map((c) => `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}`)
         .join(', '); // TODO: use names where possible
-    const nftArtifactType = 'image/png'; // no mime type in kalamint metadata
+    const nftArtifactType = 'image/png'; // HACK: no mime type in kalamint metadata
 
-    let nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.artifactUri.slice(7)}`;
+    let nftArtifact = nftDetailJson.artifactUri;
     const nftThumbnailUri = `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.slice(7)}`;
 
     // Check the proxy:
@@ -152,6 +155,12 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
     if (artifactProxy) {
         nftArtifact = artifactProxy.content;
         nftArtifactModerationMessage = artifactProxy.moderationMessage;
+    } else {
+        if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
+            nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+        } else {
+            nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+        }
     }
 
     return {
