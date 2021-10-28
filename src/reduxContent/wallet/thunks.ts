@@ -272,12 +272,6 @@ export function syncTokenThunk(tokenAddress) {
                 //     tokens[tokenIndex].transactions,
                 //     tokens[tokenIndex].kind
                 // );
-            } else if (tokens[tokenIndex].kind === TokenKind.objkt) {
-                balanceAsync = NFTUtil.getCollectionSize([tokens[tokenIndex]], selectedParentHash, mainNode);
-                detailsAsync = await NFTUtil.getTokenInfo(mainNode, 515).then((r) => {
-                    return { holders: r.holders, supply: r.totalBalance };
-                });
-                transAsync = [];
             } else if (tokens[tokenIndex].kind === TokenKind.blnd) {
                 balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
