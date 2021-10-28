@@ -67,6 +67,8 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
             openArtifactLink(`https://objkt.com/asset/gogos/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.NEONZ_OBJKT) {
             openArtifactLink(`https://objkt.com/asset/neonz/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.PIXEL_POTUS) {
+            openArtifactLink(`https://www.pixelpotus.com/potus/${nftObject.objectId}`);
         }
     };
 
