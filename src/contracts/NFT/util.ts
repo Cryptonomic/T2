@@ -1103,7 +1103,7 @@ export async function getPotusNFTObjectDetails(tezosUrl: string, objectId: numbe
     const nftCreators = nftDetailJson.creators[0];
     const nftArtifactType = 'image/png'; // HACK: no mime type in kalamint metadata
 
-    let nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.artifactUri.toString().slice(7)}`; // nftDetailJson.artifactUri;
+    let nftArtifact = nftDetailJson.artifactUri;
     const nftThumbnailUri = `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.slice(7)}`;
 
     // Check the proxy:
