@@ -327,7 +327,7 @@ export function syncTokenThunk(tokenAddress) {
                     balanceAsync = SingleAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].balancePath);
                 }
 
-                if (tokens[tokenIndex].symbol.toLowerCase() === 'btctz') {
+                if (tokens[tokenIndex].symbol.toLowerCase() === 'btctz' || tokens[tokenIndex].symbol.toLowerCase() === 'oldbtctz') {
                     // TODO
                     detailsAsync = token2Util
                         .getSimpleStorageYV(mainNode.tezosUrl, tokens[tokenIndex].address, selectedParentHash)
@@ -557,7 +557,7 @@ export function syncWalletThunk() {
                     let administrator = token.administrator;
 
                     let details: any = {};
-                    if (token.symbol.toLowerCase() === 'btctz') {
+                    if (token.symbol.toLowerCase() === 'btctz' || token.symbol.toLowerCase() === 'oldbtctz') {
                         // TODO
                         details = await token2Util.getSimpleStorageYV(mainNode.tezosUrl, token.address, selectedParentHash).catch(() => undefined);
                     } else {

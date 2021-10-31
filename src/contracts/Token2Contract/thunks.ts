@@ -179,7 +179,7 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
         const selectedToken = tokens[idx];
 
         let groupid = '';
-        if (selectedToken.symbol.toLowerCase() === 'btctz') {
+        if (selectedToken.symbol.toLowerCase() === 'btctz' || selectedToken.symbol.toLowerCase() === 'oldbtctz') {
             groupid = await burnYV(
                 tezosUrl,
                 selectedAccountHash,
