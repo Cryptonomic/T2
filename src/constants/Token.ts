@@ -307,8 +307,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 8,
         round: 8,
         mapid: 16594,
-        helpLink: 'https://btctz.io/',
-        displayHelpLink: 'btctz.io',
+        hideOnLanding: true,
     },
     {
         network: 'mainnet',
