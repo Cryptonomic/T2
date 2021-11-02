@@ -49,7 +49,7 @@ export interface NFTError {
 export interface NFTObject {
     tokenAddress: string;
     action: NFTActionType;
-    objectId: number;
+    objectId: number | string;
     receivedOn: Date;
     price: number;
     amount: number;

@@ -21,6 +21,9 @@ export const NFT_PROVIDERS = {
     GOGOS_OBJKT: 'GOGOS_OBJKT',
     NEONZ_OBJKT: 'NEONZ_OBJKT',
     PIXEL_POTUS: 'PIXEL_POTUS',
+    MOMENTS: 'MOMENTS',
+    SKELE: 'SKELE',
+    TWITZ: 'TWITZ',
     IPFS: 'IPFS',
 } as const;
 
