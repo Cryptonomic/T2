@@ -5,7 +5,7 @@
 export class TransferNFTError extends Error {
     transfers?: {
         address: string;
-        tokenid: number;
+        tokenid: number | string;
         amount: number;
     }[];
 
@@ -18,7 +18,7 @@ export class TransferNFTError extends Error {
         message: string,
         transfers?: {
             address: string;
-            tokenid: number;
+            tokenid: number | string;
             amount: number;
         }[]
     ) {

@@ -26,7 +26,7 @@ export const transferNFT = (
     tokenAddress: string,
     destination: string,
     amount: number,
-    tokenid: number,
+    tokenid: number | string,
     password: string,
     fee: number = 0,
     gas: number = 0,

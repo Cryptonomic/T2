@@ -55,7 +55,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
         setMenuAnchorEl(null);
     };
 
-    const openArtifactSite = (objectid: number) => {
+    const openArtifactSite = () => {
         if (nftObject?.provider === NFT_PROVIDERS.HIC_ET_NUNC) {
             // TODO: urls should be defined in token info
             openArtifactLink(`https://www.hicetnunc.xyz/objkt/${nftObject.objectId}`);
@@ -69,7 +69,23 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
             openArtifactLink(`https://objkt.com/asset/neonz/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.PIXEL_POTUS) {
             openArtifactLink(`https://www.pixelpotus.com/potus/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.MOMENTS) {
+            openArtifactLink(`https://objkt.com/asset/themoments/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.SKELE) {
+            openArtifactLink(`https://objkt.com/asset/rcs/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.TWITZ) {
+            openArtifactLink(`https://twitz.vercel.app/twitz/${nftObject.objectId}`);
         }
+    };
+
+    const shortenObjectId = (objectId: number | string) => {
+        const id = objectId.toString();
+
+        if (id.length > 12) {
+            return `${id.slice(0, 5)}...${id.slice(id.length - 5, id.length)}`;
+        }
+
+        return id;
     };
 
     const openArtifactLink = (link: string) => {
@@ -100,7 +116,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                         useNFTFailedBox={true}
                         nftProvider={nftObject.provider}
                         thumbProps={{
-                            thumbnailUri: nftObject.thumbnailUri,
+                            thumbnailUri: nftObject.artifactUrl,
                         }}
                         previewProps={{
                             autoplay: true,
@@ -135,7 +151,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                                 disableAutoFocus={true}
                                 disableEnforceFocus={true}
                             >
-                                <StyledMenuItem onClick={() => openArtifactSite(nftObject.objectId)}>
+                                <StyledMenuItem onClick={() => openArtifactSite()}>
                                     <StyledListItemIcon>
                                         <RemoveRedEyeOutlinedIcon fontSize="small" />
                                     </StyledListItemIcon>
@@ -178,7 +194,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                 <AttributesList>
                     <Attribute>
                         <AttributeLabel>{t('components.nftGallery.modal.token')}:</AttributeLabel>
-                        <AttributeValue>{nftObject.objectId}</AttributeValue>
+                        <AttributeValue>{shortenObjectId(nftObject.objectId)}</AttributeValue>
                     </Attribute>
                     <Attribute>
                         <AttributeLabel>{t('components.nftGallery.modal.collectedOn')}:</AttributeLabel>
