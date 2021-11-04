@@ -23,6 +23,7 @@ import {
     granadaPoolStorageMap,
     quipuPoolStorageMap,
     quipuPool2StorageMap,
+    vortexPoolStorageMap,
     tokenPoolMap,
     getPoolState,
     getTokenToCashExchangeRate,
@@ -31,7 +32,7 @@ import {
     isTradeable,
     PoolState,
 } from './util';
-import { buyDexter, sellDexter, buyQuipu, sellQuipu } from './thunks';
+import { buyDexter, sellDexter, buyQuipu, sellQuipu, buyVortex, sellVortex } from './thunks';
 
 interface Props {
     isReady: boolean;
@@ -41,6 +42,12 @@ interface Props {
 interface Props1 {
     type: string;
     changeFunc: (val: string) => void;
+}
+
+interface MarketInfo {
+    cashAmount: number;
+    rate: number;
+    market: string;
 }
 
 const RestoreTabs = (props: Props1) => {
@@ -70,8 +77,10 @@ function Swap(props: Props) {
     const [tokenAmount, setTokenAmount] = useState('');
     const [dexterTokenCost, setDexterTokenCost] = useState(0.0);
     const [quipuTokenCost, setQuipuTokenCost] = useState(0.0);
+    const [vortexTokenCost, setVortexTokenCost] = useState(0.0);
     const [dexterTokenProceeds, setDexterTokenProceeds] = useState(0.0);
     const [quipuTokenProceeds, setQuipuTokenProceeds] = useState(0.0);
+    const [vortexTokenProceeds, setVortexTokenProceeds] = useState(0.0);
     const [bestMarket, setBestMarket] = useState('');
 
     const { isLoading, isLedger } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
@@ -90,8 +99,10 @@ function Swap(props: Props) {
         setTokenAmount('0');
         setDexterTokenCost(0.0);
         setQuipuTokenCost(0.0);
+        setVortexTokenCost(0.0);
         setDexterTokenProceeds(0.0);
         setQuipuTokenProceeds(0.0);
+        setVortexTokenProceeds(0.0);
         setPassPhrase('');
     }, [token.symbol]);
 
@@ -135,77 +146,135 @@ function Swap(props: Props) {
         } else {
             dexterState = await getPoolState(tezosUrl, tokenPoolConfig.dexterPool, dexterPoolStorageMap);
         }
+
         const quipuState = await getPoolState(
             tezosUrl,
             tokenPoolConfig.quipuPool,
             tokenMetadata?.kind === TokenKind.tzip12 ? quipuPool2StorageMap : quipuPoolStorageMap
         );
 
+        const vortexState = await getPoolState(tezosUrl, tokenPoolConfig.vortexPool, vortexPoolStorageMap);
+
         if (side === 'buy') {
-            let dexterCost = { cashAmount: -1, rate: 0 };
+            const dexterCost = { cashAmount: -1, rate: 0, market: 'Dexter' };
             if (dexterState) {
-                dexterCost = getTokenToCashInverse(
+                const dexterCalc = getTokenToCashInverse(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     dexterState.tokenBalance,
                     dexterState.coinBalance
                 );
+
+                dexterCost.cashAmount = dexterCalc.cashAmount;
+                dexterCost.rate = dexterCalc.rate;
             }
 
-            let quipuCost = { cashAmount: -1, rate: 0 };
+            const quipuCost = { cashAmount: -1, rate: 0, market: 'QuipuSwap' };
             if (quipuState) {
-                quipuCost = getTokenToCashInverse(
+                const quipuCalc = getTokenToCashInverse(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     quipuState.tokenBalance,
                     quipuState.coinBalance
                 );
+
+                quipuCost.cashAmount = quipuCalc.cashAmount;
+                quipuCost.rate = quipuCalc.rate;
+            }
+
+            const vortexCost = { cashAmount: -1, rate: 0, market: 'Vortex' };
+            if (vortexState) {
+                const vortexCalc = getTokenToCashInverse(
+                    new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
+                    vortexState.tokenBalance,
+                    vortexState.coinBalance
+                );
+
+                vortexCost.cashAmount = vortexCalc.cashAmount;
+                vortexCost.rate = vortexCalc.rate;
             }
 
             setDexterTokenCost(applyFees(dexterCost.cashAmount, 'buy'));
             setQuipuTokenCost(applyFees(quipuCost.cashAmount, 'buy'));
+            setVortexTokenCost(applyFees(vortexCost.cashAmount, 'buy'));
 
-            if ((dexterCost.cashAmount > 0 && dexterCost.cashAmount <= quipuCost.cashAmount) || (quipuCost.cashAmount < 0 && dexterCost.cashAmount > 0)) {
-                setBestMarket('Dexter');
-            }
-
-            if ((quipuCost.cashAmount > 0 && dexterCost.cashAmount > quipuCost.cashAmount) || (dexterCost.cashAmount < 0 && quipuCost.cashAmount > 0)) {
-                setBestMarket('QuipuSwap');
-            }
+            setBestMarket(selectMarket([dexterCost, quipuCost, vortexCost], 'buy'));
         } else if (side === 'sell') {
-            let dexterProceeds = { cashAmount: -1, rate: 0 };
+            const dexterProceeds = { cashAmount: -1, rate: 0, market: 'Dexter' };
             if (dexterState) {
-                dexterProceeds = getTokenToCashExchangeRate(
+                const dexterCalc = getTokenToCashExchangeRate(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     dexterState.tokenBalance,
                     dexterState.coinBalance
                 );
+
+                dexterProceeds.cashAmount = dexterCalc.cashAmount;
+                dexterProceeds.rate = dexterCalc.rate;
             }
 
-            let quipuProceeds = { cashAmount: -1, rate: 0 };
+            const quipuProceeds = { cashAmount: -1, rate: 0, market: 'QuipuSwap' };
             if (quipuState) {
-                quipuProceeds = getTokenToCashExchangeRate(
+                const quipuCalc = getTokenToCashExchangeRate(
                     new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
                     quipuState.tokenBalance,
                     quipuState.coinBalance
                 );
+
+                quipuProceeds.cashAmount = quipuCalc.cashAmount;
+                quipuProceeds.rate = quipuCalc.rate;
+            }
+
+            const vortexProceeds = { cashAmount: -1, rate: 0, market: 'Vortex' };
+            if (vortexState) {
+                const vortexCalc = getTokenToCashExchangeRate(
+                    new BigNumber(tokenValue).multipliedBy(10 ** (token.scale || 0)).toString(),
+                    vortexState.tokenBalance,
+                    vortexState.coinBalance
+                );
+
+                vortexProceeds.cashAmount = vortexCalc.cashAmount;
+                vortexProceeds.rate = vortexCalc.rate;
             }
 
             setDexterTokenProceeds(applyFees(dexterProceeds.cashAmount, 'sell'));
             setQuipuTokenProceeds(applyFees(quipuProceeds.cashAmount, 'sell'));
+            setVortexTokenProceeds(applyFees(vortexProceeds.cashAmount, 'sell'));
 
-            if (
-                (dexterProceeds.cashAmount > 0 && dexterProceeds.cashAmount >= quipuProceeds.cashAmount) ||
-                (quipuProceeds.cashAmount < 0 && dexterProceeds.cashAmount > 0)
-            ) {
-                setBestMarket('Dexter');
-            }
-
-            if (
-                (quipuProceeds.cashAmount > 0 && dexterProceeds.cashAmount < quipuProceeds.cashAmount) ||
-                (dexterProceeds.cashAmount < 0 && quipuProceeds.cashAmount > 0)
-            ) {
-                setBestMarket('QuipuSwap');
-            }
+            setBestMarket(selectMarket([dexterProceeds, quipuProceeds, vortexProceeds], 'sell'));
         }
+    }
+
+    function selectMarket(markets: MarketInfo[], side: 'buy' | 'sell'): string {
+        const validMarkets = markets.filter((m) => m.cashAmount > 0);
+
+        if (validMarkets.length === 1) {
+            return validMarkets[0].market;
+        }
+        if (validMarkets.length === 0) {
+            return '';
+        }
+
+        if (side === 'buy') {
+            const selectedMarket = validMarkets.slice(1).reduce((a, c) => {
+                if (a.cashAmount <= c.cashAmount) {
+                    return a;
+                }
+                return c;
+            }, selectedMarket[0]);
+
+            return bestMarket.market;
+        }
+
+        if (side === 'sell') {
+            const selectedMarket = validMarkets.slice(1).reduce((a, c) => {
+                if (a.cashAmount >= c.cashAmount) {
+                    return a;
+                }
+                return c;
+            }, validMarkets[0]);
+
+            return selectedMarket.market;
+        }
+
+        return '';
     }
 
     async function onSend() {
@@ -237,8 +306,18 @@ function Swap(props: Props) {
                     passPhrase
                 )
             );
+        } else if (tradeSide === 'buy' && bestMarket.toLowerCase() === 'vortex') {
+            await dispatch(
+                buyVortex(
+                    tokenPoolConfig.vortexPool,
+                    token.address,
+                    token.tokenIndex || -1,
+                    new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
+                    new BigNumber(vortexTokenCost).toString(),
+                    passPhrase
+                )
+            );
         } else if (tradeSide === 'sell' && bestMarket.toLowerCase() === 'dexter') {
-            console.log('tokenPoolConfig', tokenPoolConfig);
             await dispatch(
                 sellDexter(
                     token.symbol.toLocaleLowerCase() === 'tzbtc' ? tokenPoolConfig.granadaPool : tokenPoolConfig.dexterPool,
@@ -257,6 +336,17 @@ function Swap(props: Props) {
                     token.tokenIndex || -1,
                     new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
                     new BigNumber(quipuTokenProceeds).toString(),
+                    passPhrase
+                )
+            );
+        } else if (tradeSide === 'sell' && bestMarket.toLowerCase() === 'vortex') {
+            await dispatch(
+                sellVortex(
+                    tokenPoolConfig.vortexPool,
+                    token.address,
+                    token.tokenIndex || -1,
+                    new BigNumber(tokenAmount).multipliedBy(10 ** (token.scale || 0)).toString(),
+                    new BigNumber(vortexTokenProceeds).toString(),
                     passPhrase
                 )
             );
@@ -311,6 +401,11 @@ function Swap(props: Props) {
                                         Cost {dexterTokenCost > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenCost)} XTZ
                                     </div>
                                 )}
+                                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && vortexTokenCost > 0 && (
+                                    <div>
+                                        Cost {dexterTokenCost > 0 ? 'on Vortex' : ''} {formatAmount(vortexTokenCost)} XTZ
+                                    </div>
+                                )}
 
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
                                     <div>
@@ -322,6 +417,11 @@ function Swap(props: Props) {
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
                                     <div>
                                         Proceeds {dexterTokenProceeds > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenProceeds)} XTZ
+                                    </div>
+                                )}
+                                {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && vortexTokenProceeds > 0 && (
+                                    <div>
+                                        Proceeds {dexterTokenProceeds > 0 ? 'on Vortex' : ''} {formatAmount(vortexTokenProceeds)} XTZ
                                     </div>
                                 )}
                             </div>

@@ -27,6 +27,7 @@ export interface OperationFee {
 
 export const dexterPoolStorageMap = { coinBalancePath: '$.args[4].int', tokenBalancePath: '$.args[3].int', liquidityBalancePath: '$.args[1].args[2].int' };
 export const granadaPoolStorageMap = { coinBalancePath: '$.args[1].int', tokenBalancePath: '$.args[0].int', liquidityBalancePath: '$.args[2].int' };
+export const vortexPoolStorageMap = { coinBalancePath: '$.args[1].int', tokenBalancePath: '$.args[0].int', liquidityBalancePath: '$.args[2].int' };
 export const quipuPoolStorageMap = {
     coinBalancePath: '$.args[1].args[0].args[1].args[2].int',
     tokenBalancePath: '$.args[1].args[0].args[2].args[1].int',
@@ -40,25 +41,62 @@ export const quipuPool2StorageMap = {
 };
 
 const dexterExpirationPadding = 5 * 60 * 1000;
+const vortexExpirationPadding = 5 * 60 * 1000;
 
 export const tokenPoolMap = {
-    KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8: { dexterPool: 'KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU', quipuPool: 'KT1Evsp2yA19Whm24khvFPcwimK6UaAJu8Zo' }, // ethtz
-    KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: { dexterPool: 'KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6', quipuPool: 'KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6' }, // kusd
+    KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8: {
+        dexterPool: 'KT1PDrBE59Zmxnb8vXRgRAG1XmvTMTs5EDHU',
+        quipuPool: 'KT1Evsp2yA19Whm24khvFPcwimK6UaAJu8Zo',
+        vortexPool: 'KT1V1ea4Rpb8AJJkmAtBpg1VRNyfLcFFZM6d',
+    }, // ethtz
+    KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: {
+        dexterPool: 'KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6',
+        quipuPool: 'KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6',
+        vortexPool: 'KT1Wjadao8AXkwNQmjstbPGtLd1ZrUyQEDX7',
+    }, // kusd
     KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn: { granadaPool: 'KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5', quipuPool: 'KT1WBLrLE2vG8SedBqiSJFm4VVAZZBytJYHc' }, // tzbtc
-    KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: { dexterPool: 'KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9', quipuPool: 'KT1WxgZ1ZSfMgmsSDDcUn8Xn577HwnQ7e1Lb' }, // usdtz
-    KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH: { dexterPool: 'KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo', quipuPool: 'KT1W3VGRUjvS869r4ror8kdaxqJAZUbPyjMT' }, // wxtz
+    KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: {
+        dexterPool: 'KT1Tr2eG3eVmPRbymrbU2UppUmKjFPXomGG9',
+        quipuPool: 'KT1WxgZ1ZSfMgmsSDDcUn8Xn577HwnQ7e1Lb',
+        vortexPool: 'KT19HdcBJw8XJkDYKLr6ez9KkhhuS8MYUdcs',
+    }, // usdtz
+    KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH: {
+        dexterPool: 'KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo',
+        quipuPool: 'KT1W3VGRUjvS869r4ror8kdaxqJAZUbPyjMT',
+        vortexPool: 'KT1BcaTHMybrtH38pBtay32yaejyhdxDwyPX',
+    }, // wxtz
     KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: { dexterPool: '', quipuPool: 'KT1BMEEPX7MWzwwadW3NCSZe9XGmFJ7rs7Dr' }, // stkr
     KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: { dexterPool: '', quipuPool: 'KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z' }, // plenty
-    KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT: { dexterPool: '', quipuPool: 'KT1J3wTYb4xk5BsSBkg6ML55bX1xq7desS34' }, // kalam
+    KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT: {
+        dexterPool: '',
+        quipuPool: 'KT1J3wTYb4xk5BsSBkg6ML55bX1xq7desS34',
+        vortexPool: 'KT1GLRpdAPdRp4gJZ7gTmvu1J9ULk3ckty7c',
+    }, // kalam
     KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9: { dexterPool: '', quipuPool: 'KT1BgezWwHBxA9NrczwK9x3zfgFnUkc7JJ4b' }, // heh
-    KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: { dexterPool: '', quipuPool: 'KT1QxLqukyfohPV5kPkw97Rs6cw1DDDvYgbB' }, // hdao
+    KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW: {
+        dexterPool: '',
+        quipuPool: 'KT1QxLqukyfohPV5kPkw97Rs6cw1DDDvYgbB',
+        vortexPool: 'KT1GDzojMNFrk61JvAx9Po7f24ETuDnXtRo5',
+    }, // hdao
     KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf: { dexterPool: '', quipuPool: 'KT1KFszq8UFCcWxnXuhZPUyHT9FK3gjmSKm6' }, // usds
-    KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd: { dexterPool: '', quipuPool: 'KT1FG63hhFtMEEEtmBSX2vuFmP87t9E7Ab4t' }, // wrap
+    KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd: {
+        dexterPool: '',
+        quipuPool: 'KT1FG63hhFtMEEEtmBSX2vuFmP87t9E7Ab4t',
+        vortexPool: 'KT1CQP3kgsAFiFGLrjyqQqrx5s2kt3dQMyMx',
+    }, // wrap
     KT1AxaBxkFLCUi3f8rdDAAxBKHfzY8LfKDRA: { dexterPool: '', quipuPool: 'KT1WtFb1mTsFRd1n1nAYMdrE2Ud9XREz5hjK' }, // QLkUSD
-    KT1TwzD6zV3WeJ39ukuqxcfK2fJCnhvrdN1X: { dexterPool: '', quipuPool: 'KT1Gdix8LoDoQng7YqdPNhdP5V7JRX8FqWvM' }, // SMAK
+    KT1TwzD6zV3WeJ39ukuqxcfK2fJCnhvrdN1X: {
+        dexterPool: '',
+        quipuPool: 'KT1Gdix8LoDoQng7YqdPNhdP5V7JRX8FqWvM',
+        vortexPool: 'KT1LzyPS8rN375tC31WPAVHaQ4HyBvTSLwBu',
+    }, // SMAK
     KT1Wa8yqRBpFCusJWgcQyjhRz7hUQAmFxW7j: { dexterPool: '', quipuPool: 'KT1Q93ftAUzvfMGPwC78nX8eouL1VzmHPd4d' }, // FLAME
     KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH: { dexterPool: '', quipuPool: 'KT1NEa7CmaLaWgHNi6LkRi5Z1f4oHfdzRdGA' }, // kDAO
-    KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW: { dexterPool: '', quipuPool: 'KT1EtjRRCBC2exyCRXz8UfV7jz7svnkqi7di' }, // uUSD
+    'KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW+0': {
+        dexterPool: '',
+        quipuPool: 'KT1EtjRRCBC2exyCRXz8UfV7jz7svnkqi7di',
+        vortexPool: 'KT1ND1bkLahTzVUt93zbDtGugpWcL23gyqgQ',
+    }, // uUSD
     'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ+19': { dexterPool: '', quipuPool: 'KT1DksKXvCBJN7Mw6frGj6y6F3CbABWZVpj1' }, // wwBTC
     'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ+17': { dexterPool: '', quipuPool: 'KT1U2hs5eNdeCpHouAvQXGMzGFGJowbhjqmo' }, // wUSDC
     'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ+1': { dexterPool: '', quipuPool: 'KT1UMAE2PBskeQayP5f2ZbGiVYF7h8bZ2gyp' }, // wBUSD
@@ -203,6 +241,98 @@ export async function sendDexterSell(
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {
         console.log(`failed in sendDexterSell ${JSON.stringify(err)}}`);
+    }
+}
+
+export async function sendVortexBuy(
+    tezosNode: string,
+    keyStore: KeyStore,
+    signer: Signer,
+    tokenAddress: string,
+    tokenIndex: number,
+    poolAddress: string,
+    notional: string,
+    size: string
+): Promise<string | undefined> {
+    const expiration = new Date(Date.now() + vortexExpirationPadding);
+
+    const buyParams = `{ "prim": "Pair", "args": [ { "string": "${
+        keyStore.publicKeyHash
+    }" }, { "int": "${size}" }, { "string":"${expiration.toISOString()}" } ] }`;
+
+    try {
+        const r = await TezosNodeWriter.sendContractInvocationOperation(
+            tezosNode,
+            signer,
+            keyStore,
+            poolAddress,
+            Number(notional),
+            0,
+            0,
+            0,
+            'xtzToToken',
+            buyParams,
+            TezosParameterFormat.Micheline,
+            TezosConstants.HeadBranchOffset,
+            true
+        );
+
+        return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
+    } catch (err) {
+        console.log(`failed in sendVortexBuy ${JSON.stringify(err)}}`);
+    }
+}
+
+export async function sendVortexSell(
+    tezosNode: string,
+    keyStore: KeyStore,
+    signer: Signer,
+    tokenAddress: string,
+    tokenIndex: number,
+    poolAddress: string,
+    notional: string,
+    size: string
+): Promise<string | undefined> {
+    const nextCounter = (await TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
+
+    const approveParams = `{ "prim": "Pair", "args": [ { "string": "${poolAddress}" }, { "int": "${size}" } ] }`;
+    const approveOp = TezosNodeWriter.constructContractInvocationOperation(
+        keyStore.publicKeyHash,
+        nextCounter,
+        tokenAddress,
+        0,
+        0,
+        0,
+        0,
+        'approve',
+        approveParams
+    );
+
+    const expiration = new Date(Date.now() + vortexExpirationPadding);
+
+    const sellParams = `{ "prim": "Pair","args": [ { "string": "${
+        keyStore.publicKeyHash
+    }" }, { "int": "${size}" }, { "int": "${notional}" }, { "string": "${expiration.toISOString()}" } ] }`;
+
+    const sellOp = TezosNodeWriter.constructContractInvocationOperation(
+        keyStore.publicKeyHash,
+        nextCounter + 1,
+        poolAddress,
+        0,
+        0,
+        0,
+        0,
+        'tokenToXtz',
+        sellParams
+    );
+
+    try {
+        const opGroup = await TezosNodeWriter.prepareOperationGroup(tezosNode, keyStore, nextCounter - 1, [approveOp, sellOp], true);
+        const r = await TezosNodeWriter.sendOperation(tezosNode, opGroup, signer);
+
+        return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
+    } catch (err) {
+        console.log(`failed in sendVortexSell ${JSON.stringify(err)}}`);
     }
 }
 
@@ -357,11 +487,11 @@ export async function getPoolState(server: string, address: string, storageMap: 
         return undefined;
     }
     const storageResult = await TezosNodeReader.getContractStorage(server, address);
-
+    console.log('bbbb', address, storageResult, storageMap);
     const tokenBalance = JSONPath({ path: storageMap.tokenBalancePath, json: storageResult })[0];
     const xtzBalance = JSONPath({ path: storageMap.coinBalancePath, json: storageResult })[0];
     const liquidityBalance = JSONPath({ path: storageMap.liquidityBalancePath, json: storageResult })[0];
-
+    console.log('cccc', address, tokenBalance, xtzBalance, liquidityBalance);
     return {
         coinBalance: xtzBalance,
         tokenBalance,
