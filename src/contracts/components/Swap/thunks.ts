@@ -4,7 +4,7 @@ import { cloneDecryptedSigner } from '../../../utils/wallet';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { getMainNode, getMainPath } from '../../../utils/settings';
 
-import { sendDexterBuy, sendDexterSell, sendQuipuBuy, sendQuipuSell } from './util';
+import { sendDexterBuy, sendDexterSell, sendQuipuBuy, sendQuipuSell, sendVortexBuy, sendVortexSell } from './util';
 
 export function buyDexter(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
@@ -27,6 +27,18 @@ export function buyQuipu(marketAddress: string, tokenAddress: string, tokenIndex
 export function sellQuipu(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
         return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuSell);
+    };
+}
+
+export function buyVortex(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
+    return async (dispatch, state) => {
+        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendVortexBuy);
+    };
+}
+
+export function sellVortex(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
+    return async (dispatch, state) => {
+        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendVortexSell);
     };
 }
 
