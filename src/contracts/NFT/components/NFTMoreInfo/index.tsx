@@ -75,6 +75,10 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
             openArtifactLink(`https://objkt.com/asset/rcs/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.TWITZ) {
             openArtifactLink(`https://twitz.vercel.app/twitz/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.SUMO) {
+            openArtifactLink(`https://objkt.com/asset/chopsumo/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.H3P) {
+            openArtifactLink(`https://objkt.com/asset/h3p/${nftObject.objectId}`);
         }
     };
 

@@ -2,7 +2,7 @@ import { clearGetNFTCollectionsErrorAction, startNFTSyncAction, endNFTSyncAction
 
 import { getNFTCollections } from '../../contracts/NFT/util';
 
-import { TokenKind } from '../../types/general';
+import { ArtToken, TokenKind } from '../../types/general';
 import { NFTState } from '../../types/store';
 
 import { getMainNode } from '../../utils/settings';
@@ -62,7 +62,7 @@ export const getCollectionsThunk = () => async (dispatch, getState) => {
     const mainNode = getMainNode(nodesList, selectedNode);
     const tokens = getState().wallet.tokens.filter((token) => [TokenKind.objkt].includes(token.kind));
 
-    const { collections, errors } = await getNFTCollections(tokens, selectedParentHash, mainNode);
+    const { collections, errors } = await getNFTCollections(tokens as ArtToken[], selectedParentHash, mainNode);
 
     dispatch(setNFTCollectionsAction(collections, errors));
     dispatch(setNFTCollectionsAreLoadingAction(false));

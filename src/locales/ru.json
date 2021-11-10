@@ -115,7 +115,8 @@
         "actionPanel": {
             "description": "Что-то здесь очень пусто. Начните <1> отправлять</1> и<3> получать</3> tez на этот адрес.",
             "empty-title": "Вы ещё не сделали никаких транзакций",
-            "invoke_manager": "Manage Delegation"
+            "invoke_manager": "Manage Delegation",
+            "empty-gallery": "Your account doesn't appear to have any supported NFTs"
         },
         "addDelegateModal": {
             "gas_tool_tip": "Системе понадобится {{gas}} tz чтобы создать адрес делегата",
@@ -389,6 +390,8 @@
                 "MOMENTS": "objkt.com",
                 "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
+                "SUMO": "objkt.com",
+                "H3P": "objkt.com",
                 "IPFS": "IPFS"
             }
         },

@@ -115,7 +115,8 @@
         "actionPanel": {
             "description": "ここはかなり空です。このアドレスからtezの<1>送金</1>と<3>受け取り</3>を始めます。",
             "empty-title": "まだ取引をしていません",
-            "invoke_manager": "Manage Delegation"
+            "invoke_manager": "Manage Delegation",
+            "empty-gallery": "Your account doesn't appear to have any supported NFTs"
         },
         "addDelegateModal": {
             "gas_tool_tip": "デリゲートされたアドレスを作成するために、{{gas}} tzにはネットワークが必要です。",
@@ -389,6 +390,8 @@
                 "MOMENTS": "objkt.com",
                 "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
+                "SUMO": "objkt.com",
+                "H3P": "objkt.com",
                 "IPFS": "IPFS"
             }
         },

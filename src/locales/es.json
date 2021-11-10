@@ -115,7 +115,8 @@
         "actionPanel": {
             "description": "Esto está bastante vacío. Empieza <1> a mandar</1> y a <3>recibir</3> tez desde esta dirección",
             "empty-title": "No has hecho ninguna transacción",
-            "invoke_manager": "Manage Delegation"
+            "invoke_manager": "Manage Delegation",
+            "empty-gallery": "Your account doesn't appear to have any supported NFTs"
         },
         "addDelegateModal": {
             "gas_tool_tip": "La red necesita {{gas}} tz para crear una dirección delegada",
@@ -389,6 +390,8 @@
                 "MOMENTS": "objkt.com",
                 "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
+                "SUMO": "objkt.com",
+                "H3P": "objkt.com",
                 "IPFS": "IPFS"
             }
         },

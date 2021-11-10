@@ -36,6 +36,7 @@ import wtzIcon from '../../resources/contracts/wtz-icon.png';
 import xplentyIcon from '../../resources/contracts/xplenty-icon.png';
 import ctezIcon from '../../resources/contracts/ctez-icon.png';
 import rcktIcon from '../../resources/contracts/rckt-icon.png';
+import sexpIcon from '../../resources/contracts/sexp-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -258,7 +259,25 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1MsdyBSAMQwzvDH4jt2mxUKJvBSWZuPoRJ',
+        address: 'KT1Fxz4V3LaUcVFpvF8pAAx8G3Z4H7p7hhDg',
+        displayName: 'Hash Three Points',
+        symbol: 'H3P',
+        balance: 0,
+        transactions: [],
+        activeTab: COLLECTION,
+        kind: TokenKind.objkt,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        mapid: 19749,
+        nftMetadataMap: 19750,
+        helpLink: 'https://h3p.deconcept.com/',
+        displayHelpLink: 'h3p.deconcept.com',
+        hideOnLanding: true,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1WGDVRnff4rmGzJUbdCRAJBmYt12BrPzdD',
         displayName: 'PixelPotus',
         symbol: 'POTUS',
         balance: 0,
@@ -400,6 +419,21 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1Kyc366SrSJ1camxByr363F9WAiHAaReMv',
+        displayName: 'SEXP',
+        symbol: 'SEXP',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: sexpIcon,
+        scale: 18,
+        precision: 18,
+        round: 6,
+        mapid: 22833,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1MEouXPpCx9eFJYnxfAWpFA7NxhW3rDgUN',
         displayName: 'Blend',
         symbol: 'BLND',
@@ -477,8 +511,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         activeTab: TRANSACTIONS,
         kind: TokenKind.tzip7,
         icon: ctezIcon,
-        scale: 18,
-        precision: 18,
+        scale: 6,
+        precision: 6,
         round: 6,
         mapid: 20920,
         balancePath: '$.int',

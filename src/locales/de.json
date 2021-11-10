@@ -115,7 +115,8 @@
         "actionPanel": {
             "description": "Es ist ziemlich leer hier. Los gehts<1> Sende</1> und<3> Empfange</3> Tez von dieser Adresse.",
             "empty-title": "Sie haben noch keine Transaktionen",
-            "invoke_manager": "Manage Delegation"
+            "invoke_manager": "Manage Delegation",
+            "empty-gallery": "Your account doesn't appear to have any supported NFTs"
         },
         "addDelegateModal": {
             "gas_tool_tip": "{{gas}} tz wird vom Netzwerk benötigt, um eine delegierte Adresse zu erstellen",
@@ -389,6 +390,8 @@
                 "MOMENTS": "objkt.com",
                 "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
+                "SUMO": "objkt.com",
+                "H3P": "objkt.com",
                 "IPFS": "IPFS"
             }
         },

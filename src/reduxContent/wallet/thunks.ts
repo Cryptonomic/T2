@@ -65,6 +65,7 @@ import * as tzip7Util from '../../contracts/TokenContract/util';
 import * as tzip12Util from '../../contracts/Token2Contract/util';
 import * as wxtzUtil from '../../contracts/WrappedTezos/util';
 import * as plentyUtil from '../../contracts/Plenty/util';
+import { JSONPath } from 'jsonpath-plus';
 
 const { restoreIdentityFromFundraiser, restoreIdentityFromMnemonic, restoreIdentityFromSecretKey } = KeyStoreUtils;
 
@@ -223,6 +224,15 @@ export function syncTokenThunk(tokenAddress) {
                         // TODO
                         return { ...d, holders: keyCount, supply: 1000000000000000000000000 };
                     }
+
+                    if (tokens[tokenIndex].address === 'KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4') {
+                        console.log('ctez');
+                        const storage = await TezosNodeReader.getContractStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
+                        console.log('ctez', storage);
+                        console.log('ctez', JSONPath({ path: '$.args[3].int', json: JSON.parse(storage) })[0]);
+                        return { ...d, holders: keyCount, supply: Number(JSONPath({ path: '$.args[3].int', json: JSON.parse(storage) })[0]) };
+                    }
+
                     return { ...d, holders: keyCount };
                 });
                 transAsync = []; // tzip7Util.syncTokenTransactions(
@@ -449,6 +459,11 @@ export function syncWalletThunk() {
                         details.supply = 1000000000000000000000000;
                     }
 
+                    if (token.address === 'KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4' && details) {
+                        const storage = await TezosNodeReader.getContractStorage(mainNode.tezosUrl, token.address);
+                        details.supply = Number(JSONPath({ path: '$.args[3].int', json: storage })[0]);
+                    }
+
                     const transactions = [];
                     // await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
                     return { ...token, administrator, balance, transactions, details };
@@ -509,7 +524,7 @@ export function syncWalletThunk() {
                     const artToken = token as ArtToken;
                     const administrator = '';
 
-                    const balance = await NFTUtil.getCollectionSize([token], selectedParentHash, mainNode);
+                    const balance = await NFTUtil.getCollectionSize([token as ArtToken], selectedParentHash, mainNode);
                     const transactions = []; // await HicNFTUtil.getTokenTransactions('', selectedParentHash, selectedNode);
 
                     return { ...artToken, administrator, balance, transactions };

@@ -115,7 +115,8 @@
         "actionPanel": {
             "description": "여기는 꽤 비어 있습니다. 이 주소에서 tez를 <1>전송</1> 및 <3>수신하기</3> 시작하세요.",
             "empty-title": "아직 트랜잭션을 하지 않았습니다",
-            "invoke_manager": "Manage Delegation"
+            "invoke_manager": "Manage Delegation",
+            "empty-gallery": "Your account doesn't appear to have any supported NFTs"
         },
         "addDelegateModal": {
             "gas_tool_tip": "위임용 주소를 만들려면 네트워크에서 {{gas}} tz가 필요합니다.",
@@ -389,6 +390,8 @@
                 "MOMENTS": "objkt.com",
                 "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
+                "SUMO": "objkt.com",
+                "H3P": "objkt.com",
                 "IPFS": "IPFS"
             }
         },

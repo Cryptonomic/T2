@@ -18,7 +18,7 @@ import { NFTObject, NFTCollections, NFTError, GetNFTCollection, GetNFTCollection
 
 import { imageProxyURL, imageAPIKey } from '../../config.json';
 
-import { Node, Token } from '../../types/general';
+import { ArtToken, Node, Token } from '../../types/general';
 
 const proxySupportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
 
@@ -180,7 +180,7 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
  * @param {Node} node - the selected node.
  * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
-export async function getNFTCollections(tokens: Token[], managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollections> {
+export async function getNFTCollections(tokens: ArtToken[], managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollections> {
     const promises: Promise<any>[] = [];
     tokens.map((token) => {
         switch (token.displayName.toLowerCase()) {
@@ -191,28 +191,39 @@ export async function getNFTCollections(tokens: Token[], managerAddress: string,
                 promises.push(getKalamintCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
             case 'kumulus':
-                promises.push(getKumulusCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.KUMULUS_OBJKT, managerAddress, node, skipDetails)
+                );
                 break;
             case 'gogos':
-                promises.push(getGogoCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.GOGOS_OBJKT, managerAddress, node, skipDetails)
+                );
                 break;
             case 'neonz':
-                promises.push(getNeonzCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.NEONZ_OBJKT, managerAddress, node, skipDetails)
+                );
                 break;
             case 'pixelpotus':
                 promises.push(getPotusCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
             case 'the moments':
-                promises.push(getMomentsCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.MOMENTS, managerAddress, node, skipDetails)
+                );
                 break;
             case 'randomly common skeles':
-                promises.push(getSkelesCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.SKELE, managerAddress, node, skipDetails));
                 break;
             case 'twitznft':
-                promises.push(getTwitzCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.TWITZ, managerAddress, node, skipDetails));
                 break;
             case 'chop sumo':
-                promises.push(getSumoCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.SUMO, managerAddress, node, skipDetails));
+                break;
+            case 'hash three points':
+                promises.push(getHashThreeCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
             default:
                 break;
@@ -550,384 +561,6 @@ export async function getKalamintCollection(
     return { collection, errors };
 }
 
-export async function getKumulusCollection(
-    tokenAddress: string,
-    tokenMapId: number,
-    managerAddress: string,
-    node: Node,
-    skipDetails: boolean = false
-): Promise<GetNFTCollection> {
-    const { conseilUrl, apiKey, network } = node;
-    const errors: NFTError[] = []; // Store errors to display to the user.
-
-    // 1. Build and execute the query:
-    let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [`0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
-    collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
-
-    const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
-
-    // const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
-    // const queryChunks = chunkArray(operationGroupIds, 30);
-
-    // 2. Get prices:
-    // const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
-
-    const priceMap: any = {};
-    /*await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
-
-                        if (action === 'collect') {
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint_OBJKT') {
-                            action = 'mint';
-                        }
-
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
-        )
-    );*/
-
-    // 3. Parse tokens to the expected format and fetch missing details:
-    const collection = await Promise.all(
-        collectionResult.map(async (row) => {
-            let price = 0;
-            const objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
-            let objectDetails;
-            let receivedOn = new Date();
-            let action = '';
-
-            try {
-                const priceRecord = priceMap[row.operation_group_id];
-                price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
-                action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
-            } catch {
-                //
-            }
-
-            let nftObject = {
-                tokenAddress,
-                objectId,
-                provider: NFT_PROVIDERS.KUMULUS_OBJKT,
-                amount: 1,
-                price: isNaN(price) ? 0 : price,
-                receivedOn,
-                action,
-            } as NFTObject;
-
-            // Get the other object details, like name, description, artifactUrl, etc.
-            if (!skipDetails) {
-                try {
-                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, 19922);
-
-                    nftObject = {
-                        ...nftObject,
-                        name: objectDetails.name,
-                        description: objectDetails.description,
-                        artifactUrl: objectDetails.artifactUrl,
-                        artifactType: objectDetails.artifactType,
-                        artifactModerationMessage: objectDetails.artifactModerationMessage,
-                        thumbnailUri: objectDetails.thumbnailUri,
-                        creators: objectDetails.creators,
-                        author: objectDetails.creators,
-                    };
-                } catch (e) {
-                    errors.push({
-                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
-                        data: [
-                            {
-                                key: 'provider',
-                                value: 'Kumulus',
-                            },
-                        ],
-                    });
-                }
-            }
-
-            return nftObject;
-        })
-    );
-
-    return { collection, errors };
-}
-
-export async function getGogoCollection(
-    tokenAddress: string,
-    tokenMapId: number,
-    managerAddress: string,
-    node: Node,
-    skipDetails: boolean = false
-): Promise<GetNFTCollection> {
-    const { conseilUrl, apiKey, network } = node;
-    const errors: NFTError[] = []; // Store errors to display to the user.
-
-    // 1. Build and execute the query:
-    let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [`0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
-    collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
-
-    const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
-
-    // const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
-    // const queryChunks = chunkArray(operationGroupIds, 30);
-
-    // 2. Get prices:
-    // const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
-
-    const priceMap: any = {};
-    /*await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
-
-                        if (action === 'collect') {
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint_OBJKT') {
-                            action = 'mint';
-                        }
-
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
-        )
-    );*/
-
-    // 3. Parse tokens to the expected format and fetch missing details:
-    const collection = await Promise.all(
-        collectionResult.map(async (row) => {
-            let price = 0;
-            const objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
-            let objectDetails;
-            let receivedOn = new Date();
-            let action = '';
-
-            try {
-                const priceRecord = priceMap[row.operation_group_id];
-                price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
-                action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
-            } catch {
-                //
-            }
-
-            let nftObject = {
-                tokenAddress,
-                objectId,
-                provider: NFT_PROVIDERS.GOGOS_OBJKT,
-                amount: 1,
-                price: isNaN(price) ? 0 : price,
-                receivedOn,
-                action,
-            } as NFTObject;
-
-            // Get the other object details, like name, description, artifactUrl, etc.
-            if (!skipDetails) {
-                try {
-                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, 20611);
-
-                    nftObject = {
-                        ...nftObject,
-                        name: objectDetails.name,
-                        description: objectDetails.description,
-                        artifactUrl: objectDetails.artifactUrl,
-                        artifactType: objectDetails.artifactType,
-                        artifactModerationMessage: objectDetails.artifactModerationMessage,
-                        thumbnailUri: objectDetails.thumbnailUri,
-                        creators: objectDetails.creators,
-                        author: objectDetails.creators,
-                    };
-                } catch (e) {
-                    errors.push({
-                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
-                        data: [
-                            {
-                                key: 'provider',
-                                value: 'GOGOs',
-                            },
-                        ],
-                    });
-                }
-            }
-
-            return nftObject;
-        })
-    );
-
-    return { collection, errors };
-}
-
-export async function getNeonzCollection(
-    tokenAddress: string,
-    tokenMapId: number,
-    managerAddress: string,
-    node: Node,
-    skipDetails: boolean = false
-): Promise<GetNFTCollection> {
-    const { conseilUrl, apiKey, network } = node;
-    const errors: NFTError[] = []; // Store errors to display to the user.
-
-    // 1. Build and execute the query:
-    let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [`0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
-    collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
-
-    const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
-
-    // const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
-    // const queryChunks = chunkArray(operationGroupIds, 30);
-
-    // 2. Get prices:
-    // const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
-
-    const priceMap: any = {};
-    /*await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
-
-                        if (action === 'collect') {
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint_OBJKT') {
-                            action = 'mint';
-                        }
-
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
-        )
-    );*/
-
-    // 3. Parse tokens to the expected format and fetch missing details:
-    const collection = await Promise.all(
-        collectionResult.map(async (row) => {
-            let price = 0;
-            const objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
-            let objectDetails;
-            let receivedOn = new Date();
-            let action = '';
-
-            try {
-                const priceRecord = priceMap[row.operation_group_id];
-                price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
-                action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
-            } catch {
-                //
-            }
-
-            let nftObject = {
-                tokenAddress,
-                objectId,
-                provider: NFT_PROVIDERS.NEONZ_OBJKT,
-                amount: 1,
-                price: isNaN(price) ? 0 : price,
-                receivedOn,
-                action,
-            } as NFTObject;
-
-            // Get the other object details, like name, description, artifactUrl, etc.
-            if (!skipDetails) {
-                try {
-                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, 21220);
-
-                    nftObject = {
-                        ...nftObject,
-                        name: objectDetails.name,
-                        description: objectDetails.description,
-                        artifactUrl: objectDetails.artifactUrl,
-                        artifactType: objectDetails.artifactType,
-                        artifactModerationMessage: objectDetails.artifactModerationMessage,
-                        thumbnailUri: objectDetails.thumbnailUri,
-                        creators: objectDetails.creators,
-                        author: objectDetails.creators,
-                    };
-                } catch (e) {
-                    errors.push({
-                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
-                        data: [
-                            {
-                                key: 'provider',
-                                value: 'NEONZ',
-                            },
-                        ],
-                    });
-                }
-            }
-
-            return nftObject;
-        })
-    );
-
-    return { collection, errors };
-}
-
 export async function getObjktNFTDetails(tezosUrl: string, objectId: number | string, metadataMap: number) {
     const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
@@ -990,53 +623,13 @@ export async function getPotusCollection(
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
         `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
     ]);
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
 
-    // const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
-    // const queryChunks = chunkArray(operationGroupIds, 30);
-
-    // 2. Get prices:
-    // const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
-
     const priceMap: any = {};
-    /*await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
 
-                        if (action === 'collect') {
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint_OBJKT') {
-                            action = 'mint';
-                        }
-
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
-        )
-    );*/
-
-    // 3. Parse tokens to the expected format and fetch missing details:
     const collection = await Promise.all(
         collectionResult.map(async (row) => {
             let price = 0;
@@ -1087,7 +680,7 @@ export async function getPotusCollection(
                         data: [
                             {
                                 key: 'provider',
-                                value: 'PIXEL_POTUS',
+                                value: NFT_PROVIDERS.PIXEL_POTUS,
                             },
                         ],
                     });
@@ -1139,9 +732,12 @@ export async function getPotusNFTObjectDetails(tezosUrl: string, objectId: numbe
     };
 }
 
-export async function getMomentsCollection(
+export async function getCollection(
     tokenAddress: string,
     tokenMapId: number,
+    queryArg: 'key' | 'value',
+    metadataMapId: number,
+    provider: string,
     managerAddress: string,
     node: Node,
     skipDetails: boolean = false
@@ -1149,24 +745,33 @@ export async function getMomentsCollection(
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
-    // 1. Build and execute the query:
     let collectionQuery = ConseilQueryBuilder.blankQuery();
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [`0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
+    if (queryArg === 'key') {
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
+            `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+        ]);
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
+    } else if (queryArg === 'value') {
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [
+            `0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+        ]);
+    } else {
+        throw new Error('invalid ledger query');
+    }
+
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
 
-    // const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
-    // const queryChunks = chunkArray(operationGroupIds, 30);
+    const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
+    const queryChunks = chunkArray(operationGroupIds, 30);
 
-    // 2. Get prices:
-    // const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
+    const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
 
     const priceMap: any = {};
-    /*await Promise.all(
+    await Promise.all(
         priceQueries.map(
             async (q) =>
                 await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
@@ -1174,7 +779,9 @@ export async function getMomentsCollection(
                         let amount = 0;
                         let action = row.parameters_entrypoints;
 
-                        if (action === 'collect') {
+                        if (action === 'collect' || action === 'fulfill_ask') {
+                            // hen, objkt
+                            action = 'collect';
                             amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
                         } else if (action === 'transfer') {
                             action = 'collect';
@@ -1188,6 +795,8 @@ export async function getMomentsCollection(
                             );
                         } else if (action === 'mint_OBJKT') {
                             action = 'mint';
+                        } else {
+                            return;
                         }
 
                         priceMap[row.operation_group_hash] = {
@@ -1199,136 +808,8 @@ export async function getMomentsCollection(
                     })
                 )
         )
-    );*/
-
-    // 3. Parse tokens to the expected format and fetch missing details:
-    const collection = await Promise.all(
-        collectionResult.map(async (row) => {
-            let price = 0;
-            const objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
-            let objectDetails;
-            let receivedOn = new Date();
-            let action = '';
-
-            try {
-                const priceRecord = priceMap[row.operation_group_id];
-                price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
-                action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
-            } catch {
-                //
-            }
-
-            let nftObject = {
-                tokenAddress,
-                objectId,
-                provider: NFT_PROVIDERS.MOMENTS,
-                amount: 1,
-                price: isNaN(price) ? 0 : price,
-                receivedOn,
-                action,
-            } as NFTObject;
-
-            // Get the other object details, like name, description, artifactUrl, etc.
-            if (!skipDetails) {
-                try {
-                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, 21951);
-
-                    nftObject = {
-                        ...nftObject,
-                        name: objectDetails.name,
-                        description: objectDetails.description,
-                        artifactUrl: objectDetails.artifactUrl,
-                        artifactType: objectDetails.artifactType,
-                        artifactModerationMessage: objectDetails.artifactModerationMessage,
-                        thumbnailUri: objectDetails.thumbnailUri,
-                        creators: objectDetails.creators,
-                        author: objectDetails.creators,
-                    };
-                } catch (e) {
-                    console.log('error reading Moments data', e);
-                    errors.push({
-                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
-                        data: [
-                            {
-                                key: 'provider',
-                                value: 'MOMENTS',
-                            },
-                        ],
-                    });
-                }
-            }
-
-            return nftObject;
-        })
     );
 
-    return { collection, errors };
-}
-
-export async function getSkelesCollection(
-    tokenAddress: string,
-    tokenMapId: number,
-    managerAddress: string,
-    node: Node,
-    skipDetails: boolean = false
-): Promise<GetNFTCollection> {
-    const { conseilUrl, apiKey, network } = node;
-    const errors: NFTError[] = []; // Store errors to display to the user.
-
-    // 1. Build and execute the query:
-    let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [`0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
-    collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
-
-    const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
-
-    // const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
-    // const queryChunks = chunkArray(operationGroupIds, 30);
-
-    // 2. Get prices:
-    // const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
-
-    const priceMap: any = {};
-    /*await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
-
-                        if (action === 'collect') {
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint_OBJKT') {
-                            action = 'mint';
-                        }
-
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
-        )
-    );*/
-
-    // 3. Parse tokens to the expected format and fetch missing details:
     const collection = await Promise.all(
         collectionResult.map(async (row) => {
             let price = 0;
@@ -1349,18 +830,16 @@ export async function getSkelesCollection(
             let nftObject = {
                 tokenAddress,
                 objectId,
-                provider: NFT_PROVIDERS.SKELE,
+                provider,
                 amount: 1,
                 price: isNaN(price) ? 0 : price,
                 receivedOn,
                 action,
             } as NFTObject;
 
-            // Get the other object details, like name, description, artifactUrl, etc.
             if (!skipDetails) {
                 try {
-                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, 22384);
-
+                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, metadataMapId);
                     nftObject = {
                         ...nftObject,
                         name: objectDetails.name,
@@ -1373,15 +852,10 @@ export async function getSkelesCollection(
                         author: objectDetails.creators,
                     };
                 } catch (e) {
-                    console.log('error reading Skele data', objectId, e);
+                    console.log(`error reading ${provider} data`, objectId, e);
                     errors.push({
                         code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
-                        data: [
-                            {
-                                key: 'provider',
-                                value: 'SKELE',
-                            },
-                        ],
+                        data: [{ key: 'provider', value: provider }],
                     });
                 }
             }
@@ -1393,7 +867,7 @@ export async function getSkelesCollection(
     return { collection, errors };
 }
 
-export async function getTwitzCollection(
+export async function getHashThreeCollection(
     tokenAddress: string,
     tokenMapId: number,
     managerAddress: string,
@@ -1414,14 +888,13 @@ export async function getTwitzCollection(
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
 
-    // const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
-    // const queryChunks = chunkArray(operationGroupIds, 30);
+    const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
+    const queryChunks = chunkArray(operationGroupIds, 30);
 
-    // 2. Get prices:
-    // const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
+    const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
 
     const priceMap: any = {};
-    /*await Promise.all(
+    await Promise.all(
         priceQueries.map(
             async (q) =>
                 await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
@@ -1429,9 +902,12 @@ export async function getTwitzCollection(
                         let amount = 0;
                         let action = row.parameters_entrypoints;
 
-                        if (action === 'collect') {
+                        if (action === 'collect' || action === 'fulfill_ask') {
+                            // hen, objkt
+                            action = 'collect';
                             amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
                         } else if (action === 'transfer') {
+                            // fa2
                             action = 'collect';
                             amount = Number(
                                 row.parameters
@@ -1442,6 +918,7 @@ export async function getTwitzCollection(
                                     )
                             );
                         } else if (action === 'mint_OBJKT') {
+                            // hen
                             action = 'mint';
                         }
 
@@ -1454,7 +931,7 @@ export async function getTwitzCollection(
                     })
                 )
         )
-    );*/
+    );
 
     // 3. Parse tokens to the expected format and fetch missing details:
     const collection = await Promise.all(
@@ -1477,7 +954,7 @@ export async function getTwitzCollection(
             let nftObject = {
                 tokenAddress,
                 objectId,
-                provider: NFT_PROVIDERS.TWITZ,
+                provider: NFT_PROVIDERS.H3P,
                 amount: 1,
                 price: isNaN(price) ? 0 : price,
                 receivedOn,
@@ -1487,7 +964,7 @@ export async function getTwitzCollection(
             // Get the other object details, like name, description, artifactUrl, etc.
             if (!skipDetails) {
                 try {
-                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, 12360);
+                    objectDetails = await getHashThreeNFTDetails(node.tezosUrl, objectId, 19750);
                     nftObject = {
                         ...nftObject,
                         name: objectDetails.name,
@@ -1500,13 +977,13 @@ export async function getTwitzCollection(
                         author: objectDetails.creators,
                     };
                 } catch (e) {
-                    console.log('error reading twitz data', objectId, e);
+                    console.log('error reading hashthree data', objectId, e);
                     errors.push({
                         code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
                         data: [
                             {
                                 key: 'provider',
-                                value: 'TWITZ',
+                                value: 'H3P',
                             },
                         ],
                     });
@@ -1520,131 +997,47 @@ export async function getTwitzCollection(
     return { collection, errors };
 }
 
-export async function getSumoCollection(
-    tokenAddress: string,
-    tokenMapId: number,
-    managerAddress: string,
-    node: Node,
-    skipDetails: boolean = false
-): Promise<GetNFTCollection> {
-    const { conseilUrl, apiKey, network } = node;
-    const errors: NFTError[] = []; // Store errors to display to the user.
+export async function getHashThreeNFTDetails(tezosUrl: string, objectId: number | string, metadataMap: number) {
+    const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(`token_${objectId}_metadata`, 'string'), 'hex'));
+    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
+    const metadataBytes = JSONPath({ path: '$.bytes', json: nftInfo })[0];
+    const metadataString = Buffer.from(metadataBytes, 'hex').toString();
+    const nftDetailJson = JSON.parse(metadataString);
 
-    // 1. Build and execute the query:
-    let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
-        `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
-    ]);
-    collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
+    const nftName = nftDetailJson.name;
+    const nftDescription = nftDetailJson.description;
+    const nftCreators = nftDetailJson.creators
+        .map((c) => c.trim())
+        .map((c) => (['tz1', 'tz2', 'tz3', 'KT1'].includes(c) && c.length === 36 ? `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}` : c))
+        .join(', '); // TODO: use names where possible
+    const nftArtifactType = nftDetailJson.formats[0].mimeType.toString();
 
-    const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
+    let nftArtifact = nftDetailJson.artifactUri;
+    const nftThumbnailUri = `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.slice(7)}`;
 
-    // const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
-    // const queryChunks = chunkArray(operationGroupIds, 30);
+    // Check the proxy:
+    let nftArtifactModerationMessage;
+    const artifactProxy = await getNFTArtifactProxy(nftArtifact, nftArtifactType);
+    if (artifactProxy && artifactProxy.content.length > 1000) {
+        nftArtifact = artifactProxy.content;
+        nftArtifactModerationMessage = artifactProxy.moderationMessage;
+    } else {
+        if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
+            nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+        } else {
+            nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+        }
+    }
 
-    // 2. Get prices:
-    // const priceQueries = queryChunks.map((c) => makeLastPriceQuery(c));
-
-    const priceMap: any = {};
-    /*await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
-
-                        if (action === 'collect') {
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint_OBJKT') {
-                            action = 'mint';
-                        }
-
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
-        )
-    );*/
-
-    // 3. Parse tokens to the expected format and fetch missing details:
-    const collection = await Promise.all(
-        collectionResult.map(async (row) => {
-            let price = 0;
-            const objectId = row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1');
-            let objectDetails;
-            let receivedOn = new Date();
-            let action = '';
-
-            try {
-                const priceRecord = priceMap[row.operation_group_id];
-                price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
-                action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
-            } catch {
-                //
-            }
-
-            let nftObject = {
-                tokenAddress,
-                objectId,
-                provider: NFT_PROVIDERS.SUMO,
-                amount: 1,
-                price: isNaN(price) ? 0 : price,
-                receivedOn,
-                action,
-            } as NFTObject;
-
-            // Get the other object details, like name, description, artifactUrl, etc.
-            if (!skipDetails) {
-                try {
-                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, 22650);
-                    nftObject = {
-                        ...nftObject,
-                        name: objectDetails.name,
-                        description: objectDetails.description,
-                        artifactUrl: objectDetails.artifactUrl,
-                        artifactType: objectDetails.artifactType,
-                        artifactModerationMessage: objectDetails.artifactModerationMessage,
-                        thumbnailUri: objectDetails.thumbnailUri,
-                        creators: objectDetails.creators,
-                        author: objectDetails.creators,
-                    };
-                } catch (e) {
-                    console.log('error reading sumo data', objectId, e);
-                    errors.push({
-                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
-                        data: [
-                            {
-                                key: 'provider',
-                                value: 'SUMO',
-                            },
-                        ],
-                    });
-                }
-            }
-
-            return nftObject;
-        })
-    );
-
-    return { collection, errors };
+    return {
+        name: nftName,
+        description: nftDescription,
+        creators: nftCreators,
+        artifactUrl: nftArtifact,
+        artifactType: nftArtifactType,
+        artifactModerationMessage: nftArtifactModerationMessage,
+        thumbnailUri: nftThumbnailUri,
+    };
 }
 
 /**
@@ -1695,13 +1088,13 @@ export async function transferNFT(
  * Get the NFT collection size.
  * If you need a collection size for a specific token, pass the one-element array, ie: [token].
  *
- * @param {Token} tokens - the list of tokens
+ * @param {ArtToken} tokens - the list of tokens
  * @param {string} managerAddress - manager address
  * @param {Node} node - selected node
  *
  * @return {Promise<number>}
  */
-export async function getCollectionSize(tokens: Token[], managerAddress: string, node: Node): Promise<number> {
+export async function getCollectionSize(tokens: ArtToken[], managerAddress: string, node: Node): Promise<number> {
     const { collections } = await getNFTCollections(tokens, managerAddress, node, true);
     const tokenCount = collections.collected.reduce((a, c) => a + c.amount, 0) + collections.minted.reduce((a, c) => a + c.amount, 0);
 

@@ -469,17 +469,21 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
         if (transaction.destination === 'KT1EpGgjQs73QfFJs9z7m1Mxm5MTnpC2tqse') {
             // Kalamint
-            if (transaction.parameters.entrypoint === 'mint') {
-                const editions = Number(JSONPath({ path: '$.args[0].args[1].args[1].args[0].int', json: transaction.parameters.value })[0]);
-                const royalties = Number(JSONPath({ path: '$.args[0].args[1].args[0].args[1].int', json: transaction.parameters.value })[0]);
-                const itemTitle = JSONPath({ path: '$.args[1].args[0].args[1].args[0].string', json: transaction.parameters.value })[0].toString();
+            try {
+                if (transaction.parameters.entrypoint === 'mint') {
+                    const editions = Number(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0]);
+                    const royalties = Number(JSONPath({ path: '$.args[1].args[0].args[1].int', json: transaction.parameters.value })[0]);
+                    const itemTitle = JSONPath({ path: '$.args[2].args[0].args[1].args[0].string', json: transaction.parameters.value })[0].toString();
 
-                return (
-                    <>
-                        &nbsp;to mint <strong>{editions}</strong> NFT{editions > 1 ? 's' : ''} with royalties of <strong>{royalties}%</strong> titled{' '}
-                        <strong>{itemTitle}</strong>.
-                    </>
-                );
+                    return (
+                        <>
+                            &nbsp;to mint <strong>{editions}</strong> NFT{editions > 1 ? 's' : ''} with royalties of <strong>{royalties}%</strong> titled{' '}
+                            <strong>{itemTitle}</strong>.
+                        </>
+                    );
+                }
+            } catch (kalamintError) {
+                console.log('error parsing kalamint request', kalamintError, transaction);
             }
         } else if (transaction.destination === 'KT1MiSxkVDFDrAMYCZZXdBEkNrf1NWzfnnRR') {
             if (transaction.parameters.entrypoint === 'create_auction') {
