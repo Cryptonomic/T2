@@ -25,6 +25,7 @@ export const NFT_PROVIDERS = {
     SKELE: 'SKELE',
     TWITZ: 'TWITZ',
     SUMO: 'SUMO',
+    H3P: 'H3P',
     IPFS: 'IPFS',
 } as const;
 
