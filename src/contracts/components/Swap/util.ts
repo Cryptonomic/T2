@@ -487,11 +487,11 @@ export async function getPoolState(server: string, address: string, storageMap: 
         return undefined;
     }
     const storageResult = await TezosNodeReader.getContractStorage(server, address);
-    console.log('bbbb', address, storageResult, storageMap);
+
     const tokenBalance = JSONPath({ path: storageMap.tokenBalancePath, json: storageResult })[0];
     const xtzBalance = JSONPath({ path: storageMap.coinBalancePath, json: storageResult })[0];
     const liquidityBalance = JSONPath({ path: storageMap.liquidityBalancePath, json: storageResult })[0];
-    console.log('cccc', address, tokenBalance, xtzBalance, liquidityBalance);
+
     return {
         coinBalance: xtzBalance,
         tokenBalance,

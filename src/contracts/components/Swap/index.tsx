@@ -258,9 +258,9 @@ function Swap(props: Props) {
                     return a;
                 }
                 return c;
-            }, selectedMarket[0]);
+            }, validMarkets[0]);
 
-            return bestMarket.market;
+            return selectedMarket.market;
         }
 
         if (side === 'sell') {

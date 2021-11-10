@@ -376,7 +376,7 @@ export function harvestRewards(password: string) {
         const operationId = await TezosNodeWriter.sendOperation(tezosUrl, pricedOps, isLedger ? signer : await cloneDecryptedSigner(signer, password)).catch(
             (err) => {
                 const errorObj = { name: err.message, ...err };
-                console.error(`Plenty harvestRewards failed with ${JSON.stringify(errorObj)}`);
+                console.error(`Kolibri harvestRewards failed with ${JSON.stringify(errorObj)}`);
                 dispatch(createMessageAction(errorObj.name, true));
                 return undefined;
             }
