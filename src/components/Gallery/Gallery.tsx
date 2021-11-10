@@ -70,7 +70,7 @@ export const Gallery: FunctionComponent<GalleryProps> = ({ children, cols, break
         <GalleryContainer padding={containerPadding}>
             {isEmpty ? (
                 <EmptyStateContainer>
-                    <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />
+                    <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-gallery')} description={null} />
                 </EmptyStateContainer>
             ) : (
                 <StyledMasonry cols={cols} breakpoints={breakpoints} itempadding={itempadding}>
