@@ -115,7 +115,8 @@
         "actionPanel": {
             "description": "Está bem vazio aqui. Comece a <1>enviar</1> e <3>receber</3> tezos à partir desse endereço.",
             "empty-title": "Você ainda não fez nenhuma transação",
-            "invoke_manager": "Manage Delegation"
+            "invoke_manager": "Manage Delegation",
+            "empty-gallery": "Your account doesn't appear to have any supported NFTs"
         },
         "addDelegateModal": {
             "gas_tool_tip": "É necessário {{gas}} tz  para que a rede crie um endereço delegado",
@@ -389,6 +390,8 @@
                 "MOMENTS": "objkt.com",
                 "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
+                "SUMO": "objkt.com",
+                "H3P": "objkt.com",
                 "IPFS": "IPFS"
             }
         },

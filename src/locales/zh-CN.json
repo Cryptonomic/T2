@@ -115,7 +115,8 @@
         "actionPanel": {
             "description": "这里空空如也。开始<1>发送</1>和<3>接收</3>tez到这个地址。",
             "empty-title": "你还没有做任何一笔交易",
-            "invoke_manager": "Manage Delegation"
+            "invoke_manager": "Manage Delegation",
+            "empty-gallery": "Your account doesn't appear to have any supported NFTs"
         },
         "addDelegateModal": {
             "gas_tool_tip": "网络需要{{gas}} tz来创建一个被委托的地址",
@@ -388,6 +389,8 @@
                 "MOMENTS": "objkt.com",
                 "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
+                "SUMO": "objkt.com",
+                "H3P": "objkt.com",
                 "IPFS": "IPFS"
             }
         },

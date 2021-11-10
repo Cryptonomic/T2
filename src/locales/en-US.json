@@ -136,7 +136,8 @@
         "actionPanel": {
             "description": "It's pretty empty here. Get started<1> sending</1> and<3> receiving</3> tez from this address.",
             "empty-title": "You have not made any transactions yet",
-            "invoke_manager": "Manage Delegation"
+            "invoke_manager": "Manage Delegation",
+            "empty-gallery": "Your account doesn't appear to have any supported NFTs"
         },
         "addDelegateModal": {
             "gas_tool_tip": "{{gas}} XTZ is required by the network to create a delegated address",
@@ -439,6 +440,8 @@
                 "MOMENTS": "objkt.com",
                 "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
+                "SUMO": "objkt.com",
+                "H3P": "objkt.com",
                 "IPFS": "IPFS"
             }
         },

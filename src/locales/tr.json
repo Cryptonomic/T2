@@ -115,7 +115,8 @@
         "actionPanel": {
             "description": "Burası çok boş. Bu adresten tez <1> göndermeye</1> ve<3> almaya</3> başlayın.",
             "empty-title": "Henüz bir işlem gerçekleştirmediniz.",
-            "invoke_manager": "Manage Delegation"
+            "invoke_manager": "Manage Delegation",
+            "empty-gallery": "Your account doesn't appear to have any supported NFTs"
         },
         "addDelegateModal": {
             "gas_tool_tip": "Delege adres oluşturmak için Tezos ağının {{gas}} tz gaz yakması gerekiyor.",
@@ -388,6 +389,8 @@
                 "MOMENTS": "objkt.com",
                 "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
+                "SUMO": "objkt.com",
+                "H3P": "objkt.com",
                 "IPFS": "IPFS"
             }
         },
