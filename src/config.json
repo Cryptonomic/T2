@@ -1,22 +1,23 @@
 {
     "name": "Tezori",
-    "version": "1.2.4-beta",
+    "version": "1.2.5-beta",
     "blockExplorerHost": "https://arronax.io/tezos",
     "logo": "tezosLogo.png",
     "logoLink": "https://github.com/Cryptonomic/T2",
     "termsService": "https://github.com/Cryptonomic/T2",
     "privacyPolicy": "https://github.com/Cryptonomic/T2",
     "tagline": "containers.loginHome.tagline",
-    "LocalVersionIndex": "50",
+    "LocalVersionIndex": "51",
     "helpUrl": "https://github.com/Cryptonomic/T2",
     "aboutUrl": "",
     "ledgerAppUrl": "https://support.ledger.com/hc/en-us/articles/360016057774-Tezos-XTZ-",
     "ledgerReferral": "",
     "versionReferenceURL": "https://raw.githubusercontent.com/Cryptonomic/T2/master/version.json",
     "tokensSupportURL": "",
+    "liquiditySupportURL": "https://midl-dev.medium.com/liquidity-baking-in-granadanet-how-it-works-e60c82bee6f1",
     "logLevel": "debug",
     "imageProxyURL": "",
     "imageAPIKey": "",
     "wertUrl": "",
-    "customProtocols": ["tezori", "tezos"]
+    "customProtocols": ["tezori", "tezos", "galleon"]
 }
