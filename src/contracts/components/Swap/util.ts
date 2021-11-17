@@ -467,7 +467,7 @@ export function getTokenToCashInverse(
 }
 
 export function calcTokenLiquidityRequirement(cashDeposit: string, tokenBalance: string, cashBalance: string): number {
-    return bigInt(cashDeposit).multiply(bigInt(tokenBalance)).divide(bigInt(cashBalance)).toJSNumber();
+    return bigInt(cashDeposit).multiply(tokenBalance).divide(cashBalance).toJSNumber();
 }
 
 export function calcCashLiquidityRequirement(tokenDeposit: string, tokenBalance: string, cashBalance: string): number {

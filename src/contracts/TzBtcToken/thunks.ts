@@ -72,13 +72,23 @@ export function transferThunk(destination: string, amount: number, fee: number, 
     };
 }
 
-export function addLiquidityThunk(destination: string, poolShare: string, cashAmount: string, tokenAmount: string, password: string) {
+export function addLiquidityThunk(
+    destination: string,
+    poolShare: string,
+    cashAmount: string,
+    tokenAmount: string,
+    password: string,
+    shortfall: string = '',
+    shortfallCost: string = ''
+) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword } = state().wallet;
-        const { selectedAccountHash, selectedParentHash, isLedger, signer } = state().app;
+        const { selectedParentHash, isLedger, signer } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { tezosUrl } = mainNode;
+
+        const selectedAccountHash = 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn'; // hack
 
         if (password !== walletPassword && !isLedger) {
             const error = 'components.messageBar.messages.incorrect_password';
@@ -88,15 +98,34 @@ export function addLiquidityThunk(destination: string, poolShare: string, cashAm
 
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
-
         const expiration = new Date(Date.now() + 5 * 60 * 1000);
+
+        const ops: Transaction[] = [];
+
+        if (shortfall.length > 0 && shortfallCost.length > 0) {
+            const buyOp = TezosNodeWriter.constructContractInvocationOperation(
+                keyStore.publicKeyHash,
+                0,
+                destination,
+                Number(shortfallCost),
+                0,
+                0,
+                0,
+                'xtzToToken',
+                `{"prim":"Pair","args":[{"string":"${keyStore.publicKeyHash}"},{"int":"${shortfall}"},{"string":"${expiration.toISOString()}"}]}`,
+                TezosParameterFormat.Micheline
+            );
+
+            ops.push(buyOp);
+        }
+
+        ops.push(constructFA1ApprovalOperation(keyStore.publicKeyHash, 0, { fee: 0, gas: 0, storage: 0 }, selectedAccountHash, destination));
+        ops.push(constructFA1ApprovalOperation(keyStore.publicKeyHash, 0, { fee: 0, gas: 0, storage: 0 }, selectedAccountHash, destination, tokenAmount));
+
         const params = `{ "prim": "Pair","args": [ { "bytes": "${TezosMessageUtils.writeAddress(
             keyStore.publicKeyHash
         )}" }, { "prim": "Pair", "args": [ { "int": "${poolShare}" }, { "prim": "Pair", "args": [ { "int": "${tokenAmount}" }, { "string": "${expiration.toISOString()}" } ] } ] } ] }`;
 
-        const ops: Transaction[] = [];
-        ops.push(constructFA1ApprovalOperation(keyStore.publicKeyHash, 0, { fee: 0, gas: 0, storage: 0 }, selectedAccountHash, destination));
-        ops.push(constructFA1ApprovalOperation(keyStore.publicKeyHash, 0, { fee: 0, gas: 0, storage: 0 }, selectedAccountHash, destination, tokenAmount));
         ops.push(
             TezosNodeWriter.constructContractInvocationOperation(
                 keyStore.publicKeyHash,
@@ -112,9 +141,10 @@ export function addLiquidityThunk(destination: string, poolShare: string, cashAm
             )
         );
 
-        const counter = await TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
-        const pricedOps = await TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
         try {
+            const counter = await TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
+            const pricedOps = await TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
+
             const operationResult = await TezosNodeWriter.sendOperation(
                 tezosUrl,
                 pricedOps,
@@ -159,13 +189,10 @@ export function removeLiquidityThunk(destination: string, poolShare: string, cas
         const params = `{ "prim": "Pair","args": [ { "string": "${
             keyStore.publicKeyHash
         }" }, { "prim": "Pair", "args": [ { "int": "${poolShare}" }, { "prim": "Pair", "args": [ { "int": "${cashAmount}" }, { "prim": "Pair", "args": [ { "int": "${tokenAmount}" }, { "string": "${expiration.toISOString()}" } ] } ] } ] } ] }`;
-
-        let operationId = '';
-        try {
-            const r = await TezosNodeWriter.sendContractInvocationOperation(
-                tezosUrl,
-                isLedger ? signer : await cloneDecryptedSigner(signer, password),
-                keyStore,
+        const ops = [
+            TezosNodeWriter.constructContractInvocationOperation(
+                keyStore.publicKeyHash,
+                0,
                 destination,
                 0,
                 0,
@@ -173,12 +200,26 @@ export function removeLiquidityThunk(destination: string, poolShare: string, cas
                 0,
                 'removeLiquidity',
                 params,
-                TezosParameterFormat.Micheline,
-                TezosConstants.HeadBranchOffset,
-                true
+                TezosParameterFormat.Micheline
+            ),
+        ];
+
+        try {
+            const counter = await TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
+            const pricedOps = await TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
+
+            const operationResult = await TezosNodeWriter.sendOperation(
+                tezosUrl,
+                pricedOps,
+                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                TezosConstants.HeadBranchOffset
             );
 
-            operationId = r.operationGroupID.replace(/\\|"|\n|\r/g, '');
+            if (operationResult === undefined) {
+                return false;
+            }
+
+            const operationId = operationResult.operationGroupID.replace(/\\|"|\n|\r/g, '');
 
             dispatch(createMessageAction('components.messageBar.messages.started_token_success', false, operationId));
 

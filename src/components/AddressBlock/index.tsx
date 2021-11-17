@@ -195,6 +195,7 @@ function AddressBlock(props: Props) {
     const isManagerActive = publicKeyHash === selectedAccountHash && selectedAccountType === AddressType.Manager;
     const isTokensPageActive = selectedAccountType === AddressType.TokensPage;
     const isNFTGallerysPageActive = selectedAccountType === AddressType.NFTGallery;
+    const isLiquidityPageActive = selectedAccountType === AddressType.PlatformLiquidity;
 
     function hideDelegateTooltip() {
         setIsDelegateTooltip(true);
@@ -310,39 +311,13 @@ function AddressBlock(props: Props) {
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
                 />
             )}
-            {delegatedAddresses.length > 0 && (
-                <TitleLabel>
-                    <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
-                </TitleLabel>
-            )}
-
-            {delegatedAddresses.map((address, index) => {
-                const addressId = address.account_id;
-                const isDelegatedActive = addressId === selectedAccountHash;
-                const delegatedAddressReady = isReady(address.status);
-
-                return delegatedAddressReady ? (
-                    <Address
-                        key={addressId}
-                        isContract={true}
-                        accountId={addressId}
-                        isActive={!isModalOpen && isDelegatedActive}
-                        balance={address.balance}
-                        onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
-                    />
-                ) : (
-                    <AddressStatus
-                        key={addressId}
-                        isContract={true}
-                        isActive={!isModalOpen && isDelegatedActive}
-                        status={address.status}
-                        onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
-                    />
-                );
-            })}
 
             <AddDelegateLabel isActive={!isModalOpen && isNFTGallerysPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.NFTGallery)}>
                 <DelegateTitle>{t('general.nouns.nft_gallery')}</DelegateTitle>
+            </AddDelegateLabel>
+
+            <AddDelegateLabel isActive={!isModalOpen && isLiquidityPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.PlatformLiquidity)}>
+                <DelegateTitle>{t('general.nouns.platform_liquidity')}</DelegateTitle>
             </AddDelegateLabel>
 
             <AddDelegateLabel isActive={!isModalOpen && isTokensPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.TokensPage)}>
@@ -406,6 +381,37 @@ function AddressBlock(props: Props) {
                 <DelegateTitle>{t('components.Beacon.info.title')}</DelegateTitle>
                 <ChevronRightIcon style={{ fill: isModalOpen && activeModal === 'beaconInfo' ? '#FFFFFF' : '#132C57' }} />
             </AddDelegateLabel>
+
+            {delegatedAddresses.length > 0 && (
+                <TitleLabel>
+                    <DelegateTitle>{t('components.addDelegateModal.add_delegate_title')}</DelegateTitle>
+                </TitleLabel>
+            )}
+
+            {delegatedAddresses.map((address, index) => {
+                const addressId = address.account_id;
+                const isDelegatedActive = addressId === selectedAccountHash;
+                const delegatedAddressReady = isReady(address.status);
+
+                return delegatedAddressReady ? (
+                    <Address
+                        key={addressId}
+                        isContract={true}
+                        accountId={addressId}
+                        isActive={!isModalOpen && isDelegatedActive}
+                        balance={address.balance}
+                        onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
+                    />
+                ) : (
+                    <AddressStatus
+                        key={addressId}
+                        isContract={true}
+                        isActive={!isModalOpen && isDelegatedActive}
+                        status={address.status}
+                        onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
+                    />
+                );
+            })}
 
             {delegatedAddresses.length > 0 && (
                 <TitleLabel>
