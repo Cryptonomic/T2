@@ -31,7 +31,7 @@ export const PasswordButtonContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    height: 71px;
+    height: 85px;
     margin-top: auto;
     width: 100%;
 `;

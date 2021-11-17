@@ -81,7 +81,8 @@
             "implementation": "Implementation",
             "vaults": "Vaults",
             "collection": "Collection",
-            "nft_gallery": "NFT Gallery"
+            "nft_gallery": "NFT Gallery",
+            "platform_liquidity": "Liquidity Baking"
         },
         "errors": {
             "no_hex_data": "Введённая строка не является hex данными",

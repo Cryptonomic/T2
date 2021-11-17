@@ -93,7 +93,8 @@
             "collection": "Collection",
             "quantity": "Quantity",
             "liquidity": "Liquidity",
-            "nft_gallery": "NFT Gallery"
+            "nft_gallery": "NFT Gallery",
+            "platform_liquidity": "Liquidity Baking"
         },
         "errors": {
             "no_hex_data": "The provided string doesn't look like hex data",
@@ -576,7 +577,16 @@
             "outcome_warning": "Note that token and XTZ trade outcomes are estimates and actual numbers may be different. Slippage is set to 1%."
         },
         "liquidity": {
-            "description": "Offering liquidity on an exchange may generate yield. Note that outcomes are estimates and actual balances my be different. Slippage is set to 1%."
+            "description": "Offering liquidity on an exchange may generate yield. Note that outcomes are estimates and actual balances may be different. Slippage is set to 1%."
+        },
+        "platformLiquidity": {
+            "add": "Add Liquidity",
+            "description": "To participate in liquidity baking, deposit both tez and the equivalent amount of tzBTC  in exchange for Liquidity Provider (LP) tokens that represent your share in the liquidity pool.",
+            "remove": "Redeem LP Tokens",
+            "estimate_warning": "Trade outcomes are estimates; actual results may differ. Slippage is set to 1%.",
+            "token_deposit": "Required BTCtz Deposit",
+            "xtz_deposit": "XTZ Deposit",
+            "lp_amount": "LP Tokens"
         }
     },
     "containers": {

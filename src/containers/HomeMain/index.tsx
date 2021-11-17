@@ -21,6 +21,7 @@ import StkrToken from '../../contracts/StkrToken';
 import PlentyToken from '../../contracts/Plenty';
 import TokensPage from '../TokensPage';
 import NFTGallery from '../NFTGallery';
+import PlatformLiquidity from '../PlatformLiquidity';
 
 import { sortArr } from '../../utils/array';
 
@@ -66,6 +67,8 @@ function HomeMain() {
                 return <Token2Contract />;
             case AddressType.NFTGallery:
                 return <NFTGallery />;
+            case AddressType.PlatformLiquidity:
+                return <PlatformLiquidity />;
             default:
                 return <GenericContract />;
         }
