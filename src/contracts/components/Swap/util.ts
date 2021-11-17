@@ -483,7 +483,7 @@ export function calcProposedShare(cashDeposit: string, cashBalance: string, liqu
 }
 
 export async function getPoolState(server: string, address: string, storageMap: PoolStorageMap): Promise<PoolState | undefined> {
-    if (address.length === 0) {
+    if (!address || address.length === 0) {
         return undefined;
     }
     const storageResult = await TezosNodeReader.getContractStorage(server, address);
