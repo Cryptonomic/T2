@@ -11,8 +11,6 @@ import NumericInput from '../../../components/NumericInput';
 import InputError from '../../../components/InputError';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { RootState, AppState, SettingsState } from '../../../types/store';
-import { knownTokenContracts } from '../../../constants/Token';
-import { TokenKind } from '../../../types/general';
 import { Container, PasswordButtonContainer, InvokeButton, RowContainer } from '../../components/style';
 import { InfoIcon } from '../../../featureModals/style';
 
