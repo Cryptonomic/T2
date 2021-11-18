@@ -166,7 +166,7 @@ const PlatformLiquidity = () => {
             } short. Purchasing the difference requires ${formatAmount(tokenShortFallCost)} XTZ.`;
 
             if (new BigNumber(cashAmount).multipliedBy(1_000_000).plus(diffCost).gte(balance)) {
-                shortFallMessage += ` Which is greater than available account balance.`;
+                shortFallMessage = 'You don’t have enough funds for this deposit. Please enter a lower amount.';
                 setShortFallBlock(true);
             }
             setTokenShortFallMessage(shortFallMessage);
@@ -285,7 +285,9 @@ const PlatformLiquidity = () => {
         <Container>
             <TopWrapper>
                 <TopRow isReady={isReadyProp}>
-                    <Breadcrumbs>{t('components.balanceBanner.breadcrumbs', { parentIndex: selectedParentIndex + 1, addressLabel: 'Tokens' })}</Breadcrumbs>
+                    <Breadcrumbs>
+                        {t('components.balanceBanner.breadcrumbs', { parentIndex: selectedParentIndex + 1, addressLabel: 'Liquidity Baking' })}
+                    </Breadcrumbs>
                     <Update onClick={onSyncWallet} time={time} isReady={isReadyProp} isWalletSyncing={isWalletSyncing} />
                 </TopRow>
                 <BottomRow isReady={isReadyProp}>
