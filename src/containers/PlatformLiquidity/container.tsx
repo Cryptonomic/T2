@@ -6,7 +6,7 @@ import { BigNumber } from 'bignumber.js';
 
 import { Container as TopWrapper, TopRow, BottomRow, Breadcrumbs, AddressTitle } from '../../components/BalanceBanner/style';
 import { Container } from '../../contracts/components/TabContainer/style';
-import { BottomRowInner, Link, LinkIcon, BodyContainer, ColumnContainer, MessageContainer } from './style';
+import { BottomRowInner, Link, LinkIcon, BodyContainer, ColumnContainer, MessageContainer, BlockMessageContainer } from './style';
 
 import { SegmentedControlContainer, SegmentedControl, SegmentedControlItem } from '../../contracts/components/Swap/style';
 import { PasswordButtonContainer, InvokeButton, RowContainer } from '../../contracts/components/style';
@@ -161,12 +161,15 @@ const PlatformLiquidity = () => {
             setTokenShortFallCost(diffCostSlippage.toString());
 
             setShortFallBlock(false);
-            let shortFallMessage = `Account token balance is ${formatAmount(tokenShortFall, token.scale, token.scale)} ${
-                token.symbol
-            } short. Purchasing the difference requires ${formatAmount(tokenShortFallCost)} XTZ.`;
+            let shortFallMessage = t('components.platformLiquidity.shortfall', {
+                enough: token.balance === 0 ? 'any' : 'enough',
+                shortFallCost: formatAmount(tokenShortFallCost),
+                shortFall: formatAmount(tokenShortFall, token.scale, token.scale),
+                shortFallTotal: formatAmount(Number(tokenShortFallCost) + new BigNumber(cashAmount).multipliedBy(1_000_000).toNumber()),
+            });
 
             if (new BigNumber(cashAmount).multipliedBy(1_000_000).plus(diffCost).gte(balance)) {
-                shortFallMessage = 'You don’t have enough funds for this deposit. Please enter a lower amount.';
+                shortFallMessage = t('components.platformLiquidity.low_funds');
                 setShortFallBlock(true);
             }
             setTokenShortFallMessage(shortFallMessage);
@@ -177,10 +180,6 @@ const PlatformLiquidity = () => {
             setTokenShortFallMessage('');
             setShortFallBlock(false);
         }
-
-        // } else if (tradeSide === 'remove') {
-        //     updatePoolShare(val);
-        // }
     }
 
     async function updateTokenRequirement(cashValue: string) {
@@ -361,7 +360,7 @@ const PlatformLiquidity = () => {
                                         onChange={(v) => {
                                             return;
                                         }}
-                                        errorText={tokenError}
+                                        errorText={''}
                                         symbol={token.symbol}
                                         scale={token.scale}
                                         precision={token.precision || 8}
@@ -391,7 +390,9 @@ const PlatformLiquidity = () => {
                 </RowContainer>
 
                 <RowContainer>
-                    {tradeSide === 'add' && Number(cashAmount) > 0 && <MessageContainer>Expected pool share {poolPercent}.</MessageContainer>}
+                    {tradeSide === 'add' && Number(cashAmount) > 0 && !shortFallBlock && (
+                        <MessageContainer>Expected pool share {poolPercent}.</MessageContainer>
+                    )}
 
                     {Number(lpAmount) > 0 && tradeSide === 'remove' && (
                         <MessageContainer>
@@ -399,19 +400,18 @@ const PlatformLiquidity = () => {
                         </MessageContainer>
                     )}
                 </RowContainer>
-
-                {tokenError.length > 0 && (
-                    <RowContainer>
-                        <MessageContainer>{tokenShortFallMessage}</MessageContainer>
-                    </RowContainer>
-                )}
-
                 <RowContainer>
                     <MessageContainer>
                         <InfoIcon color="info" iconName="info" />
                         {t('components.platformLiquidity.estimate_warning')}
                     </MessageContainer>
                 </RowContainer>
+
+                {tokenError.length > 0 && (
+                    <RowContainer>
+                        <BlockMessageContainer>{tokenShortFallMessage}</BlockMessageContainer>
+                    </RowContainer>
+                )}
 
                 {((tradeSide === 'add' && !shortFallBlock) || (tradeSide === 'remove' && lpError.length === 0)) && (
                     <PasswordButtonContainer>
