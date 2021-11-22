@@ -225,6 +225,11 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
             case 'hash three points':
                 promises.push(getHashThreeCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
+            case 'byteblock nft':
+                promises.push(
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.BYTEBLOCK, managerAddress, node, skipDetails)
+                );
+                break;
             default:
                 break;
         }
@@ -561,10 +566,10 @@ export async function getKalamintCollection(
     return { collection, errors };
 }
 
-export async function getObjktNFTDetails(tezosUrl: string, objectId: number | string, metadataMap: number) {
+export async function getObjktNFTDetails(tezosUrl: string, objectId: number | string, metadataMap: number, urlPath: string = '$.args[1][0].args[1].bytes') {
     const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
-    const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
+    const ipfsUrlBytes = JSONPath({ path: urlPath, json: nftInfo })[0];
     const ipfsHash = Buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
 
     const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
@@ -572,14 +577,23 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
 
     const nftName = nftDetailJson.name;
     const nftDescription = nftDetailJson.description;
-    const nftCreators = nftDetailJson.creators
-        .map((c) => c.trim())
-        .map((c) => `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}`)
-        .join(', '); // TODO: use names where possible
-    const nftArtifactType = nftDetailJson.formats[0].mimeType.toString();
+
+    let nftCreators = !nftDetailJson.creators
+        ? ''
+        : nftDetailJson.creators
+              .map((c) => c.trim())
+              .map((c) => `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}`)
+              .join(', '); // TODO: use names where possible
+
+    if (nftCreators.length === 0 && nftDetailJson.minter) {
+        // byteblock
+        nftCreators = `${nftDetailJson.minter.slice(0, 6)}...${nftDetailJson.minter.slice(nftDetailJson.minter.length - 6, nftDetailJson.minter.length)}`;
+    }
+
+    const nftArtifactType = nftDetailJson.formats ? nftDetailJson.formats[0].mimeType.toString() : 'image/png';
 
     let nftArtifact = nftDetailJson.artifactUri;
-    const nftThumbnailUri = `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.slice(7)}`;
+    let nftThumbnailUri = nftDetailJson.thumbnailUri ? `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.slice(7)}` : nftArtifact;
 
     // Check the proxy:
     let nftArtifactModerationMessage;
@@ -588,10 +602,18 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
         nftArtifact = artifactProxy.content;
         nftArtifactModerationMessage = artifactProxy.moderationMessage;
     } else {
-        if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
-            nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+        if (nftDetailJson.formats !== undefined && nftDetailJson.formats.length > 0 && nftDetailJson.formats[0].uri) {
+            if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
+                nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+            } else if (/image|audio/.test(nftArtifactType.toLowerCase())) {
+                nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+            }
         } else {
-            nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+            if (nftThumbnailUri === nftArtifact && !/image/.test(nftArtifactType.toLowerCase())) {
+                nftThumbnailUri = '';
+            }
+
+            nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.artifactUri.toString().slice(7)}`;
         }
     }
 
@@ -740,7 +762,8 @@ export async function getCollection(
     provider: string,
     managerAddress: string,
     node: Node,
-    skipDetails: boolean = false
+    skipDetails: boolean = false,
+    urlPath?: string
 ): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
@@ -839,7 +862,7 @@ export async function getCollection(
 
             if (!skipDetails) {
                 try {
-                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, metadataMapId);
+                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, metadataMapId, urlPath);
                     nftObject = {
                         ...nftObject,
                         name: objectDetails.name,

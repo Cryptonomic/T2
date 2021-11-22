@@ -58,7 +58,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
     const openArtifactSite = () => {
         if (nftObject?.provider === NFT_PROVIDERS.HIC_ET_NUNC) {
             // TODO: urls should be defined in token info
-            openArtifactLink(`https://www.hicetnunc.xyz/objkt/${nftObject.objectId}`);
+            openArtifactLink(`https://www.hicetnunc.art/objkt/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.KALAMINT) {
             openArtifactLink(`https://kalamint.io/token/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.KUMULUS_OBJKT) {
@@ -79,6 +79,8 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
             openArtifactLink(`https://objkt.com/asset/chopsumo/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.H3P) {
             openArtifactLink(`https://objkt.com/asset/h3p/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.BYTEBLOCK) {
+            openArtifactLink(`https://byteblock.art/collection/${nftObject.tokenAddress}/token/${nftObject.objectId}`);
         }
     };
 
