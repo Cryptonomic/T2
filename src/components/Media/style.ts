@@ -6,6 +6,7 @@ import WarningIcon from '@mui/icons-material/ReportProblemRounded';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Image from '../Image';
 import Video from '../Video';
+import Audio from '../Audio';
 
 export const CloseModalButton = styled(IconButton)`
     &&& {
@@ -84,6 +85,8 @@ export const StyledImage = styled(Image)`
 `;
 
 export const StyledVideo = styled(Video)``;
+
+export const StyledAudio = styled(Audio)``;
 
 export const MediaTypeIconWrapper = styled.div`
     position: absolute;
