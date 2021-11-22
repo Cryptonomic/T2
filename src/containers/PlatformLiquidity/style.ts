@@ -187,6 +187,18 @@ export const MessageContainer = styled.div`
     font-weight: 300;
 `;
 
+export const BlockMessageContainer = styled.div`
+    display: block;
+    justify-content: left;
+    align-items: flex-start;
+    width: 100%;
+    padding: 0.3em;
+    margin: 0.3em;
+    color: #4e71ab;
+    font-weight: 300;
+    background-color: #f2f4f9;
+`;
+
 export const RowContainer = styled.div`
     display: block;
     align-items: center;
