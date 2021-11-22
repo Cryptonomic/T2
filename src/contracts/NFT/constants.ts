@@ -26,6 +26,7 @@ export const NFT_PROVIDERS = {
     TWITZ: 'TWITZ',
     SUMO: 'SUMO',
     H3P: 'H3P',
+    BYTEBLOCK: 'BYTEBLOCK',
     IPFS: 'IPFS',
 } as const;
 

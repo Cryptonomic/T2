@@ -393,6 +393,7 @@
                 "TWITZ": "twitz.vercel.app",
                 "SUMO": "objkt.com",
                 "H3P": "objkt.com",
+                "BYTEBLOCK": "byteblock.art",
                 "IPFS": "IPFS"
             }
         },
@@ -512,6 +513,20 @@
         },
         "swap": {
             "outcome_warning": "Note that token and XTZ trade outcomes are estimates and actual numbers may be different. Slippage is set to 1%."
+        },
+        "liquidity": {
+            "description": "Offering liquidity on an exchange may generate yield. Note that outcomes are estimates and actual balances may be different. Slippage is set to 1%."
+        },
+        "platformLiquidity": {
+            "add": "Add Liquidity",
+            "description": "To participate in liquidity baking, deposit both tez and the equivalent amount of tzBTC in exchange for Liquidity Provider (LP) tokens that represent your share in the liquidity pool.",
+            "remove": "Redeem LP Tokens",
+            "estimate_warning": "Trade outcomes are estimates. Slippage is set to 1%.",
+            "token_deposit": "Required tzBTC Deposit",
+            "xtz_deposit": "XTZ Deposit",
+            "lp_amount": "LP Tokens",
+            "shortfall": "Insufficient tzBTC balance. To complete this deposit to the liquidity pool, you will need to trade an additional {{shortFallCost}} XTZ for {{shortFall}} tzBTC for a total of {{shortFallTotal}} XTZ. Please enter your wallet password to confirm this transaction.",
+            "low_funds": "You don’t have enough funds for this deposit. Please enter a lower amount."
         }
     },
     "containers": {

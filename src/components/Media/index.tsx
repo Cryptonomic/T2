@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import VideoIcon from '@mui/icons-material/PlayArrow';
 
 import {
+    StyledAudio,
     CloseModalButton,
     FailedIcon,
     FailedLinkIcon,
@@ -128,6 +129,22 @@ const Media: FunctionComponent<MediaProps> = ({
         );
     };
 
+    const renderAudio = (innerProps) => {
+        enablePreview = false;
+        return (
+            <StyledAudio
+                src={source}
+                alt={alt || ''}
+                type={type}
+                AudioFailedBox={TheFailedBox}
+                onLoad={() => setLoaded(true)}
+                onError={() => setLoadFailed(true)}
+                controls={true}
+                {...innerProps}
+            />
+        );
+    };
+
     const renderContent = (innerProps) => {
         if (/image|png|jpg|jpeg|gif|svg/.test(type.toLowerCase())) {
             return renderImage(innerProps);
@@ -137,7 +154,11 @@ const Media: FunctionComponent<MediaProps> = ({
             return renderVideo(innerProps);
         }
 
-        return renderImage(innerProps);
+        if (/audio/.test(type.toLowerCase())) {
+            return renderAudio(innerProps);
+        }
+
+        return renderImage(innerProps); // TODO: unsupported type placeholder
     };
 
     const renderPreviewControls = () => (

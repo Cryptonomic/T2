@@ -104,6 +104,7 @@ export const tokenPoolMap = {
     'KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ+10': { dexterPool: '', quipuPool: 'KT1Lpysr4nzcFegC9ci9kjoqVidwoanEmJWt' }, // wLINK
     KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb: { dexterPool: '', quipuPool: 'KT1X3zxdTzPB9DgVzA3ad6dgZe9JEamoaeRy' }, // QUIPU
     KT1KPoyzkj82Sbnafm6pfesZKEhyCpXwQfMc: { dexterPool: '', quipuPool: 'KT1BweorZK1CJDEu76SyKcxfzeiAxip73Kot' }, // fDAO
+    KT1Kyc366SrSJ1camxByr363F9WAiHAaReMv: { dexterPool: '', quipuPool: 'KT1EVNuwjj7GijvVaxR7Vd9mejy4V6toZkeK' }, // sexp
 };
 
 export function isTradeable(tokenAddress: string, tokenIndex?: number) {
