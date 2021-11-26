@@ -230,6 +230,9 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
                     getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.BYTEBLOCK, managerAddress, node, skipDetails)
                 );
                 break;
+            case 'oneof':
+                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.ONEOF, managerAddress, node, skipDetails));
+                break;
             default:
                 break;
         }
@@ -547,7 +550,7 @@ export async function getKalamintCollection(
                 } catch (e) {
                     console.log('could not process kalamint metadata', e);
                     errors.push({
-                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
+                        code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,
                         data: [
                             {
                                 key: 'provider',
@@ -569,10 +572,18 @@ export async function getKalamintCollection(
 export async function getObjktNFTDetails(tezosUrl: string, objectId: number | string, metadataMap: number, urlPath: string = '$.args[1][0].args[1].bytes') {
     const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
+
     const ipfsUrlBytes = JSONPath({ path: urlPath, json: nftInfo })[0];
     const ipfsHash = Buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
 
-    const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+    const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' }).catch((e) => {
+        console.log(`error fetching nft metadata ${objectId}, ${ipfsHash}`);
+        return {
+            json: () => {
+                /* */
+            },
+        };
+    });
     const nftDetailJson = await nftDetails.json();
 
     const nftName = nftDetailJson.name;
@@ -581,19 +592,19 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     let nftCreators = !nftDetailJson.creators
         ? ''
         : nftDetailJson.creators
-              .map((c) => c.trim())
-              .map((c) => `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}`)
+              .map((c: string) => c.trim())
+              .map((c: string) => (c.startsWith('tz') ? `${c.slice(0, 6)}...${c.slice(c.length - 6, c.length)}` : c))
               .join(', '); // TODO: use names where possible
 
     if (nftCreators.length === 0 && nftDetailJson.minter) {
-        // byteblock
+        // byteblock, oneof
         nftCreators = `${nftDetailJson.minter.slice(0, 6)}...${nftDetailJson.minter.slice(nftDetailJson.minter.length - 6, nftDetailJson.minter.length)}`;
     }
 
     const nftArtifactType = nftDetailJson.formats ? nftDetailJson.formats[0].mimeType.toString() : 'image/png';
 
     let nftArtifact = nftDetailJson.artifactUri;
-    let nftThumbnailUri = nftDetailJson.thumbnailUri ? `https://ipfs.io/ipfs/${nftDetailJson.thumbnailUri.slice(7)}` : nftArtifact;
+    let nftThumbnailUri = nftDetailJson.thumbnailUri ? makeUrl(nftDetailJson.thumbnailUri) : nftArtifact;
 
     // Check the proxy:
     let nftArtifactModerationMessage;
@@ -604,16 +615,17 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     } else {
         if (nftDetailJson.formats !== undefined && nftDetailJson.formats.length > 0 && nftDetailJson.formats[0].uri) {
             if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
-                nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+                nftArtifact = makeUrl(nftDetailJson.formats[0].uri.toString());
             } else if (/image|audio/.test(nftArtifactType.toLowerCase())) {
-                nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+                nftArtifact = makeUrl(nftDetailJson.formats[0].uri.toString());
             }
         } else {
             if (nftThumbnailUri === nftArtifact && !/image/.test(nftArtifactType.toLowerCase())) {
                 nftThumbnailUri = '';
+                console.log('bbbb');
             }
 
-            nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.artifactUri.toString().slice(7)}`;
+            nftArtifact = makeUrl(nftDetailJson.artifactUri.toString());
         }
     }
 
@@ -626,6 +638,22 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
         artifactModerationMessage: nftArtifactModerationMessage,
         thumbnailUri: nftThumbnailUri,
     };
+}
+
+function makeUrl(source: string, type: string = '') {
+    if (source.startsWith('http')) {
+        return source;
+    }
+
+    if (type === '' && source.startsWith('ipfs')) {
+        return `https://ipfs.io/ipfs/${source.slice(7)}`;
+    }
+
+    if (/video|mp4|ogg|webm/.test(type.toLowerCase())) {
+        return `https://ipfs.io/ipfs/${source.slice(7)}`;
+    } else if (/image|audio/.test(type.toLowerCase())) {
+        return `https://cloudflare-ipfs.com/ipfs/${source.slice(7)}`;
+    }
 }
 
 export async function getPotusCollection(
@@ -698,7 +726,7 @@ export async function getPotusCollection(
                 } catch (e) {
                     console.log('error reading PixelPotus data', e);
                     errors.push({
-                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
+                        code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,
                         data: [
                             {
                                 key: 'provider',
@@ -877,7 +905,7 @@ export async function getCollection(
                 } catch (e) {
                     console.log(`error reading ${provider} data`, objectId, e);
                     errors.push({
-                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
+                        code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,
                         data: [{ key: 'provider', value: provider }],
                     });
                 }
@@ -1002,7 +1030,7 @@ export async function getHashThreeCollection(
                 } catch (e) {
                     console.log('error reading hashthree data', objectId, e);
                     errors.push({
-                        code: NFT_ERRORS.UNSUPPORTED_PROVIDER,
+                        code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,
                         data: [
                             {
                                 key: 'provider',

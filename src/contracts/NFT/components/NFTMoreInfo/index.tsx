@@ -122,7 +122,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                         useNFTFailedBox={true}
                         nftProvider={nftObject.provider}
                         thumbProps={{
-                            thumbnailUri: nftObject.artifactUrl,
+                            thumbnailUri: nftObject.artifactType?.startsWith('image') ? nftObject.artifactUrl : nftObject.thumbnailUri,
                         }}
                         previewProps={{
                             autoplay: true,
