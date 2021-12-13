@@ -125,6 +125,7 @@ export enum TokenKind {
     stkr = 'stkr',
     tzip12 = 'tzip12',
     plenty = 'plenty',
+    tru = 'tru',
 }
 
 export interface TokenDefinition {
