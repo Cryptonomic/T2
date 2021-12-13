@@ -67,6 +67,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         activeTab: TRANSACTIONS,
         kind: TokenKind.tzip12,
         icon: usdtzIcon,
+        tokenIndex: 0,
         scale: 6,
         precision: 6,
         round: 2,
