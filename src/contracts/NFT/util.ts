@@ -233,6 +233,12 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
             case 'oneof':
                 promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.ONEOF, managerAddress, node, skipDetails));
                 break;
+            case 'fx(hash)':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.FXHASH, managerAddress, node, skipDetails));
+                break;
+            case 'rarible':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.RARIBLE, managerAddress, node, skipDetails));
+                break;
             default:
                 break;
         }
@@ -604,7 +610,7 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     const nftArtifactType = nftDetailJson.formats ? nftDetailJson.formats[0].mimeType.toString() : 'image/png';
 
     let nftArtifact = nftDetailJson.artifactUri;
-    let nftThumbnailUri = nftDetailJson.thumbnailUri ? makeUrl(nftDetailJson.thumbnailUri) : nftArtifact;
+    let nftThumbnailUri = nftDetailJson.thumbnailUri ? makeUrl(nftDetailJson.thumbnailUri) : makeUrl(nftArtifact);
 
     // Check the proxy:
     let nftArtifactModerationMessage;
@@ -622,7 +628,6 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
         } else {
             if (nftThumbnailUri === nftArtifact && !/image/.test(nftArtifactType.toLowerCase())) {
                 nftThumbnailUri = '';
-                console.log('bbbb');
             }
 
             nftArtifact = makeUrl(nftDetailJson.artifactUri.toString());
@@ -800,8 +805,8 @@ export async function getCollection(
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     if (queryArg === 'key') {
-        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
-            `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.LIKE, [
+            `0x${TezosMessageUtils.writeAddress(managerAddress)}`,
         ]);
         collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     } else if (queryArg === 'value') {
@@ -844,6 +849,14 @@ export async function getCollection(
                                         '$1'
                                     )
                             );
+                        } else if (action === 'mint' && tokenAddress === 'KT1KEa8z6vWXDJrVqtMrAeDVzsvxat3kHaCE') {
+                            // fxhash
+                            action = 'collect';
+                            amount = row.amount;
+                        } else if (action === 'match_orders' && tokenAddress === 'KT18pVpRXKPY2c4U2yFEGSH3ZnhB2kL8kwXS') {
+                            // rarible
+                            action = 'collect';
+                            amount = row.amount;
                         } else if (action === 'mint_OBJKT') {
                             action = 'mint';
                         } else {
@@ -864,7 +877,17 @@ export async function getCollection(
     const collection = await Promise.all(
         collectionResult.map(async (row) => {
             let price = 0;
-            const objectId = row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1');
+            let objectId = '0';
+            const matchHead = row.key.toString().replace(/^Pair ([0-9]{1,}) 0x[0-9a-f]{44}/, '$1');
+            const matchTail = row.key.toString().replace(/Pair 0x[0-9a-f]{44} ([0-9]{1,})$/, '$1');
+            if (/^[0-9]{1,}$/.test(matchHead)) {
+                objectId = matchHead;
+            } else if (/^[0-9]{1,}$/g.test(matchTail)) {
+                objectId = matchTail;
+            } else {
+                objectId = row.key;
+            }
+
             let objectDetails;
             let receivedOn = new Date();
             let action = '';

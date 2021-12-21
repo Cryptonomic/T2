@@ -28,6 +28,8 @@ export const NFT_PROVIDERS = {
     H3P: 'H3P',
     BYTEBLOCK: 'BYTEBLOCK',
     ONEOF: 'ONEOF',
+    FXHASH: 'FXHASH',
+    RARIBLE: 'RARIBLE',
     IPFS: 'IPFS',
 } as const;
 
