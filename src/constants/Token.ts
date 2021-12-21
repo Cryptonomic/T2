@@ -133,6 +133,42 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1KEa8z6vWXDJrVqtMrAeDVzsvxat3kHaCE',
+        displayName: 'fx(hash)',
+        symbol: 'GENTK',
+        balance: 0,
+        transactions: [],
+        activeTab: COLLECTION,
+        kind: TokenKind.objkt,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        mapid: 22785,
+        nftMetadataMap: 22789,
+        helpLink: 'https://www.fxhash.xyz',
+        displayHelpLink: 'fxhash.xyz',
+        hideOnLanding: true,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT18pVpRXKPY2c4U2yFEGSH3ZnhB2kL8kwXS',
+        displayName: 'Rarible',
+        symbol: 'R',
+        balance: 0,
+        transactions: [],
+        activeTab: COLLECTION,
+        kind: TokenKind.objkt,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        mapid: 55542,
+        nftMetadataMap: 55544,
+        helpLink: 'https://www.rarible.com',
+        displayHelpLink: 'rarible.com',
+        hideOnLanding: true,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1Up463qVJqtW5KF7dQZz5SsWMiS32GtBrw',
         displayName: 'OneOf',
         symbol: 'OO',
@@ -1109,6 +1145,9 @@ export const knownContractNames = {
 
     KT1Pu8f3sau4NZcssm4uXXMYLpHZzQ5UQ1Dz: 'twitz Minter',
     KT1DeFSmknfCG5TveB5DSvrg34hqLcqETNuF: 'twitz NFT',
+
+    KT1AEVuykWeuuFX7QkEAMNtffzwhe1Z98hJS: 'fx(hash) Minter',
+    KT1KEa8z6vWXDJrVqtMrAeDVzsvxat3kHaCE: 'fx(hash) GENTK',
 };
 
 export const knownMarketMetadata = [
