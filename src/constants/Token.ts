@@ -406,6 +406,24 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1XpYoPCxQnpgxLM22dkLDXBmTsDLc1S8nZ',
+        displayName: 'Trustee Network Token',
+        symbol: 'TRU',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: usdtzIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 25974,
+        balancePath: '$.args[1].int',
+        helpLink: 'https://www.tezos.finance/',
+        displayHelpLink: 'www.tezos.finance/',
+    },
+    {
+        network: 'mainnet',
         address: 'KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH',
         displayName: 'Kolibri DAO Token',
         symbol: 'kDAO',
@@ -993,6 +1011,7 @@ export const knownTokenDescription = {
     BTCtz: 'is a Bitcoin-pegged stablecoin.',
     hDAO: ' is the hic et nunc governance token.',
     GIF: ' is governance token of the gif.games ecosystem',
+    TRU: ' is used to help initiate governance of each Tezos DeFi platform that is being deployed under the aegis of the Tezos Stablecoin Foundation',
 };
 
 export const knownContractNames = {
@@ -1000,6 +1019,7 @@ export const knownContractNames = {
     KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9: 'USDtz Token',
     KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8: 'ETHtz Token',
     KT1Mg7Jaxz9n6YM9XjbDLhAjbuWa9bzhAAy9: 'BTCtz Token',
+    KT1XpYoPCxQnpgxLM22dkLDXBmTsDLc1S8nZ: 'TRU Token',
     KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH: 'wXTZ Token',
     KT1V4Vp7zhynCNuaBjWMpNU535Xm2sgqkz6M: 'wXTZ Manager',
     KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV: 'Kolibri Token',
