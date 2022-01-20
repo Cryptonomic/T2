@@ -192,17 +192,17 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
                 break;
             case 'kumulus':
                 promises.push(
-                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.KUMULUS_OBJKT, managerAddress, node, skipDetails)
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
                 );
                 break;
             case 'gogos':
                 promises.push(
-                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.GOGOS_OBJKT, managerAddress, node, skipDetails)
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
                 );
                 break;
             case 'neonz':
                 promises.push(
-                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.NEONZ_OBJKT, managerAddress, node, skipDetails)
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
                 );
                 break;
             case 'pixelpotus':
@@ -210,17 +210,21 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
                 break;
             case 'the moments':
                 promises.push(
-                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.MOMENTS, managerAddress, node, skipDetails)
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
                 );
                 break;
             case 'randomly common skeles':
-                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.SKELE, managerAddress, node, skipDetails));
+                promises.push(
+                    getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
+                );
                 break;
             case 'twitznft':
                 promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.TWITZ, managerAddress, node, skipDetails));
                 break;
             case 'chop sumo':
-                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.SUMO, managerAddress, node, skipDetails));
+                promises.push(
+                    getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
+                );
                 break;
             case 'hash three points':
                 promises.push(getHashThreeCollection(token.address, token.mapid, managerAddress, node, skipDetails));
@@ -238,6 +242,19 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
                 break;
             case 'rarible':
                 promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.RARIBLE, managerAddress, node, skipDetails));
+                break;
+            case 'platypoos':
+                promises.push(
+                    getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
+                );
+                break;
+            case 'versum':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.VERSUM, managerAddress, node, skipDetails));
+                break;
+            case 'lightfields':
+                promises.push(
+                    getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
+                );
                 break;
             default:
                 break;
