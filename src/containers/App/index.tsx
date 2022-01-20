@@ -81,24 +81,28 @@ function App() {
             const pathname = urlProps.pathname.slice(2);
             const searchParams = urlProps.searchParams;
 
-            if (searchParams.has('type') && searchParams.get('type') === 'tzip10') {
-                const beaconRequest = searchParams.get('data') || '';
-                dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconRegistration'));
-                dispatch(setModalOpen(true, 'beaconRegistration'));
-                app.focus();
-            } else if (['sign', 'auth', 'beaconRegistration', 'beaconEvent'].includes(pathname) && searchParams.has('r')) {
-                const req = searchParams.get('r') || '';
+            try {
+                if (searchParams.has('type') && searchParams.get('type') === 'tzip10') {
+                    const beaconRequest = searchParams.get('data') || '';
+                    dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconRegistration'));
+                    dispatch(setModalOpen(true, 'beaconRegistration'));
+                    app.focus();
+                } else if (['sign', 'auth', 'beaconRegistration', 'beaconEvent'].includes(pathname) && searchParams.has('r')) {
+                    const req = searchParams.get('r') || '';
 
-                dispatch(setModalValue(JSON.parse(Buffer.from(req, 'base64').toString('utf8')), pathname));
+                    dispatch(setModalValue(JSON.parse(Buffer.from(req, 'base64').toString('utf8')), pathname));
 
-                if (pathname === 'sign') {
-                    dispatch(setModalActiveTab(pathname));
-                    dispatch(setModalOpen(true, pathname));
-                } else {
-                    dispatch(setModalOpen(true, pathname));
+                    if (pathname === 'sign') {
+                        dispatch(setModalActiveTab(pathname));
+                        dispatch(setModalOpen(true, pathname));
+                    } else {
+                        dispatch(setModalOpen(true, pathname));
+                    }
+
+                    app.focus();
                 }
-
-                app.focus();
+            } catch (err) {
+                console.log('error processing beacon request', err, searchParams);
             }
         });
     }, []);
