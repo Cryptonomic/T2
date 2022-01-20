@@ -110,11 +110,11 @@ function Landing(props: Props) {
                         <FormGroupWrapper>
                             <FormControlLabelWrapper
                                 control={<CheckBoxWrapper checked={isTos} onChange={(e) => setIsTos(e.target.checked)} name="checkedB" color="primary" />}
-                                label={t('components.landingCarousel.agree_terms')}
+                                label={t('components.landingCarousel.agree_terms').toString()}
                             />
                             <FormControlLabelWrapper
                                 control={<CheckBoxWrapper checked={isPP} onChange={(e) => setIsPP(e.target.checked)} name="checkedB" color="primary" />}
-                                label={t('components.landingCarousel.agree_policy')}
+                                label={t('components.landingCarousel.agree_policy').toString()}
                             />
                         </FormGroupWrapper>
                     </TosContainer>
