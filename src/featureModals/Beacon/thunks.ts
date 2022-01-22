@@ -2,7 +2,18 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 
-import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation, Origination } from 'conseiljs';
+import {
+    TezosConstants,
+    TezosNodeReader,
+    TezosNodeWriter,
+    TezosMessageUtils,
+    Delegation,
+    Origination,
+    ConseilQueryBuilder,
+    ConseilOperator,
+    ConseilFunction,
+    ConseilDataClient,
+} from 'conseiljs';
 
 import { cloneDecryptedSigner } from '../../utils/wallet';
 
@@ -38,6 +49,44 @@ export function estimateOperationGroupFee(publicKeyHash: string, operations: any
         };
 
         estimateInvocation();
+    }, []);
+
+    return fee;
+}
+
+export function getAverageOperationGroupFee(publicKeyHash: string, operations: any[]): number | string {
+    // TODO: type
+    const store = useStore<RootState>();
+    const [fee, setFee] = useState<number | string>(0);
+
+    useEffect(() => {
+        const estimateAverageFee = async () => {
+            try {
+                const { selectedNode, nodesList } = store.getState().settings;
+                const { conseilUrl, apiKey, network, platform } = getMainNode(nodesList, selectedNode);
+                const serverInfo = { url: conseilUrl, apiKey, network };
+
+                let query = ConseilQueryBuilder.blankQuery();
+                query = ConseilQueryBuilder.addFields(query, 'fee', 'gas_limit');
+                query = ConseilQueryBuilder.addPredicate(query, 'timestamp', ConseilOperator.AFTER, [Date.now() - 7 * 24 * 60 * 60 * 1000], false);
+                query = ConseilQueryBuilder.addPredicate(query, 'kind', ConseilOperator.EQ, ['transaction'], false);
+                query = ConseilQueryBuilder.addPredicate(query, 'status', ConseilOperator.EQ, ['applied'], false);
+                query = ConseilQueryBuilder.addPredicate(query, 'destination', ConseilOperator.IN, [operations.map((o) => o.destination)], false);
+                // parameters_entrypoints
+                query = ConseilQueryBuilder.addAggregationFunction(query, 'fee', ConseilFunction.avg);
+                query = ConseilQueryBuilder.addAggregationFunction(query, 'gas_limit', ConseilFunction.avg);
+                query = ConseilQueryBuilder.setLimit(query, 1);
+
+                const result = await ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'operations', query).catch(() => []);
+
+                setFee(Math.ceil(Number(result.avg_fee)));
+            } catch (e) {
+                console.log('estimateInvocation failed with ', e);
+                setFee(e.message);
+            }
+        };
+
+        estimateAverageFee();
     }, []);
 
     return fee;

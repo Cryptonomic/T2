@@ -6,6 +6,8 @@ import styled from 'styled-components';
 import { ipcRenderer } from 'electron';
 import base58check from 'bs58check';
 
+import config from '../../config.json';
+
 import Home from '../Home';
 import Login from '../Login';
 import Settings from '../Settings';
@@ -84,19 +86,29 @@ function App() {
             try {
                 if (searchParams.has('type') && searchParams.get('type') === 'tzip10') {
                     const beaconRequest = searchParams.get('data') || '';
-                    dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconRegistration'));
-                    dispatch(setModalOpen(true, 'beaconRegistration'));
-                    app.focus();
-                } else if (['sign', 'auth', 'beaconRegistration', 'beaconEvent'].includes(pathname) && searchParams.has('r')) {
-                    const req = searchParams.get('r') || '';
 
+                    if (config.beaconEnable) {
+                        dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconRegistration'));
+                        dispatch(setModalOpen(true, 'beaconRegistration'));
+                    } else {
+                        dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconDisable'));
+                        dispatch(setModalOpen(true, 'beaconDisable'));
+                    }
+
+                    app.focus();
+                } else if (['sign', 'beaconRegistration', 'beaconEvent'].includes(pathname) && searchParams.has('r')) {
+                    const req = searchParams.get('r') || '';
                     dispatch(setModalValue(JSON.parse(Buffer.from(req, 'base64').toString('utf8')), pathname));
 
                     if (pathname === 'sign') {
                         dispatch(setModalActiveTab(pathname));
                         dispatch(setModalOpen(true, pathname));
-                    } else {
+                    } else if (config.beaconEnable) {
                         dispatch(setModalOpen(true, pathname));
+                    } else if (!config.beaconEnable) {
+                        dispatch(setModalValue({}, pathname));
+                        dispatch(setModalValue(JSON.parse(Buffer.from(req, 'base64').toString('utf8')), 'beaconDisable'));
+                        dispatch(setModalOpen(true, 'beaconDisable'));
                     }
 
                     app.focus();
