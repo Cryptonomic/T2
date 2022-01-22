@@ -38,7 +38,7 @@
             "sell": "Sell",
             "add": "Add",
             "remove": "Remove",
-            "see_more": "See more"
+            "see_more": "Token List"
         },
         "nouns": {
             "amount": "Amount",
@@ -179,6 +179,9 @@
             },
             "signature": {
                 "title": "Signature Request"
+            },
+            "disabled": {
+                "title": "dApp Interactions Unavailable"
             }
         },
         "interactModal": {

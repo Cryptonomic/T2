@@ -116,7 +116,7 @@ export const TokensDetailsModal = ({ open, onClose, tokens, onBrowseObjects }: T
     /**
      * Sort tokens by balance and name
      */
-    const sortedTokens = tokens.sort((a, b) => b.balance - a.balance || a.displayName.localeCompare(b.displayName));
+    const sortedTokens = tokens.filter((token) => token.balance > 0).sort((a, b) => b.balance - a.balance || a.displayName.localeCompare(b.displayName));
 
     return (
         <ModalWrapper open={open} onClose={onClose} aria-labelledby="Tokens" aria-describedby="See more about tokens.">
