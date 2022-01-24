@@ -35,9 +35,9 @@ const BeaconDisabled = ({ open, onClose }: Props) => {
     const onCancel = async () => {
         try {
             const response: ErrorResponse = {
-                id: modalValues.id,
-                version: modalValues.version,
-                senderId: modalValues.senderId,
+                id: modalValues.id || '',
+                version: modalValues.version || '',
+                senderId: modalValues.senderId || '',
                 type: BeaconMessageType.Error,
                 errorType: BeaconErrorType.ABORTED_ERROR,
             };

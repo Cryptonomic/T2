@@ -55,6 +55,9 @@ export interface ModalState {
     activeTab: string;
     tabs: string[];
     values: any;
+    id?: string;
+    version?: string;
+    senderId?: string;
 }
 
 export interface NFTState {
