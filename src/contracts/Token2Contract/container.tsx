@@ -30,10 +30,14 @@ function ActionPanel() {
 
     const { isLoading, selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
 
-    const { activeTab, displayName, administrator, transactions } = selectedToken;
+    const { displayName, administrator, transactions } = selectedToken;
+    let { activeTab } = selectedToken;
+    if (activeTab === TRANSACTIONS) {
+        activeTab = SEND;
+    }
 
     const isAdmin = selectedParentHash === administrator;
-    const tabs = isAdmin ? [TRANSACTIONS, SEND, SWAP, MINT, BURN] : [TRANSACTIONS, SEND, SWAP];
+    const tabs = isAdmin ? [SEND, SWAP, MINT, BURN] : [SEND, SWAP];
 
     function onChangeTab(newTab: string) {
         dispatch(updateActiveTabThunk(newTab, true));

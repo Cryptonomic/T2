@@ -22,8 +22,12 @@ const ActionPanel = () => {
     const dispatch = useDispatch();
     const selectedToken = useSelector(getTokenSelector);
     const { selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-    const { activeTab, displayName, transactions } = selectedToken;
-    const tabs = [TRANSACTIONS, SEND, SWAP];
+    const { displayName, transactions } = selectedToken;
+    let { activeTab } = selectedToken;
+    if (activeTab === TRANSACTIONS) {
+        activeTab = SEND;
+    }
+    const tabs = [SEND, SWAP];
     const transactionList = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
 
     const onChangeTab = (newTab: string) => {
