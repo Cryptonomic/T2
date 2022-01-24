@@ -165,78 +165,60 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
     const promises: Promise<any>[] = [];
     tokens.map((token) => {
         switch (token.displayName.toLowerCase()) {
-            // case 'hic et nunc':
-            //     promises.push(getHicEtNuncCollection(token.address, token.mapid, managerAddress, node, skipDetails));
-            //     break;
+            case 'hic et nunc':
+                promises.push(getHicEtNuncCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                break;
             case 'kalamint':
                 promises.push(getKalamintCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
-            // case 'kumulus':
-            //     promises.push(
-            //         getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
-            //     );
-            //     break;
-            // case 'gogos':
-            //     promises.push(
-            //         getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
-            //     );
-            //     break;
-            // case 'neonz':
-            //     promises.push(
-            //         getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
-            //     );
-            //     break;
-            // case 'pixelpotus':
-            //     promises.push(getPotusCollection(token.address, token.mapid, managerAddress, node, skipDetails));
-            //     break;
-            // case 'the moments':
-            //     promises.push(
-            //         getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
-            //     );
-            //     break;
-            // case 'randomly common skeles':
-            //     promises.push(
-            //         getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
-            //     );
-            //     break;
-            // case 'twitznft':
-            //     promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.TWITZ, managerAddress, node, skipDetails));
-            //     break;
-            // case 'chop sumo':
-            //     promises.push(
-            //         getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
-            //     );
-            //     break;
-            // case 'hash three points':
-            //     promises.push(getHashThreeCollection(token.address, token.mapid, managerAddress, node, skipDetails));
-            //     break;
-            // case 'byteblock nft':
-            //     promises.push(
-            //         getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.BYTEBLOCK, managerAddress, node, skipDetails)
-            //     );
-            //     break;
-            // case 'oneof':
-            //     promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.ONEOF, managerAddress, node, skipDetails));
-            //     break;
-            // case 'fx(hash)':
-            //     promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.FXHASH, managerAddress, node, skipDetails));
-            //     break;
-            // case 'rarible':
-            //     promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.RARIBLE, managerAddress, node, skipDetails));
-            //     break;
-            // case 'platypoos':
-            //     promises.push(
-            //         getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
-            //     );
-            //     break;
-            // case 'versum':
-            //     promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.VERSUM, managerAddress, node, skipDetails));
-            //     break;
-            // case 'lightfields':
-            //     promises.push(
-            //         getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails)
-            //     );
-            //     break;
+            case 'kumulus':
+                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
+                break;
+            case 'gogos':
+                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
+                break;
+            case 'neonz':
+                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
+                break;
+            case 'pixelpotus':
+                promises.push(getPotusCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                break;
+            case 'the moments':
+                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
+                break;
+            case 'randomly common skeles':
+                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
+                break;
+            case 'twitznft':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.TWITZ, managerAddress, node, skipDetails));
+                break;
+            case 'chop sumo':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
+                break;
+            case 'hash three points':
+                promises.push(getHashThreeCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                break;
+            case 'byteblock nft':
+                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.BYTEBLOCK, managerAddress, node, skipDetails));
+                break;
+            case 'oneof':
+                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.ONEOF, managerAddress, node, skipDetails));
+                break;
+            case 'fx(hash)':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.FXHASH, managerAddress, node, skipDetails));
+                break;
+            case 'rarible':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.RARIBLE, managerAddress, node, skipDetails));
+                break;
+            case 'platypoos':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
+                break;
+            case 'versum':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.VERSUM, managerAddress, node, skipDetails));
+                break;
+            case 'lightfields':
+                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
+                break;
             default:
                 break;
         }
