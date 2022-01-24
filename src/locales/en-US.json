@@ -38,7 +38,7 @@
             "sell": "Sell",
             "add": "Add",
             "remove": "Remove",
-            "see_more": "Token List"
+            "see_more": "View all supported NFTs"
         },
         "nouns": {
             "amount": "Amount",
@@ -408,8 +408,8 @@
         },
         "nftGallery": {
             "custom_fee_tooltip": "We have already calculated the optimal fee for your transaction.",
-            "tokensNumberInfo": "You have {{count}} object.",
-            "tokensNumberInfo_plural": "You have {{count}} objects.",
+            "tokensNumberInfo": "You have {{count}} NFT in your gallery.",
+            "tokensNumberInfo_plural": "You have {{count}} NFTs in your gallery.",
             "fields": {
                 "artifactUrl": "image URL"
             },
