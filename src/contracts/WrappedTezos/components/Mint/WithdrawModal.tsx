@@ -1,29 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { OperationKindType } from 'conseiljs';
 import IconButton from '@mui/material/IconButton';
-import TextField from '../../../../components/TextField';
-import TezosNumericInput from '../../../../components/TezosNumericInput';
-import NumericInput from '../../../../components/NumericInput';
 import { BigNumber } from 'bignumber.js';
+
+import NumericInput from '../../../../components/NumericInput';
 import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';
 
 import Modal from '../../../../components/CustomModal';
-import Tooltip from '../../../../components/Tooltip/';
 import { ms } from '../../../../styles/helpers';
 import TezosIcon from '../../../../components/TezosIcon';
 import Button from '../../../../components/Button';
 import Loader from '../../../../components/Loader';
 import Fees from '../../../../components/Fees/';
 import PasswordInput from '../../../../components/PasswordInput';
-import InputAddress from '../../../../components/InputAddress';
 import TezosAmount from '../../../../components/TezosAmount';
-import AddDelegateLedgerModal from '../../../../components/ConfirmModals/AddDelegateLedgerModal';
 
-import { originateContractThunk } from '../../../../reduxContent/originate/thunks';
-import { useFetchFees } from '../../../../reduxContent/app/thunks';
 import { setIsLoadingAction } from '../../../../reduxContent/app/actions';
 import { withdraw } from '../../thunks';
 import AmountView from '../../../../components/AmountView';
@@ -101,18 +94,6 @@ const BalanceContent = styled.div`
     background-color: ${({ theme: { colors } }) => colors.gray1};
 `;
 
-const GasInputContainer = styled.div`
-    width: 100%;
-    position: relative;
-`;
-
-const TezosIconInput = styled(TezosIcon)`
-    position: absolute;
-    left: 70px;
-    top: 25px;
-    display: block;
-`;
-
 const UseMax = styled.div`
     position: absolute;
     right: 23px;
@@ -123,6 +104,7 @@ const UseMax = styled.div`
     color: ${({ theme: { colors } }) => colors.accent};
     cursor: pointer;
 `;
+
 const TotalAmount = styled(TezosAmount)`
     margin-bottom: 22px;
 `;
@@ -254,11 +236,12 @@ function DepositModal(props: Props) {
         isLoading || !wxtzToWithdraw || (!passPhrase && !isLedger) || isXtzBalanceIssue || isWxtzBalanceIssue || isWxtzAmountIssue || isDelegateIssue;
 
     function onUseMax() {
-        const max = wrappedTezBalance < vaultBalance ? wrappedTezBalance : vaultBalance;
-        const newWxtzToWithdraw = (max / utez).toFixed(6);
+        let liquidBalance = new BigNumber(wrappedTezBalance).isLessThan(vaultBalance) ? new BigNumber(wrappedTezBalance) : new BigNumber(vaultBalance);
+        liquidBalance = liquidBalance.multipliedBy(0.96).decimalPlaces(0, 1); // StakerDAO fee as of Dec 2021
+        const liquidBalanceString = liquidBalance.dividedBy(1_000_000).toFixed(6);
 
-        setWxtzToWithdraw(newWxtzToWithdraw);
-        setWxtzToWithdrawNumber(max);
+        setWxtzToWithdraw(liquidBalanceString);
+        setWxtzToWithdrawNumber(liquidBalance.toNumber());
         setWxtzRemaining(0);
     }
 
@@ -387,7 +370,7 @@ function DepositModal(props: Props) {
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use Translations */}
-                    Withdrawing from a vault will burn your account's wXTZ and return your XTZ
+                    Withdrawing from a vault will burn your wXTZ and return your XTZ. StakerDAO withdrawal fee is 4%.
                 </MessageContainer>
             </MainContainer>
             <MainContainer>

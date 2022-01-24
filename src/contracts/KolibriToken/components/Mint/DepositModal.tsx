@@ -341,7 +341,7 @@ function DepositModal(props: Props) {
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use Translations */}
-                    Depositing XTZ to a vault will mint your account wXTZ.
+                    Depositing XTZ to a vault will mint your account wXTZ. StakerDAO withdrawal fee is 4%.
                 </MessageContainer>
             </MainContainer>
             <MainContainer>
