@@ -2,18 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 
-import {
-    TezosConstants,
-    TezosNodeReader,
-    TezosNodeWriter,
-    TezosMessageUtils,
-    Delegation,
-    Origination,
-    ConseilQueryBuilder,
-    ConseilOperator,
-    ConseilFunction,
-    ConseilDataClient,
-} from 'conseiljs';
+import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation, Origination, ConseilQueryBuilder, ConseilOperator, ConseilFunction, ConseilDataClient } from 'conseiljs';
 
 import { cloneDecryptedSigner } from '../../utils/wallet';
 
@@ -79,7 +68,7 @@ export function getAverageOperationGroupFee(publicKeyHash: string, operations: a
 
                 const result = await ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'operations', query).catch(() => []);
 
-                setFee(Math.ceil(Number(result.avg_fee)));
+                setFee(Math.ceil(Number(result[0].avg_fee)));
             } catch (e) {
                 console.log('estimateInvocation failed with ', e);
                 setFee(e.message);
@@ -123,11 +112,7 @@ export function sendOperations(password: string, operations: any[], fee: number 
             formedOperations[i].storage_limit = estimate.operationResources[i].storageCost.toString();
         }
 
-        const result: any = await TezosNodeWriter.sendOperation(
-            tezosUrl,
-            formedOperations,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password)
-        ).catch((err) => {
+        const result: any = await TezosNodeWriter.sendOperation(tezosUrl, formedOperations, isLedger ? signer : await cloneDecryptedSigner(signer, password)).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(err);
             dispatch(createMessageAction(errorObj.name, true));
@@ -135,13 +120,7 @@ export function sendOperations(password: string, operations: any[], fee: number 
         });
 
         if (result) {
-            const operationResult =
-                result &&
-                result.results &&
-                result.results.contents &&
-                result.results.contents[0] &&
-                result.results.contents[0].metadata &&
-                result.results.contents[0].metadata.operation_result;
+            const operationResult = result && result.results && result.results.contents && result.results.contents[0] && result.results.contents[0].metadata && result.results.contents[0].metadata.operation_result;
 
             if (operationResult && operationResult.errors && operationResult.errors.length) {
                 const error = 'components.messageBar.messages.invoke_operation_failed';
@@ -185,17 +164,7 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
                     //
                 }
 
-                const op = TezosNodeWriter.constructContractInvocationOperation(
-                    publicKeyHash,
-                    counter,
-                    o.destination,
-                    o.amount,
-                    0,
-                    TezosConstants.OperationStorageCap,
-                    TezosConstants.OperationGasCap,
-                    entrypoint,
-                    parameters
-                );
+                const op = TezosNodeWriter.constructContractInvocationOperation(publicKeyHash, counter, o.destination, o.amount, 0, TezosConstants.OperationStorageCap, TezosConstants.OperationGasCap, entrypoint, parameters);
 
                 formedOperations.push(op);
 
