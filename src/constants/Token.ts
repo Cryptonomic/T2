@@ -39,6 +39,7 @@ import rcktIcon from '../../resources/contracts/rckt-icon.png';
 import sexpIcon from '../../resources/contracts/sexp-icon.png';
 import fdaoIcon from '../../resources/contracts/fdao-icon.png';
 import tezdaoIcon from '../../resources/contracts/tezdao-icon.png';
+import ursaIcon from '../../resources/contracts/ursa-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -543,6 +544,24 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         mapid: 24117,
         helpLink: 'https://btctz.io/',
         displayHelpLink: 'btctz.io',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1JSYSeLF6bxt8hRXou3Wu4Jdard5vkMkeK',
+        displayName: 'URSANITE',
+        symbol: 'URSA',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: ursaIcon,
+        tokenIndex: 0,
+        scale: 5,
+        precision: 5,
+        round: 5,
+        mapid: 21177,
+        helpLink: 'https://rocketmonster.xyz/',
+        displayHelpLink: 'rocketmonster.xyz',
     },
     {
         network: 'mainnet',
