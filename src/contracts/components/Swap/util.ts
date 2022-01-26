@@ -66,7 +66,11 @@ export const tokenPoolMap = {
         vortexPool: 'KT1BcaTHMybrtH38pBtay32yaejyhdxDwyPX',
     }, // wxtz
     KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea: { dexterPool: '', quipuPool: 'KT1BMEEPX7MWzwwadW3NCSZe9XGmFJ7rs7Dr' }, // stkr
-    KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: { dexterPool: '', quipuPool: 'KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z' }, // plenty
+    KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b: {
+        dexterPool: '',
+        quipuPool: 'KT1X1LgNkQShpF9nRLYw3Dgdy4qp38MX617z',
+        vortexPool: 'KT1VSjJxNq98AkPfVktpCv82hacrvgkb6hEu',
+    }, // plenty
     KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT: {
         dexterPool: '',
         quipuPool: 'KT1J3wTYb4xk5BsSBkg6ML55bX1xq7desS34',
@@ -105,6 +109,10 @@ export const tokenPoolMap = {
     KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb: { dexterPool: '', quipuPool: 'KT1X3zxdTzPB9DgVzA3ad6dgZe9JEamoaeRy' }, // QUIPU
     KT1KPoyzkj82Sbnafm6pfesZKEhyCpXwQfMc: { dexterPool: '', quipuPool: 'KT1BweorZK1CJDEu76SyKcxfzeiAxip73Kot' }, // fDAO
     KT1Kyc366SrSJ1camxByr363F9WAiHAaReMv: { dexterPool: '', quipuPool: 'KT1EVNuwjj7GijvVaxR7Vd9mejy4V6toZkeK' }, // sexp
+    'KT1T87QbpXEVgkwsNPzz8iRoah3SS3D1MDmh+0': {
+        dexterPool: '',
+        quipuPool: 'KT19g5hey69CiXRbhRzJEwvuJ95RgVLzS3TP',
+    }, // tezdao
 };
 
 export function isTradeable(tokenAddress: string, tokenIndex?: number) {

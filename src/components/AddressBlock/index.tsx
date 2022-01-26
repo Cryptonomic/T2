@@ -30,6 +30,7 @@ import BeaconAuthorize from '../../featureModals/Beacon/BeaconAuthorization';
 import BeaconSignature from '../../featureModals/Beacon/BeaconSignature';
 import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
 import BeaconInfo from '../../featureModals/Beacon/BeaconInfo';
+import BeaconDisabled from '../../featureModals/Beacon/BeaconDisabled';
 import PlentyHarvestModal from '../../contracts/Plenty/components/HarvestModal';
 import KolibriHarvestModal from '../../contracts/KolibriToken/components/HarvestModal';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
@@ -290,6 +291,7 @@ function AddressBlock(props: Props) {
     const isBeaconSignatureModalOpen = isModalOpen && activeModal === 'beaconSignature';
     const isBeaconPermissionModalOpen = isModalOpen && activeModal === 'beaconPermission';
     const isBeaconInfoModalOpen = isModalOpen && activeModal === 'beaconInfo';
+    const isBeaconDisabledModalOpen = isModalOpen && activeModal === 'beaconDisable';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
     const isPlentyHarvestModalOpen = isModalOpen && activeModal === 'PlentyHarvest';
     const isKolibriHarvestModalOpen = isModalOpen && activeModal === 'KolibriHarvest';
@@ -463,7 +465,8 @@ function AddressBlock(props: Props) {
             })}
 
             {isSignModalOpen && <SignVerifyModal open={isSignModalOpen} onClose={() => setIsModalOpen(false, 'sign')} />}
-            {isAuthModalOpen && <AuthModal open={isAuthModalOpen} onClose={() => setIsModalOpen(false, 'auth')} />}
+            {/*isAuthModalOpen && <AuthModal open={isAuthModalOpen} onClose={() => setIsModalOpen(false, 'auth')} />*/}
+
             {isBeaconRegistrationModalOpen && (
                 <BeaconConnectionRequest open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
             )}
@@ -472,8 +475,8 @@ function AddressBlock(props: Props) {
             )}
             {isBeaconSignatureModalOpen && <BeaconSignature open={isBeaconSignatureModalOpen} onClose={() => setIsModalOpen(false, 'beaconSignature')} />}
             {isBeaconPermissionModalOpen && <BeaconPermission open={isBeaconPermissionModalOpen} onClose={() => setIsModalOpen(false, 'beaconPermission')} />}
-
             {isBeaconInfoModalOpen && <BeaconInfo open={isBeaconInfoModalOpen} onClose={() => setIsModalOpen(false, 'beaconInfo')} />}
+            {isBeaconDisabledModalOpen && <BeaconDisabled open={isBeaconDisabledModalOpen} onClose={() => setIsModalOpen(false, 'beaconDisabled')} />}
 
             {isInteractModalOpen && (
                 <InteractContractModal open={isInteractModalOpen} onClose={() => setIsInteractModalOpen(false)} addresses={regularAddresses} />

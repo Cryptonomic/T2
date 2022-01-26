@@ -27,8 +27,12 @@ const ActionPanel = () => {
     const selectedToken = useSelector(getTokenSelector);
     const { selectedParentHash, selectedAccountHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     // const { activeTab, displayName, transactions, vaultList } = selectedToken as VaultToken;
-    const { activeTab, displayName, transactions } = selectedToken;
-    const tabs = [TRANSACTIONS, SEND, SWAP /*, VAULTS*/];
+    const { displayName, transactions } = selectedToken;
+    let { activeTab } = selectedToken;
+    if (activeTab === TRANSACTIONS) {
+        activeTab = SEND;
+    }
+    const tabs = [SEND, SWAP /*, VAULTS*/];
     const transactionList = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
 
     // TODO(keefertaylor): Sort ovens in a deterministic way.

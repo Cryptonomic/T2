@@ -29,7 +29,7 @@
             "sign": "Sign",
             "verify": "Verify",
             "copy": "Copy",
-            "see_more": "See more"
+            "see_more": "Token List"
         },
         "nouns": {
             "amount": "数额",
@@ -369,7 +369,7 @@
                 "token": "Token",
                 "collectedOn": "Collected on",
                 "collectedFor": "Collected for",
-                "quantity": "Quantity"
+                "quantity": "Owned"
             },
             "tabs": {
                 "collected": "Collected",
@@ -383,14 +383,10 @@
             "providers": {
                 "HIC_ET_NUNC": "Hic et nunc",
                 "KALAMINT": "Kalamint",
-                "KUMULUS_OBJKT": "objkt.com",
-                "GOGOS_OBJKT": "objkt.com",
-                "NEONZ_OBJKT": "objkt.com",
+                "VERSUM": "versum.xyz",
+                "OBJKT_GENERIC": "objkt.com",
                 "PIXEL_POTUS": "pixelpotus.com",
-                "MOMENTS": "objkt.com",
-                "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
-                "SUMO": "objkt.com",
                 "H3P": "objkt.com",
                 "BYTEBLOCK": "byteblock.art",
                 "ONEOF": "oneof.com",

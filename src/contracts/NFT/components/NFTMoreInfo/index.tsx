@@ -61,26 +61,22 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
             openArtifactLink(`https://www.hicetnunc.art/objkt/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.KALAMINT) {
             openArtifactLink(`https://kalamint.io/token/${nftObject.objectId}`);
-        } else if (nftObject?.provider === NFT_PROVIDERS.KUMULUS_OBJKT) {
-            openArtifactLink(`https://objkt.com/asset/kumulus/${nftObject.objectId}`);
-        } else if (nftObject?.provider === NFT_PROVIDERS.GOGOS_OBJKT) {
-            openArtifactLink(`https://objkt.com/asset/gogos/${nftObject.objectId}`);
-        } else if (nftObject?.provider === NFT_PROVIDERS.NEONZ_OBJKT) {
-            openArtifactLink(`https://objkt.com/asset/neonz/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.PIXEL_POTUS) {
             openArtifactLink(`https://www.pixelpotus.com/potus/${nftObject.objectId}`);
-        } else if (nftObject?.provider === NFT_PROVIDERS.MOMENTS) {
-            openArtifactLink(`https://objkt.com/asset/themoments/${nftObject.objectId}`);
-        } else if (nftObject?.provider === NFT_PROVIDERS.SKELE) {
-            openArtifactLink(`https://objkt.com/asset/rcs/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.TWITZ) {
             openArtifactLink(`https://twitz.vercel.app/twitz/${nftObject.objectId}`);
-        } else if (nftObject?.provider === NFT_PROVIDERS.SUMO) {
-            openArtifactLink(`https://objkt.com/asset/chopsumo/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.H3P) {
             openArtifactLink(`https://objkt.com/asset/h3p/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.BYTEBLOCK) {
             openArtifactLink(`https://byteblock.art/collection/${nftObject.tokenAddress}/token/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.FXHASH) {
+            openArtifactLink(`https://www.fxhash.xyz/gentk/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.RARIBLE) {
+            openArtifactLink(`https://rarible.com/token/tezos/KT18pVpRXKPY2c4U2yFEGSH3ZnhB2kL8kwXS:${nftObject.objectId}?tab=details`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.VERSUM) {
+            openArtifactLink(`https://versum.xyz/token/versum/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.OBJKT_GENERIC) {
+            openArtifactLink(`https://objkt.com/asset/${nftObject.tokenAddress}/${nftObject.objectId}`);
         }
     };
 
@@ -191,10 +187,12 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                         </div>
                     ) : null}
                 </Header>
-                <Creator>
-                    <Capitalize>{t('general.prepositions.by')}:</Capitalize>
-                    {author}
-                </Creator>
+                {author && (
+                    <Creator>
+                        <Capitalize>{t('general.prepositions.by')}:</Capitalize>
+                        {author}
+                    </Creator>
+                )}
                 <Description>{nftObject.description}</Description>
                 <CustomDivider />
                 <AttributesList>

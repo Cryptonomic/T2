@@ -4,24 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
-import {
-    ActionsContainer,
-    CloseButton,
-    ModalHeader,
-    StyledModalBox,
-    TokensList,
-    TokenItem,
-    TokenItemHeader,
-    TokenItemName,
-    TokenItemActiveBadge,
-    BadgeText,
-    TokenDetailsContainer,
-    DetailsCol,
-    RightCol,
-    TokenDetail,
-    AmountsList,
-    AmountItem,
-} from './style';
+import { ActionsContainer, CloseButton, ModalHeader, StyledModalBox, TokensList, TokenItem, TokenItemHeader, TokenItemName, TokenItemActiveBadge, BadgeText, TokenDetailsContainer, DetailsCol, RightCol, TokenDetail, AmountsList, AmountItem } from './style';
 import { TokensDetailsModalProps } from './types';
 
 import AmountView from '../AmountView';
@@ -31,6 +14,7 @@ import TezosAddress from '../TezosAddress';
 import { ModalWrapper } from '../../contracts/components/style';
 
 import { Token } from '../../types/general';
+import { openLink } from '../../utils/general';
 
 function formatAmount(amount: number): string {
     return new BigNumber(amount)
@@ -61,17 +45,18 @@ const TokenDetails = ({ token, onBrowseObjects }: { token: Token; onBrowseObject
         <TokenItem>
             <TokenItemHeader>
                 <TokenItemName>{token.displayName}</TokenItemName>
+                {token.helpLink && (
+                    <div onClick={() => openLink(token.helpLink || '')} style={{ marginLeft: 5 }}>
+                        {token.displayHelpLink}
+                    </div>
+                )}
                 {renderStatusBadge()}
             </TokenItemHeader>
             <TokenDetailsContainer>
                 <DetailsCol>
                     <TezosAddress address={token.address} text={token.address} weight={400} color="gray18" size="16px" shorten={true} />
-                    {token && token.details && token.details.supply ? (
-                        <TokenDetail>{t('components.tokensDetailsModal.tokenSupplyDetail', { counter: formatAmount(token.details.supply) })}</TokenDetail>
-                    ) : null}
-                    {token && token.details && token.details.holders ? (
-                        <TokenDetail>{t('components.tokensDetailsModal.tokenHoldersDetail', { counter: Number(token.details.holders) })}</TokenDetail>
-                    ) : null}
+                    {token && token.details && token.details.supply ? <TokenDetail>{t('components.tokensDetailsModal.tokenSupplyDetail', { counter: formatAmount(token.details.supply) })}</TokenDetail> : null}
+                    {token && token.details && token.details.holders ? <TokenDetail>{t('components.tokensDetailsModal.tokenHoldersDetail', { counter: Number(token.details.holders) })}</TokenDetail> : null}
                     {token.balance && token.balance > 0 && onBrowseObjects ? (
                         <ActionsContainer>
                             <Button buttonTheme="secondary" small={true} onClick={() => onBrowseObjects(token)}>
@@ -81,21 +66,13 @@ const TokenDetails = ({ token, onBrowseObjects }: { token: Token; onBrowseObject
                     ) : null}
                 </DetailsCol>
                 <RightCol>
-                    <AmountsList>
-                        <AmountItem>
-                            <AmountView
-                                color={token.balance && token.balance > 0 ? 'black3' : 'gray18'}
-                                size="20px"
-                                amount={token.balance}
-                                weight="normal"
-                                symbol={token.symbol}
-                                showTooltip={true}
-                                scale={token.scale}
-                                precision={token.precision}
-                                round={token.round}
-                            />
-                        </AmountItem>
-                    </AmountsList>
+                    {token.balance && token.balance > 0 ? (
+                        <AmountsList>
+                            <AmountItem>
+                                <AmountView color={token.balance && token.balance > 0 ? 'black3' : 'gray18'} size="20px" amount={token.balance} weight="normal" symbol={token.symbol} showTooltip={true} scale={token.scale} precision={token.precision} round={token.round} />
+                            </AmountItem>
+                        </AmountsList>
+                    ) : null}
                 </RightCol>
             </TokenDetailsContainer>
         </TokenItem>

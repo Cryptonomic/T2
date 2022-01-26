@@ -1,7 +1,7 @@
 {
     "name": "tezori",
     "productName": "Tezori",
-    "version": "1.2.5-beta",
+    "version": "1.2.7-beta",
     "description": "An open-source wallet framework for the Tezos blockchain.",
     "main": "./main.prod.js",
     "author": {
@@ -23,7 +23,7 @@
         "node-fetch": "2.6.1"
     },
     "engines": {
-        "node": "12.20.1",
-        "npm": "6.14.10"
+        "node": "12.22.8",
+        "npm": "6.14.15"
     }
 }

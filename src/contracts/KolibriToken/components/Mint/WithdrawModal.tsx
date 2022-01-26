@@ -387,7 +387,7 @@ function DepositModal(props: Props) {
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
                     {/* TODO(keefertaylor): Use Translations */}
-                    Withdrawing from a vault will burn your account's wXTZ and return your XTZ
+                    Withdrawing from a vault will burn your wXTZ and return your XTZ. StakerDAO withdrawal fee is 4%.
                 </MessageContainer>
             </MainContainer>
             <MainContainer>

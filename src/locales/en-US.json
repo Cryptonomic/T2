@@ -38,7 +38,7 @@
             "sell": "Sell",
             "add": "Add",
             "remove": "Remove",
-            "see_more": "See more"
+            "see_more": "View all supported NFTs"
         },
         "nouns": {
             "amount": "Amount",
@@ -179,6 +179,9 @@
             },
             "signature": {
                 "title": "Signature Request"
+            },
+            "disabled": {
+                "title": "dApp Interactions Unavailable"
             }
         },
         "interactModal": {
@@ -405,8 +408,8 @@
         },
         "nftGallery": {
             "custom_fee_tooltip": "We have already calculated the optimal fee for your transaction.",
-            "tokensNumberInfo": "You have {{count}} object.",
-            "tokensNumberInfo_plural": "You have {{count}} objects.",
+            "tokensNumberInfo": "You have {{count}} NFT in your gallery.",
+            "tokensNumberInfo_plural": "You have {{count}} NFTs in your gallery.",
             "fields": {
                 "artifactUrl": "image URL"
             },
@@ -420,7 +423,7 @@
                 "token": "Token",
                 "collectedOn": "Collected on",
                 "collectedFor": "Collected for",
-                "quantity": "Quantity"
+                "quantity": "Owned"
             },
             "tabs": {
                 "collected": "Collected",
@@ -434,14 +437,10 @@
             "providers": {
                 "HIC_ET_NUNC": "Hic et nunc",
                 "KALAMINT": "Kalamint",
-                "KUMULUS_OBJKT": "objkt.com",
-                "GOGOS_OBJKT": "objkt.com",
-                "NEONZ_OBJKT": "objkt.com",
+                "VERSUM": "versum.xyz",
+                "OBJKT_GENERIC": "objkt.com",
                 "PIXEL_POTUS": "pixelpotus.com",
-                "MOMENTS": "objkt.com",
-                "SKELE": "objkt.com",
                 "TWITZ": "twitz.vercel.app",
-                "SUMO": "objkt.com",
                 "H3P": "objkt.com",
                 "BYTEBLOCK": "byteblock.art",
                 "ONEOF": "oneof.com",

@@ -5,7 +5,7 @@ import TezosIcon from '../TezosIcon';
 
 import { openLink } from '../../utils/general';
 import { ms } from '../../styles/helpers';
-import { helpUrl } from '../../config.json';
+import { versionUpdateUrl } from '../../config.json';
 
 const Container = styled.div`
     display: flex;
@@ -44,7 +44,7 @@ const VersionStatus = (props: Props) => {
         <Container>
             <WarningIcon color="white" iconName="warning" />
             <span>{t('components.versionStatus.version_update', { version })}</span>
-            <Link onClick={() => openLink(helpUrl)}>{helpUrl}</Link>
+            <Link onClick={() => openLink(versionUpdateUrl)}>{versionUpdateUrl}</Link>
         </Container>
     );
 };

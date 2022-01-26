@@ -397,14 +397,10 @@ function Swap(props: Props) {
                                     </div>
                                 )}
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
-                                    <div>
-                                        Cost {dexterTokenCost > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenCost)} XTZ
-                                    </div>
+                                    <div>Cost on QuipuSwap {formatAmount(quipuTokenCost)} XTZ</div>
                                 )}
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && vortexTokenCost > 0 && (
-                                    <div>
-                                        Cost {dexterTokenCost > 0 ? 'on Vortex' : ''} {formatAmount(vortexTokenCost)} XTZ
-                                    </div>
+                                    <div>Cost on Vortex {formatAmount(vortexTokenCost)} XTZ</div>
                                 )}
 
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
@@ -415,14 +411,10 @@ function Swap(props: Props) {
                                     </div>
                                 )}
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
-                                    <div>
-                                        Proceeds {dexterTokenProceeds > 0 ? 'on QuipuSwap' : ''} {formatAmount(quipuTokenProceeds)} XTZ
-                                    </div>
+                                    <div>Proceeds on QuipuSwap {formatAmount(quipuTokenProceeds)} XTZ</div>
                                 )}
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && vortexTokenProceeds > 0 && (
-                                    <div>
-                                        Proceeds {dexterTokenProceeds > 0 ? 'on Vortex' : ''} {formatAmount(vortexTokenProceeds)} XTZ
-                                    </div>
+                                    <div>Proceeds on Vortex {formatAmount(vortexTokenProceeds)} XTZ</div>
                                 )}
                             </div>
                         </ColumnContainer>

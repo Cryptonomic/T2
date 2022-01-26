@@ -52,9 +52,11 @@ export const NFTGalleryThumb: FunctionComponent<GalleryThumbProps> = ({ nftObjec
                 </span>
             </TopRow>
             <BottomRow>
-                <Address>
-                    <Capitalize>{t('general.prepositions.by')}</Capitalize> {displayAddress}
-                </Address>
+                {displayAddress && (
+                    <Address>
+                        <Capitalize>{t('general.prepositions.by')}</Capitalize> {displayAddress}
+                    </Address>
+                )}
             </BottomRow>
         </ThumbContainer>
     );

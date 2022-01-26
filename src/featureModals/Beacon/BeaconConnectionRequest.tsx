@@ -58,7 +58,6 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
                     <Container>
                         <div className="modal-holder">
                             <h3>{t('components.Beacon.connection.title', { network: connectedBlockchainNode.network })}</h3>
-                            {/*<p className="linkAddress">https://app.dexter.exchange/</p>*/}
                             <p className="text-center">{`${modalValues[activeModal].name} would like to connect to your wallet`}</p>
                             <p className="subtitleText text-center mr-t-100">
                                 This site is requesting access to view your account address. Always make sure you trust the sites you interact with.

@@ -1,13 +1,13 @@
 {
     "name": "Tezori",
-    "version": "1.2.5-beta",
+    "version": "1.2.7-beta",
     "blockExplorerHost": "https://arronax.io/tezos",
     "logo": "tezosLogo.png",
     "logoLink": "https://github.com/Cryptonomic/T2",
     "termsService": "https://github.com/Cryptonomic/T2",
     "privacyPolicy": "https://github.com/Cryptonomic/T2",
     "tagline": "containers.loginHome.tagline",
-    "LocalVersionIndex": "51",
+    "LocalVersionIndex": "52",
     "helpUrl": "https://github.com/Cryptonomic/T2",
     "aboutUrl": "",
     "ledgerAppUrl": "https://support.ledger.com/hc/en-us/articles/360016057774-Tezos-XTZ-",
@@ -19,5 +19,8 @@
     "imageProxyURL": "",
     "imageAPIKey": "",
     "wertUrl": "",
-    "customProtocols": ["tezori", "tezos", "galleon"]
+    "customProtocols": ["tezori", "tezos"],
+    "beaconEnable": true,
+    "fullVersionUrl": "https://github.com/Cryptonomic/T2",
+    "versionUpdateUrl": "https://github.com/Cryptonomic/T2"
 }

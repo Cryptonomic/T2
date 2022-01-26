@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 
-import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation, Origination } from 'conseiljs';
+import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation, Origination, ConseilQueryBuilder, ConseilOperator, ConseilFunction, ConseilDataClient } from 'conseiljs';
 
 import { cloneDecryptedSigner } from '../../utils/wallet';
 
@@ -43,6 +43,44 @@ export function estimateOperationGroupFee(publicKeyHash: string, operations: any
     return fee;
 }
 
+export function getAverageOperationGroupFee(publicKeyHash: string, operations: any[]): number | string {
+    // TODO: type
+    const store = useStore<RootState>();
+    const [fee, setFee] = useState<number | string>(0);
+
+    useEffect(() => {
+        const estimateAverageFee = async () => {
+            try {
+                const { selectedNode, nodesList } = store.getState().settings;
+                const { conseilUrl, apiKey, network, platform } = getMainNode(nodesList, selectedNode);
+                const serverInfo = { url: conseilUrl, apiKey, network };
+
+                let query = ConseilQueryBuilder.blankQuery();
+                query = ConseilQueryBuilder.addFields(query, 'fee', 'gas_limit');
+                query = ConseilQueryBuilder.addPredicate(query, 'timestamp', ConseilOperator.AFTER, [Date.now() - 7 * 24 * 60 * 60 * 1000], false);
+                query = ConseilQueryBuilder.addPredicate(query, 'kind', ConseilOperator.EQ, ['transaction'], false);
+                query = ConseilQueryBuilder.addPredicate(query, 'status', ConseilOperator.EQ, ['applied'], false);
+                query = ConseilQueryBuilder.addPredicate(query, 'destination', ConseilOperator.IN, [operations.map((o) => o.destination)], false);
+                // parameters_entrypoints
+                query = ConseilQueryBuilder.addAggregationFunction(query, 'fee', ConseilFunction.avg);
+                query = ConseilQueryBuilder.addAggregationFunction(query, 'gas_limit', ConseilFunction.avg);
+                query = ConseilQueryBuilder.setLimit(query, 1);
+
+                const result = await ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'operations', query).catch(() => []);
+
+                setFee(Math.ceil(Number(result[0].avg_fee)));
+            } catch (e) {
+                console.log('estimateInvocation failed with ', e);
+                setFee(e.message);
+            }
+        };
+
+        estimateAverageFee();
+    }, []);
+
+    return fee;
+}
+
 export function sendOperations(password: string, operations: any[], fee: number = 0) {
     // TODO: type
     return async (dispatch, state): Promise<boolean> => {
@@ -74,11 +112,7 @@ export function sendOperations(password: string, operations: any[], fee: number 
             formedOperations[i].storage_limit = estimate.operationResources[i].storageCost.toString();
         }
 
-        const result: any = await TezosNodeWriter.sendOperation(
-            tezosUrl,
-            formedOperations,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password)
-        ).catch((err) => {
+        const result: any = await TezosNodeWriter.sendOperation(tezosUrl, formedOperations, isLedger ? signer : await cloneDecryptedSigner(signer, password)).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(err);
             dispatch(createMessageAction(errorObj.name, true));
@@ -86,13 +120,7 @@ export function sendOperations(password: string, operations: any[], fee: number 
         });
 
         if (result) {
-            const operationResult =
-                result &&
-                result.results &&
-                result.results.contents &&
-                result.results.contents[0] &&
-                result.results.contents[0].metadata &&
-                result.results.contents[0].metadata.operation_result;
+            const operationResult = result && result.results && result.results.contents && result.results.contents[0] && result.results.contents[0].metadata && result.results.contents[0].metadata.operation_result;
 
             if (operationResult && operationResult.errors && operationResult.errors.length) {
                 const error = 'components.messageBar.messages.invoke_operation_failed';
@@ -136,17 +164,7 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
                     //
                 }
 
-                const op = TezosNodeWriter.constructContractInvocationOperation(
-                    publicKeyHash,
-                    counter,
-                    o.destination,
-                    o.amount,
-                    0,
-                    TezosConstants.OperationStorageCap,
-                    TezosConstants.OperationGasCap,
-                    entrypoint,
-                    parameters
-                );
+                const op = TezosNodeWriter.constructContractInvocationOperation(publicKeyHash, counter, o.destination, o.amount, 0, TezosConstants.OperationStorageCap, TezosConstants.OperationGasCap, entrypoint, parameters);
 
                 formedOperations.push(op);
 

@@ -2,6 +2,7 @@ const { app, ipcMain, Menu, BrowserWindow, shell } = require('electron');
 const os = require('os');
 
 const { helpUrl, aboutUrl, customProtocols } = require('./config.json');
+const appName = require('./config.json').name;
 
 const openCustomProtocol = (url, appWindow) => {
     const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
@@ -32,7 +33,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const isMac = process.platform === 'darwin';
 const isWindows = process.platform === 'win32';
-const isDevelopment = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+const isDevelopment = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true' || appName.toLowerCase() === 'tezori';
 
 if (isDevelopment) {
     require('electron-debug')();
