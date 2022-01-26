@@ -76,7 +76,6 @@ export const TokenItem = styled.li`
 export const TokenItemHeader = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding-top: 4px;
     padding-bottom: 4px;
     margin-bottom: 4px;

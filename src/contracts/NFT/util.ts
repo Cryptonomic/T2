@@ -171,55 +171,29 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
             case 'kalamint':
                 promises.push(getKalamintCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
-            case 'kumulus':
-                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
-                break;
-            case 'gogos':
-                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
-                break;
-            case 'neonz':
-                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
-                break;
             case 'pixelpotus':
                 promises.push(getPotusCollection(token.address, token.mapid, managerAddress, node, skipDetails));
-                break;
-            case 'the moments':
-                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
-                break;
-            case 'randomly common skeles':
-                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
-                break;
-            case 'twitznft':
-                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.TWITZ, managerAddress, node, skipDetails));
-                break;
-            case 'chop sumo':
-                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
                 break;
             case 'hash three points':
                 promises.push(getHashThreeCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
+
             case 'byteblock nft':
                 promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.BYTEBLOCK, managerAddress, node, skipDetails));
                 break;
+
             case 'oneof':
                 promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.ONEOF, managerAddress, node, skipDetails));
                 break;
-            case 'fx(hash)':
-                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.FXHASH, managerAddress, node, skipDetails));
-                break;
-            case 'rarible':
-                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.RARIBLE, managerAddress, node, skipDetails));
-                break;
-            case 'platypoos':
-                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
-                break;
-            case 'versum':
-                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.VERSUM, managerAddress, node, skipDetails));
-                break;
-            case 'lightfields':
+            case 'ottez':
                 promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
                 break;
             default:
+                try {
+                    promises.push(getCollection(token.address, token.mapid, token.holderLocation || 'key', token.nftMetadataMap, token.provider || '', managerAddress, node, skipDetails));
+                } catch (err) {
+                    console.log(`could not fetch collection for ${token.address}`);
+                }
                 break;
         }
     });
@@ -289,6 +263,8 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
                             amount = Number(row.parameters.toString().replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1'));
                         } else if (action === 'mint_OBJKT') {
                             action = 'mint';
+                        } else {
+                            action = 'collect';
                         }
 
                         priceMap[row.operation_group_hash] = {
@@ -444,8 +420,10 @@ export async function getKalamintCollection(tokenAddress: string, tokenMapId: nu
                         } else if (action === 'transfer') {
                             action = 'collect';
                             amount = Number(row.parameters.toString().replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1'));
-                        } else if (action === 'mint_OBJKT') {
+                        } else if (action === 'mint') {
                             action = 'mint';
+                        } else {
+                            action = 'collect';
                         }
 
                         priceMap[row.operation_group_hash] = {
@@ -781,7 +759,7 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
                         } else if (action === 'mint_OBJKT') {
                             action = 'mint';
                         } else {
-                            return;
+                            action = 'collect';
                         }
 
                         priceMap[row.operation_group_hash] = {

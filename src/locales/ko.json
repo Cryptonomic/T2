@@ -370,7 +370,7 @@
                 "token": "Token",
                 "collectedOn": "Collected on",
                 "collectedFor": "Collected for",
-                "quantity": "Quantity"
+                "quantity": "Owned"
             },
             "tabs": {
                 "collected": "Collected",
