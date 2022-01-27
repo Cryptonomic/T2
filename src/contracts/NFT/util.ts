@@ -825,7 +825,8 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
                         author: objectDetails.creators,
                     };
                 } catch (e) {
-                    console.log(`error reading ${provider} data`, objectId, e);
+                    console.log(`error reading ${tokenAddress} metadata from ${metadataMapId} for ${objectId}`);
+                    console.log(e);
                     errors.push({
                         code: NFT_ERRORS.UNSUPPORTED_DATA_FORMAT,
                         data: [{ key: 'provider', value: provider }],
