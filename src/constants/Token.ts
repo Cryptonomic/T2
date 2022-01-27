@@ -41,6 +41,7 @@ import sexpIcon from '../../resources/contracts/sexp-icon.png';
 import fdaoIcon from '../../resources/contracts/fdao-icon.png';
 import tezdaoIcon from '../../resources/contracts/tezdao-icon.png';
 import ursaIcon from '../../resources/contracts/ursa-icon.png';
+import materiaIcon from '../../resources/contracts/materia-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -516,6 +517,21 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         vaultCoreAddress: 'KT1V4Vp7zhynCNuaBjWMpNU535Xm2sgqkz6M',
         vaultRegistryMapId: 260,
         vaultList: [],
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1KRvNVubq64ttPbQarxec5XdS6ZQU4DVD2',
+        displayName: 'Materia',
+        symbol: 'MTRIA',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: materiaIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 76310,
     },
     {
         network: 'mainnet',
