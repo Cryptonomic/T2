@@ -288,7 +288,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         mapid: 89296,
         nftMetadataMap: 89301,
         holderLocation: 'key',
-        provider: NFT_PROVIDERS.OBJKT_GENERIC,
+        provider: NFT_PROVIDERS.RARIBLE,
         helpLink: 'https://gogos.tez.page/',
         displayHelpLink: 'gogos.tez',
         hideOnLanding: true,
