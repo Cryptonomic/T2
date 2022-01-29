@@ -233,7 +233,7 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
 
     // 1. Build and execute the query:
     let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
+    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
@@ -241,7 +241,18 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
 
-    const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
+    const operationGroupIds = collectionResult
+        .filter((r) => {
+            try {
+                if (Number(r.value) === 0) {
+                    return false;
+                }
+            } catch (err) {
+                /* meh*/
+            }
+            return true;
+        })
+        .map((r) => r.operation_group_id);
     const queryChunks = chunkArray(operationGroupIds, 30);
 
     // 2. Get prices:
@@ -284,13 +295,11 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
             let price = 0;
             const objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
             let objectDetails;
-            let receivedOn = new Date();
             let action = '';
 
             try {
                 const priceRecord = priceMap[row.operation_group_id];
                 price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
                 action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
             } catch {
                 //
@@ -302,7 +311,7 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
                 provider: NFT_PROVIDERS.HIC_ET_NUNC,
                 amount: Number(row.value),
                 price: isNaN(price) ? 0 : price,
-                receivedOn,
+                receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
 
@@ -392,7 +401,7 @@ export async function getKalamintCollection(tokenAddress: string, tokenMapId: nu
 
     // 1. Build and execute the query:
     let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
+    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
@@ -443,13 +452,11 @@ export async function getKalamintCollection(tokenAddress: string, tokenMapId: nu
             let price = 0;
             const objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
             let objectDetails;
-            let receivedOn = new Date();
             let action = '';
 
             try {
                 const priceRecord = priceMap[row.operation_group_id];
                 price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
                 action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
             } catch {
                 //
@@ -461,7 +468,7 @@ export async function getKalamintCollection(tokenAddress: string, tokenMapId: nu
                 provider: NFT_PROVIDERS.KALAMINT,
                 amount: Number(row.value),
                 price: isNaN(price) ? 0 : price,
-                receivedOn,
+                receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
 
@@ -595,7 +602,7 @@ export async function getPotusCollection(tokenAddress: string, tokenMapId: numbe
 
     // 1. Build and execute the query:
     let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
+    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [`${tokenMapId}`]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
@@ -610,13 +617,11 @@ export async function getPotusCollection(tokenAddress: string, tokenMapId: numbe
             let price = 0;
             const objectId = new BigNumber(row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1')).toNumber();
             let objectDetails;
-            let receivedOn = new Date();
             let action = '';
 
             try {
                 const priceRecord = priceMap[row.operation_group_id];
                 price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
                 action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
             } catch {
                 //
@@ -628,7 +633,7 @@ export async function getPotusCollection(tokenAddress: string, tokenMapId: numbe
                 provider: NFT_PROVIDERS.PIXEL_POTUS,
                 amount: 1,
                 price: isNaN(price) ? 0 : price,
-                receivedOn,
+                receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
 
@@ -712,7 +717,7 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
     const errors: NFTError[] = []; // Store errors to display to the user.
 
     let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
+    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     if (queryArg === 'key') {
         collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.LIKE, [`0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
@@ -788,13 +793,11 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
             }
 
             let objectDetails;
-            let receivedOn = new Date();
             let action = '';
 
             try {
                 const priceRecord = priceMap[row.operation_group_id];
                 price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
                 action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
             } catch {
                 //
@@ -806,7 +809,7 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
                 provider,
                 amount: 1,
                 price: isNaN(price) ? 0 : price,
-                receivedOn,
+                receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
 
@@ -847,7 +850,7 @@ export async function getHashThreeCollection(tokenAddress: string, tokenMapId: n
 
     // 1. Build and execute the query:
     let collectionQuery = ConseilQueryBuilder.blankQuery();
-    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'operation_group_id');
+    collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
@@ -898,13 +901,11 @@ export async function getHashThreeCollection(tokenAddress: string, tokenMapId: n
             let price = 0;
             const objectId = row.key.toString().replace(/.* ([0-9]{1,}$)/, '$1');
             let objectDetails;
-            let receivedOn = new Date();
             let action = '';
 
             try {
                 const priceRecord = priceMap[row.operation_group_id];
                 price = priceRecord.price.toNumber();
-                receivedOn = new Date(priceRecord.timestamp);
                 action = priceRecord.action === 'collect' ? NFT_ACTION_TYPES.COLLECTED : NFT_ACTION_TYPES.MINTED;
             } catch {
                 //
@@ -916,7 +917,7 @@ export async function getHashThreeCollection(tokenAddress: string, tokenMapId: n
                 provider: NFT_PROVIDERS.H3P,
                 amount: 1,
                 price: isNaN(price) ? 0 : price,
-                receivedOn,
+                receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
 
