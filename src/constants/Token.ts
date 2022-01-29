@@ -485,7 +485,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1FkMRSsrqWXU88PEUuPsjuL9hSEq23R1vD',
+        address: 'KT1L7GvUxZH5tfa6cgZKnH6vpp2uVxnFVHKu',
         displayName: 'Ottez',
         symbol: 'Ottez',
         balance: 0,
