@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
+import styled from 'styled-components';
 import { BeaconMessageType, OperationResponseInput, BeaconErrorType, BeaconResponseInputMessage } from '@airgap/beacon-sdk';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
 import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import AddCircle from '@mui/icons-material/AddCircle';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
-import { beaconClient } from './BeaconMessageRouter';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
+import { ms } from '../../styles/helpers';
 import Loader from '../../components/Loader';
+import TextField from '../../components/TextField';
 import TezosNumericInput from '../../components/TezosNumericInput';
 import PasswordInput from '../../components/PasswordInput';
 
@@ -28,6 +34,25 @@ import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton,
 
 import { estimateOperationGroupFee, sendOperations, queryHicEtNuncSwap } from './thunks';
 import { WrapPassword, OperationDetailHeader } from './style';
+import { beaconClient } from './BeaconMessageRouter';
+
+const AddCircleWrapper = styled(AddCircle)<{ active: number }>`
+    &&& {
+        fill: #7b91c0;
+        width: ${ms(1)};
+        height: ${ms(1)};
+        opacity: ${({ active }) => (active ? 1 : 0.5)};
+        cursor: ${({ active }) => (active ? 'pointer' : 'default')};
+    }
+`;
+
+export const LabelText = styled.span`
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: ${({ theme: { colors } }) => colors.gray5};
+    font-weight: 400;
+`;
 
 interface Props {
     open: boolean;
@@ -49,6 +74,11 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const [fee, setFee] = useState('0');
     const [feeError, setFeeError] = useState('');
     const [showOperationDetails, setShowOperationDetails] = useState(false);
+
+    const [useCustomFee, setCustomFeeFlag] = useState(false);
+    const [customFee, setCustomFee] = useState('0');
+    const [customGasLimit, setCustomGasLimit] = useState('0');
+    const [customStorageLimit, setCustomStorageLimit] = useState('0');
 
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
@@ -153,14 +183,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const idTransaction = (transaction) => {
         const dexterPools = knownMarketMetadata.filter((market) => market.name.startsWith('Dexter')).map((market) => market.address);
         const quipuPools = knownMarketMetadata.filter((market) => market.name.startsWith('QuipuSwap')).map((market) => market.address);
-        const tzip7Tokens = [
-            'KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8',
-            'KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9',
-            'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH',
-            'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
-            'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
-            'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea',
-        ];
+        const tzip7Tokens = ['KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8', 'KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9', 'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH', 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn', 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea'];
 
         let selectedToken = knownTokenContracts.find((token) => token.address === transaction.destination);
 
@@ -175,15 +198,12 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (dexterPools.includes(transaction.destination)) {
             if (transaction.parameters.entrypoint === 'xtzToToken') {
                 const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
-                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
-                    .dividedBy(selectedTokenScale)
-                    .toFixed();
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
                 const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
 
                 return (
                     <>
-                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> {selectedTokenSymbol} at <strong>{holder}</strong>, expiring on{' '}
-                        <strong>{expiration.toString()}</strong>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> {selectedTokenSymbol} at <strong>{holder}</strong>, expiring on <strong>{expiration.toString()}</strong>
                     </>
                 );
             }
@@ -191,9 +211,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             if (transaction.parameters.entrypoint === 'addLiquidity') {
                 const holder = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
                 // TODO: $.args[0].args[1].int liquidity token balance
-                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
-                    .dividedBy(selectedTokenScale)
-                    .toFixed();
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
                 const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
 
                 return (
@@ -209,14 +227,10 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 // const targetName = knownContractNames[targetToken] || targetToken;
                 const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
                 const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
-                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
-                    .dividedBy(10 ** targetScale)
-                    .toFixed();
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0]).dividedBy(10 ** targetScale).toFixed();
                 const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
                 const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
-                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
-                    .dividedBy(selectedTokenScale)
-                    .toFixed();
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
                 const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
 
                 let holderText = '';
@@ -228,8 +242,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                 return (
                     <>
-                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> {selectedTokenSymbol} for <strong>{targetAmount.toString()}</strong>{' '}
-                        {targetSymbol} <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> {selectedTokenSymbol} for <strong>{targetAmount.toString()}</strong> {targetSymbol} <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
                     </>
                 );
             }
@@ -241,9 +254,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (tzip7Tokens.includes(transaction.destination)) {
             if (transaction.parameters.entrypoint === 'approve') {
                 let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
-                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0])
-                    .dividedBy(selectedTokenScale)
-                    .toFixed();
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
 
                 approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
 
@@ -281,8 +292,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             <strong>
                                 {tokenAmount}/{swapInfo.stock}
                             </strong>{' '}
-                            OBJKT #{swapInfo.nftId} from the creator – {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #
-                            {swapInfo.nftId} is "{swapInfo.nftName}", described as "{swapInfo.nftDescription}".
+                            OBJKT #{swapInfo.nftId} from the creator – {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #{swapInfo.nftId} is "{swapInfo.nftName}", described as "{swapInfo.nftDescription}".
                         </>
                     );
                 } else {
@@ -292,8 +302,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             <strong>
                                 {tokenAmount}/{swapInfo.stock}
                             </strong>{' '}
-                            OBJKT #{swapInfo.nftId} from {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #{swapInfo.nftId} is "
-                            {swapInfo.nftName}", described as "{swapInfo.nftDescription}", created by {swapInfo.nftCreators}.
+                            OBJKT #{swapInfo.nftId} from {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #{swapInfo.nftId} is "{swapInfo.nftName}", described as "{swapInfo.nftDescription}", created by {swapInfo.nftCreators}.
                         </>
                     );
                 }
@@ -350,9 +359,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (quipuPools.includes(transaction.destination)) {
             if (transaction.parameters.entrypoint === 'use') {
                 const holder = JSONPath({ path: '$.args[0].args[0].args[0].args[1].string', json: transaction.parameters.value })[0];
-                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0])
-                    .dividedBy(selectedTokenScale)
-                    .toFixed();
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
 
                 return (
                     <>
@@ -399,8 +406,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                 return (
                     <>
-                        &nbsp;to register <strong>{domainName}.tez</strong> as {owner} for <strong>{formattedAmount} XTZ</strong> for a period of{' '}
-                        <strong>{durationDays} days</strong>{' '}
+                        &nbsp;to register <strong>{domainName}.tez</strong> as {owner} for <strong>{formattedAmount} XTZ</strong> for a period of <strong>{durationDays} days</strong>{' '}
                         {redirect && redirect.length > 0 && (
                             <>
                                 {' '}
@@ -477,8 +483,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                     return (
                         <>
-                            &nbsp;to mint <strong>{editions}</strong> NFT{editions > 1 ? 's' : ''} with royalties of <strong>{royalties}%</strong> titled{' '}
-                            <strong>{itemTitle}</strong>.
+                            &nbsp;to mint <strong>{editions}</strong> NFT{editions > 1 ? 's' : ''} with royalties of <strong>{royalties}%</strong> titled <strong>{itemTitle}</strong>.
                         </>
                     );
                 }
@@ -517,8 +522,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             )}
                             {isContract && (
                                 <p style={{ maxHeight: 200, overflow: 'scroll' }}>
-                                    <strong>{appMetadata.name}</strong> is requesting a contract call to the <strong>{operationParameters.entrypoint}</strong>{' '}
-                                    function of <strong>{contractName}</strong>
+                                    <strong>{appMetadata.name}</strong> is requesting a contract call to the <strong>{operationParameters.entrypoint}</strong> function of <strong>{contractName}</strong>
                                     {new BigNumber(operationDetails[0].amount).toNumber() !== 0 && (
                                         <span>
                                             {' '}
@@ -543,11 +547,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             <div>
                                 <OperationDetailHeader onClick={() => setShowOperationDetails(!showOperationDetails)}>
                                     <span>Raw Operation Content</span>
-                                    {showOperationDetails ? (
-                                        <ExpandLess style={{ verticalAlign: 'bottom' }} />
-                                    ) : (
-                                        <ExpandMore style={{ verticalAlign: 'bottom' }} />
-                                    )}
+                                    {showOperationDetails ? <ExpandLess style={{ verticalAlign: 'bottom' }} /> : <ExpandMore style={{ verticalAlign: 'bottom' }} />}
                                 </OperationDetailHeader>
                                 <Collapse easing={'none'} enter={false} exit={false} in={showOperationDetails} timeout="auto" unmountOnExit={true}>
                                     <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
@@ -556,22 +556,36 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                             {feeError === '' && (
                                 <div className="feeContainer" style={{ display: 'block', position: 'relative', top: '20px' }}>
-                                    <TezosNumericInput
-                                        decimalSeparator={t('general.decimal_separator')}
-                                        label={'Operation Fee'}
-                                        amount={fee}
-                                        onChange={setFee}
-                                        errorText={feeError}
-                                    />
+                                    <div>
+                                        <div style={{ width: '75%', float: 'left' }}>
+                                            <TezosNumericInput decimalSeparator={t('general.decimal_separator')} label={'Operation Fee'} amount={fee} onChange={setFee} errorText={feeError} />
+                                        </div>
+                                        <div style={{ width: '25%', float: 'left' }}>
+                                            <IconButton size="small" color="primary" onClick={() => setCustomFeeFlag(!useCustomFee)}>
+                                                {!useCustomFee && <AddIcon />}
+                                                {useCustomFee && <RemoveIcon />}
+                                                <LabelText>{t('components.fees.set_custom_fee')}</LabelText>
+                                            </IconButton>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: useCustomFee ? 'block' : 'none' }}>
+                                        <div style={{ width: '30%', float: 'left', marginRight: '0.5em' }}>
+                                            <TextField type="number" label={t('components.fees.custom_fee')} onChange={setCustomFee} value={customFee} />
+                                        </div>
+                                        <div style={{ width: '30%', float: 'left', marginRight: '0.5em' }}>
+                                            <TextField type="number" label={t('components.interactModal.storage_limit')} onChange={setCustomStorageLimit} value={customStorageLimit} />
+                                        </div>
+                                        <div style={{ width: '30%', float: 'left' }}>
+                                            <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={setCustomGasLimit} value={customGasLimit} />
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 
                             {feeError !== '' && (
                                 <div className="feeContainer">
                                     <p className="inputLabel">Validation Error</p>
-                                    <p className="subtitleText">
-                                        Could not estimate fee due to operation validation failure. Please contact the dApp developer for resolution.
-                                    </p>
+                                    <p className="subtitleText">Could not estimate fee due to operation validation failure. Please contact the dApp developer for resolution.</p>
                                     <p className="inputLabel">Error Details</p>
                                     <p className="subtitleText" style={{ height: '40px', overflow: 'scroll' }}>
                                         {feeError.split(',').map((p, i) => (
@@ -582,15 +596,16 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             )}
 
                             {feeError === '' && !isLedger && (
-                                <WrapPassword>
-                                    <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
-                                </WrapPassword>
+                                <div style={{ float: 'left', width: '100%' }}>
+                                    <WrapPassword>
+                                        <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
+                                    </WrapPassword>
+                                </div>
                             )}
 
                             {feeError === '' && (
-                                <p className="subtitleText">
-                                    Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact
-                                    with.
+                                <p className="subtitleText" style={{ float: 'left', width: '100%' }}>
+                                    Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
                                 </p>
                             )}
                         </div>

@@ -81,7 +81,7 @@ export function getAverageOperationGroupFee(publicKeyHash: string, operations: a
     return fee;
 }
 
-export function sendOperations(password: string, operations: any[], fee: number = 0) {
+export function sendOperations(password: string, operations: any[], fee: number = 0, gasLimit: number = 0, storageLimit: number = 0) {
     // TODO: type
     return async (dispatch, state): Promise<boolean> => {
         const { selectedNode, nodesList } = state().settings;
@@ -99,17 +99,31 @@ export function sendOperations(password: string, operations: any[], fee: number 
 
         const formedOperations = await createOperationGroup(operations, tezosUrl, selectedParentHash, keyStore.publicKey);
 
-        const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
+        if (fee === 0) {
+            const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
+            for (let i = 0; i < formedOperations.length; i++) {
+                if (i === 0 && fee === 0) {
+                    formedOperations[i].fee = estimate.estimatedFee.toString();
+                } else if (i === 0 && fee > 0) {
+                    formedOperations[i].fee = fee.toString();
+                }
 
-        for (let i = 0; i < formedOperations.length; i++) {
-            if (i === 0 && fee === 0) {
-                formedOperations[i].fee = estimate.estimatedFee.toString();
-            } else if (i === 0 && fee > 0) {
-                formedOperations[i].fee = fee.toString();
+                formedOperations[i].gas_limit = estimate.operationResources[i].gas.toString();
+                formedOperations[i].storage_limit = estimate.operationResources[i].storageCost.toString();
             }
+        } else {
+            for (let i = 0; i < formedOperations.length; i++) {
+                if (i === 0) {
+                    formedOperations[i].fee = fee.toString();
+                }
 
-            formedOperations[i].gas_limit = estimate.operationResources[i].gas.toString();
-            formedOperations[i].storage_limit = estimate.operationResources[i].storageCost.toString();
+                const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
+                const totalEstimatedGas = estimate.operationResources.reduce((a, c) => (a += c.gas), 0);
+                const totalEstimatedStorage = estimate.operationResources.reduce((a, c) => (a += c.storageCost), 0);
+
+                formedOperations[i].gas_limit = Math.floor((estimate.operationResources[i].gas / totalEstimatedGas) * gasLimit).toString();
+                formedOperations[i].storage_limit = Math.floor((estimate.operationResources[i].storageCost / totalEstimatedStorage) * storageLimit).toString();
+            }
         }
 
         const result: any = await TezosNodeWriter.sendOperation(tezosUrl, formedOperations, isLedger ? signer : await cloneDecryptedSigner(signer, password)).catch((err) => {
