@@ -178,16 +178,6 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
                 promises.push(getHashThreeCollection(token.address, token.mapid, managerAddress, node, skipDetails));
                 break;
 
-            case 'byteblock nft':
-                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.BYTEBLOCK, managerAddress, node, skipDetails));
-                break;
-
-            case 'oneof':
-                promises.push(getCollection(token.address, token.mapid, 'value', token.nftMetadataMap, NFT_PROVIDERS.ONEOF, managerAddress, node, skipDetails));
-                break;
-            case 'ottez':
-                promises.push(getCollection(token.address, token.mapid, 'key', token.nftMetadataMap, NFT_PROVIDERS.OBJKT_GENERIC, managerAddress, node, skipDetails));
-                break;
             default:
                 try {
                     promises.push(getCollection(token.address, token.mapid, token.holderLocation || 'key', token.nftMetadataMap, token.provider || '', managerAddress, node, skipDetails));
