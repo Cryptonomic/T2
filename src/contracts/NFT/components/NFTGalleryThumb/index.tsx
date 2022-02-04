@@ -24,7 +24,7 @@ export const NFTGalleryThumb: FunctionComponent<GalleryThumbProps> = ({ nftObjec
     return (
         <ThumbContainer onClick={() => onClick(nftObject)}>
             <MediaStyled
-                source={artifactUrl || ''}
+                source={thumbnailUri || artifactUrl || ''}
                 type={artifactType}
                 alt={name || ''}
                 thumbProps={{

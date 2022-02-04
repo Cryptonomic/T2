@@ -505,8 +505,9 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
 
     const ipfsUrlBytes = JSONPath({ path: urlPath, json: nftInfo })[0];
-    const ipfsHash = Buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
-
+    const ipfsUrlString = Buffer.from(ipfsUrlBytes, 'hex').toString();
+    const urlStart = ipfsUrlString.indexOf('ipfs://');
+    const ipfsHash = ipfsUrlString.slice(urlStart + 7);
     const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' }).catch((e) => {
         console.log(`error fetching nft metadata ${objectId}, ${ipfsHash}`);
         return {
