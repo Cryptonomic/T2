@@ -87,7 +87,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const { destination, amount, parameters } = operationDetails[0];
     const operationParameters = parameters || { value: { prim: 'Unit' }, entrypoint: 'default' };
 
-    const estimatedMinimumFee = estimateOperationGroupFee(selectedParentHash, operationDetails);
+    const estimatedMinimumFee = estimateOperationGroupFee(selectedParentHash, operationDetails).estimatedFee;
 
     const onCancel = async () => {
         try {

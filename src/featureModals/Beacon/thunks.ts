@@ -2,7 +2,18 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 
-import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation, Origination, ConseilQueryBuilder, ConseilOperator, ConseilFunction, ConseilDataClient } from 'conseiljs';
+import {
+    TezosConstants,
+    TezosNodeReader,
+    TezosNodeWriter,
+    TezosMessageUtils,
+    Delegation,
+    Origination,
+    ConseilQueryBuilder,
+    ConseilOperator,
+    ConseilFunction,
+    ConseilDataClient,
+} from 'conseiljs';
 
 import { cloneDecryptedSigner } from '../../utils/wallet';
 
@@ -12,10 +23,10 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
 import { getMainNode } from '../../utils/settings';
 
-export function estimateOperationGroupFee(publicKeyHash: string, operations: any[]): number | string {
+export function estimateOperationGroupFee(publicKeyHash: string, operations: any[]): any {
     // TODO: type
     const store = useStore<RootState>();
-    const [fee, setFee] = useState<number | string>(0);
+    const [fee, setFee] = useState({ estimatedFee: 0, estimatedGas: 0, estimatedStorage: 0 });
 
     useEffect(() => {
         const estimateInvocation = async () => {
@@ -29,8 +40,9 @@ export function estimateOperationGroupFee(publicKeyHash: string, operations: any
 
                 const formedOperations = await createOperationGroup(operations, tezosUrl, publicKeyHash, keyStore.publicKey);
                 const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
-
-                setFee(estimate.estimatedFee);
+                const estimatedGas = estimate.operationResources.reduce((a, c) => (a += c.gas), 0);
+                const estimatedStorage = estimate.operationResources.reduce((a, c) => (a += c.storageCost), 0);
+                setFee({ estimatedFee: estimate.estimatedFee, estimatedGas, estimatedStorage });
             } catch (e) {
                 console.log('estimateInvocation failed with ', e);
                 setFee(e.message);
@@ -126,7 +138,11 @@ export function sendOperations(password: string, operations: any[], fee: number 
             }
         }
 
-        const result: any = await TezosNodeWriter.sendOperation(tezosUrl, formedOperations, isLedger ? signer : await cloneDecryptedSigner(signer, password)).catch((err) => {
+        const result: any = await TezosNodeWriter.sendOperation(
+            tezosUrl,
+            formedOperations,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password)
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(err);
             dispatch(createMessageAction(errorObj.name, true));
@@ -134,7 +150,13 @@ export function sendOperations(password: string, operations: any[], fee: number 
         });
 
         if (result) {
-            const operationResult = result && result.results && result.results.contents && result.results.contents[0] && result.results.contents[0].metadata && result.results.contents[0].metadata.operation_result;
+            const operationResult =
+                result &&
+                result.results &&
+                result.results.contents &&
+                result.results.contents[0] &&
+                result.results.contents[0].metadata &&
+                result.results.contents[0].metadata.operation_result;
 
             if (operationResult && operationResult.errors && operationResult.errors.length) {
                 const error = 'components.messageBar.messages.invoke_operation_failed';
@@ -178,7 +200,17 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
                     //
                 }
 
-                const op = TezosNodeWriter.constructContractInvocationOperation(publicKeyHash, counter, o.destination, o.amount, 0, TezosConstants.OperationStorageCap, TezosConstants.OperationGasCap, entrypoint, parameters);
+                const op = TezosNodeWriter.constructContractInvocationOperation(
+                    publicKeyHash,
+                    counter,
+                    o.destination,
+                    o.amount,
+                    0,
+                    TezosConstants.OperationStorageCap,
+                    TezosConstants.OperationGasCap,
+                    entrypoint,
+                    parameters
+                );
 
                 formedOperations.push(op);
 
