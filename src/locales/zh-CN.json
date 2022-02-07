@@ -276,6 +276,7 @@
             "high_fee": "高费用",
             "custom_fee": "自定义费用",
             "custom": "自定义",
+            "use_estimated_fee": "Use Estimated Fee",
             "set_custom_fee": "设置自定义费用",
             "enter_custom_amount": "输入自定义数额",
             "required_minium_fee": "请记住这笔交易的最低所需费用是<1> <0>{{fee}}</0> XTZ</1>。",

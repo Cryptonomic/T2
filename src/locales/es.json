@@ -277,6 +277,7 @@
             "high_fee": "Tasa alta",
             "custom_fee": "Tasa personalizada",
             "custom": "Personalizar",
+            "use_estimated_fee": "Use Estimated Fee",
             "set_custom_fee": "Confirmar monto personalizado",
             "enter_custom_amount": "Ingresar monto personalizado",
             "required_minium_fee": "Por favor ten en cuenta que la tasa mínima requerida para la transacción es<1> <0>{{fee}}</0> XTZ</1>.",

@@ -277,6 +277,7 @@
             "high_fee": "Hohe Gebühr",
             "custom_fee": "Benutzdefinierte Gebühr",
             "custom": "Benutzerdefiniert",
+            "use_estimated_fee": "Use Estimated Fee",
             "set_custom_fee": "Setze benutzerdefinierte Gebühr",
             "enter_custom_amount": "Geben Sie den benutzerdefinierten Betrag ein",
             "required_minium_fee": "Bitte beachten Sie, dass die für diese Transaktion erforderliche Mindestgebühr <1> <0>{{fee}}</0> XTZ</1> beträgt.",

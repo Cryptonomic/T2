@@ -277,6 +277,7 @@
             "high_fee": "높은 비용",
             "custom_fee": "사용자 정의 비용",
             "custom": "사용자 정의",
+            "use_estimated_fee": "Use Estimated Fee",
             "set_custom_fee": "사용자 정의 비용 설정",
             "enter_custom_amount": "사용자 정의 비용을 입력하세요",
             "required_minium_fee": "이 거래에 필요한 최소 수수료는 <1> <0>{{fee}}</0> XTZ</1> 입니다.",

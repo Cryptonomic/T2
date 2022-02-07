@@ -276,6 +276,7 @@
             "high_fee": "Yüksek Ücret",
             "custom_fee": "Kişisel Ücret Gir",
             "custom": "Kişisel Ücret",
+            "use_estimated_fee": "Use Estimated Fee",
             "set_custom_fee": "Kişisel Ücret Girişi",
             "enter_custom_amount": "Kişisel bir ücret girin",
             "required_minium_fee": "Bu işlem için<1> <0>{{fee}}</0> XTZ</1>'den düşük bir ücret giremezsiniz.",
