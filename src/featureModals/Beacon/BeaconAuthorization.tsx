@@ -619,7 +619,12 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                     </div>
                                     <div style={{ display: useCustomFee ? 'block' : 'none' }}>
                                         <div style={{ width: '30%', float: 'left', marginRight: '0.5em' }}>
-                                            <TextField type="number" label={t('components.fees.custom_fee')} onChange={setCustomFee} value={customFee} />
+                                            <TezosNumericInput
+                                                decimalSeparator={t('general.decimal_separator')}
+                                                label={t('components.fees.custom_fee')}
+                                                amount={customFee}
+                                                onChange={setCustomFee}
+                                            />
                                         </div>
                                         <div style={{ width: '30%', float: 'left', marginRight: '0.5em' }}>
                                             <TextField
