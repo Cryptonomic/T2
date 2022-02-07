@@ -124,7 +124,13 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
             if (isContract || isDelegation || isOrigination) {
                 // TODO: errors from here don't always bubble up
-                const operationResult = await dispatch(sendOperations(password, operationDetails, utezFee));
+
+                const operationResult =
+                    customFee === '0'
+                        ? await dispatch(sendOperations(password, operationDetails, utezFee, estimates.estimatedGas, estimates.estimatedStorage))
+                        : await dispatch(
+                              sendOperations(password, operationDetails, tezToUtez(customFee), parseInt(customGasLimit, 10), parseInt(customStorageLimit, 10))
+                          );
 
                 if (!!operationResult) {
                     setLedgerModalOpen(false);
