@@ -31,10 +31,12 @@ interface Props {
     decimalSeparator: string;
     errorText?: string | React.ReactNode;
     symbol?: string;
+    disabled?: boolean;
+    readOnly?: boolean;
 }
 
 const TezosNumericInput = (props: Props) => {
-    const { symbol, amount, label, decimalSeparator, errorText, onChange } = props;
+    const { symbol, amount, label, decimalSeparator, errorText, onChange, disabled, readOnly } = props;
 
     function validateInput(val) {
         const preventSeparatorAtStart = new RegExp(`^[${decimalSeparator}]`, 'g');
@@ -62,7 +64,15 @@ const TezosNumericInput = (props: Props) => {
     }
     return (
         <NumericInput>
-            <TextField label={label} value={amount} onChange={newVal => validateInput(newVal)} type="text" errorText={errorText} />
+            <TextField
+                label={label}
+                value={amount}
+                disabled={disabled}
+                onChange={(newVal) => validateInput(newVal)}
+                type="text"
+                errorText={errorText}
+                readOnly={readOnly}
+            />
             {!symbol ? <TezosIconInput color="secondary" iconName="tezos" /> : <SymbolTxt>{symbol}</SymbolTxt>}
         </NumericInput>
     );
