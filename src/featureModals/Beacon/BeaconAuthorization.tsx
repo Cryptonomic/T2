@@ -626,6 +626,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                                 label={t('components.fees.custom_fee')}
                                                 amount={customFee}
                                                 onChange={setCustomFee}
+                                                errorText={tezToUtez(customFee) - estimatedMinimumFee < 0 ? 'below estimated value' : ''}
                                             />
                                         </div>
                                         <div style={{ width: '30%', float: 'left', marginRight: '0.5em' }}>
@@ -634,6 +635,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                                 label={t('components.interactModal.storage_limit')}
                                                 onChange={setCustomStorageLimit}
                                                 value={customStorageLimit}
+                                                errorText={parseInt(customStorageLimit, 10) - estimates.estimatedStorage < 0 ? 'below estimated value' : ''}
                                             />
                                         </div>
                                         <div style={{ width: '30%', float: 'left' }}>
@@ -642,6 +644,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                                 label={t('components.interactModal.gas_limit')}
                                                 onChange={setCustomGasLimit}
                                                 value={customGasLimit}
+                                                errorText={parseInt(customGasLimit, 10) - estimates.estimatedGas < 0 ? 'below estimated value' : ''}
                                             />
                                         </div>
                                     </div>
