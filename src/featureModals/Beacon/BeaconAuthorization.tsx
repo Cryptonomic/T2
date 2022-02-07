@@ -120,7 +120,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 setLedgerModalOpen(true);
             }
 
-            const utezFee = tezToUtez(parseFloat(fee));
+            const utezFee = tezToUtez(fee);
 
             if (isContract || isDelegation || isOrigination) {
                 // TODO: errors from here don't always bubble up
@@ -603,7 +603,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                         <div style={{ width: '75%', float: 'left' }}>
                                             <TezosNumericInput
                                                 decimalSeparator={t('general.decimal_separator')}
-                                                label={'Operation Fee'}
+                                                label={'Estimated Fee'}
                                                 amount={fee}
                                                 onChange={setFee}
                                                 errorText={feeError}
