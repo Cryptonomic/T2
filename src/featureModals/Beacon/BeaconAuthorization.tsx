@@ -607,6 +607,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                                 amount={fee}
                                                 onChange={setFee}
                                                 errorText={feeError}
+                                                disabled={useCustomFee}
+                                                readOnly={true}
                                             />
                                         </div>
                                         <div style={{ width: '25%', position: 'relative', top: '17px', float: 'left' }}>
