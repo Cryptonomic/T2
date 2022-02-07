@@ -88,6 +88,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const operationParameters = parameters || { value: { prim: 'Unit' }, entrypoint: 'default' };
 
     const estimatedMinimumFee = estimateOperationGroupFee(selectedParentHash, operationDetails).estimatedFee;
+    const estimates = estimateOperationGroupFee(selectedParentHash, operationDetails);
 
     const onCancel = async () => {
         try {
@@ -153,6 +154,18 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             setFee(formatAmount(estimatedMinimumFee));
         }
     }, [estimatedMinimumFee]);
+
+    useEffect(() => {
+        if (typeof estimates.estimatedFee === 'number') {
+            setCustomFee(formatAmount(estimates.estimatedFee));
+        }
+        if (typeof estimates.estimatedStorage === 'number') {
+            setCustomStorageLimit(estimates.estimatedStorage);
+        }
+        if (typeof estimates.estimatedGas === 'number') {
+            setCustomGasLimit(estimates.estimatedGas);
+        }
+    }, [estimates]);
 
     useEffect(() => {
         if (!operationHash || !beaconLoading) {
