@@ -615,7 +615,9 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                             <IconButton size="small" color="primary" onClick={() => setCustomFeeFlag(!useCustomFee)}>
                                                 {!useCustomFee && <AddIcon />}
                                                 {useCustomFee && <RemoveIcon />}
-                                                <LabelText>{t('components.fees.set_custom_fee')}</LabelText>
+                                                <LabelText>
+                                                    {useCustomFee ? t('components.fees.use_estimated_fee') : t('components.fees.set_custom_fee')}
+                                                </LabelText>
                                             </IconButton>
                                         </div>
                                     </div>
