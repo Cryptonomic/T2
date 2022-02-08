@@ -125,7 +125,11 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             if (isContract || isDelegation || isOrigination) {
                 // TODO: errors from here don't always bubble up
 
-                const operationResult = !useCustomFee ? await dispatch(sendOperations(password, operationDetails, utezFee, estimates.estimatedGas, estimates.estimatedStorage)) : await dispatch(sendOperations(password, operationDetails, tezToUtez(customFee), parseInt(customGasLimit, 10), parseInt(customStorageLimit, 10)));
+                const operationResult = !useCustomFee
+                    ? await dispatch(sendOperations(password, operationDetails, utezFee, estimates.estimatedGas, estimates.estimatedStorage))
+                    : await dispatch(
+                          sendOperations(password, operationDetails, tezToUtez(customFee), parseInt(customGasLimit, 10), parseInt(customStorageLimit, 10))
+                      );
 
                 if (!!operationResult) {
                     setLedgerModalOpen(false);
@@ -147,17 +151,12 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     };
 
     useEffect(() => {
-        if (!estimatedMinimumFee) {
+        if (!estimates.estimatedFee) {
             setFee('0');
-        } else if (typeof estimatedMinimumFee === 'string') {
-            setFeeError(estimatedMinimumFee);
+        } else if (typeof estimates.estimatedFee === 'string') {
+            setFeeError(estimates.estimatedFee);
         } else {
-            setFee(formatAmount(estimatedMinimumFee));
-        }
-    }, [estimatedMinimumFee]);
-
-    useEffect(() => {
-        if (typeof estimates.estimatedFee === 'number') {
+            setFee(formatAmount(estimates.estimatedFee));
             setCustomFee(formatAmount(estimates.estimatedFee));
         }
         if (typeof estimates.estimatedStorage === 'number') {
@@ -197,7 +196,14 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const idTransaction = (transaction) => {
         const dexterPools = knownMarketMetadata.filter((market) => market.name.startsWith('Dexter')).map((market) => market.address);
         const quipuPools = knownMarketMetadata.filter((market) => market.name.startsWith('QuipuSwap')).map((market) => market.address);
-        const tzip7Tokens = ['KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8', 'KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9', 'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH', 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn', 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea'];
+        const tzip7Tokens = [
+            'KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8',
+            'KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9',
+            'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH',
+            'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
+            'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
+            'KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea',
+        ];
 
         let selectedToken = knownTokenContracts.find((token) => token.address === transaction.destination);
 
@@ -212,12 +218,15 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (dexterPools.includes(transaction.destination)) {
             if (transaction.parameters.entrypoint === 'xtzToToken') {
                 const holder = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
-                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(selectedTokenScale)
+                    .toFixed();
                 const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
 
                 return (
                     <>
-                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> {selectedTokenSymbol} at <strong>{holder}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                        &nbsp;to receive <strong>{tokenAmount.toString()}</strong> {selectedTokenSymbol} at <strong>{holder}</strong>, expiring on{' '}
+                        <strong>{expiration.toString()}</strong>
                     </>
                 );
             }
@@ -225,7 +234,9 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             if (transaction.parameters.entrypoint === 'addLiquidity') {
                 const holder = JSONPath({ path: '$.args[0].args[0].string', json: transaction.parameters.value })[0];
                 // TODO: $.args[0].args[1].int liquidity token balance
-                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(selectedTokenScale)
+                    .toFixed();
                 const expiration = new Date(JSONPath({ path: '$.args[1].args[1].string', json: transaction.parameters.value })[0]);
 
                 return (
@@ -241,10 +252,14 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 // const targetName = knownContractNames[targetToken] || targetToken;
                 const targetSymbol = knownMarketMetadata.filter((o) => o.address === targetToken)[0].symbol || 'tokens';
                 const targetScale = knownMarketMetadata.filter((o) => o.address === targetToken)[0].scale || 0;
-                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0]).dividedBy(10 ** targetScale).toFixed();
+                const targetAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(10 ** targetScale)
+                    .toFixed();
                 const targetHolder = JSONPath({ path: '$.args[0].args[1].args[1].string', json: transaction.parameters.value })[0];
                 const sourceHolder = JSONPath({ path: '$.args[1].args[0].string', json: transaction.parameters.value })[0];
-                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
+                const sourceAmount = new BigNumber(JSONPath({ path: '$.args[1].args[1].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(selectedTokenScale)
+                    .toFixed();
                 const expiration = new Date(JSONPath({ path: '$.args[1].args[1].args[1].string', json: transaction.parameters.value })[0]);
 
                 let holderText = '';
@@ -256,7 +271,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                 return (
                     <>
-                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> {selectedTokenSymbol} for <strong>{targetAmount.toString()}</strong> {targetSymbol} <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
+                        &nbsp;to exchange <strong>{sourceAmount.toString()}</strong> {selectedTokenSymbol} for <strong>{targetAmount.toString()}</strong>{' '}
+                        {targetSymbol} <strong>{holderText}</strong>, expiring on <strong>{expiration.toString()}</strong>
                     </>
                 );
             }
@@ -268,7 +284,9 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (tzip7Tokens.includes(transaction.destination)) {
             if (transaction.parameters.entrypoint === 'approve') {
                 let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
-                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0])
+                    .dividedBy(selectedTokenScale)
+                    .toFixed();
 
                 approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
 
@@ -306,7 +324,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             <strong>
                                 {tokenAmount}/{swapInfo.stock}
                             </strong>{' '}
-                            OBJKT #{swapInfo.nftId} from the creator – {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #{swapInfo.nftId} is "{swapInfo.nftName}", described as "{swapInfo.nftDescription}".
+                            OBJKT #{swapInfo.nftId} from the creator – {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #
+                            {swapInfo.nftId} is "{swapInfo.nftName}", described as "{swapInfo.nftDescription}".
                         </>
                     );
                 } else {
@@ -316,7 +335,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             <strong>
                                 {tokenAmount}/{swapInfo.stock}
                             </strong>{' '}
-                            OBJKT #{swapInfo.nftId} from {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #{swapInfo.nftId} is "{swapInfo.nftName}", described as "{swapInfo.nftDescription}", created by {swapInfo.nftCreators}.
+                            OBJKT #{swapInfo.nftId} from {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #{swapInfo.nftId} is "
+                            {swapInfo.nftName}", described as "{swapInfo.nftDescription}", created by {swapInfo.nftCreators}.
                         </>
                     );
                 }
@@ -373,7 +393,9 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (quipuPools.includes(transaction.destination)) {
             if (transaction.parameters.entrypoint === 'use') {
                 const holder = JSONPath({ path: '$.args[0].args[0].args[0].args[1].string', json: transaction.parameters.value })[0];
-                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0]).dividedBy(selectedTokenScale).toFixed();
+                const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[0].args[0].args[0].int', json: transaction.parameters.value })[0])
+                    .dividedBy(selectedTokenScale)
+                    .toFixed();
 
                 return (
                     <>
@@ -420,7 +442,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                 return (
                     <>
-                        &nbsp;to register <strong>{domainName}.tez</strong> as {owner} for <strong>{formattedAmount} XTZ</strong> for a period of <strong>{durationDays} days</strong>{' '}
+                        &nbsp;to register <strong>{domainName}.tez</strong> as {owner} for <strong>{formattedAmount} XTZ</strong> for a period of{' '}
+                        <strong>{durationDays} days</strong>{' '}
                         {redirect && redirect.length > 0 && (
                             <>
                                 {' '}
@@ -497,7 +520,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                     return (
                         <>
-                            &nbsp;to mint <strong>{editions}</strong> NFT{editions > 1 ? 's' : ''} with royalties of <strong>{royalties}%</strong> titled <strong>{itemTitle}</strong>.
+                            &nbsp;to mint <strong>{editions}</strong> NFT{editions > 1 ? 's' : ''} with royalties of <strong>{royalties}%</strong> titled{' '}
+                            <strong>{itemTitle}</strong>.
                         </>
                     );
                 }
@@ -536,7 +560,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             )}
                             {isContract && (
                                 <p style={{ maxHeight: 200, overflow: 'scroll' }}>
-                                    <strong>{appMetadata.name}</strong> is requesting a contract call to the <strong>{operationParameters.entrypoint}</strong> function of <strong>{contractName}</strong>
+                                    <strong>{appMetadata.name}</strong> is requesting a contract call to the <strong>{operationParameters.entrypoint}</strong>{' '}
+                                    function of <strong>{contractName}</strong>
                                     {new BigNumber(operationDetails[0].amount).toNumber() !== 0 && (
                                         <span>
                                             {' '}
@@ -561,7 +586,11 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             <div>
                                 <OperationDetailHeader onClick={() => setShowOperationDetails(!showOperationDetails)}>
                                     <span>Raw Operation Content</span>
-                                    {showOperationDetails ? <ExpandLess style={{ verticalAlign: 'bottom' }} /> : <ExpandMore style={{ verticalAlign: 'bottom' }} />}
+                                    {showOperationDetails ? (
+                                        <ExpandLess style={{ verticalAlign: 'bottom' }} />
+                                    ) : (
+                                        <ExpandMore style={{ verticalAlign: 'bottom' }} />
+                                    )}
                                 </OperationDetailHeader>
                                 <Collapse easing={'none'} enter={false} exit={false} in={showOperationDetails} timeout="auto" unmountOnExit={true}>
                                     <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
@@ -572,25 +601,53 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                 <div>
                                     <div className="feeContainer" style={{ display: 'block', position: 'relative', top: '20px', width: '100%' }}>
                                         <div style={{ width: '75%', float: 'left' }}>
-                                            <TezosNumericInput decimalSeparator={t('general.decimal_separator')} label={'Estimated Fee'} amount={fee} onChange={setFee} errorText={feeError} disabled={useCustomFee} readOnly={true} />
+                                            <TezosNumericInput
+                                                decimalSeparator={t('general.decimal_separator')}
+                                                label={'Estimated Fee'}
+                                                amount={fee}
+                                                onChange={setFee}
+                                                errorText={feeError}
+                                                disabled={useCustomFee}
+                                                readOnly={true}
+                                            />
                                         </div>
                                         <div style={{ width: '25%', position: 'relative', top: '17px', float: 'left' }}>
                                             <IconButton size="small" color="primary" onClick={() => setCustomFeeFlag(!useCustomFee)}>
                                                 {!useCustomFee && <AddIcon />}
                                                 {useCustomFee && <RemoveIcon />}
-                                                <LabelText>{useCustomFee ? t('components.fees.use_estimated_fee') : t('components.fees.set_custom_fee')}</LabelText>
+                                                <LabelText>
+                                                    {useCustomFee ? t('components.fees.use_estimated_fee') : t('components.fees.set_custom_fee')}
+                                                </LabelText>
                                             </IconButton>
                                         </div>
                                     </div>
                                     <div style={{ display: useCustomFee ? 'block' : 'none' }}>
                                         <div style={{ width: '30%', float: 'left', marginRight: '0.5em' }}>
-                                            <TezosNumericInput decimalSeparator={t('general.decimal_separator')} label={t('components.fees.custom_fee')} amount={customFee} onChange={setCustomFee} errorText={tezToUtez(customFee) - estimatedMinimumFee < 0 ? 'below estimated value' : ''} />
+                                            <TezosNumericInput
+                                                decimalSeparator={t('general.decimal_separator')}
+                                                label={t('components.fees.custom_fee')}
+                                                amount={customFee}
+                                                onChange={setCustomFee}
+                                                errorText={tezToUtez(customFee) - estimatedMinimumFee < 0 ? 'below estimated value' : ''}
+                                            />
                                         </div>
                                         <div style={{ width: '30%', float: 'left', marginRight: '0.5em' }}>
-                                            <TextField type="number" label={t('components.interactModal.storage_limit')} onChange={setCustomStorageLimit} value={customStorageLimit} errorText={parseInt(customStorageLimit, 10) - estimates.estimatedStorage < 0 ? 'below estimated value' : ''} />
+                                            <TextField
+                                                type="number"
+                                                label={t('components.interactModal.storage_limit')}
+                                                onChange={setCustomStorageLimit}
+                                                value={customStorageLimit}
+                                                errorText={parseInt(customStorageLimit, 10) - estimates.estimatedStorage < 0 ? 'below estimated value' : ''}
+                                            />
                                         </div>
                                         <div style={{ width: '30%', float: 'left' }}>
-                                            <TextField type="number" label={t('components.interactModal.gas_limit')} onChange={setCustomGasLimit} value={customGasLimit} errorText={parseInt(customGasLimit, 10) - estimates.estimatedGas < 0 ? 'below estimated value' : ''} />
+                                            <TextField
+                                                type="number"
+                                                label={t('components.interactModal.gas_limit')}
+                                                onChange={setCustomGasLimit}
+                                                value={customGasLimit}
+                                                errorText={parseInt(customGasLimit, 10) - estimates.estimatedGas < 0 ? 'below estimated value' : ''}
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -599,7 +656,9 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {feeError !== '' && (
                                 <div className="feeContainer">
                                     <p className="inputLabel">Validation Error</p>
-                                    <p className="subtitleText">Could not estimate fee due to operation validation failure. Please contact the dApp developer for resolution.</p>
+                                    <p className="subtitleText">
+                                        Could not estimate fee due to operation validation failure. Please contact the dApp developer for resolution.
+                                    </p>
                                     <p className="inputLabel">Error Details</p>
                                     <p className="subtitleText" style={{ height: '40px', overflow: 'scroll' }}>
                                         {feeError.split(',').map((p, i) => (
@@ -619,7 +678,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                             {feeError === '' && (
                                 <p className="subtitleText" style={{ float: 'left', width: '100%' }}>
-                                    Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact with.
+                                    Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact
+                                    with.
                                 </p>
                             )}
                         </div>
