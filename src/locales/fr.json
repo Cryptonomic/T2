@@ -277,6 +277,7 @@
             "high_fee": "Commission Elevée",
             "custom_fee": "Commission Customisée",
             "custom": "Customiser",
+            "use_estimated_fee": "Use Estimated Fee",
             "set_custom_fee": "Paramétrer une Commission Customisée",
             "enter_custom_amount": "Entrer votre montant customisé",
             "required_minium_fee": "Merci de garder à l`esprit que la commission minimale requise pour cette transaction est de<1> <0>{{fee}}</0> XTZ</1>.",

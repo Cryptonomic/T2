@@ -277,6 +277,7 @@
             "high_fee": "Taxa Alta",
             "custom_fee": "Taxa Customizada",
             "custom": "Customizar",
+            "use_estimated_fee": "Use Estimated Fee",
             "set_custom_fee": "Especifique o valor de taxa",
             "enter_custom_amount": "Digite o valor desejado",
             "required_minium_fee": "Por favor, tenha em mente que a taxa mínima exigida para essa transação é de<1> <0>{{fee}}</0> XTZ</1>.",

@@ -277,6 +277,7 @@
             "high_fee": "高手数料",
             "custom_fee": "カスタム手数料",
             "custom": "カスタム",
+            "use_estimated_fee": "Use Estimated Fee",
             "set_custom_fee": "カスタム手数料を設定",
             "enter_custom_amount": "カスタム金額を入力",
             "required_minium_fee": "この取引に必要な最低費用<1> <0>{{fee}}</0> XTZ</1>を覚えておいてください。",

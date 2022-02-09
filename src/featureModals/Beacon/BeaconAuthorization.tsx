@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation, Trans } from 'react-i18next';
+import styled from 'styled-components';
 import { BeaconMessageType, OperationResponseInput, BeaconErrorType, BeaconResponseInputMessage } from '@airgap/beacon-sdk';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
 import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import AddCircle from '@mui/icons-material/AddCircle';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
-import { beaconClient } from './BeaconMessageRouter';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
+import { ms } from '../../styles/helpers';
 import Loader from '../../components/Loader';
+import TextField from '../../components/TextField';
 import TezosNumericInput from '../../components/TezosNumericInput';
 import PasswordInput from '../../components/PasswordInput';
 
@@ -28,6 +34,25 @@ import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton,
 
 import { estimateOperationGroupFee, sendOperations, queryHicEtNuncSwap } from './thunks';
 import { WrapPassword, OperationDetailHeader } from './style';
+import { beaconClient } from './BeaconMessageRouter';
+
+const AddCircleWrapper = styled(AddCircle)<{ active: number }>`
+    &&& {
+        fill: #7b91c0;
+        width: ${ms(1)};
+        height: ${ms(1)};
+        opacity: ${({ active }) => (active ? 1 : 0.5)};
+        cursor: ${({ active }) => (active ? 'pointer' : 'default')};
+    }
+`;
+
+export const LabelText = styled.span`
+    display: block;
+    margin-bottom: 0px;
+    font-size: 12px;
+    color: ${({ theme: { colors } }) => colors.gray5};
+    font-weight: 400;
+`;
 
 interface Props {
     open: boolean;
@@ -50,6 +75,11 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const [feeError, setFeeError] = useState('');
     const [showOperationDetails, setShowOperationDetails] = useState(false);
 
+    const [useCustomFee, setCustomFeeFlag] = useState(false);
+    const [customFee, setCustomFee] = useState('0');
+    const [customGasLimit, setCustomGasLimit] = useState('0');
+    const [customStorageLimit, setCustomStorageLimit] = useState('0');
+
     const { id, operationDetails, website, network, appMetadata } = modalValues[activeModal];
     const isContract = String(operationDetails[0].destination).startsWith('KT1'); // TODO: // recognize contract call and simple transaction
     const isDelegation = operationDetails[0].kind === 'delegation';
@@ -57,7 +87,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     const { destination, amount, parameters } = operationDetails[0];
     const operationParameters = parameters || { value: { prim: 'Unit' }, entrypoint: 'default' };
 
-    const estimatedMinimumFee = estimateOperationGroupFee(selectedParentHash, operationDetails);
+    const estimates = estimateOperationGroupFee(selectedParentHash, operationDetails);
+    const estimatedMinimumFee = estimates.estimatedFee;
 
     const onCancel = async () => {
         try {
@@ -89,11 +120,16 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 setLedgerModalOpen(true);
             }
 
-            const utezFee = tezToUtez(parseFloat(fee));
+            const utezFee = tezToUtez(fee);
 
             if (isContract || isDelegation || isOrigination) {
                 // TODO: errors from here don't always bubble up
-                const operationResult = await dispatch(sendOperations(password, operationDetails, utezFee));
+
+                const operationResult = !useCustomFee
+                    ? await dispatch(sendOperations(password, operationDetails, utezFee, estimates.estimatedGas, estimates.estimatedStorage))
+                    : await dispatch(
+                          sendOperations(password, operationDetails, tezToUtez(customFee), parseInt(customGasLimit, 10), parseInt(customStorageLimit, 10))
+                      );
 
                 if (!!operationResult) {
                     setLedgerModalOpen(false);
@@ -115,14 +151,21 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     };
 
     useEffect(() => {
-        if (!estimatedMinimumFee) {
+        if (!estimates.estimatedFee) {
             setFee('0');
-        } else if (typeof estimatedMinimumFee === 'string') {
-            setFeeError(estimatedMinimumFee);
+        } else if (typeof estimates.estimatedFee === 'string') {
+            setFeeError(estimates.estimatedFee);
         } else {
-            setFee(formatAmount(estimatedMinimumFee));
+            setFee(formatAmount(estimates.estimatedFee));
+            setCustomFee(formatAmount(estimates.estimatedFee));
         }
-    }, [estimatedMinimumFee]);
+        if (typeof estimates.estimatedStorage === 'number') {
+            setCustomStorageLimit(estimates.estimatedStorage);
+        }
+        if (typeof estimates.estimatedGas === 'number') {
+            setCustomGasLimit(estimates.estimatedGas);
+        }
+    }, [estimates]);
 
     useEffect(() => {
         if (!operationHash || !beaconLoading) {
@@ -555,14 +598,58 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             </div>
 
                             {feeError === '' && (
-                                <div className="feeContainer" style={{ display: 'block', position: 'relative', top: '20px' }}>
-                                    <TezosNumericInput
-                                        decimalSeparator={t('general.decimal_separator')}
-                                        label={'Operation Fee'}
-                                        amount={fee}
-                                        onChange={setFee}
-                                        errorText={feeError}
-                                    />
+                                <div>
+                                    <div className="feeContainer" style={{ display: 'block', position: 'relative', top: '20px', width: '100%' }}>
+                                        <div style={{ width: '75%', float: 'left' }}>
+                                            <TezosNumericInput
+                                                decimalSeparator={t('general.decimal_separator')}
+                                                label={'Estimated Fee'}
+                                                amount={fee}
+                                                onChange={setFee}
+                                                errorText={feeError}
+                                                disabled={useCustomFee}
+                                                readOnly={true}
+                                            />
+                                        </div>
+                                        <div style={{ width: '25%', position: 'relative', top: '17px', float: 'left' }}>
+                                            <IconButton size="small" color="primary" onClick={() => setCustomFeeFlag(!useCustomFee)}>
+                                                {!useCustomFee && <AddIcon />}
+                                                {useCustomFee && <RemoveIcon />}
+                                                <LabelText>
+                                                    {useCustomFee ? t('components.fees.use_estimated_fee') : t('components.fees.set_custom_fee')}
+                                                </LabelText>
+                                            </IconButton>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: useCustomFee ? 'block' : 'none' }}>
+                                        <div style={{ width: '30%', float: 'left', marginRight: '0.5em' }}>
+                                            <TezosNumericInput
+                                                decimalSeparator={t('general.decimal_separator')}
+                                                label={t('components.fees.custom_fee')}
+                                                amount={customFee}
+                                                onChange={setCustomFee}
+                                                errorText={tezToUtez(customFee) - estimatedMinimumFee < 0 ? 'below estimated value' : ''}
+                                            />
+                                        </div>
+                                        <div style={{ width: '30%', float: 'left', marginRight: '0.5em' }}>
+                                            <TextField
+                                                type="number"
+                                                label={t('components.interactModal.storage_limit')}
+                                                onChange={setCustomStorageLimit}
+                                                value={customStorageLimit}
+                                                errorText={parseInt(customStorageLimit, 10) - estimates.estimatedStorage < 0 ? 'below estimated value' : ''}
+                                            />
+                                        </div>
+                                        <div style={{ width: '30%', float: 'left' }}>
+                                            <TextField
+                                                type="number"
+                                                label={t('components.interactModal.gas_limit')}
+                                                onChange={setCustomGasLimit}
+                                                value={customGasLimit}
+                                                errorText={parseInt(customGasLimit, 10) - estimates.estimatedGas < 0 ? 'below estimated value' : ''}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 
@@ -582,13 +669,15 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             )}
 
                             {feeError === '' && !isLedger && (
-                                <WrapPassword>
-                                    <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
-                                </WrapPassword>
+                                <div style={{ float: 'left', width: '100%' }}>
+                                    <WrapPassword>
+                                        <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(pwd) => setPassword(pwd)} />
+                                    </WrapPassword>
+                                </div>
                             )}
 
                             {feeError === '' && (
-                                <p className="subtitleText">
+                                <p className="subtitleText" style={{ float: 'left', width: '100%' }}>
                                     Authorizing will allow this site to carry out this operation for you. Always make sure you trust the sites you interact
                                     with.
                                 </p>

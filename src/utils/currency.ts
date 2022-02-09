@@ -9,7 +9,8 @@ export function utezToTez(amount: number): number {
 }
 
 export function tezToUtez(amount: number | string): number {
-    const b = new BigNumber(amount);
+    const a = typeof amount === 'string' ? parseFloat(amount) : amount;
+    const b = new BigNumber(a);
     const m = b.multipliedBy(utez);
 
     return m.toNumber();
