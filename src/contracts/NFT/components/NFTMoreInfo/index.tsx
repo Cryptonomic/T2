@@ -10,24 +10,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
-import {
-    Attribute,
-    AttributesList,
-    AttributeLabel,
-    AttributeValue,
-    Capitalize,
-    Container,
-    Col,
-    Creator,
-    CustomDivider,
-    Description,
-    Header,
-    MenuButton,
-    Title,
-    StyledListItemIcon,
-    StyledMenuItem,
-    StyledTezosIcon,
-} from './style';
+import { Attribute, AttributesList, AttributeLabel, AttributeValue, Capitalize, Container, Col, Creator, CustomDivider, Description, Header, MenuButton, Title, StyledListItemIcon, StyledMenuItem, StyledTezosIcon } from './style';
 
 import { NFT_PROVIDERS } from '../../constants';
 
@@ -72,7 +55,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
         } else if (nftObject?.provider === NFT_PROVIDERS.FXHASH) {
             openArtifactLink(`https://www.fxhash.xyz/gentk/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.RARIBLE) {
-            openArtifactLink(`https://rarible.com/token/tezos/KT18pVpRXKPY2c4U2yFEGSH3ZnhB2kL8kwXS:${nftObject.objectId}?tab=details`);
+            openArtifactLink(`https://rarible.com/token/tezos/${nftObject.tokenAddress}:${nftObject.objectId}?tab=details`);
         } else if (nftObject?.provider === NFT_PROVIDERS.VERSUM) {
             openArtifactLink(`https://versum.xyz/token/versum/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.OBJKT_GENERIC) {

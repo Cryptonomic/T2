@@ -1,6 +1,6 @@
 {
   "name": "tezori",
-  "version": "1.2.5-beta",
+  "version": "1.2.8-beta",
   "description": "An open-source wallet framework for the Tezos blockchain.",
   "main": "./src/main.prod.js",
   "scripts": {
@@ -103,7 +103,7 @@
       "hardenedRuntime": true,
       "entitlements": "./resources/entitlements.mac.plist",
       "entitlementsInherit": "./resources/entitlements.mac.plist",
-      "bundleVersion": "51",
+      "bundleVersion": "54",
       "target": [
         "mas",
         "dmg"
@@ -239,8 +239,8 @@
     "nft-image-proxy": "1.0.2",
     "polished": "3.6.5",
     "qrcode": "1.4.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "react-i18next": "11.7.0",
     "react-masonry-component": "^6.3.0",
     "react-number-format": "4.4.1",
@@ -259,7 +259,7 @@
     "zxcvbn": "4.4.2"
   },
   "engines": {
-    "node": "12.20.1",
-    "npm": "6.14.10"
+    "node": "12.22.8",
+    "npm": "6.14.15"
   }
 }
