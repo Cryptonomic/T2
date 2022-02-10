@@ -101,7 +101,7 @@ export function sendOperations(password: string, operations: any[], fee: number 
         const formedOperations = await createOperationGroup(operations, tezosUrl, selectedParentHash, keyStore.publicKey);
         const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
 
-        formedOperations[0].fee = fee === 0 ? estimate.estimatedFee.toString() : fee.toString;
+        formedOperations[0].fee = fee === 0 ? estimate.estimatedFee.toString() : fee.toString();
 
         if (fee === 0) {
             for (let i = 0; i < formedOperations.length; i++) {
