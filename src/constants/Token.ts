@@ -42,6 +42,7 @@ import fdaoIcon from '../../resources/contracts/fdao-icon.png';
 import tezdaoIcon from '../../resources/contracts/tezdao-icon.png';
 import ursaIcon from '../../resources/contracts/ursa-icon.png';
 import materiaIcon from '../../resources/contracts/materia-icon.png';
+import objktCreditIcon from '../../resources/contracts/objkt-credit-icon.svg';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -584,6 +585,44 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1VJavBXqdKePeKntrH72BMW87WLXFBnGKt',
+        displayName: 'OXTAZY',
+        symbol: 'OXTAZY',
+        balance: 0,
+        transactions: [],
+        activeTab: COLLECTION,
+        kind: TokenKind.objkt,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        mapid: 95378,
+        nftMetadataMap: 95381,
+        holderLocation: 'key',
+        provider: NFT_PROVIDERS.OBJKT_GENERIC,
+        helpLink: 'https://oxtazy.xyz',
+        displayHelpLink: 'oxtazy.xyz',
+        hideOnLanding: true,
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1VyjT73xJCkiNtoxrvZ9a5dHqZ33NVcce4',
+        displayName: 'Sample Collection',
+        symbol: 'SC',
+        balance: 0,
+        transactions: [],
+        activeTab: COLLECTION,
+        kind: TokenKind.objkt,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        mapid: 100592,
+        nftMetadataMap: 100595,
+        holderLocation: 'key',
+        provider: NFT_PROVIDERS.OBJKT_GENERIC,
+        hideOnLanding: true,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1VYsVfmobT7rsMVivvZ4J8i3bPiqz12NaH',
         displayName: 'Wrapped Tezos',
         symbol: 'wXTZ',
@@ -617,6 +656,24 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 76310,
     },
+    /*{
+        network: 'mainnet',
+        address: 'KT1TjnZYs5CGLbmV6yuW169P8Pnr9BiVwwjz',
+        displayName: 'objkt.com credit',
+        symbol: 'OC',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: objktCreditIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 103270,
+        balancePath: '$.args[1].int',
+        helpLink: 'https://objkt.com/',
+        displayHelpLink: 'objkt.com',
+    },*/
     {
         network: 'mainnet',
         address: 'KT1XpYoPCxQnpgxLM22dkLDXBmTsDLc1S8nZ',
@@ -632,8 +689,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         round: 2,
         mapid: 25974,
         balancePath: '$.args[1].int',
-        helpLink: 'https://www.tezos.finance/',
-        displayHelpLink: 'www.tezos.finance/',
+        helpLink: 'https://www.tezos.finance',
+        displayHelpLink: 'tezos.finance',
     },
     {
         network: 'mainnet',
