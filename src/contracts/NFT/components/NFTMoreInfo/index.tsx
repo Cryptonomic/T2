@@ -60,6 +60,8 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
             openArtifactLink(`https://versum.xyz/token/versum/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.OBJKT_GENERIC) {
             openArtifactLink(`https://objkt.com/asset/${nftObject.tokenAddress}/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.DOGAMI) {
+            openArtifactLink(`https://marketplace.dogami.com/dog/${nftObject.objectId}`);
         }
     };
 
