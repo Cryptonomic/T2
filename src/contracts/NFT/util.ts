@@ -9,7 +9,7 @@ import { NFTObject, NFTCollections, NFTError, GetNFTCollection, GetNFTCollection
 
 import { imageProxyURL, imageAPIKey } from '../../config.json';
 
-import { ArtToken, Node, Token } from '../../types/general';
+import { ArtToken, Node } from '../../types/general';
 
 const proxySupportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
 
@@ -571,6 +571,35 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     };
 }
 
+export async function getDogamiDetails(tezosUrl: string, objectId: number | string, metadataMap: number) {
+    const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
+    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
+
+    const artifactUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
+    const creatorBytes = JSONPath({ path: '$.args[1][2].args[1].bytes', json: nftInfo })[0];
+    const descriptionBytes = JSONPath({ path: '$.args[1][4].args[1].bytes', json: nftInfo })[0];
+    const formatBytes = JSONPath({ path: '$.args[1][6].args[1].bytes', json: nftInfo })[0];
+    const nameBytes = JSONPath({ path: '$.args[1][8].args[1].bytes', json: nftInfo })[0];
+    const thumbnailUriBytes = JSONPath({ path: '$.args[1][11].args[1].bytes', json: nftInfo })[0];
+
+    const nftArtifactUri = makeUrl(Buffer.from(artifactUrlBytes, 'hex').toString(), 'video/mp4');
+    const nftCreators = JSON.parse(Buffer.from(creatorBytes, 'hex').toString())[0];
+    const nftDescription = Buffer.from(descriptionBytes, 'hex').toString();
+    const nftArtifactType = JSON.parse(Buffer.from(formatBytes, 'hex').toString())[0].mimeType;
+    const nftName = Buffer.from(nameBytes, 'hex').toString();
+    const nftThumbnailUri = makeUrl(Buffer.from(thumbnailUriBytes, 'hex').toString(), 'image/png');
+
+    return {
+        name: nftName,
+        description: nftDescription,
+        creators: nftCreators,
+        artifactUrl: nftArtifactUri,
+        artifactType: nftArtifactType,
+        artifactModerationMessage: undefined,
+        thumbnailUri: nftThumbnailUri,
+    };
+}
+
 function makeUrl(source: string, type: string = '') {
     if (source.startsWith('http')) {
         return source;
@@ -806,7 +835,13 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
 
             if (!skipDetails) {
                 try {
-                    objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, metadataMapId, urlPath);
+                    if (metadataMapId === 115420) {
+                        // HACK: dogami
+                        objectDetails = await getDogamiDetails(node.tezosUrl, objectId, metadataMapId);
+                    } else {
+                        objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, metadataMapId, urlPath);
+                    }
+
                     nftObject = {
                         ...nftObject,
                         name: objectDetails.name,
