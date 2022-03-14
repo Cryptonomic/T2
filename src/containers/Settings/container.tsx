@@ -126,22 +126,13 @@ const SettingsContainer = () => {
                 <ContentTitle>{t('containers.homeSettings.choose_different_node')}</ContentTitle>
                 <RowForParts>
                     <Part>
-                        <CustomSelect
-                            label="Nodes"
-                            value={selectedNode}
-                            onChange={onChangeCustomSelectNodes}
-                            renderValue={(value) => <CustomSelectItem value={value} />}
-                        >
+                        <CustomSelect label="Nodes" value={selectedNode} onChange={onChangeCustomSelectNodes} renderValue={(value) => <CustomSelectItem value={value} />}>
                             {nodesList.map(({ displayName, network }, index: number) => {
                                 const foundIndexed = defaultNodeList.findIndex((node) => node.network === network);
+
                                 return (
                                     <ItemWrapper key={displayName} value={displayName}>
-                                        <SettingsMenuItem
-                                            isRemove={foundIndexed < 0 && index > 0}
-                                            name={displayName}
-                                            selected={selectedNode}
-                                            onClick={onRemoveNode}
-                                        />
+                                        <SettingsMenuItem isRemove={foundIndexed < 0 && index > 0} name={displayName} selected={selectedNode} onClick={onRemoveNode} />
                                     </ItemWrapper>
                                 );
                             })}
@@ -162,12 +153,7 @@ const SettingsContainer = () => {
                 <ContentTitle>{t('containers.homeSettings.choose_derivation_path')}</ContentTitle>
                 <RowForParts>
                     <Part>
-                        <CustomSelect
-                            label="Derivation Path"
-                            value={selectedPath}
-                            onChange={onChangeCustomSelectDerivationPath}
-                            renderValue={(value) => <CustomSelectItem value={value} url={pathName} />}
-                        >
+                        <CustomSelect label="Derivation Path" value={selectedPath} onChange={onChangeCustomSelectDerivationPath} renderValue={(value) => <CustomSelectItem value={value} url={pathName} />}>
                             {pathsList.map(({ label, derivation }, index: number) => (
                                 <ItemWrapper key={label} value={label}>
                                     <SettingsMenuItem isRemove={index > 0} name={label} url={derivation} selected={selectedPath} onClick={onRemovePath} />

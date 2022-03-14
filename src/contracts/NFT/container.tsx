@@ -14,8 +14,6 @@ import { syncNFTThunk, syncNFTAndWalletThunk } from '../../reduxContent/nft/thun
 import { getNFTCollectionsDataSelector } from '../../reduxContent/nft/selectors';
 import { clearGetNFTCollectionsErrorAction, enableNFTSyncAction } from '../../reduxContent/nft/actions';
 
-import { RootState } from '../../types/store';
-
 /**
  * Renders the NFTGallery view allowing to browse and send NFT tokens from integrated sources.
  *
@@ -34,7 +32,6 @@ const NFTGalleryContainer = () => {
     const { storeType, status } = selectedAccount;
     const isAddressReady = isReady(status, storeType);
     const { collections, errors, loading, isNFTSyncing, lastSyncAt } = useSelector(getNFTCollectionsDataSelector);
-    // const tokens = useSelector((rootState: RootState) => rootState.wallet.tokens, shallowEqual); // all tokens
     const tokens = useSelector(getNFTTokensSelector);
 
     /**
