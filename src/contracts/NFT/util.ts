@@ -12,6 +12,7 @@ import { imageProxyURL, imageAPIKey } from '../../config.json';
 import { ArtToken, Node } from '../../types/general';
 
 const proxySupportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
+const GenesisBlockTime = new Date(2018, 5, 30, 12, 7, 32);
 
 /**
  * The last price query.
@@ -161,26 +162,26 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
  * @param {Node} node - the selected node.
  * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
-export async function getNFTCollections(tokens: ArtToken[], managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollections> {
+export async function getNFTCollections(tokens: ArtToken[], managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollections> {
     const promises: Promise<any>[] = [];
     tokens.map((token) => {
         switch (token.displayName.toLowerCase()) {
             case 'hic et nunc':
-                promises.push(getHicEtNuncCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(getHicEtNuncCollection(token.address, token.mapid, managerAddress, node, skipDetails, dateBoundary));
                 break;
             case 'kalamint':
-                promises.push(getKalamintCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(getKalamintCollection(token.address, token.mapid, managerAddress, node, skipDetails, dateBoundary));
                 break;
             case 'pixelpotus':
-                promises.push(getPotusCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(getPotusCollection(token.address, token.mapid, managerAddress, node, skipDetails, dateBoundary));
                 break;
             case 'hash three points':
-                promises.push(getHashThreeCollection(token.address, token.mapid, managerAddress, node, skipDetails));
+                promises.push(getHashThreeCollection(token.address, token.mapid, managerAddress, node, skipDetails, dateBoundary));
                 break;
 
             default:
                 try {
-                    promises.push(getCollection(token.address, token.mapid, token.holderLocation || 'key', token.nftMetadataMap, token.provider || '', managerAddress, node, skipDetails));
+                    promises.push(getCollection(token.address, token.mapid, token.holderLocation || 'key', token.nftMetadataMap, token.provider || '', managerAddress, node, skipDetails, undefined, dateBoundary));
                 } catch (err) {
                     console.log(`could not fetch collection for ${token.address}`);
                 }
@@ -217,7 +218,7 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
  *
  * @return {Promise<GetNFTCollections>} the list of NFT tokens grouped by type and the list of errors.
  */
-export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -228,6 +229,10 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
+
+    if (dateBoundary && dateBoundary.getTime() > GenesisBlockTime.getTime()) {
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'timestamp', ConseilOperator.GT, [dateBoundary.getTime()]);
+    }
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
 
@@ -385,7 +390,7 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
  * @param node
  * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
-export async function getKalamintCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+export async function getKalamintCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -396,6 +401,10 @@ export async function getKalamintCollection(tokenAddress: string, tokenMapId: nu
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
+
+    if (dateBoundary && dateBoundary.getTime() > GenesisBlockTime.getTime()) {
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'timestamp', ConseilOperator.GT, [dateBoundary.getTime()]);
+    }
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
 
@@ -615,7 +624,7 @@ function makeUrl(source: string, type: string = '') {
     }
 }
 
-export async function getPotusCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+export async function getPotusCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -626,6 +635,10 @@ export async function getPotusCollection(tokenAddress: string, tokenMapId: numbe
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
+
+    if (dateBoundary && dateBoundary.getTime() > GenesisBlockTime.getTime()) {
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'timestamp', ConseilOperator.GT, [dateBoundary.getTime()]);
+    }
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
 
@@ -731,7 +744,7 @@ export async function getPotusNFTObjectDetails(tezosUrl: string, objectId: numbe
     };
 }
 
-export async function getCollection(tokenAddress: string, tokenMapId: number, queryArg: 'key' | 'value', metadataMapId: number, provider: string, managerAddress: string, node: Node, skipDetails: boolean = false, urlPath?: string): Promise<GetNFTCollection> {
+export async function getCollection(tokenAddress: string, tokenMapId: number, queryArg: 'key' | 'value', metadataMapId: number, provider: string, managerAddress: string, node: Node, skipDetails: boolean = false, urlPath?: string, dateBoundary?: Date): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -745,6 +758,10 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
         collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [`0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
     } else {
         throw new Error('invalid ledger query');
+    }
+
+    if (dateBoundary && dateBoundary.getTime() > GenesisBlockTime.getTime()) {
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'timestamp', ConseilOperator.GT, [dateBoundary.getTime()]);
     }
 
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
@@ -869,7 +886,7 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
     return { collection, errors };
 }
 
-export async function getHashThreeCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false): Promise<GetNFTCollection> {
+export async function getHashThreeCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -879,6 +896,10 @@ export async function getHashThreeCollection(tokenAddress: string, tokenMapId: n
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
+
+    if (dateBoundary && dateBoundary.getTime() > GenesisBlockTime.getTime()) {
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'timestamp', ConseilOperator.GT, [dateBoundary.getTime()]);
+    }
 
     const collectionResult = await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'big_map_contents', collectionQuery);
 

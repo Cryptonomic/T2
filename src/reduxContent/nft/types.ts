@@ -1,4 +1,3 @@
-import { VaultToken, Token, ArtToken } from '../../types/general';
 import { NFTCollections, NFTError } from '../../contracts/NFT/types';
 
 export const CLEAR_NFT_GET_COLLECTIONS_ERRORS = 'CLEAR_NFT_GET_COLLECTIONS_ERRORS';
@@ -18,6 +17,9 @@ export interface StartNFTSyncAction {
 
 export interface EndNFTSyncAction {
     type: typeof END_NFT_SYNC;
+    payload: {
+        timestamp: Date;
+    };
 }
 
 export interface SetNFTCollectionsAction {
@@ -50,10 +52,4 @@ export interface GetNFTCollectionsDataSelector {
     isNFTSyncing: boolean;
 }
 
-export type NFTActionTypes =
-    | ClearGetNFTCollectionsErrorsAction
-    | EnableNFTSyncAction
-    | StartNFTSyncAction
-    | EndNFTSyncAction
-    | SetNFTCollectionsAction
-    | SetNFTCollectionsAreLoadingAction;
+export type NFTActionTypes = ClearGetNFTCollectionsErrorsAction | EnableNFTSyncAction | StartNFTSyncAction | EndNFTSyncAction | SetNFTCollectionsAction | SetNFTCollectionsAreLoadingAction;
