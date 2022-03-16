@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { TezosMessageUtils } from 'conseiljs';
 import { SoftSigner } from 'conseiljs-softsigner';
 
+import { createMessageAction } from '../../reduxContent/message/actions';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainPath } from '../../utils/settings';
 import CopyButton from '../../components/CopyButton';
@@ -18,6 +19,7 @@ interface Props {
 }
 
 const KeyDetails = (props: Props) => {
+    const dispatch = useDispatch();
     const { t } = useTranslation();
     const { isLedger, selectedParentHash, signer } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const { identities } = useSelector((rootState: RootState) => rootState.wallet, shallowEqual);
@@ -39,11 +41,19 @@ const KeyDetails = (props: Props) => {
     }, []);
 
     const onShowSecretKey = async () => {
-        const rawSecretKey = await (signer as SoftSigner).getKey(password);
-        const stringSecretKey = TezosMessageUtils.readKeyWithHint(rawSecretKey, 'edsk');
+        try {
+            const rawSecretKey = await (signer as SoftSigner).getKey(password);
+            const stringSecretKey = TezosMessageUtils.readKeyWithHint(rawSecretKey, 'edsk');
 
-        setSecretKey(stringSecretKey);
-        setSecretKeyVisible(true)
+            if (!stringSecretKey.startsWith('edsk')) {
+                dispatch(createMessageAction('components.messageBar.messages.invalid_wallet_password', true));
+            } else {
+                setSecretKey(stringSecretKey);
+                setSecretKeyVisible(true);
+            }
+        } catch {
+            dispatch(createMessageAction('components.messageBar.messages.invalid_wallet_password', true));
+        }
     };
 
     return (
@@ -72,12 +82,7 @@ const KeyDetails = (props: Props) => {
                                 <KeyTitle>{t('components.keyDetailsModal.secretKey')}</KeyTitle>
                                 {!secretKeyVisible && (
                                     <ButtonContainer>
-                                        <PasswordInput
-                                            label={t('general.nouns.wallet_password')}
-                                            password={password}
-                                            onChange={(val) => setPassword(val)}
-                                            containerStyle={{ width: '60%', marginTop: '10px' }}
-                                        />
+                                        <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(val) => setPassword(val)} containerStyle={{ width: '60%', marginTop: '10px' }} />
                                         <InvokeButton buttonTheme="primary" disabled={false} onClick={onShowSecretKey}>
                                             {t('general.verbs.show')}
                                         </InvokeButton>

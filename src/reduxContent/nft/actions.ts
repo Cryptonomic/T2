@@ -1,19 +1,6 @@
-import {
-    CLEAR_NFT_GET_COLLECTIONS_ERRORS,
-    ENABLE_NFT_SYNC,
-    START_NFT_SYNC,
-    END_NFT_SYNC,
-    SET_NFT_COLLECTIONS,
-    SET_NFT_COLLECTIONS_ARE_LOADING,
-    StartNFTSyncAction,
-    EndNFTSyncAction,
-    EnableNFTSyncAction,
-    ClearGetNFTCollectionsErrorsAction,
-    SetNFTCollectionsAreLoadingAction,
-    SetNFTCollectionsAction,
-} from './types';
+import { CLEAR_NFT_GET_COLLECTIONS_ERRORS, ENABLE_NFT_SYNC, START_NFT_SYNC, END_NFT_SYNC, SET_NFT_COLLECTIONS, SET_NFT_COLLECTIONS_ARE_LOADING, StartNFTSyncAction, EndNFTSyncAction, EnableNFTSyncAction, ClearGetNFTCollectionsErrorsAction, SetNFTCollectionsAreLoadingAction, SetNFTCollectionsAction } from './types';
 
-import { NFTCollections, NFTError } from '../../contracts/NFT/types';
+import { NFTCollections, NFTError, NFTObject } from '../../contracts/NFT/types';
 
 /**
  * Mark that NFT sync started.
@@ -44,6 +31,16 @@ export function setNFTCollectionsAction(collections: NFTCollections, errors: NFT
         payload: {
             collections,
             errors,
+        },
+    };
+}
+
+export function clearNFTCollectionsAction(): SetNFTCollectionsAction {
+    return {
+        type: SET_NFT_COLLECTIONS,
+        payload: {
+            collections: { collected: [], minted: [] },
+            errors: [],
         },
     };
 }
