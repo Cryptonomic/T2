@@ -27,7 +27,7 @@ import { setWalletAction, setIdentitiesAction, addNewIdentityAction, updateIdent
 
 import { logoutAction, setIsLoadingAction, setWalletIsSyncingAction, setNodesStatusAction, updateFetchedTimeAction, setLedgerAction, setIsLedgerConnectingAction, changeAccountAction } from '../app/actions';
 
-import { clearNFTCollectionsAction } from '../nft/actions';
+import { clearNFTCollectionsAction, endNFTSyncAction } from '../nft/actions';
 
 import { setSignerThunk, setLedgerSignerThunk } from '../app/thunks';
 import { syncNFTThunk } from '../nft/thunks';
@@ -54,6 +54,7 @@ export function goHomeAndClearState() {
     return (dispatch) => {
         dispatch(logoutAction());
         dispatch(clearNFTCollectionsAction());
+        dispatch(endNFTSyncAction(new Date(0)));
         clearAutomaticAccountRefresh();
         dispatch(push('/'));
     };
@@ -493,12 +494,8 @@ export function syncWalletThunk() {
                     return { ...token, administrator, balance, transactions, details };
                 } else if (token.kind === TokenKind.objkt) {
                     const artToken = token as ArtToken;
-                    const administrator = '';
 
-                    const balance = await NFTUtil.getCollectionSize([token as ArtToken], selectedParentHash, mainNode);
-                    const transactions = []; // await HicNFTUtil.getTokenTransactions('', selectedParentHash, selectedNode);
-
-                    return { ...artToken, administrator, balance, transactions };
+                    return { ...artToken, administrator: '', balance: 0, transactions: [] };
                 } else if (token.kind === TokenKind.stkr || token.kind === TokenKind.blnd) {
                     let administrator = token.administrator;
 

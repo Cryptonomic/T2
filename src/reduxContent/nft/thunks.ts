@@ -4,6 +4,7 @@ import { getNFTCollections } from '../../contracts/NFT/util';
 
 import { ArtToken, TokenKind } from '../../types/general';
 import { NFTState } from '../../types/store';
+import { NFTCollections } from '../../contracts/NFT/types';
 
 import { getMainNode } from '../../utils/settings';
 import { syncTokenThunk, syncWalletThunk } from '../wallet/thunks';
@@ -15,8 +16,6 @@ const NFT_SYNC_INTERVAL = 600_000; // [ms]
  */
 export const syncNFTAndWalletThunk = () => async (dispatch) => {
     dispatch(clearGetNFTCollectionsErrorAction());
-    dispatch(startNFTSyncAction());
-    await dispatch(syncWalletThunk());
     dispatch(syncNFTThunk(true));
 };
 
@@ -29,24 +28,25 @@ export const syncNFTAndWalletThunk = () => async (dispatch) => {
  * @param {boolean} [force=false] - force the synchronization of NFT collections and tokens.
  */
 export const syncNFTThunk = (force: boolean = false) => async (dispatch, getState) => {
-    // Check if not forced and a given time has elapsed since the last sync
-    const { lastSyncAt, syncEnabled } = getState().nft as NFTState;
+    const { lastSyncAt, syncEnabled, isNFTSyncing } = getState().nft as NFTState;
+
+    if (isNFTSyncing) {
+        return false;
+    }
+
     const currentTime = new Date();
     const wasRecentlySynced = lastSyncAt && currentTime.getTime() - lastSyncAt.getTime() < NFT_SYNC_INTERVAL;
     if (syncEnabled && wasRecentlySynced && !force) {
         return false;
     }
 
-    // Mark that the sync started:
     dispatch(startNFTSyncAction());
 
-    // Get collections and token configs:
     const collectionsPromise = await dispatch(getCollectionsThunk());
     const tokensPromise = await dispatch(syncNFTTokensDetailsThunk());
     await Promise.all([collectionsPromise, tokensPromise]);
 
-    // Mark the end of the sync:
-    dispatch(endNFTSyncAction());
+    dispatch(endNFTSyncAction(currentTime));
     return true;
 };
 
@@ -61,8 +61,16 @@ export const getCollectionsThunk = () => async (dispatch, getState) => {
     const { selectedParentHash } = getState().app;
     const mainNode = getMainNode(nodesList, selectedNode);
     const tokens = getState().wallet.tokens.filter((token) => [TokenKind.objkt].includes(token.kind));
+    const { lastSyncAt } = getState().nft as NFTState;
 
-    const { collections, errors } = await getNFTCollections(tokens as ArtToken[], selectedParentHash, mainNode);
+    const { collections, errors } = await getNFTCollections(tokens as ArtToken[], selectedParentHash, mainNode, false, lastSyncAt || undefined);
+
+    if (lastSyncAt) {
+        const loaded: NFTCollections = getState().nft.collections;
+
+        collections.collected = collections.collected.concat(loaded.collected);
+        collections.minted = collections.minted.concat(loaded.minted);
+    }
 
     dispatch(setNFTCollectionsAction(collections, errors));
     dispatch(setNFTCollectionsAreLoadingAction(false));
