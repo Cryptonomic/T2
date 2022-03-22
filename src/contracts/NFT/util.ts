@@ -1137,7 +1137,7 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
     const contractMetadataMapId = Number(JSONPath({ path: '$.args[0].args[2].int', json: storageResult })[0]);
     const tokenMetadataMapId = Number(JSONPath({ path: '$.args[2].int', json: storageResult })[0]);
 
-    let contractMetadataJson = {};
+    let contractMetadataJson: any = {};
     try {
         const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData('meta', 'string'), 'hex'));
         const contractMetadataResult = await TezosNodeReader.getValueForBigMapKey(tezosNode, contractMetadataMapId, packedKey);
