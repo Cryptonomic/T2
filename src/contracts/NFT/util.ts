@@ -9,7 +9,7 @@ import { NFTObject, NFTCollections, NFTError, GetNFTCollection, GetNFTCollection
 
 import { imageProxyURL, imageAPIKey } from '../../config.json';
 
-import { ArtToken, Node } from '../../types/general';
+import { ArtToken, Node, TokenKind } from '../../types/general';
 
 const proxySupportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
 
@@ -1084,6 +1084,58 @@ export async function getCollectionSize(tokens: ArtToken[], managerAddress: stri
     const tokenCount = collections.collected.reduce((a, c) => a + c.amount, 0) + collections.minted.reduce((a, c) => a + c.amount, 0);
 
     return tokenCount;
+}
+
+export async function parseObjktContract(tezosNode: string, contractAddress: string): Promise<ArtToken> {
+    const tokenDefinition: ArtToken = {
+        network: 'mainnet',
+        symbol: '',
+        balance: 0,
+        transactions: [],
+        activeTab: 'COLLECTION',
+        kind: TokenKind.objkt,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        holderLocation: 'value',
+        provider: 'OBJKT_GENERIC',
+        hideOnLanding: true,
+        marketAddress: '',
+
+        address: '',
+        displayName: '',
+        mapid: -1,
+        nftMetadataMap: -1,
+        helpLink: '',
+    };
+
+    const storageResult = await TezosNodeReader.getContractStorage(tezosNode, contractAddress);
+
+    const ledgerMapId = Number(JSONPath({ path: '$.args[0].args[1].int', json: storageResult })[0]);
+    const contractMetadataMapId = Number(JSONPath({ path: '$.args[0].args[2].int', json: storageResult })[0]);
+    const tokenMetadataMapId = Number(JSONPath({ path: '$.args[2].int', json: storageResult })[0]);
+
+    let contractMetadataJson = {};
+    try {
+        const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData('meta', 'string'), 'hex'));
+        const contractMetadataResult = await TezosNodeReader.getValueForBigMapKey(tezosNode, contractMetadataMapId, packedKey);
+        contractMetadataJson = JSON.parse(Buffer.from(contractMetadataResult.bytes, 'hex').toString());
+
+        if (contractMetadataJson.homepage) {
+            tokenDefinition.displayHelpLink = contractMetadataJson.homepage;
+        }
+
+        if (contractMetadataJson.name) {
+            tokenDefinition.displayName = contractMetadataJson.name;
+        }
+    } catch {
+        //
+    }
+
+    tokenDefinition.mapid = ledgerMapId;
+    tokenDefinition.nftMetadataMap = tokenMetadataMapId;
+
+    return tokenDefinition;
 }
 
 /**
