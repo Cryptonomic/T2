@@ -43,6 +43,7 @@ import tezdaoIcon from '../../resources/contracts/tezdao-icon.png';
 import ursaIcon from '../../resources/contracts/ursa-icon.png';
 import materiaIcon from '../../resources/contracts/materia-icon.png';
 import objktCreditIcon from '../../resources/contracts/objkt-credit-icon.svg';
+import dogaIcon from '../../resources/contracts/doga-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -721,7 +722,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
         network: 'mainnet',
         address: 'KT1NVvPsNDChrLRH5K2cy6Sc9r1uuUwdiZQd',
-        displayName: 'Dogami',
+        displayName: 'Dogami NFT',
         symbol: 'Dogami',
         balance: 0,
         transactions: [],
@@ -737,6 +738,22 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         hideOnLanding: true,
         helpLink: 'https://dogami.com',
         displayHelpLink: 'dogami.com',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1Ha4yFVeyzw6KRAdkzq6TxDHB97KG4pZe8',
+        displayName: 'Dogami',
+        symbol: 'DOGA',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip7,
+        icon: dogaIcon,
+        scale: 5,
+        precision: 5,
+        round: 2,
+        mapid: 134335,
+        balancePath: '$.int',
     },
     {
         network: 'mainnet',
