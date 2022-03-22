@@ -205,10 +205,7 @@ export function syncTokenThunk(tokenAddress) {
                     }
 
                     if (tokens[tokenIndex].address === 'KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4') {
-                        console.log('ctez');
                         const storage = await TezosNodeReader.getContractStorage(mainNode.tezosUrl, tokens[tokenIndex].address);
-                        console.log('ctez', storage);
-                        console.log('ctez', JSONPath({ path: '$.args[3].int', json: JSON.parse(storage) })[0]);
                         return { ...d, holders: keyCount, supply: Number(JSONPath({ path: '$.args[3].int', json: JSON.parse(storage) })[0]) };
                     }
 
