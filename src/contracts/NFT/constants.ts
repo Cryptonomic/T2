@@ -26,6 +26,7 @@ export const NFT_PROVIDERS = {
     FXHASH: 'FXHASH',
     VERSUM: 'VERSUM',
     RARIBLE: 'RARIBLE',
+    EIGHTB: 'EIGHTB',
     IPFS: 'IPFS',
 
     OBJKT_GENERIC: 'OBJKT_GENERIC',
