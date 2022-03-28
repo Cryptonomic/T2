@@ -28,3 +28,17 @@ export const AddButton = styled(Button)`
     height: 48px;
     margin-left: auto;
 `;
+
+export const SuccessText = styled.p`
+    color: #259c90;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+    margin-top: -42px;
+`;
+
+export const LoaderWrapper = styled.div`
+    width: 100%;
+    padding: 80px 20px;
+    position: relative;
+`;
