@@ -19,6 +19,7 @@ import { tokensSupportURL } from '../../../../config.json';
 
 import { NFTErrors } from '../NFTErrors';
 import { NFTModal } from '../NFTModal';
+import { NFTAdd } from '../NFTAdd';
 import { TokensDetailsModal } from '../../../../components/TokensDetailsModal';
 
 const PER_PAGE = 2;
@@ -96,6 +97,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
             const displayTokens = tab.value.toLowerCase() in collections ? collections[tab.value.toLowerCase()] : [];
             return (
                 <TabPanel key={`pb-tab-panel-${tab.value}`} index={tab.value} value={activeTab}>
+                    <NFTAdd />
                     <Gallery
                         cols={1}
                         breakpoints={{

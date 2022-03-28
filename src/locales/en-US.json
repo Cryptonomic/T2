@@ -411,6 +411,11 @@
             "custom_fee_tooltip": "We have already calculated the optimal fee for your transaction.",
             "tokensNumberInfo": "You have {{count}} NFT in your gallery.",
             "tokensNumberInfo_plural": "You have {{count}} NFTs in your gallery.",
+            "add_nft": "Add NFT",
+            "add_nft_content": "Enter the contract address of the NFT you would like to add to your wallet. All the NFTs you have from the collection will show up in your wallet gallery after adding.",
+            "nft_contract_address": "NFT Contract Address",
+            "collection_name": "Collection Name",
+            "site_url": "Site URL",
             "fields": {
                 "artifactUrl": "image URL"
             },
@@ -433,7 +438,8 @@
             "errors": {
                 "something_went_wrong": "Something went wrong!",
                 "unsupported_data_format": "The {{field}} from {{provider}} is invalid.",
-                "unsupported_provider": "The {{provider}} data format is invalid."
+                "unsupported_provider": "The {{provider}} data format is invalid.",
+                "invalid_address": "Invalid Address."
             },
             "providers": {
                 "HIC_ET_NUNC": "Hic et nunc",

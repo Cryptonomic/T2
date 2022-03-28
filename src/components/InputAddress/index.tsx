@@ -59,7 +59,7 @@ interface Props {
     onChange: (val: string) => void;
     tooltip?: boolean;
     address?: string;
-    operationType: 'send' | 'delegate' | 'invoke' | 'send_babylon' | 'tz1'; // TODO: enum
+    operationType: 'send' | 'delegate' | 'invoke' | 'send_babylon' | 'tz1' | 'addNFT'; // TODO: enum
     onIssue?: (error: boolean) => void;
     onAddressType?: (type: AddressType) => void;
 }
@@ -114,6 +114,9 @@ function InputAddress(props: Props) {
         } else if (operationType === 'tz1') {
             firstCharactersRegEx = /^(tz1|edpk)/;
             regErrorTxt = t('components.inputAddress.errors.verify_tz1');
+        } else if (operationType === 'addNFT') {
+            firstCharactersRegEx = /^(KT1)/;
+            regErrorTxt = t('components.nftGallery.errors.invalid_address');
         }
 
         return { firstCharactersRegEx, regErrorTxt };
@@ -147,7 +150,7 @@ function InputAddress(props: Props) {
                 errorState = false;
             } else {
                 addressType = getAddressType(addressText, account[0].script);
-                if (addressType === AddressType.Smart && operationType !== 'invoke') {
+                if (addressType === AddressType.Smart && operationType !== ('invoke' && 'addNFT')) {
                     newError = t('components.inputAddress.errors.use_interact');
                     errorState = true;
                 }
