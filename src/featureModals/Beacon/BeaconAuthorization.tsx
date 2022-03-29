@@ -33,26 +33,8 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton, WhiteBtn, Footer } from '../style';
 
 import { estimateOperationGroupFee, sendOperations, queryHicEtNuncSwap } from './thunks';
-import { WrapPassword, OperationDetailHeader } from './style';
+import { WrapPassword, OperationDetailHeader, LabelText } from './style';
 import { beaconClient } from './BeaconMessageRouter';
-
-const AddCircleWrapper = styled(AddCircle)<{ active: number }>`
-    &&& {
-        fill: #7b91c0;
-        width: ${ms(1)};
-        height: ${ms(1)};
-        opacity: ${({ active }) => (active ? 1 : 0.5)};
-        cursor: ${({ active }) => (active ? 'pointer' : 'default')};
-    }
-`;
-
-export const LabelText = styled.span`
-    display: block;
-    margin-bottom: 0px;
-    font-size: 12px;
-    color: ${({ theme: { colors } }) => colors.gray5};
-    font-weight: 400;
-`;
 
 interface Props {
     open: boolean;
@@ -149,12 +131,15 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
     useEffect(() => {
         if (!estimates.estimatedFee) {
             setFee('0');
-        } else if (typeof estimates.estimatedFee === 'string') {
-            setFeeError(estimates.estimatedFee);
+            setFeeError('');
+        } else if (estimates.feeError && estimates.feeError.length > 0) {
+            setFeeError(estimates.feeError);
         } else {
+            setFeeError('');
             setFee(formatAmount(estimates.estimatedFee));
             setCustomFee(formatAmount(estimates.estimatedFee));
         }
+
         if (typeof estimates.estimatedStorage === 'number') {
             setCustomStorageLimit(estimates.estimatedStorage);
         }
