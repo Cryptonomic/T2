@@ -2,6 +2,7 @@ import { ConseilQueryBuilder, ConseilOperator, KeyStore, MultiAssetTokenHelper, 
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 import { proxyFetch, ImageProxyServer, ImageProxyDataType } from 'nft-image-proxy';
+import * as png from 'pngjs';
 
 import { NFT_ACTION_TYPES, NFT_ERRORS, NFT_PROVIDERS } from './constants';
 import { TransferNFTError } from './exceptions';
@@ -580,9 +581,38 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     };
 }
 
+export async function get8bidouDetails(tezosUrl: string, objectId: number | string, metadataMap: number) {
+    const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
+    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId);
+
+    const creatorBytes = JSONPath({ path: '$.args[2].bytes', json: nftInfo })[0]; // $.args[1].string
+    const descriptionBytes = JSONPath({ path: '$.args[4].bytes', json: nftInfo })[0];
+    const nameBytes = JSONPath({ path: '$.args[3].bytes', json: nftInfo })[0];
+    const imageDataBytes = JSONPath({ path: '$.args[5].string', json: nftInfo })[0];
+
+    const nftCreators = Buffer.from(creatorBytes, 'hex').toString();
+    const nftDescription = Buffer.from(descriptionBytes, 'hex').toString();
+    const nftName = Buffer.from(nameBytes, 'hex').toString();
+
+    const image = new png.PNG({ width: 8, height: 8, bitDepth: 8, colorType: 2, inputColorType: 2, inputHasAlpha: false });
+    image.data = Buffer.from(imageDataBytes, 'hex');
+    const buffer = png.PNG.sync.write(image, { width: 8, height: 8, bitDepth: 8, colorType: 2, inputColorType: 2, inputHasAlpha: false });
+    const artifactUrl = `data:image/png;base64,${buffer.toString('base64')}`;
+
+    return {
+        name: nftName,
+        description: nftDescription,
+        creators: nftCreators,
+        artifactUrl,
+        artifactType: 'image/png',
+        artifactModerationMessage: undefined,
+        thumbnailUri: artifactUrl,
+    };
+}
+
 export async function getDogamiDetails(tezosUrl: string, objectId: number | string, metadataMap: number) {
     const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
-    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
+    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId);
 
     const artifactUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const creatorBytes = JSONPath({ path: '$.args[1][2].args[1].bytes', json: nftInfo })[0];
@@ -855,6 +885,9 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
                     if (metadataMapId === 115420) {
                         // HACK: dogami
                         objectDetails = await getDogamiDetails(node.tezosUrl, objectId, metadataMapId);
+                    } else if (metadataMapId === 113218) {
+                        // HACK 8bidou
+                        objectDetails = await get8bidouDetails(node.tezosUrl, objectId, metadataMapId);
                     } else {
                         objectDetails = await getObjktNFTDetails(node.tezosUrl, objectId, metadataMapId, urlPath);
                     }
