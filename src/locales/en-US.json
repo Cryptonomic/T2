@@ -38,7 +38,7 @@
             "sell": "Sell",
             "add": "Add",
             "remove": "Remove",
-            "see_more": "View all supported NFTs"
+            "see_more": "Manage NFT Collections"
         },
         "nouns": {
             "amount": "Amount",
@@ -516,6 +516,9 @@
             "settings": "SETTINGS",
             "logout": "LOG OUT",
             "help": "HELP"
+        },
+        "manageNFTsModal": {
+            "modal_title": "Manage NFT Collections"
         },
         "tokensDetailsModal": {
             "browse": "Browse objects",

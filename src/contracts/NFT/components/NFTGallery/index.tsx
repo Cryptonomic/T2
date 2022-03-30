@@ -21,6 +21,7 @@ import { NFTErrors } from '../NFTErrors';
 import { NFTModal } from '../NFTModal';
 import { NFTAdd } from '../NFTAdd';
 import { TokensDetailsModal } from '../../../../components/TokensDetailsModal';
+import { ManageNFTsModal } from '../../../../components/ManageNFTsModal';
 
 const PER_PAGE = 2;
 
@@ -173,7 +174,8 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
 
             <NFTModal nftObject={currentNFTObject} onClose={() => setCurrentNFTObject(null)} />
 
-            <TokensDetailsModal open={showTokensDetailsModal} tokens={tokens} onClose={() => setShowTokensDetailsModal(false)} />
+            <ManageNFTsModal open={showTokensDetailsModal} onClose={() => setShowTokensDetailsModal(false)} />
+            {/* <TokensDetailsModal open={showTokensDetailsModal} tokens={tokens} onClose={() => setShowTokensDetailsModal(false)} /> */}
         </Container>
     );
 };
