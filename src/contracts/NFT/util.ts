@@ -47,16 +47,35 @@ async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: s
     let content = artifactUrl;
     let moderationMessage = '';
 
-    const response: any = await proxyFetch(server, artifactUrl, ImageProxyDataType.Json, false);
-    if (response.rpc_status === 'Ok') {
-        if (response.result.moderation_status === 'Allowed') {
-            content = response.result.data;
-        } else if (response.result.moderation_status === 'Blocked') {
-            moderationMessage = `Image was hidden due to: ${response.result.categories.join(', ')}`;
-        }
-    }
+    const fetchPromise = proxyFetch(server, artifactUrl, ImageProxyDataType.Json, false)
+        .then((response) => {
+            // @ts-ignore
+            if (response.rpc_status === 'Ok') {
+                // @ts-ignore
+                if (response.result.moderation_status === 'Allowed') {
+                    // @ts-ignore
+                    content = response.result.data;
+                    // @ts-ignore
+                } else if (response.result.moderation_status === 'Blocked') {
+                    // @ts-ignore
+                    moderationMessage = `Image was hidden due to: ${response.result.categories.join(', ')}`;
+                }
+            }
+            return { content, moderationMessage };
+        })
+        .catch((err) => {
+            return { content, moderationMessage };
+        });
 
-    return { content, moderationMessage };
+    const fakePromise = new Promise(() => {
+        setTimeout(() => {
+            console.log('image proxy timeout');
+        }, 15_000);
+    }).then(() => {
+        return { content, moderationMessage };
+    });
+
+    return Promise.race([fetchPromise, fakePromise]);
 }
 
 /**
