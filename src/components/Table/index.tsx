@@ -2,16 +2,17 @@ import React from 'react';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-import { StyledTableContainer, StyledTableHeadCell, StyledTableCell, StyledTableCellRight, StyledTableHeadCellRight, TokenTitle, TokenAddress } from './style';
+import TezosAddress from '../TezosAddress';
+
+import { StyledTableContainer, StyledTableHeadCell, StyledTableCell, StyledTableCellRight, StyledTableHeadCellRight, TokenTitle } from './style';
 import { useSelector } from 'react-redux';
 
 const TableComponent = (props) => {
-    const { headerOne, headerTwo, headerThree, tableData, icon } = props;
+    const { headerOne, headerTwo, headerThree, tableData, icon, deleteToken } = props;
+
     return (
         <StyledTableContainer>
             <Table>
@@ -24,24 +25,18 @@ const TableComponent = (props) => {
                 </TableHead>
                 <TableBody>
                     {tableData &&
-                        tableData.map((data) => (
-                            <TableRow key={data.id}>
+                        tableData.map((data, index) => (
+                            <TableRow key={`token-item-${index}`}>
                                 <StyledTableCell>
-                                    <TokenTitle> User added collection 1 </TokenTitle>
-                                    <TokenAddress> KT5Qn6gt...VbJxtoH </TokenAddress>
+                                    <TokenTitle> {data.displayName} </TokenTitle>
+                                    <TezosAddress address={data.address} text={data.address} weight={300} color="gray18" size="14px" shorten={true} />
                                 </StyledTableCell>
-                                <StyledTableCellRight> 4 OBKT </StyledTableCellRight>
-                                <StyledTableCellRight>{icon && 'icon'}</StyledTableCellRight>
+                                <StyledTableCellRight/>
+                                <StyledTableCellRight onClick={() => deleteToken(data)}>
+                                    {icon && 'icon'} {/* TODO: Add delete Icon */}
+                                </StyledTableCellRight>
                             </TableRow>
                         ))}
-                    <TableRow>
-                        <StyledTableCell>
-                            <TokenTitle> User added collection 1 </TokenTitle>
-                            <TokenAddress> KT5Qn6gt...VbJxtoH </TokenAddress>
-                        </StyledTableCell>
-                        <StyledTableCellRight> 4 OBKT </StyledTableCellRight>
-                        <StyledTableCellRight>{icon && 'icon'}</StyledTableCellRight>
-                    </TableRow>
                 </TableBody>
             </Table>
         </StyledTableContainer>

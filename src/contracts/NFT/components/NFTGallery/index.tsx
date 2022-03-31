@@ -20,7 +20,7 @@ import { tokensSupportURL } from '../../../../config.json';
 
 import { NFTErrors } from '../NFTErrors';
 import { NFTModal } from '../NFTModal';
-import { TokensDetailsModal } from '../../../../components/TokensDetailsModal';
+// import { TokensDetailsModal } from '../../../../components/TokensDetailsModal';
 import { ManageNFTsModal } from '../../../../components/ManageNFTsModal';
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -207,8 +207,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
 
             <NFTModal nftObject={currentNFTObject} onClose={() => setCurrentNFTObject(null)} />
 
-            {/* <ManageNFTsModal open={showTokensDetailsModal} onClose={() => setShowTokensDetailsModal(false)} /> */}
-            <TokensDetailsModal open={showTokensDetailsModal} tokens={tokens} onClose={() => setShowTokensDetailsModal(false)} />
+            <ManageNFTsModal open={showTokensDetailsModal} tokens={tokens} onClose={() => setShowTokensDetailsModal(false)} />
         </Container>
     );
 };

@@ -8,18 +8,33 @@ import { ModalWrapper } from '../../contracts/components/style';
 
 import TableComponent from '../Table';
 
-import { StyledTable, StyledTableHead, StyledTableHeadCell, StyledTableRow, StyledTableCell, StyledTableBody } from '../Table/style';
 import { useSelector } from 'react-redux';
+import { getLocalData } from '../../utils/localData';
 
-export const ManageNFTsModal = ({ open, onClose }) => {
+export const ManageNFTsModal = ({ open, onClose, tokens }) => {
     const { t } = useTranslation();
+    const localTokens = getLocalData('token');
+
+    const sortedTokens = tokens.sort((a, b) => b.balance - a.balance || a.displayName.localeCompare(b.displayName));
+    const customSortedTokens = [localTokens].sort((a, b) => b.balance - a.balance || a.displayName.localeCompare(b.displayName));
+
+    const deleteToken = (item) => {
+        console.log('deleted', item);
+    };
 
     return (
         <ModalWrapper open={open} onClose={onClose} aria-labelledby="Tokens" aria-describedby="Manage token collections">
             <StyledModalBox>
                 <ModalHeader>{t('components.manageNFTsModal.modal_title')}</ModalHeader>
-                <TableComponent headerOne="Custom Added NFTs" headerTwo="Quantity" headerThree="Remove" icon={true} />
-                <TableComponent headerOne="Other NFTs" headerTwo="Quantity" headerThree="" />
+                <TableComponent
+                    tableData={customSortedTokens}
+                    headerOne="Custom Added NFTs"
+                    headerTwo="Quantity"
+                    headerThree="Remove"
+                    icon={true}
+                    deleteToken={(token) => deleteToken(token)}
+                />
+                <TableComponent tableData={sortedTokens} headerOne="Other NFTs" headerTwo="Quantity" headerThree="" />
                 <CloseButton onClick={onClose}>
                     <CloseIcon />
                 </CloseButton>
