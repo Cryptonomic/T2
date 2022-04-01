@@ -68,17 +68,11 @@ const NFTAddModal = (props: Props) => {
         if (isTokenDefinition && !isTokenDefinition.displayName) {
             isTokenDefinition.displayName = displayName;
         }
-        return () => {
-            setHelpLink('');
-            setDisplayName('');
-        };
     }, [isTokenDefinition]);
 
     useEffect(() => {
         setIsLoading(false);
     }, [isTokenDefinition]);
-
-    // KT1LjmAdYQCLBjwv4S2oFkEzyHVkomAf5MrW
 
     return (
         <Modal title={t('components.nftGallery.add_nft')} open={open} onClose={onClose}>

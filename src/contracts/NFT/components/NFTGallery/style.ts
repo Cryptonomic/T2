@@ -25,7 +25,6 @@ export const AddButton = styled(Button)`
     align-self: center;
     cursor: pointer;
     color: ${({ theme: { colors } }) => colors.accent} !important;
-    margin: 35px 37px 44px 0 !important;
     padding: 0 !important;
     &:hover {
         background: transparent !important;

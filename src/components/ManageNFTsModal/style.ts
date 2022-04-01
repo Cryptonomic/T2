@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Divider from '@mui/material/Divider';
 
 import { ModalBox } from '../../contracts/components/style';
 
@@ -64,4 +65,18 @@ export const CloseButton = styled(IconButton)`
             display: block;
         }
     }
+`;
+export const StyledDivider = styled(Divider)`
+    border: 1px solid #e0e0e0;
+`;
+export const FooterCon = styled.div`
+    padding: 16px 0 16px 23px;
+`;
+export const FooterText = styled.p`
+    color: ${({ theme: { colors } }) => colors.gray3};
+    margin: 0;
+    padding-bottom: 8px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 16px;
 `;

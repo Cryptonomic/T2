@@ -106,7 +106,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
         return pageTabs.map((tab) => {
             const displayTokens = tab.value.toLowerCase() in collections ? collections[tab.value.toLowerCase()] : [];
             const searchTokens = displayTokens.filter((token) => {
-                if (isSearch) {
+                if (isSearch && token) {
                     const isToken = token.name.toLowerCase().includes(isSearch.toLowerCase()) || token.objectId.toString().includes(isSearch);
                     return isToken;
                 } else {
@@ -128,7 +128,12 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                                 value={isSearch}
                             />
                         </SearchForm>
-                        <AddButton startIcon={<AddIcon />} onClick={() => dispatch(setModalOpen(true, 'NFTAdd'))} disableRipple={true}>
+                        <AddButton
+                            startIcon={<AddIcon />}
+                            onClick={() => dispatch(setModalOpen(true, 'NFTAdd'))}
+                            disableRipple={true}
+                            style={{ margin: '35px 37px 44px 0' }}
+                        >
                             Add NFT
                         </AddButton>
                     </RowContainer>
