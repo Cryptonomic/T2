@@ -15,7 +15,7 @@ import { getMainNode } from '../../utils/settings';
 export function estimateOperationGroupFee(publicKeyHash: string, operations: any[]): any {
     // TODO: type
     const store = useStore<RootState>();
-    const [fee, setFee] = useState({ estimatedFee: 0, estimatedGas: 0, estimatedStorage: 0 });
+    const [fee, setFee] = useState({ estimatedFee: 0, estimatedGas: 0, estimatedStorage: 0, feeError: '' });
 
     useEffect(() => {
         const estimateInvocation = async () => {
@@ -31,10 +31,11 @@ export function estimateOperationGroupFee(publicKeyHash: string, operations: any
                 const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
                 const estimatedGas = estimate.operationResources.reduce((a, c) => (a += c.gas), 0);
                 const estimatedStorage = estimate.operationResources.reduce((a, c) => (a += c.storageCost), 0);
-                setFee({ estimatedFee: estimate.estimatedFee, estimatedGas, estimatedStorage });
+                setFee({ estimatedFee: estimate.estimatedFee, estimatedGas, estimatedStorage, feeError: '' });
             } catch (e) {
+                const err = e as Error;
                 console.log('estimateInvocation failed with ', e);
-                setFee(e.message);
+                setFee({ estimatedFee: -1, estimatedGas: -1, estimatedStorage: -1, feeError: err.message });
             }
         };
 

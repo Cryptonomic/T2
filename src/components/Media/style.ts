@@ -38,7 +38,7 @@ export const ModalBox = styled.div`
     & img,
     & video,
     div {
-        width: max-content;
+        width: auto;
         height: auto;
         max-width: 90vw;
         max-height: 90vh;
@@ -81,6 +81,7 @@ export const PreviewIcon = styled.span`
 export const StyledImage = styled(Image)`
     & > img {
         border-radius: 8px;
+        image-rendering: pixelated;
     }
 `;
 

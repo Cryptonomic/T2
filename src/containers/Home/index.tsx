@@ -3,6 +3,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import Transport from '@ledgerhq/hw-transport-node-hid';
+import { BigNumber } from 'bignumber.js';
 
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 import { getIsIdentitesSelector } from '../../reduxContent/wallet/selectors';
@@ -45,6 +46,8 @@ function HomePage() {
     }, []);
 
     const redirectTo = isIdentities ? '/home/main' : '/home/add';
+
+    BigNumber.config({ EXPONENTIAL_AT: 54 });
 
     return (
         <Fragment>

@@ -62,6 +62,8 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
             openArtifactLink(`https://objkt.com/asset/${nftObject.tokenAddress}/${nftObject.objectId}`);
         } else if (nftObject?.provider === NFT_PROVIDERS.DOGAMI) {
             openArtifactLink(`https://marketplace.dogami.com/dog/${nftObject.objectId}`);
+        } else if (nftObject?.provider === NFT_PROVIDERS.EIGHTB) {
+            openArtifactLink(`https://www.8bidou.com/listing/?id=${nftObject.objectId}`);
         }
     };
 
