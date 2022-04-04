@@ -1,4 +1,13 @@
-import { ConseilQueryBuilder, ConseilOperator, KeyStore, MultiAssetTokenHelper, Signer, TezosConseilClient, TezosMessageUtils, TezosNodeReader } from 'conseiljs';
+import {
+    ConseilQueryBuilder,
+    ConseilOperator,
+    KeyStore,
+    MultiAssetTokenHelper,
+    Signer,
+    TezosConseilClient,
+    TezosMessageUtils,
+    TezosNodeReader,
+} from 'conseiljs';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 import { proxyFetch, ImageProxyServer, ImageProxyDataType } from 'nft-image-proxy';
@@ -26,7 +35,12 @@ function makeLastPriceQuery(operations) {
     lastPriceQuery = ConseilQueryBuilder.addPredicate(lastPriceQuery, 'kind', ConseilOperator.EQ, ['transaction']);
     lastPriceQuery = ConseilQueryBuilder.addPredicate(lastPriceQuery, 'status', ConseilOperator.EQ, ['applied']);
     lastPriceQuery = ConseilQueryBuilder.addPredicate(lastPriceQuery, 'internal', ConseilOperator.EQ, ['false']);
-    lastPriceQuery = ConseilQueryBuilder.addPredicate(lastPriceQuery, 'operation_group_hash', operations.length > 1 ? ConseilOperator.IN : ConseilOperator.EQ, operations);
+    lastPriceQuery = ConseilQueryBuilder.addPredicate(
+        lastPriceQuery,
+        'operation_group_hash',
+        operations.length > 1 ? ConseilOperator.IN : ConseilOperator.EQ,
+        operations
+    );
     lastPriceQuery = ConseilQueryBuilder.setLimit(lastPriceQuery, operations.length);
 
     return lastPriceQuery;
@@ -182,7 +196,13 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
  * @param {Node} node - the selected node.
  * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
-export async function getNFTCollections(tokens: ArtToken[], managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollections> {
+export async function getNFTCollections(
+    tokens: ArtToken[],
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false,
+    dateBoundary?: Date
+): Promise<GetNFTCollections> {
     const promises: Promise<any>[] = [];
     tokens.map((token) => {
         switch (token.displayName.toLowerCase()) {
@@ -201,7 +221,20 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
 
             default:
                 try {
-                    promises.push(getCollection(token.address, token.mapid, token.holderLocation || 'key', token.nftMetadataMap, token.provider || '', managerAddress, node, skipDetails, undefined, dateBoundary));
+                    promises.push(
+                        getCollection(
+                            token.address,
+                            token.mapid,
+                            token.holderLocation || 'key',
+                            token.nftMetadataMap,
+                            token.provider || '',
+                            managerAddress,
+                            node,
+                            skipDetails,
+                            undefined,
+                            dateBoundary
+                        )
+                    );
                 } catch (err) {
                     console.log(`could not fetch collection for ${token.address}`);
                 }
@@ -238,7 +271,14 @@ export async function getNFTCollections(tokens: ArtToken[], managerAddress: stri
  *
  * @return {Promise<GetNFTCollections>} the list of NFT tokens grouped by type and the list of errors.
  */
-export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollection> {
+export async function getHicEtNuncCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false,
+    dateBoundary?: Date
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -246,7 +286,9 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
     let collectionQuery = ConseilQueryBuilder.blankQuery();
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
+        `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+    ]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
 
@@ -286,7 +328,14 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
                             amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
                         } else if (action === 'transfer') {
                             action = 'collect';
-                            amount = Number(row.parameters.toString().replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1'));
+                            amount = Number(
+                                row.parameters
+                                    .toString()
+                                    .replace(
+                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
+                                        '$1'
+                                    )
+                            );
                         } else if (action === 'mint_OBJKT') {
                             action = 'mint';
                         } else {
@@ -410,7 +459,14 @@ export async function getHicEtNuncCollection(tokenAddress: string, tokenMapId: n
  * @param node
  * @param {boolean} [skipDetails=false] - skip fetching the NFT object distance (expensive queries).
  */
-export async function getKalamintCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollection> {
+export async function getKalamintCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false,
+    dateBoundary?: Date
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -418,7 +474,9 @@ export async function getKalamintCollection(tokenAddress: string, tokenMapId: nu
     let collectionQuery = ConseilQueryBuilder.blankQuery();
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
+        `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+    ]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
 
@@ -447,7 +505,14 @@ export async function getKalamintCollection(tokenAddress: string, tokenMapId: nu
                             amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
                         } else if (action === 'transfer') {
                             action = 'collect';
-                            amount = Number(row.parameters.toString().replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1'));
+                            amount = Number(
+                                row.parameters
+                                    .toString()
+                                    .replace(
+                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
+                                        '$1'
+                                    )
+                            );
                         } else if (action === 'mint') {
                             action = 'mint';
                         } else {
@@ -674,7 +739,14 @@ function makeUrl(source: string, type: string = '') {
     }
 }
 
-export async function getPotusCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollection> {
+export async function getPotusCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false,
+    dateBoundary?: Date
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -682,7 +754,9 @@ export async function getPotusCollection(tokenAddress: string, tokenMapId: numbe
     let collectionQuery = ConseilQueryBuilder.blankQuery();
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [`${tokenMapId}`]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
+        `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+    ]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
 
@@ -794,7 +868,18 @@ export async function getPotusNFTObjectDetails(tezosUrl: string, objectId: numbe
     };
 }
 
-export async function getCollection(tokenAddress: string, tokenMapId: number, queryArg: 'key' | 'value', metadataMapId: number, provider: string, managerAddress: string, node: Node, skipDetails: boolean = false, urlPath?: string, dateBoundary?: Date): Promise<GetNFTCollection> {
+export async function getCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    queryArg: 'key' | 'value',
+    metadataMapId: number,
+    provider: string,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false,
+    urlPath?: string,
+    dateBoundary?: Date
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -802,10 +887,14 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     if (queryArg === 'key') {
-        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.LIKE, [`0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.LIKE, [
+            `0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+        ]);
         collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     } else if (queryArg === 'value') {
-        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [`0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
+        collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [
+            `0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+        ]);
     } else {
         throw new Error('invalid ledger query');
     }
@@ -838,7 +927,14 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
                             amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
                         } else if (action === 'transfer') {
                             action = 'collect';
-                            amount = Number(row.parameters.toString().replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1'));
+                            amount = Number(
+                                row.parameters
+                                    .toString()
+                                    .replace(
+                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
+                                        '$1'
+                                    )
+                            );
                         } else if (action === 'mint' && tokenAddress === 'KT1KEa8z6vWXDJrVqtMrAeDVzsvxat3kHaCE') {
                             // fxhash
                             action = 'collect';
@@ -939,7 +1035,14 @@ export async function getCollection(tokenAddress: string, tokenMapId: number, qu
     return { collection, errors };
 }
 
-export async function getHashThreeCollection(tokenAddress: string, tokenMapId: number, managerAddress: string, node: Node, skipDetails: boolean = false, dateBoundary?: Date): Promise<GetNFTCollection> {
+export async function getHashThreeCollection(
+    tokenAddress: string,
+    tokenMapId: number,
+    managerAddress: string,
+    node: Node,
+    skipDetails: boolean = false,
+    dateBoundary?: Date
+): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
     const errors: NFTError[] = []; // Store errors to display to the user.
 
@@ -947,7 +1050,9 @@ export async function getHashThreeCollection(tokenAddress: string, tokenMapId: n
     let collectionQuery = ConseilQueryBuilder.blankQuery();
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
-    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [`Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`]);
+    collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
+        `Pair 0x${TezosMessageUtils.writeAddress(managerAddress)}`,
+    ]);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
 
     if (dateBoundary && dateBoundary.getTime() > GenesisBlockTime.getTime()) {
@@ -977,7 +1082,14 @@ export async function getHashThreeCollection(tokenAddress: string, tokenMapId: n
                         } else if (action === 'transfer') {
                             // fa2
                             action = 'collect';
-                            amount = Number(row.parameters.toString().replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1'));
+                            amount = Number(
+                                row.parameters
+                                    .toString()
+                                    .replace(
+                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
+                                        '$1'
+                                    )
+                            );
                         } else if (action === 'mint_OBJKT') {
                             // hen
                             action = 'mint';
@@ -1186,6 +1298,7 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
     const storageResult = await TezosNodeReader.getContractStorage(tezosNode, contractAddress);
 
     const ledgerMapId = Number(JSONPath({ path: '$.args[0].args[1].int', json: storageResult })[0]);
+    const metadataMapId = Number(JSONPath({ path: '$.args[0].args[2].int', json: storageResult })[0]);
     const contractMetadataMapId = Number(JSONPath({ path: '$.args[0].args[2].int', json: storageResult })[0]);
     const tokenMetadataMapId = Number(JSONPath({ path: '$.args[2].int', json: storageResult })[0]);
 
@@ -1201,6 +1314,28 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
 
         if (contractMetadataJson.name) {
             tokenDefinition.displayName = contractMetadataJson.name;
+        }
+    } catch {
+        //
+    }
+
+    try {
+        if (!tokenDefinition.displayName) {
+            const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData('', 'string'), 'hex'));
+            const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosNode, metadataMapId, packedNftId);
+            const ipfsUrlBytes = JSONPath({ path: '$.bytes', json: nftInfo })[0];
+            const ipfsHash = Buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
+
+            const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+            const nftDetailJson = await nftDetails.json();
+
+            if (nftDetailJson.homepage) {
+                tokenDefinition.displayHelpLink = nftDetailJson.homepage;
+            }
+
+            if (nftDetailJson.name) {
+                tokenDefinition.displayName = nftDetailJson.name;
+            }
         }
     } catch {
         //
