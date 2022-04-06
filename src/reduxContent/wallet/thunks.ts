@@ -68,6 +68,7 @@ import * as tzip12Util from '../../contracts/Token2Contract/util';
 import * as wxtzUtil from '../../contracts/WrappedTezos/util';
 import * as plentyUtil from '../../contracts/Plenty/util';
 import { JSONPath } from 'jsonpath-plus';
+import { getLocalData } from '../../utils/localData';
 
 const { restoreIdentityFromFundraiser, restoreIdentityFromMnemonic, restoreIdentityFromSecretKey } = KeyStoreUtils;
 
@@ -656,7 +657,9 @@ function setTokensThunk() {
         const mainNode = getMainNode(nodesList, selectedNode);
         const tokens = loadTokens(mainNode.network);
         // add local storage data
-        dispatch(updateTokensAction(tokens));
+        const customTokens = getLocalData('token');
+        dispatch(updateTokensAction(tokens.concat(customTokens || [])));
+        // dispatch(updateTokensAction(tokens));
     };
 }
 

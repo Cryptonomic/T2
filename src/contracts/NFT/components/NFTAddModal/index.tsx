@@ -37,7 +37,7 @@ const NFTAddModal = (props: Props) => {
 
     const [NFTContractAddress, setNFTContractAddress] = useState('');
     const [isNFTContractAddressIssue, setIsNFTContractAddressIssue] = useState(false);
-    const [isTokenDefinition, setIsTokenDefinition] = useState<any>();
+    const [tokenDefinition, setTokenDefinition] = useState<any>();
     const [isLoading, setIsLoading] = useState(false);
     const [helpLink, setHelpLink] = useState('');
     const [displayName, setDisplayName] = useState('');
@@ -46,23 +46,24 @@ const NFTAddModal = (props: Props) => {
 
     const parseContractAddress = async () => {
         setIsLoading(true);
-        const tokenDefinition = await parseObjktContract(tezosUrl, NFTContractAddress);
-        setIsTokenDefinition(tokenDefinition);
-        console.log('tokenDefinition', tokenDefinition);
+        const tokenDetails = await parseObjktContract(tezosUrl, NFTContractAddress);
+        tokenDetails.address = NFTContractAddress;
+        setTokenDefinition(tokenDetails);
+        console.log('tokenDetails', tokenDetails);
     };
 
     const addNFT = async () => {
-        if (isTokenDefinition && !isTokenDefinition.displayHelpLink) {
-            isTokenDefinition.displayHelpLink = helpLink;
+        if (tokenDefinition && !tokenDefinition.displayHelpLink) {
+            tokenDefinition.displayHelpLink = helpLink;
         }
-        if (isTokenDefinition && !isTokenDefinition.displayName) {
-            isTokenDefinition.displayName = displayName;
+        if (tokenDefinition && !tokenDefinition.displayName) {
+            tokenDefinition.displayName = displayName;
         }
-        tokens.push(isTokenDefinition);
+        tokens.push(tokenDefinition);
         if (customNftToken) {
-            setLocalData('token', [...customNftToken, isTokenDefinition]);
+            setLocalData('token', [...customNftToken, tokenDefinition]);
         } else {
-            setLocalData('token', [isTokenDefinition]);
+            setLocalData('token', [tokenDefinition]);
         }
         dispatch(updateTokensAction([...tokens]));
         onClose();
@@ -73,7 +74,7 @@ const NFTAddModal = (props: Props) => {
 
     useEffect(() => {
         setIsLoading(false);
-    }, [isTokenDefinition]);
+    }, [tokenDefinition]);
 
     return (
         <Modal title={t('components.nftGallery.add_nft')} open={open} onClose={onClose}>
@@ -84,19 +85,19 @@ const NFTAddModal = (props: Props) => {
                     operationType="addNFT"
                     onChange={(val) => {
                         setNFTContractAddress(val);
-                        setIsTokenDefinition(false);
+                        setTokenDefinition(false);
                     }}
                     onIssue={(flag) => setIsNFTContractAddressIssue(flag)}
                 />
-                {isTokenDefinition && <SuccessText> NFT Contract found!! </SuccessText>}
+                {tokenDefinition && <SuccessText> NFT Contract found!! </SuccessText>}
             </InputAddressContainer>
             {isLoading && <Loader />}
             <InputAddressContainer>
-                {isTokenDefinition && (
+                {tokenDefinition && (
                     <TextField
                         label={t('components.nftGallery.collection_name')}
-                        value={isTokenDefinition.displayName ? isTokenDefinition.displayName : displayName}
-                        readOnly={isTokenDefinition.displayName && true}
+                        value={tokenDefinition.displayName ? tokenDefinition.displayName : displayName}
+                        readOnly={tokenDefinition.displayName && true}
                         onChange={(val) => {
                             setDisplayName(val);
                         }}
@@ -104,11 +105,11 @@ const NFTAddModal = (props: Props) => {
                 )}
             </InputAddressContainer>
             <InputAddressContainer>
-                {isTokenDefinition && (
+                {tokenDefinition && (
                     <TextField
                         label={t('components.nftGallery.site_url')}
-                        value={isTokenDefinition.displayHelpLink ? isTokenDefinition.displayHelpLink : helpLink}
-                        readOnly={isTokenDefinition.displayHelpLink && true}
+                        value={tokenDefinition.displayHelpLink ? tokenDefinition.displayHelpLink : helpLink}
+                        readOnly={tokenDefinition.displayHelpLink && true}
                         onChange={(val) => {
                             setHelpLink(val);
                         }}
@@ -116,8 +117,8 @@ const NFTAddModal = (props: Props) => {
                 )}
             </InputAddressContainer>
             <AddNFTButtonContainer>
-                <AddButton buttonTheme="primary" onClick={() => (isTokenDefinition ? addNFT() : parseContractAddress())} disabled={isDisabled}>
-                    {isTokenDefinition ? t('components.nftGallery.add_nft') : t('general.verbs.continue')}
+                <AddButton buttonTheme="primary" onClick={() => (tokenDefinition ? addNFT() : parseContractAddress())} disabled={isDisabled}>
+                    {tokenDefinition ? t('components.nftGallery.add_nft') : t('general.verbs.continue')}
                 </AddButton>
             </AddNFTButtonContainer>
         </Modal>
