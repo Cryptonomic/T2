@@ -14,9 +14,8 @@ import Loader from '../../../../components/Loader';
 import InputAddress from '../../../../components/InputAddress';
 import TextField from '../../../../components/TextField';
 import { AddButton, AddNFTButtonContainer, InputAddressContainer, ModalHeader, SuccessText } from './style';
-import { loadTokens } from '../../../../utils/wallet';
 import { updateTokensAction } from '../../../../reduxContent/wallet/actions';
-import { setLocalData } from '../../../../utils/localData';
+import { setLocalData, getLocalData } from '../../../../utils/localData';
 
 interface Props {
     open: boolean;
@@ -34,7 +33,7 @@ const NFTAddModal = (props: Props) => {
     const { tezosUrl } = mainNode;
 
     const tokens = useSelector((state: RootState) => state.wallet.tokens, shallowEqual);
-    // const tokens = loadTokens(mainNode.network);
+    const customNftToken = getLocalData('token');
 
     const [NFTContractAddress, setNFTContractAddress] = useState('');
     const [isNFTContractAddressIssue, setIsNFTContractAddressIssue] = useState(false);
@@ -53,22 +52,24 @@ const NFTAddModal = (props: Props) => {
     };
 
     const addNFT = async () => {
-        // TODO write NFT to file after confirmation.
-        tokens.push(isTokenDefinition);
-        setLocalData('token', isTokenDefinition);
-        dispatch(updateTokensAction([...tokens]));
-        onClose();
-        console.log('tokens', tokens);
-    };
-
-    useEffect(() => {
         if (isTokenDefinition && !isTokenDefinition.displayHelpLink) {
             isTokenDefinition.displayHelpLink = helpLink;
         }
         if (isTokenDefinition && !isTokenDefinition.displayName) {
             isTokenDefinition.displayName = displayName;
         }
-    }, [isTokenDefinition]);
+        tokens.push(isTokenDefinition);
+        if (customNftToken) {
+            setLocalData('token', [...customNftToken, isTokenDefinition]);
+        } else {
+            setLocalData('token', [isTokenDefinition]);
+        }
+        dispatch(updateTokensAction([...tokens]));
+        onClose();
+        console.log('tokens', tokens);
+    };
+
+    console.log('customNftToken', customNftToken);
 
     useEffect(() => {
         setIsLoading(false);
