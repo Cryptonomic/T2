@@ -106,8 +106,8 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
         return pageTabs.map((tab) => {
             const displayTokens = tab.value.toLowerCase() in collections ? collections[tab.value.toLowerCase()] : [];
             const searchTokens = displayTokens.filter((token) => {
-                if (search && token.name && token.objectId) {
-                    const foundToken = token.name.toLowerCase().includes(search.toLowerCase()) || token.objectId.toString().includes(search);
+                if (search) {
+                    const foundToken = (token.name && token.name.toLowerCase().includes(search.toLowerCase())) || token.objectId.toString().includes(search);
                     return foundToken;
                 } else {
                     return token;
