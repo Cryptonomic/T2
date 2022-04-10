@@ -82,7 +82,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
     const dispatch = useDispatch();
 
     const [showTokensDetailsModal, setShowTokensDetailsModal] = useState(false);
-    const [isSearch, setIsSearch] = useState('');
+    const [search, setSearch] = useState('');
 
     const onClickLink = (link: string) => openLink(link);
 
@@ -106,9 +106,9 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
         return pageTabs.map((tab) => {
             const displayTokens = tab.value.toLowerCase() in collections ? collections[tab.value.toLowerCase()] : [];
             const searchTokens = displayTokens.filter((token) => {
-                if (isSearch && token) {
-                    const isToken = token.name.toLowerCase().includes(isSearch.toLowerCase()) || token.objectId.toString().includes(isSearch);
-                    return isToken;
+                if (search && token.name && token.objectId) {
+                    const foundToken = token.name.toLowerCase().includes(search.toLowerCase()) || token.objectId.toString().includes(search);
+                    return foundToken;
                 } else {
                     return token;
                 }
@@ -121,11 +121,11 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                             <SearchInput
                                 id="NFT-search-input"
                                 placeholder="Search NFT by name, collection or token ID"
-                                startAdornment={<SearchIcon style={{ fill: isSearch ? '#000000' : '#BDBDBD' }} />}
+                                startAdornment={<SearchIcon style={{ fill: search ? '#000000' : '#BDBDBD' }} />}
                                 onChange={(e) => {
-                                    setIsSearch(e.target.value);
+                                    setSearch(e.target.value);
                                 }}
-                                value={isSearch}
+                                value={search}
                             />
                         </SearchForm>
                         <AddButton
