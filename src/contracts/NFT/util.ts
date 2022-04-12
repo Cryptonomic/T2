@@ -1288,7 +1288,7 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
         hideOnLanding: true,
         marketAddress: '',
 
-        address: '',
+        address: contractAddress,
         displayName: '',
         mapid: -1,
         nftMetadataMap: -1,

@@ -656,10 +656,9 @@ function setTokensThunk() {
         const { selectedNode, nodesList } = state().settings;
         const mainNode = getMainNode(nodesList, selectedNode);
         const tokens = loadTokens(mainNode.network);
-        // add local storage data
-        const customTokens = getLocalData('token');
-        dispatch(updateTokensAction(tokens.concat(customTokens || [])));
-        // dispatch(updateTokensAction(tokens));
+        const builtinTokenAddresses = tokens.map((t) => t.address);
+        const customTokens = getLocalData('token') || [];
+        dispatch(updateTokensAction(tokens.concat(customTokens.filter((t) => !builtinTokenAddresses.includes(t.address)))));
     };
 }
 

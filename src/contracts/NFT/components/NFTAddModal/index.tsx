@@ -47,9 +47,7 @@ const NFTAddModal = (props: Props) => {
     const parseContractAddress = async () => {
         setIsLoading(true);
         const tokenDetails = await parseObjktContract(tezosUrl, NFTContractAddress);
-        tokenDetails.address = NFTContractAddress;
         setTokenDefinition(tokenDetails);
-        console.log('tokenDetails', tokenDetails);
     };
 
     const addNFT = async () => {
