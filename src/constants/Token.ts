@@ -44,6 +44,7 @@ import ursaIcon from '../../resources/contracts/ursa-icon.png';
 import materiaIcon from '../../resources/contracts/materia-icon.png';
 import objktCreditIcon from '../../resources/contracts/objkt-credit-icon.svg';
 import dogaIcon from '../../resources/contracts/doga-icon.png';
+import pxlIcon from '../../resources/contracts/pxl-icon.png';
 
 export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     {
@@ -479,6 +480,41 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1F1mn2jbqQCJcsNgYKVAQjvenecNMY2oPK',
+        displayName: 'Pixel',
+        symbol: 'PXL',
+        balance: 0,
+        transactions: [],
+        activeTab: COLLECTION,
+        kind: TokenKind.tzip12,
+        icon: pxlIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 21182,
+        helpLink: 'https://www.pixelpotus.com/',
+        displayHelpLink: 'pixelpotus.com',
+    },
+    {
+        network: 'mainnet',
+        address: 'KT1VK8vevaKZNh68fonidY4792yLyrf5Ct3u',
+        displayName: 'PixelTACTICs',
+        symbol: 'TACTICs',
+        balance: 0,
+        transactions: [],
+        activeTab: COLLECTION,
+        kind: TokenKind.objkt,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        mapid: 36518,
+        nftMetadataMap: 36521,
+        helpLink: 'https://www.pixeldebates.com/',
+        displayHelpLink: 'pixeldebates.com',
+        hideOnLanding: true,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1WGDVRnff4rmGzJUbdCRAJBmYt12BrPzdD',
         displayName: 'PixelPotus',
         symbol: 'POTUS',
@@ -607,7 +643,7 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1Qm7MHmbdiBzoRs7xqBiqoRxw7T2cxTTJN',
+        address: 'KT1CzVSa18hndYupV9NcXy3Qj7p8YFDZKVQv',
         displayName: 'Mooncakes',
         symbol: 'Mooncakes',
         balance: 0,
@@ -617,8 +653,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 0,
         precision: 0,
         round: 0,
-        mapid: 104507,
-        nftMetadataMap: 104513,
+        mapid: 127310,
+        nftMetadataMap: 127316,
         holderLocation: 'key',
         provider: NFT_PROVIDERS.OBJKT_GENERIC,
         helpLink: 'https://mooncakes.fun',
@@ -1553,6 +1589,55 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balancePath: '$.args[0].int',
         helpLink: 'https://lugh.io',
     },*/
+    {
+        network: 'ithacanet',
+        address: 'KT1XA22D7DazGGefGVGyWHH9Y2MTFmiPjxq3',
+        displayName: 'testUSDtez',
+        symbol: 'tUSDtz',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.usdtz,
+        icon: usdtzIcon,
+        scale: 6,
+        precision: 6,
+        round: 2,
+        mapid: 34654,
+        balancePath: '$.args[1].int',
+    },
+    {
+        network: 'ithacanet',
+        address: 'KT1AAfsTHPnWT5cU77CUNQ2dcQNtAJ1jauPC',
+        displayName: 'testETHtez',
+        symbol: 'tETHtz',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.usdtz,
+        icon: ethtzIcon,
+        scale: 18,
+        precision: 18,
+        round: 2,
+        mapid: 34651,
+        balancePath: '$.args[1].int',
+    },
+    {
+        network: 'ithacanet',
+        address: 'KT1D11fEJQuUGn4m161mHmZ7Lkayzq4Cv6xW',
+        displayName: 'testBTCtez',
+        symbol: 'tBTCtz',
+        balance: 0,
+        transactions: [],
+        activeTab: TRANSACTIONS,
+        kind: TokenKind.tzip12,
+        icon: btctzIcon,
+        scale: 8,
+        precision: 8,
+        round: 2,
+        mapid: 34646,
+        tokenIndex: 0,
+        balancePath: '$.int',
+    },
 ];
 
 export const knownTokenDescription = {
@@ -1738,6 +1823,9 @@ export const knownContractNames = {
     KT1MxDwChiDwd6WBVs24g1NjERUoK622ZEFp: '8bidou NFT',
 
     KT1PHubm9HtyQEJ4BBpMTVomq6mhbfNZ9z5w: 'TEIA Market',
+    KT1Dq4XtyD83Bm7Nn4PMxj9MDp2n9HXijqkx: 'PixelDebates Tactics Claims',
+    KT1Qm7MHmbdiBzoRs7xqBiqoRxw7T2cxTTJN: 'Mooncakes',
+    KT1CzVSa18hndYupV9NcXy3Qj7p8YFDZKVQv: 'Mooncakes v2',
 };
 
 export const knownMarketMetadata = [
