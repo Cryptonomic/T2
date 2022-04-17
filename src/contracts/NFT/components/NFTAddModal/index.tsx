@@ -54,12 +54,16 @@ const NFTAddModal = (props: Props) => {
         if (tokenDefinition && !tokenDefinition.displayHelpLink) {
             tokenDefinition.displayHelpLink = helpLink;
         }
+
         if (tokenDefinition && !tokenDefinition.displayName) {
             tokenDefinition.displayName = displayName;
         }
-        tokens.push(tokenDefinition);
+
         if (customNftToken) {
-            setLocalData('token', [...customNftToken, tokenDefinition]);
+            const filteredTokens = customNftToken.filter((ct) => ct.address !== tokenDefinition.address);
+            filteredTokens.push(tokenDefinition);
+
+            setLocalData('token', [...filteredTokens]);
         } else {
             setLocalData('token', [tokenDefinition]);
         }

@@ -1283,7 +1283,7 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
         scale: 0,
         precision: 0,
         round: 0,
-        holderLocation: 'value',
+        holderLocation: 'key',
         provider: 'OBJKT_GENERIC',
         hideOnLanding: true,
         marketAddress: '',
