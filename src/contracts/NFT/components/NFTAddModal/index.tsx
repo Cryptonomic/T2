@@ -15,6 +15,7 @@ import InputAddress from '../../../../components/InputAddress';
 import TextField from '../../../../components/TextField';
 import { AddButton, AddNFTButtonContainer, InputAddressContainer, ModalHeader, SuccessText } from './style';
 import { updateTokensAction } from '../../../../reduxContent/wallet/actions';
+import { endNFTSyncAction } from '../../../../reduxContent/nft/actions';
 import { setLocalData, getLocalData } from '../../../../utils/localData';
 
 interface Props {
@@ -68,8 +69,8 @@ const NFTAddModal = (props: Props) => {
             setLocalData('token', [tokenDefinition]);
         }
         dispatch(updateTokensAction([...tokens]));
+        dispatch(endNFTSyncAction(new Date(2018, 5, 30)));
         onClose();
-        console.log('tokens', tokens);
     };
 
     console.log('customNftToken', customNftToken);
@@ -91,7 +92,7 @@ const NFTAddModal = (props: Props) => {
                     }}
                     onIssue={(flag) => setIsNFTContractAddressIssue(flag)}
                 />
-                {tokenDefinition && <SuccessText> NFT Contract found!! </SuccessText>}
+                {tokenDefinition && <SuccessText> NFT Contract found! </SuccessText>}
             </InputAddressContainer>
             {isLoading && <Loader />}
             <InputAddressContainer>
