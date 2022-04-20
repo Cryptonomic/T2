@@ -68,8 +68,10 @@ const NFTAddModal = (props: Props) => {
         } else {
             setLocalData('token', [tokenDefinition]);
         }
-        dispatch(updateTokensAction([...tokens]));
-        dispatch(endNFTSyncAction(new Date(2018, 5, 30)));
+
+        dispatch(updateTokensAction([...tokens, tokenDefinition]));
+        dispatch(endNFTSyncAction(null));
+
         onClose();
     };
 
