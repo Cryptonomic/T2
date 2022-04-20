@@ -62,6 +62,7 @@ export const Theme = {
 
         // info color
         info: '#c8d2e7',
+        warning: '#E4B056',
     },
     animations: {
         defaultTime: '300ms',

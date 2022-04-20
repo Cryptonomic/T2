@@ -688,11 +688,11 @@
     },
     "nodes": {
         "errors": {
-            "wrong_server": "Something's wrong with our servers. Please delay further actions.",
+            "wrong_server": "<0>We’re currently experiencing network issues.</0>Your assets are safe but you may not be able to complete new transactions.<2> Learn more</2>",
             "wrong_network": "It seems the Tezos node you are using is either stuck or on the wrong network. Please delay further actions.",
-            "not_synced": "It seems the Conseil server is not synced with the Tezos network. Please delay further actions.",
-            "tezos_node": "Tezos node doesn't appear to be responding, please delay further actions.",
-            "indexer_server": "Conseil indexer server doesn't appear to be responding, please delay further actions."
+            "not_synced": "<0>We’re currently experiencing network issues.</0>Your assets are safe but you may not be able to see an updated transaction history. Please check back later while we work on a fix.<2> Learn more</2>",
+            "tezos_node": "<0>We’re currently experiencing network issues.</0>Your assets are safe but you may not be able to complete new transactions.<2> Learn more</2>",
+            "indexer_server": "<0>We’re currently experiencing network issues.</0>Your assets are safe but you may not be able to see an updated transaction history. Please check back later while we work on a fix.<2> Learn more</2>"
         }
     }
 }
