@@ -1272,7 +1272,7 @@ export async function getCollectionSize(tokens: ArtToken[], managerAddress: stri
     return tokenCount;
 }
 
-export async function parseObjktContract(tezosNode: string, contractAddress: string): Promise<ArtToken> {
+export async function parseObjktContract(tezosNode: string, contractAddress: string) {
     const tokenDefinition: ArtToken = {
         network: 'mainnet',
         symbol: '',
@@ -1283,12 +1283,12 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
         scale: 0,
         precision: 0,
         round: 0,
-        holderLocation: 'value',
+        holderLocation: 'key',
         provider: 'OBJKT_GENERIC',
         hideOnLanding: true,
         marketAddress: '',
 
-        address: '',
+        address: contractAddress,
         displayName: '',
         mapid: -1,
         nftMetadataMap: -1,

@@ -18,7 +18,7 @@ export interface StartNFTSyncAction {
 export interface EndNFTSyncAction {
     type: typeof END_NFT_SYNC;
     payload: {
-        timestamp: Date;
+        timestamp: Date | null;
     };
 }
 
@@ -52,4 +52,10 @@ export interface GetNFTCollectionsDataSelector {
     isNFTSyncing: boolean;
 }
 
-export type NFTActionTypes = ClearGetNFTCollectionsErrorsAction | EnableNFTSyncAction | StartNFTSyncAction | EndNFTSyncAction | SetNFTCollectionsAction | SetNFTCollectionsAreLoadingAction;
+export type NFTActionTypes =
+    | ClearGetNFTCollectionsErrorsAction
+    | EnableNFTSyncAction
+    | StartNFTSyncAction
+    | EndNFTSyncAction
+    | SetNFTCollectionsAction
+    | SetNFTCollectionsAreLoadingAction;

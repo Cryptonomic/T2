@@ -32,6 +32,7 @@ import BeaconPermission from '../../featureModals/Beacon/BeaconPermission';
 import BeaconInfo from '../../featureModals/Beacon/BeaconInfo';
 import BeaconDisabled from '../../featureModals/Beacon/BeaconDisabled';
 import PlentyHarvestModal from '../../contracts/Plenty/components/HarvestModal';
+import NFTAddModal from '../../contracts/NFT/components/NFTAddModal';
 import KolibriHarvestModal from '../../contracts/KolibriToken/components/HarvestModal';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
@@ -294,6 +295,7 @@ function AddressBlock(props: Props) {
     const isBeaconDisabledModalOpen = isModalOpen && activeModal === 'beaconDisable';
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
     const isPlentyHarvestModalOpen = isModalOpen && activeModal === 'PlentyHarvest';
+    const isNFTAddModalOpen = isModalOpen && activeModal === 'NFTAdd';
     const isKolibriHarvestModalOpen = isModalOpen && activeModal === 'KolibriHarvest';
 
     return (
@@ -483,6 +485,7 @@ function AddressBlock(props: Props) {
             )}
 
             {isPlentyHarvestModalOpen && <PlentyHarvestModal open={isPlentyHarvestModalOpen} onClose={() => setIsModalOpen(false, 'PlentyHarvest')} />}
+            {isNFTAddModalOpen && <NFTAddModal open={isNFTAddModalOpen} onClose={() => setIsModalOpen(false, 'NFTAdd')} />}
             {isKolibriHarvestModalOpen && <KolibriHarvestModal open={isKolibriHarvestModalOpen} onClose={() => setIsModalOpen(false, 'KolibriHarvest')} />}
 
             {isDelegateModalOpen && (

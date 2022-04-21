@@ -139,11 +139,8 @@ export function openBlockExplorerForAccount(account: string, network: string = '
     shell.openExternal(`${blockExplorerHost}/${network}/accounts/${account}`);
 }
 
-export function clearOperationId(operationId) {
-    if (typeof operationId === 'string') {
-        return operationId.replace(/\\|"|\n|\r/g, '');
-    }
-    return operationId;
+export function clearOperationId(operationId: string) {
+    return operationId.replace(/\"/g, '').replace(/\n/, '');
 }
 
 export const getDataFromApi = async (url: string) => {

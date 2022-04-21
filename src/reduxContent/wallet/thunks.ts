@@ -2,7 +2,22 @@ import path from 'path';
 import { ipcRenderer } from 'electron';
 import { push } from 'react-router-redux';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-import { TezosNodeWriter, KeyStoreType, Tzip7ReferenceTokenHelper, MultiAssetTokenHelper, SingleAssetTokenHelper, TzbtcTokenHelper, WrappedTezosHelper, KolibriTokenHelper, ConseilServerInfo, TezosConseilClient, ConseilQueryBuilder, ConseilOperator, ConseilDataClient, TezosNodeReader } from 'conseiljs';
+import {
+    TezosNodeWriter,
+    KeyStoreType,
+    Tzip7ReferenceTokenHelper,
+    MultiAssetTokenHelper,
+    SingleAssetTokenHelper,
+    TzbtcTokenHelper,
+    WrappedTezosHelper,
+    KolibriTokenHelper,
+    ConseilServerInfo,
+    TezosConseilClient,
+    ConseilQueryBuilder,
+    ConseilOperator,
+    ConseilDataClient,
+    TezosNodeReader,
+} from 'conseiljs';
 import { KeyStoreUtils } from 'conseiljs-softsigner';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
@@ -25,7 +40,16 @@ import * as token2Util from '../../contracts/Token2Contract/util';
 
 import { setWalletAction, setIdentitiesAction, addNewIdentityAction, updateIdentityAction, updateTokensAction } from './actions';
 
-import { logoutAction, setIsLoadingAction, setWalletIsSyncingAction, setNodesStatusAction, updateFetchedTimeAction, setLedgerAction, setIsLedgerConnectingAction, changeAccountAction } from '../app/actions';
+import {
+    logoutAction,
+    setIsLoadingAction,
+    setWalletIsSyncingAction,
+    setNodesStatusAction,
+    updateFetchedTimeAction,
+    setLedgerAction,
+    setIsLedgerConnectingAction,
+    changeAccountAction,
+} from '../app/actions';
 
 import { clearNFTCollectionsAction, endNFTSyncAction } from '../nft/actions';
 
@@ -44,6 +68,7 @@ import * as tzip12Util from '../../contracts/Token2Contract/util';
 import * as wxtzUtil from '../../contracts/WrappedTezos/util';
 import * as plentyUtil from '../../contracts/Plenty/util';
 import { JSONPath } from 'jsonpath-plus';
+import { getLocalData } from '../../utils/localData';
 
 const { restoreIdentityFromFundraiser, restoreIdentityFromMnemonic, restoreIdentityFromSecretKey } = KeyStoreUtils;
 
@@ -303,7 +328,13 @@ export function syncTokenThunk(tokenAddress) {
                 // );
             } else if (tokens[tokenIndex].kind === TokenKind.tzip12) {
                 if (tokens[tokenIndex].tokenIndex !== undefined) {
-                    balanceAsync = MultiAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].tokenIndex || 0, tokens[tokenIndex].balancePath);
+                    balanceAsync = MultiAssetTokenHelper.getAccountBalance(
+                        mainNode.tezosUrl,
+                        mapid,
+                        selectedParentHash,
+                        tokens[tokenIndex].tokenIndex || 0,
+                        tokens[tokenIndex].balancePath
+                    );
                 } else {
                     balanceAsync = SingleAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].balancePath);
                 }
@@ -421,7 +452,9 @@ export function syncWalletThunk() {
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
 
-                    const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, token.balancePath).catch(() => 0);
+                    const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, token.balancePath).catch(
+                        () => 0
+                    );
 
                     if (token.address === 'KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH' && details) {
                         // TODO
@@ -523,7 +556,12 @@ export function syncWalletThunk() {
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
 
-                    const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash, token.balancePath).catch(() => 0);
+                    const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
+                        mainNode.tezosUrl,
+                        token.mapid,
+                        selectedParentHash,
+                        token.balancePath
+                    ).catch(() => 0);
                     const transactions = [];
                     // await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
 
@@ -546,9 +584,17 @@ export function syncWalletThunk() {
 
                     let balance = 0;
                     if (token.tokenIndex !== undefined) {
-                        balance = await MultiAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash, token.tokenIndex || 0, token.balancePath).catch(() => 0);
+                        balance = await MultiAssetTokenHelper.getAccountBalance(
+                            mainNode.tezosUrl,
+                            token.mapid,
+                            selectedParentHash,
+                            token.tokenIndex || 0,
+                            token.balancePath
+                        ).catch(() => 0);
                     } else {
-                        balance = await SingleAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash, token.balancePath).catch(() => 0);
+                        balance = await SingleAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash, token.balancePath).catch(
+                            () => 0
+                        );
                     }
 
                     const transactions = []; // await tzip12Util.syncTokenTransactions(
@@ -580,7 +626,16 @@ export function syncAccountOrIdentityThunk(selectedAccountHash, selectedParentHa
     return async (dispatch) => {
         try {
             dispatch(setWalletIsSyncingAction(true));
-            if (addressType === AddressType.Token || addressType === AddressType.Token2 || addressType === AddressType.TzBTC || addressType === AddressType.wXTZ || addressType === AddressType.kUSD || addressType === AddressType.BLND || addressType === AddressType.STKR || addressType === AddressType.plenty) {
+            if (
+                addressType === AddressType.Token ||
+                addressType === AddressType.Token2 ||
+                addressType === AddressType.TzBTC ||
+                addressType === AddressType.wXTZ ||
+                addressType === AddressType.kUSD ||
+                addressType === AddressType.BLND ||
+                addressType === AddressType.STKR ||
+                addressType === AddressType.plenty
+            ) {
                 await dispatch(syncTokenThunk(selectedAccountHash));
             } else if (selectedAccountHash === selectedParentHash) {
                 await dispatch(syncIdentityThunk(selectedAccountHash));
@@ -601,7 +656,9 @@ function setTokensThunk() {
         const { selectedNode, nodesList } = state().settings;
         const mainNode = getMainNode(nodesList, selectedNode);
         const tokens = loadTokens(mainNode.network);
-        dispatch(updateTokensAction(tokens));
+        const builtinTokenAddresses = tokens.map((t) => t.address);
+        const customTokens = getLocalData('token') || [];
+        dispatch(updateTokensAction(tokens.concat(customTokens.filter((t) => !builtinTokenAddresses.includes(t.address)))));
     };
 }
 
@@ -634,11 +691,22 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     query = ConseilQueryBuilder.addPredicate(query, 'kind', ConseilOperator.EQ, ['activate_account'], false);
                     query = ConseilQueryBuilder.setLimit(query, 1);
 
-                    const account = await ConseilDataClient.executeEntityQuery({ url: conseilUrl, apiKey, network }, 'tezos', network, 'operations', query).catch(() => []);
+                    const account = await ConseilDataClient.executeEntityQuery(
+                        { url: conseilUrl, apiKey, network },
+                        'tezos',
+                        network,
+                        'operations',
+                        query
+                    ).catch(() => []);
                     if (!account || account.length === 0) {
                         const keyStore = getSelectedKeyStore([identity], identity.publicKeyHash, identity.publicKeyHash, false);
                         const newKeyStore = { ...keyStore, storeType: KeyStoreType.Fundraiser };
-                        activating = await sendIdentityActivationOperation(tezosUrl, await cloneDecryptedSigner(state().app.signer, walletPassword), newKeyStore, activationCode).catch((err) => {
+                        activating = await sendIdentityActivationOperation(
+                            tezosUrl,
+                            await cloneDecryptedSigner(state().app.signer, walletPassword),
+                            newKeyStore,
+                            activationCode
+                        ).catch((err) => {
                             throw new Error(`Count not activate account, due to – ${err.message}`);
                         });
 
@@ -663,7 +731,9 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     };
                     identity.storeType = storeTypesMap[identity.storeType];
                     await dispatch(setSignerThunk(identity.secretKey, walletPassword));
-                    const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(() => false);
+                    const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(
+                        () => false
+                    );
 
                     break;
                 }

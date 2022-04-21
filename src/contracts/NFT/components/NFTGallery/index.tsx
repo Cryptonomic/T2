@@ -1,4 +1,5 @@
 import React, { FunctionComponent, ReactElement, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { NFT_PAGE_TABS, NFT_PROVIDERS } from '../../constants';
@@ -19,7 +20,14 @@ import { tokensSupportURL } from '../../../../config.json';
 
 import { NFTErrors } from '../NFTErrors';
 import { NFTModal } from '../NFTModal';
-import { TokensDetailsModal } from '../../../../components/TokensDetailsModal';
+// import { TokensDetailsModal } from '../../../../components/TokensDetailsModal';
+import { ManageNFTsModal } from '../../../../components/ManageNFTsModal';
+
+import SearchIcon from '@mui/icons-material/Search';
+
+import { AddIcon, SearchForm, SearchInput, AddButton } from './style';
+import { RowContainer } from '../../../components/style';
+import { setModalOpen } from '../../../../reduxContent/modal/actions';
 
 const PER_PAGE = 2;
 
@@ -71,7 +79,10 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
     clearErrors,
 }): ReactElement => {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
+
     const [showTokensDetailsModal, setShowTokensDetailsModal] = useState(false);
+    const [search, setSearch] = useState('');
 
     const onClickLink = (link: string) => openLink(link);
 
@@ -94,8 +105,38 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
 
         return pageTabs.map((tab) => {
             const displayTokens = tab.value.toLowerCase() in collections ? collections[tab.value.toLowerCase()] : [];
+            const searchTokens = displayTokens.filter((token) => {
+                if (search) {
+                    const foundToken = (token.name && token.name.toLowerCase().includes(search.toLowerCase())) || token.objectId.toString().includes(search);
+                    return foundToken;
+                } else {
+                    return token;
+                }
+            });
+
             return (
                 <TabPanel key={`pb-tab-panel-${tab.value}`} index={tab.value} value={activeTab}>
+                    <RowContainer>
+                        <SearchForm>
+                            <SearchInput
+                                id="NFT-search-input"
+                                placeholder="Search NFT by name, collection or token ID"
+                                startAdornment={<SearchIcon style={{ fill: search ? '#000000' : '#BDBDBD' }} />}
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                }}
+                                value={search}
+                            />
+                        </SearchForm>
+                        <AddButton
+                            startIcon={<AddIcon />}
+                            onClick={() => dispatch(setModalOpen(true, 'NFTAdd'))}
+                            disableRipple={true}
+                            style={{ margin: '35px 37px 44px 0' }}
+                        >
+                            Add NFT
+                        </AddButton>
+                    </RowContainer>
                     <Gallery
                         cols={1}
                         breakpoints={{
@@ -112,7 +153,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                         }}
                         isEmpty={!displayTokens || displayTokens.length === 0}
                     >
-                        {displayTokens.map((token, index) => (
+                        {searchTokens.map((token, index) => (
                             <GalleryItem key={`gallery-item-${tab.value}-${index}`}>
                                 <NFTGalleryThumb nftObject={token} onClick={(nftObj) => setCurrentNFTObject(nftObj)} />
                             </GalleryItem>
@@ -171,7 +212,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
 
             <NFTModal nftObject={currentNFTObject} onClose={() => setCurrentNFTObject(null)} />
 
-            <TokensDetailsModal open={showTokensDetailsModal} tokens={tokens} onClose={() => setShowTokensDetailsModal(false)} />
+            <ManageNFTsModal open={showTokensDetailsModal} tokens={tokens} onClose={() => setShowTokensDetailsModal(false)} />
         </Container>
     );
 };
