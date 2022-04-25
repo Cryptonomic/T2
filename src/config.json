@@ -22,5 +22,6 @@
     "customProtocols": ["tezori", "tezos"],
     "beaconEnable": true,
     "fullVersionUrl": "https://github.com/Cryptonomic/T2",
-    "versionUpdateUrl": "https://github.com/Cryptonomic/T2"
+    "versionUpdateUrl": "https://github.com/Cryptonomic/T2",
+    "isAppStore": true
 }

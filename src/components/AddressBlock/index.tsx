@@ -43,6 +43,7 @@ import { getLocalData, setLocalData } from '../../utils/localData';
 
 import { RootState } from '../../types/store';
 import { AddressType, Identity, TokenKind } from '../../types/general';
+import { isAppStore } from '../../config.json';
 
 const { Mnemonic } = KeyStoreType;
 
@@ -224,7 +225,7 @@ function AddressBlock(props: Props) {
 
     function goToAccount(addressId, index, addressType, tokenName = '') {
         const isMac = platform.indexOf('Mac') === 0;
-        if (isMac && addressType === AddressType.NFTGallery) {
+        if (isMac && addressType === AddressType.NFTGallery && isAppStore) {
             setIsModalOpen(true, 'DisableNftModal');
         } else {
             dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType, tokenName));

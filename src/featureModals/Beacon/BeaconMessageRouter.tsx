@@ -5,6 +5,7 @@ import { BeaconErrorType } from '@airgap/beacon-sdk';
 import { setBeaconMessageAction, setBeaconLoading, setBeaconClientAction } from '../../reduxContent/app/actions';
 import { setModalOpen, setModalValue } from '../../reduxContent/modal/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
+import { isAppStore } from '../../config.json';
 
 import { getMainNode } from '../../utils/settings';
 
@@ -111,7 +112,7 @@ export const BeaconMessageRouter = () => {
                 await beaconClient.init();
                 await beaconClient.connect((message, connection) => {
                     const isMac = platform.indexOf('Mac') === 0;
-                    if (isMac) {
+                    if (isMac && isAppStore) {
                         dispatch(setModalOpen(true, 'DisableBeaconModal'));
                     } else {
                         dispatch(setBeaconMessageAction(message, connection));
