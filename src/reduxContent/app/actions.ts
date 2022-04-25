@@ -35,6 +35,7 @@ import {
     SetLaunchUrlAction,
 } from './types';
 import { NodeStatus, AddressType } from '../../types/general';
+import { SetPlatformAction, SET_PLATFORM } from './types';
 
 export function setIsLoadingAction(isLoading: boolean): SetIsLoadingAction {
     return {
@@ -137,5 +138,12 @@ export function setLaunchUrl(url: string): SetLaunchUrlAction {
     return {
         type: SET_LAUNCH_URL,
         url,
+    };
+}
+
+export function setPlatformAction(platform: string): SetPlatformAction {
+    return {
+        type: SET_PLATFORM,
+        platform,
     };
 }

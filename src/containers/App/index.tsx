@@ -17,7 +17,7 @@ import TopBar from '../../components/TopBar';
 import VersionStatus from '../../components/VersionStatus';
 import MessageBar from '../../components/MessageBar';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { setLaunchUrl } from '../../reduxContent/app/actions';
+import { setLaunchUrl, setPlatformAction } from '../../reduxContent/app/actions';
 import { setModalOpen, setModalValue, setModalActiveTab } from '../../reduxContent/modal/actions';
 import { getNewVersionThunk } from '../../reduxContent/app/thunks';
 import { getIsNodesSelector } from '../../reduxContent/settings/selectors';
@@ -46,6 +46,7 @@ function App() {
 
     useEffect(() => {
         dispatch(getNewVersionThunk());
+        dispatch(setPlatformAction(navigator.platform));
 
         ipcRenderer.on('showMessage', (event, msg) => {
             dispatch(createMessageAction(msg, false));

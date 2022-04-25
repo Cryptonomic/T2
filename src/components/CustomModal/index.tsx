@@ -32,29 +32,31 @@ const CloseIconWrapper = styled(CloseIcon)`
     }
 `;
 
-const ModalTitle = styled.div`
+const ModalTitle = styled.div<{ weight: number | undefined }>`
     padding: 0 76px;
     font-size: 24px;
     letter-spacing: 1px;
     line-height: 34px;
     font-weight: 300;
+    font-weight: ${({ weight }) => (!weight ? 300 : weight)};
     color: ${({ theme: { colors } }) => colors.primary};
 `;
 
 interface Props {
     title: string;
+    titleWeight?: number;
     open: boolean;
     children?: React.ReactNode;
     onClose: () => void;
 }
 
 const CustomModal = (props: Props) => {
-    const { title, open, children, onClose, ...other } = props;
+    const { title, titleWeight, open, children, onClose, ...other } = props;
     return (
         <ModalWrapper open={open}>
             <ModalContainer {...other}>
                 <CloseIconWrapper onClick={onClose} />
-                <ModalTitle>{title}</ModalTitle>
+                <ModalTitle weight={titleWeight}>{title}</ModalTitle>
                 {children}
             </ModalContainer>
         </ModalWrapper>

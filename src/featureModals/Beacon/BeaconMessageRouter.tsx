@@ -22,6 +22,7 @@ export const BeaconMessageRouter = () => {
     const beaconClientLoaded = useSelector((state: RootState) => state.app.beaconClient);
     const isError = useSelector((state: RootState) => state.message.isError);
     const beaconLoading = useSelector((state: RootState) => state.app.beaconLoading);
+    const platform = useSelector<RootState, string>((state) => state.app.platform);
 
     const connectedBlockchainNode = getMainNode(settings.nodesList, settings.selectedNode);
 
@@ -88,7 +89,6 @@ export const BeaconMessageRouter = () => {
         if (!isError || !beaconLoading) {
             return;
         }
-
         dispatch(dispatch(setBeaconLoading()));
     }, [isError, beaconLoading]);
 
@@ -109,7 +109,14 @@ export const BeaconMessageRouter = () => {
         const init = async () => {
             try {
                 await beaconClient.init();
-                await beaconClient.connect((message, connection) => dispatch(setBeaconMessageAction(message, connection)));
+                await beaconClient.connect((message, connection) => {
+                    const isMac = platform.indexOf('Mac') === 0;
+                    if (isMac) {
+                        dispatch(setModalOpen(true, 'DisableBeaconModal'));
+                    } else {
+                        dispatch(setBeaconMessageAction(message, connection));
+                    }
+                });
             } catch (e) {
                 console.log('BeaconMessageRouter Error', e);
             }
