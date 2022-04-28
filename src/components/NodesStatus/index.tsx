@@ -35,6 +35,11 @@ const MediumText = styled.span`
     display: block;
 `;
 
+const CustomNodeErrorText = styled.p`
+    padding-top: 2px;
+    margin: 0;
+`;
+
 interface Props {
     message: string;
 }
@@ -68,6 +73,10 @@ const NodesStatus = (props: Props) => {
         }
         if (msg === 'nodes.errors.wrong_network') {
             return t('nodes.errors.wrong_network');
+        }
+
+        if (msg === 'nodes.errors.custom_node_error') {
+            return <CustomNodeErrorText>{t('nodes.errors.custom_node_error')}</CustomNodeErrorText>;
         }
 
         return '';

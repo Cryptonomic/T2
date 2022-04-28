@@ -14,12 +14,13 @@ import HomeMain from '../HomeMain';
 import HomeAdd from '../HomeAdd';
 
 import { getNodesError } from '../../utils/general';
-import { RootState, AppState } from '../../types/store';
+import { RootState, AppState, SettingsState } from '../../types/store';
 
 function HomePage() {
     const { isLedger, nodesStatus } = useSelector<RootState, AppState>((state) => state.app, shallowEqual);
+    const { nodesList, selectedNode } = useSelector<RootState, SettingsState>((state) => state.settings, shallowEqual);
     const isIdentities = useSelector(getIsIdentitesSelector);
-    const nodesErrorMessage = getNodesError(nodesStatus);
+    const nodesErrorMessage = getNodesError(nodesStatus, nodesList, selectedNode);
     const dispatch = useDispatch();
 
     async function onDetectLedger() {
