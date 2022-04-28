@@ -27,6 +27,7 @@ import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { useFetchFees } from '../../../reduxContent/app/thunks';
 import { RootState } from '../../../types/store';
 import { AddressType } from '../../../types/general';
+import EstimatedFee from '../../../components/EstimatedFee';
 
 import { Container, FeeTooltipBtn, TooltipContainer, TooltipContent, TooltipTitle, BoldSpan, UseMax, BurnTooltipBtn, AmountContainer } from './style';
 
@@ -281,31 +282,26 @@ function Send(props: Props) {
     return (
         <Container>
             <SendTitle>{t('components.send.send_xtz')}</SendTitle>
-            <InputAddress label={t('components.send.recipient_address')} address={selectedAccountHash} operationType="send" onChange={handleToAddressChange} onIssue={(err) => setIsAddressIssue(err)} onAddressType={(type) => setAddressType(type)} />
+            <InputAddress
+                label={t('components.send.recipient_address')}
+                address={selectedAccountHash}
+                operationType="send"
+                onChange={handleToAddressChange}
+                onIssue={(err) => setIsAddressIssue(err)}
+                onAddressType={(type) => setAddressType(type)}
+            />
             <AmountContainer>
-                <TezosNumericInput decimalSeparator={t('general.decimal_separator')} label={t('general.nouns.amount')} amount={amount} onChange={handleAmountChange} errorText={error} />
+                <TezosNumericInput
+                    decimalSeparator={t('general.decimal_separator')}
+                    label={t('general.nouns.amount')}
+                    amount={amount}
+                    onChange={handleAmountChange}
+                    errorText={error}
+                />
                 <UseMax onClick={() => onUseMax()}>{t('general.verbs.use_max')}</UseMax>
             </AmountContainer>
             <FeesBurnContainer>
-                <FeeContainer>
-                    <Fees
-                        low={newFees.low}
-                        medium={newFees.medium}
-                        high={newFees.high}
-                        fee={fee}
-                        miniFee={miniFee}
-                        onChange={handleFeeChange}
-                        tooltip={
-                            !isRevealed && (
-                                <Tooltip position="bottom" content={renderFeeToolTip()}>
-                                    <FeeTooltipBtn size="small">
-                                        <TezosIcon iconName="help" size={ms(1)} color="gray5" />
-                                    </FeeTooltipBtn>
-                                </Tooltip>
-                            )
-                        }
-                    />
-                </FeeContainer>
+                <EstimatedFee />
                 {isBurn && (
                     <BurnsContainer>
                         <TextField disabled={true} label={t('components.transaction.burn')} defaultValue="0.06425" />
@@ -334,9 +330,30 @@ function Send(props: Props) {
             </BottomContainer>
 
             {!isLedger ? (
-                <SendConfirmationModal onEnterPress={(event) => onEnterPress(event.key)} amount={amount} fee={fee} source={selectedAccountHash} password={password} address={toAddress} open={open} onClose={() => setOpen(false)} onPasswordChange={(val) => setPassword(val)} onSend={() => onSend()} isLoading={isLoading} isBurn={isBurn} />
+                <SendConfirmationModal
+                    onEnterPress={(event) => onEnterPress(event.key)}
+                    amount={amount}
+                    fee={fee}
+                    source={selectedAccountHash}
+                    password={password}
+                    address={toAddress}
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    onPasswordChange={(val) => setPassword(val)}
+                    onSend={() => onSend()}
+                    isLoading={isLoading}
+                    isBurn={isBurn}
+                />
             ) : (
-                <SendLedgerConfirmationModal amount={amount} fee={fee} address={toAddress} source={selectedAccountHash} open={open} onClose={() => setOpen(false)} isLoading={isLoading} />
+                <SendLedgerConfirmationModal
+                    amount={amount}
+                    fee={fee}
+                    address={toAddress}
+                    source={selectedAccountHash}
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    isLoading={isLoading}
+                />
             )}
         </Container>
     );
