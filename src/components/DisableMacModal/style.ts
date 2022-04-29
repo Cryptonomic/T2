@@ -23,3 +23,8 @@ export const OkButton = styled(Button)`
     height: 48px;
     margin-left: auto;
 `;
+
+export const Link = styled.span`
+    text-decoration: underline;
+    cursor: pointer;
+`;
