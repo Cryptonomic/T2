@@ -1845,7 +1845,7 @@ export const knownContractNames = {
     KT1Qm7MHmbdiBzoRs7xqBiqoRxw7T2cxTTJN: 'Mooncakes',
     KT1CzVSa18hndYupV9NcXy3Qj7p8YFDZKVQv: 'Mooncakes v2',
     KT19oLahfvtuEHWBGzWKYuUqpt2s78isuPvq: "Ottez Gen2 Fusion",
-    KT1JBNFcB5tiycHNdYGYCtR3kk6JaJysUCi8: "Decathlon NFT",
+    KT1QXngq1CCuWv5RtnuYCSvGdKGeBxsRCWvQ: "Decathlon NFT",
     KT1JBNFcB5tiycHNdYGYCtR3kk6JaJysUCi8: "EURL"
 };
 
