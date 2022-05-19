@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 
-import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation, Origination, ConseilQueryBuilder, ConseilOperator, ConseilFunction, ConseilDataClient } from 'conseiljs';
+import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosMessageUtils, Delegation, Origination, Reveal, ConseilQueryBuilder, ConseilOperator, ConseilFunction, ConseilDataClient } from 'conseiljs';
 
 import { cloneDecryptedSigner } from '../../utils/wallet';
 
@@ -153,7 +153,6 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
     let counter = networkCounter;
     for (const o of operations) {
         counter += 1;
-        console.log('createOperationGroup', operations);
         switch (o.kind) {
             case 'transaction': {
                 let entrypoint: string | undefined;
@@ -202,6 +201,21 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
                     gas_limit: TezosConstants.DefaultDelegationGasLimit.toString(),
                     balance: '0',
                     script: o.script,
+                };
+
+                formedOperations.push(op);
+
+                break;
+            }
+            case 'reveal': {
+                const op: Reveal = {
+                    kind: 'reveal',
+                    source: publicKeyHash,
+                    fee: TezosConstants.DefaultKeyRevealFee.toString(),
+                    counter: counter.toString(),
+                    gas_limit: TezosConstants.DefaultKeyRevealGasLimit.toString(),
+                    storage_limit: TezosConstants.DefaultKeyRevealStorageLimit.toString(),
+                    public_key: o.public_key
                 };
 
                 formedOperations.push(op);
