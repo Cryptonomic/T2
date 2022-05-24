@@ -123,12 +123,16 @@ export function openLink(link: string) {
     shell.openExternal(link);
 }
 
-export function openBlockExplorerForOperation(operation: string, network: string = 'mainnet') {
+export function openBlockExplorerForOperation(operation: string, network: string = 'mainnet', isBeacon = false) {
     if (!blockExplorerHost.startsWith('https://')) {
         throw new Error('Invalid URL provided, only https scheme is accepted');
     }
 
-    shell.openExternal(`${blockExplorerHost}/${network}/operations/${operation}`);
+    if (isBeacon) {
+        shell.openExternal(`https://tezblock.io/transaction/${operation}`);
+    } else {
+        shell.openExternal(`${blockExplorerHost}/${network}/operations/${operation}`);
+    }
 }
 
 export function openBlockExplorerForAccount(account: string, network: string = 'mainnet') {

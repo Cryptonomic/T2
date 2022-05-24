@@ -381,7 +381,7 @@ export function depositThunk(fee: number, amount: string, password: string, toAd
     };
 }
 
-export function sendTezThunk(password: string, toAddress: string, amount: string, fee: number) {
+export function sendTezThunk(password: string, toAddress: string, amount: string, fee: number, isBeacon = false) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
@@ -467,7 +467,7 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
 
             await saveIdentitiesToLocal(state().wallet.identities);
 
-            dispatch(createMessageAction('components.messageBar.messages.success_sent', false, clearedOperationId, Number(amount)));
+            dispatch(createMessageAction('components.messageBar.messages.success_sent', false, clearedOperationId, Number(amount), isBeacon));
             return true;
         }
         return false;

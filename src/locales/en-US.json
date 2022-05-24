@@ -369,7 +369,8 @@
         },
         "messageBar": {
             "operation_id": "OPERATION ID",
-            "view_block_explorer": "View on Arronax",
+            "view_arronax": "View on Arronax",
+            "view_block_explorer": "View on a block explorer",
             "messages": {
                 "amount_not_valid": "Amount is not valid.",
                 "address_begin": "Address must begin with tz1 or KT1.",

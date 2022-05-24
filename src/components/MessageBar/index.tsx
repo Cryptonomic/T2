@@ -29,7 +29,7 @@ const SnackbarWrapper = styled(Snackbar)`
 
 function MessageBar() {
     const settings = useSelector<RootState, any>((state: RootState) => state.settings);
-    const { text, hash, isError, localeParam } = useSelector<RootState, MessageState>((state) => state.message, shallowEqual);
+    const { text, hash, isError, localeParam, isBeacon } = useSelector<RootState, MessageState>((state) => state.message, shallowEqual);
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
 
@@ -43,7 +43,7 @@ function MessageBar() {
         const { selectedNode, nodesList } = settings;
         const currentNode = getMainNode(nodesList, selectedNode);
 
-        openBlockExplorerForOperation(hash, currentNode.network);
+        openBlockExplorerForOperation(hash, currentNode.network, isBeacon);
         onClose();
     }
 
@@ -81,6 +81,7 @@ function MessageBar() {
                     onClose={() => onClose()}
                     isError={isError}
                     localeParam={localeParam}
+                    isBeacon={isBeacon}
                 />
             }
         />

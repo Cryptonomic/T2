@@ -39,6 +39,7 @@ export interface MessageState {
     isError: boolean;
     hash: string;
     localeParam: number;
+    isBeacon: boolean;
 }
 
 export interface SettingsState {
