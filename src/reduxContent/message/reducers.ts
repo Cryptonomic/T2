@@ -7,7 +7,6 @@ const initState = {
     isError: false,
     hash: '',
     localeParam: 0,
-    isBeacon: false,
 };
 
 export function messageReducer(state = initState, action: MessageActionTypes): MessageState {

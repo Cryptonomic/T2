@@ -122,7 +122,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     setLedgerModalOpen(false);
                 }
             } else {
-                dispatch(sendTezThunk(password, destination, formatAmount(amount), utezFee, true));
+                dispatch(sendTezThunk(password, destination, formatAmount(amount), utezFee));
             }
         } catch (e) {
             console.log('Transaction.Error', e);

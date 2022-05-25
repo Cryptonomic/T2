@@ -7,8 +7,8 @@ export function clearMessageAction(): ClearMessageAction {
     };
 }
 
-export function createMessageAction(text: string, isError: boolean, hash: string = '', localeParam: number = 0, isBeacon = false): CreateMessageAction {
-    const payload: MessageState = { text, isError, hash, localeParam, isBeacon };
+export function createMessageAction(text: string, isError: boolean, hash: string = '', localeParam: number = 0): CreateMessageAction {
+    const payload: MessageState = { text, isError, hash, localeParam };
     return {
         type: ADD_MESSAGE,
         payload,

@@ -94,13 +94,12 @@ interface Props {
     realHash: string;
     isError: boolean;
     localeParam: number;
-    isBeacon: boolean;
     openLink: (link?: string) => void;
     onClose: () => void;
 }
 
 const MessageContent = (props: Props) => {
-    const { content, realHash, hash, openLink, onClose, isError, localeParam, isBeacon } = props;
+    const { content, realHash, hash, openLink, onClose, isError, localeParam } = props;
     const { t } = useTranslation();
 
     if (content === 'components.messageBar.messages.ledger_linux_error') {
@@ -165,11 +164,7 @@ const MessageContent = (props: Props) => {
                     />
 
                     <LinkContainer onClick={() => openLink()}>
-                        {isBeacon ? (
-                            <LinkTitle>{t('components.messageBar.view_block_explorer')}</LinkTitle>
-                        ) : (
-                            <LinkTitle>{t('components.messageBar.view_arronax')}</LinkTitle>
-                        )}
+                        <LinkTitle>{t('components.messageBar.view_block_explorer')}</LinkTitle>
                         <BroadIcon iconName="new-window" size={ms(0)} color="white" />
                     </LinkContainer>
                 </MessageFooter>

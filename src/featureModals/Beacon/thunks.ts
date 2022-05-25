@@ -159,7 +159,7 @@ export function sendOperations(password: string, operations: any[], fee: number 
             }
 
             const clearedOperationId = clearOperationId(result.operationGroupID);
-            dispatch(createMessageAction('components.messageBar.messages.success_invoke_operation', false, clearedOperationId, 0, true));
+            dispatch(createMessageAction('components.messageBar.messages.success_invoke_operation', false, clearedOperationId));
 
             return true;
         }
