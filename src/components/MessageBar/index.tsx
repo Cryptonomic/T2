@@ -39,8 +39,9 @@ function MessageBar() {
             onClose();
             return;
         }
-
-        openBlockExplorerForOperation(hash);
+        const { selectedNode, nodesList } = settings;
+        const currentNode = getMainNode(nodesList, selectedNode);
+        openBlockExplorerForOperation(hash, currentNode.network);
         onClose();
     }
 
