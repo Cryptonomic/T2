@@ -643,6 +643,24 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
+        address: 'KT1L3RtW77iYcdmZdYDBu6QzEgFamYrqMTwN',
+        displayName: 'Ottez Gen2 Fusion',
+        symbol: 'Ottez Gen2 Fusion',
+        balance: 0,
+        transactions: [],
+        activeTab: COLLECTION,
+        kind: TokenKind.objkt,
+        scale: 0,
+        precision: 0,
+        round: 0,
+        mapid: 157931,
+        nftMetadataMap: 157933,
+        holderLocation: 'key',
+        provider: NFT_PROVIDERS.OBJKT_GENERIC,
+        hideOnLanding: true,
+    },
+    {
+        network: 'mainnet',
         address: 'KT1CzVSa18hndYupV9NcXy3Qj7p8YFDZKVQv',
         displayName: 'Mooncakes',
         symbol: 'Mooncakes',
@@ -738,9 +756,9 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
     },
     {
         network: 'mainnet',
-        address: 'KT1VyjT73xJCkiNtoxrvZ9a5dHqZ33NVcce4',
-        displayName: 'Sample Collection',
-        symbol: 'SC',
+        address: 'KT1QXngq1CCuWv5RtnuYCSvGdKGeBxsRCWvQ',
+        displayName: 'Decathlon NFT',
+        symbol: 'DEC',
         balance: 0,
         transactions: [],
         activeTab: COLLECTION,
@@ -748,8 +766,8 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         scale: 0,
         precision: 0,
         round: 0,
-        mapid: 100592,
-        nftMetadataMap: 100595,
+        mapid: 104097,
+        nftMetadataMap: 104100,
         holderLocation: 'key',
         provider: NFT_PROVIDERS.OBJKT_GENERIC,
         hideOnLanding: true,
@@ -1571,9 +1589,9 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         balancePath: '$.args[1].int',
         helpLink: 'https://twitter.com/heh_hedgehoge',
     },
-    /*{
+    {
         network: 'mainnet',
-        address: 'XXXXX',
+        address: 'KT1JBNFcB5tiycHNdYGYCtR3kk6JaJysUCi8',
         displayName: 'Lugh Euro',
         symbol: 'EURL',
         balance: 0,
@@ -1585,10 +1603,10 @@ export const knownTokenContracts: (Token | VaultToken | ArtToken)[] = [
         precision: 6,
         round: 6,
         tokenIndex: 0,
-        mapid: XXXX,
+        mapid: 44140,
         balancePath: '$.args[0].int',
         helpLink: 'https://lugh.io',
-    },*/
+    },
     {
         network: 'ithacanet',
         address: 'KT1XA22D7DazGGefGVGyWHH9Y2MTFmiPjxq3',
@@ -1826,6 +1844,9 @@ export const knownContractNames = {
     KT1Dq4XtyD83Bm7Nn4PMxj9MDp2n9HXijqkx: 'PixelDebates Tactics Claims',
     KT1Qm7MHmbdiBzoRs7xqBiqoRxw7T2cxTTJN: 'Mooncakes',
     KT1CzVSa18hndYupV9NcXy3Qj7p8YFDZKVQv: 'Mooncakes v2',
+    KT19oLahfvtuEHWBGzWKYuUqpt2s78isuPvq: "Ottez Gen2 Fusion",
+    KT1QXngq1CCuWv5RtnuYCSvGdKGeBxsRCWvQ: "Decathlon NFT",
+    KT1JBNFcB5tiycHNdYGYCtR3kk6JaJysUCi8: "EURL"
 };
 
 export const knownMarketMetadata = [
