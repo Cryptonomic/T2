@@ -134,7 +134,11 @@ export function openBlockExplorerForOperation(operation: string, network: string
         throw new Error('Invalid URL provided, only https scheme is accepted');
     }
 
-    shell.openExternal(`${blockExplorerHost}/${network}/operations/${operation}`);
+    if (network === 'mainnet') {
+        shell.openExternal(`https://tezblock.io/transaction/${operation}`);
+    } else {
+        shell.openExternal(`https://${network}.tzkt.io/${operation}`);
+    }
 }
 
 export function openBlockExplorerForAccount(account: string, network: string = 'mainnet') {
