@@ -24,6 +24,7 @@ export interface AppState {
     beaconConnection: ConnectionContext | null;
     beaconLoading: boolean;
     launchUrl: string | null;
+    platform: string;
 }
 
 export interface WalletState {

@@ -17,6 +17,7 @@ export const SET_BEACON_MESSAGE = 'SET_BEACON_MESSAGE';
 export const SET_BEACON_LOADING = 'SET_BEACON_LOADING';
 export const SET_BEACON_CLIENT = 'SET_BEACON_CLIENT';
 export const SET_LAUNCH_URL = 'SET_LAUNCH_URL';
+export const SET_PLATFORM = 'SET_PLATFORM';
 
 export interface SetBeaconClientAction {
     type: typeof SET_BEACON_CLIENT;
@@ -105,6 +106,11 @@ export interface ShowSignVerifyAction {
     type: typeof SHOW_SIGN_VERIFY;
 }
 
+export interface SetPlatformAction {
+    type: typeof SET_PLATFORM;
+    platform: string;
+}
+
 export type AppActionTypes =
     | SetIsLoadingAction
     | LogoutAction
@@ -120,4 +126,5 @@ export type AppActionTypes =
     | SetBeaconClientAction
     | SetBeaconMessageAction
     | SetBeaconLoadingAction
-    | SetLaunchUrlAction;
+    | SetLaunchUrlAction
+    | SetPlatformAction;

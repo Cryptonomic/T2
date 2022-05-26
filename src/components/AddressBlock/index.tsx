@@ -34,6 +34,7 @@ import BeaconDisabled from '../../featureModals/Beacon/BeaconDisabled';
 import PlentyHarvestModal from '../../contracts/Plenty/components/HarvestModal';
 import NFTAddModal from '../../contracts/NFT/components/NFTAddModal';
 import KolibriHarvestModal from '../../contracts/KolibriToken/components/HarvestModal';
+import DisableMacModal from '../DisableMacModal';
 import { setModalOpen, clearModal } from '../../reduxContent/modal/actions';
 import { changeAccountThunk } from '../../reduxContent/app/thunks';
 import { getSelectedNode } from '../../reduxContent/settings/selectors';
@@ -42,6 +43,7 @@ import { getLocalData, setLocalData } from '../../utils/localData';
 
 import { RootState } from '../../types/store';
 import { AddressType, Identity, TokenKind } from '../../types/general';
+import { isAppStore } from '../../config.json';
 
 const { Mnemonic } = KeyStoreType;
 
@@ -184,6 +186,7 @@ function AddressBlock(props: Props) {
     const selectedAccountHash = useSelector<RootState, string>((state) => state.app.selectedAccountHash);
     const selectedAccountType = useSelector<RootState, number>((state) => state.app.selectedAccountType);
     const selectedTokenName = useSelector<RootState, string>((state) => state.app.selectedTokenName);
+    const platform = useSelector<RootState, string>((state) => state.app.platform);
     const isModalOpen = useSelector<RootState, boolean>((state) => state.modal.open);
     const activeModal = useSelector<RootState, string>((state) => state.modal.activeModal);
     const selectedNode = useSelector(getSelectedNode);
@@ -221,7 +224,12 @@ function AddressBlock(props: Props) {
     };
 
     function goToAccount(addressId, index, addressType, tokenName = '') {
-        dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType, tokenName));
+        const isMac = platform.indexOf('Mac') === 0;
+        if (isMac && addressType === AddressType.NFTGallery && isAppStore) {
+            setIsModalOpen(true, 'DisableNftModal');
+        } else {
+            dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType, tokenName));
+        }
     }
 
     function setIsModalOpen(open, active) {
@@ -296,6 +304,8 @@ function AddressBlock(props: Props) {
     const isDelegateModalOpen = isModalOpen && activeModal === 'delegate_contract';
     const isPlentyHarvestModalOpen = isModalOpen && activeModal === 'PlentyHarvest';
     const isNFTAddModalOpen = isModalOpen && activeModal === 'NFTAdd';
+    const isDisableNftModalOpen = isModalOpen && activeModal === 'DisableNftModal';
+    const isDisableBeaconModalOpen = isModalOpen && activeModal === 'DisableBeaconModal';
     const isKolibriHarvestModalOpen = isModalOpen && activeModal === 'KolibriHarvest';
 
     return (
@@ -487,7 +497,10 @@ function AddressBlock(props: Props) {
             {isPlentyHarvestModalOpen && <PlentyHarvestModal open={isPlentyHarvestModalOpen} onClose={() => setIsModalOpen(false, 'PlentyHarvest')} />}
             {isNFTAddModalOpen && <NFTAddModal open={isNFTAddModalOpen} onClose={() => setIsModalOpen(false, 'NFTAdd')} />}
             {isKolibriHarvestModalOpen && <KolibriHarvestModal open={isKolibriHarvestModalOpen} onClose={() => setIsModalOpen(false, 'KolibriHarvest')} />}
-
+            {isDisableNftModalOpen && <DisableMacModal open={isDisableNftModalOpen} status="nft" onClose={() => setIsModalOpen(false, 'DisableNftModal')} />}
+            {isDisableBeaconModalOpen && (
+                <DisableMacModal open={isDisableBeaconModalOpen} status="beacon" onClose={() => setIsModalOpen(false, 'DisableBeaconModal')} />
+            )}
             {isDelegateModalOpen && (
                 <AddDelegateModal open={isDelegateModalOpen} onClose={() => setIsModalOpen(false, 'delegate_contract')} managerBalance={balance} />
             )}
