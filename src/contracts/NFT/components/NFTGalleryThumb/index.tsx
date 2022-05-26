@@ -20,11 +20,16 @@ export const NFTGalleryThumb: FunctionComponent<GalleryThumbProps> = ({ nftObjec
     const { name, price, artifactUrl, artifactType, artifactModerationMessage, creators, provider, thumbnailUri } = nftObject;
 
     const displayAddress = creators && creators.length > 0 ? `${creators.slice(0, 6)}...${creators.slice(creators.length - 3, creators.length)}` : '';
+    const onGetSourceUrl = () => {
+        if (artifactUrl) return artifactUrl;
+        if (thumbnailUri) return thumbnailUri;
+        return '';
+    };
 
     return (
         <ThumbContainer onClick={() => onClick(nftObject)}>
             <MediaStyled
-                source={thumbnailUri || artifactUrl || ''}
+                source={onGetSourceUrl()}
                 type={artifactType}
                 alt={name || ''}
                 thumbProps={{
