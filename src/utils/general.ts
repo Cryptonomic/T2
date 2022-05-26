@@ -29,7 +29,13 @@ export async function getNodesStatus(node: Node): Promise<NodeStatus> {
     };
 }
 
-export function getNodesError({ tezos, conseil }: NodeStatus): string {
+export function getNodesError({ tezos, conseil }: NodeStatus, nodes: Node[] = [], displayName: string = ''): string {
+    if (nodes.length > 0 && displayName) {
+        const selectedNode = nodes.find((node) => node.displayName === displayName) || nodes[0];
+        if (selectedNode.tezosUrl.indexOf('cryptonomic-infra.tech') === -1) {
+            return 'nodes.errors.custom_node_error';
+        }
+    }
     if (!tezos) {
         return 'nodes.errors.tezos_node';
     }
