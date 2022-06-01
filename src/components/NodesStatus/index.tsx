@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon/';
+import { openLink } from '../../utils/general';
 
 const Container = styled.div`
     display: flex;
@@ -44,12 +45,15 @@ interface Props {
     message: string;
 }
 
+const NetworkErrorLink = 'https://cryptonomic.zendesk.com/hc/en-us/articles/6587794089101';
+const ConseilErrorLink = 'https://cryptonomic.zendesk.com/hc/en-us/articles/6587884720653';
+
 const NodesStatus = (props: Props) => {
     const { message } = props;
     const { t } = useTranslation();
 
-    function goTo() {
-        console.log('goto');
+    function goTo(link) {
+        openLink(link);
     }
 
     function onGetNodeStatus(msg) {
@@ -58,7 +62,7 @@ const NodesStatus = (props: Props) => {
                 <Trans i18nKey="nodes.errors.tezos_node">
                     <MediumText>We’re currently experiencing network issues.</MediumText>
                     Your assets are safe but you may not be able to complete new transactions.
-                    <Link onClick={() => goTo()}> Learn more </Link>
+                    <Link onClick={() => goTo(NetworkErrorLink)}> Learn more </Link>
                 </Trans>
             );
         }
@@ -67,7 +71,7 @@ const NodesStatus = (props: Props) => {
                 <Trans i18nKey="nodes.errors.not_synced">
                     <MediumText>We’re currently experiencing network issues.</MediumText>
                     Your assets are safe but you may not be able to see an updated transaction history. Please check back later while we work on a fix.
-                    <Link onClick={() => goTo()}> Learn more </Link>
+                    <Link onClick={() => goTo(ConseilErrorLink)}> Learn more </Link>
                 </Trans>
             );
         }
