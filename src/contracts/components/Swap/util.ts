@@ -115,13 +115,26 @@ export const tokenPoolMap = {
     }, // tezdao
     KT1Ha4yFVeyzw6KRAdkzq6TxDHB97KG4pZe8: {
         dexterPool: '',
-        quipuPool: '',
+        quipuPool: 'KT1Ucg1fTZXBD8P426rTRXyu7YQUgYXV7RVu',
         vortexPool: 'KT1NoozaPXHKZHobxcheTWa1XLSTChUTgBg1',
     }, // doga
     KT1F1mn2jbqQCJcsNgYKVAQjvenecNMY2oPK: {
         dexterPool: '',
         quipuPool: 'KT1UJ1hVTdiUen7H3zk1CXGC7PbANb57VkS4',
     }, // pxl
+    KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4: {
+        dexterPool: '',
+        quipuPool: 'KT1FbYwEWU8BTfrvNoL5xDEC5owsDxv9nqKT',
+        vortexPool: 'KT1MRMsyWYCwf2ex2wN4yuihJbNykCDHdRTT'
+    }, // ctez
+    KT1KRvNVubq64ttPbQarxec5XdS6ZQU4DVD2: {
+        dexterPool: '',
+        quipuPool: 'KT1FptuULGK69mZRsBz62CSFdRs52etEb6Ah',
+    }, // mtria
+    'KT1CS2xKGHNPTauSh5Re4qE3N9PCfG5u4dPx+0': {
+        dexterPool: '',
+        quipuPool: 'KT1Eg2QesN1tCzScTrvoeKm5W67GgjV32McR',
+    }, // spi
 };
 
 export function isTradeable(tokenAddress: string, tokenIndex?: number) {

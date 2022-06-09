@@ -26,6 +26,14 @@ const farms = [
     'KT1MkXtVBuCKtxqSh7APrg2d7ThGBmEf4hnw', // you lp farm
     'KT1FJzDx9AwbuNHjhzQuUxxKUMA9BQ7DVfGn', // wdai lp farm
     'KT1S4XjwGtk55TmsMqSdazEMrH4pGA3NMXhz', // wusdt lp farm
+    'KT1MfMMsYX34Q9cEaPtk4qkQ6pojA7D2nsgr', // ctez lp farm
+    'KT1HpncMNCYt1ZskHzZeFqHFgfM8ZEr8xd3f', // kUSD-USDC.e lp farm
+    'KT1GQ7UTHFA8gTH3uTzDnb1znDDBfJ7eXCUJ', // uUSD-USDC.e lp farm
+    'KT1SzTf3uBZAx1DnPbNTg29H7dVPbuzkGJNo', // tzBTC-WBTC.e lp farm
+    'KT1E6qsUB3EKEDs4S3yQCyr39zVjsjBtFjEp', // DOGA-CTEZ lp farm
+    'KT1P3MUj7ZY1pak1szf41vxtuqz7AVMgCLhj', // USDC.e-ctez lp farm
+    'KT1SzTf3uBZAx1DnPbNTg29H7dVPbuzkGJNo', // tzBTC-WBTC.e lp farm
+    'KT1VRAYxpCo5xHYmBLYmMAWxXoVYCVgpeuak', // WBTC.e-ctez lp farm
 ];
 const farmBalanceMaps = [
     4488,
