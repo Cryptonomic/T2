@@ -694,7 +694,7 @@
     "nodes": {
         "errors": {
             "wrong_server": "<0>We’re currently experiencing network issues.</0>Your assets are safe but you may not be able to complete new transactions.<2> Learn more</2>",
-            "wrong_network": "It seems the Tezos node you are using is either stuck or on the wrong network. Please delay further actions.",
+            "wrong_network": "<0>We’re currently experiencing network issues.</0>Your assets are safe but you may not be able to complete new transactions.<2> Learn more</2>",
             "not_synced": "<0>We’re currently experiencing network issues.</0>Your assets are safe but you may not be able to see an updated transaction history. Please check back later while we work on a fix.<2> Learn more</2>",
             "tezos_node": "<0>We’re currently experiencing network issues.</0>Your assets are safe but you may not be able to complete new transactions.<2> Learn more</2>",
             "indexer_server": "<0>We’re currently experiencing network issues.</0>Your assets are safe but you may not be able to see an updated transaction history. Please check back later while we work on a fix.<2> Learn more</2>",

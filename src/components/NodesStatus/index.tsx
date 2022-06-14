@@ -57,7 +57,7 @@ const NodesStatus = (props: Props) => {
     }
 
     function onGetNodeStatus(msg) {
-        if (msg === 'nodes.errors.tezos_node' || msg === 'nodes.errors.wrong_server') {
+        if (msg === 'nodes.errors.tezos_node' || msg === 'nodes.errors.wrong_server' || msg === 'nodes.errors.wrong_network') {
             return (
                 <Trans i18nKey="nodes.errors.tezos_node">
                     <MediumText>We’re currently experiencing network issues.</MediumText>
@@ -74,9 +74,6 @@ const NodesStatus = (props: Props) => {
                     <Link onClick={() => goTo(ConseilErrorLink)}> Learn more </Link>
                 </Trans>
             );
-        }
-        if (msg === 'nodes.errors.wrong_network') {
-            return t('nodes.errors.wrong_network');
         }
 
         if (msg === 'nodes.errors.custom_node_error') {
