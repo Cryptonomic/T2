@@ -16,9 +16,10 @@ import FaqBar from '../../components/FaqBar';
 
 import { getNodesError } from '../../utils/general';
 import { RootState, AppState, SettingsState } from '../../types/store';
+import { isAppStore } from '../../config.json';
 
 function HomePage() {
-    const { isLedger, nodesStatus, isInitedWallet } = useSelector<RootState, AppState>((state) => state.app, shallowEqual);
+    const { isLedger, nodesStatus, isInitedWallet, platform } = useSelector<RootState, AppState>((state) => state.app, shallowEqual);
     const { nodesList, selectedNode } = useSelector<RootState, SettingsState>((state) => state.settings, shallowEqual);
     const isIdentities = useSelector(getIsIdentitesSelector);
     const nodesErrorMessage = getNodesError(nodesStatus, nodesList, selectedNode);
@@ -58,7 +59,7 @@ function HomePage() {
                 <Route path="/home/add" component={HomeAdd} />
                 <Redirect to={redirectTo} />
             </Switch>
-            {!isInitedWallet && <FaqBar />}
+            {!isInitedWallet && platform.indexOf('Mac') === 0 && isAppStore && <FaqBar />}
         </Fragment>
     );
 }
