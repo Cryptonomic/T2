@@ -49,6 +49,7 @@ import {
     setLedgerAction,
     setIsLedgerConnectingAction,
     changeAccountAction,
+    setWalletInitedAction,
 } from '../app/actions';
 
 import { clearNFTCollectionsAction, endNFTSyncAction } from '../nft/actions';
@@ -766,6 +767,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     dispatch(setIsLoadingAction(false));
                     dispatch(push('/home'));
                     await dispatch(syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash, AddressType.Manager));
+                    dispatch(setWalletInitedAction());
                 } else {
                     dispatch(createMessageAction('components.messageBar.messages.identity_exist', true));
                 }
@@ -859,6 +861,7 @@ export function loginThunk(loginType, walletLocation, walletFileName, password) 
             dispatch(setIsLoadingAction(false));
             dispatch(push('/home'));
             await dispatch(syncWalletThunk());
+            dispatch(setWalletInitedAction());
         } catch (e) {
             console.error(e);
             dispatch(setIsLoadingAction(false));
@@ -890,6 +893,7 @@ export function connectLedgerThunk() {
                 dispatch(automaticAccountRefresh());
                 dispatch(push('/home'));
                 await dispatch(syncWalletThunk());
+                dispatch(setWalletInitedAction());
             } catch (e) {
                 console.error(e);
                 let message = e.name;

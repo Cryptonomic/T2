@@ -18,6 +18,7 @@ import {
     SET_BEACON_LOADING,
     SET_LAUNCH_URL,
     SET_PLATFORM,
+    WALLET_IS_INITED,
 } from './types';
 
 const initState: AppState = {
@@ -44,6 +45,7 @@ const initState: AppState = {
     beaconConnection: null,
     launchUrl: null,
     platform: '',
+    isInitedWallet: false,
 };
 
 export function appReducer(state: AppState = initState, action: AppActionTypes) {
@@ -78,6 +80,8 @@ export function appReducer(state: AppState = initState, action: AppActionTypes) 
             return { ...state, launchUrl: action.url };
         case SET_PLATFORM:
             return { ...state, platform: action.platform };
+        case WALLET_IS_INITED:
+            return { ...state, isInitedWallet: true };
         default:
             return state;
     }

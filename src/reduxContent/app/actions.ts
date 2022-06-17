@@ -33,9 +33,10 @@ import {
     SET_BEACON_LOADING,
     SET_LAUNCH_URL,
     SetLaunchUrlAction,
+    SetWalletInitedAction,
 } from './types';
 import { NodeStatus, AddressType } from '../../types/general';
-import { SetPlatformAction, SET_PLATFORM } from './types';
+import { SetPlatformAction, SET_PLATFORM, WALLET_IS_INITED } from './types';
 
 export function setIsLoadingAction(isLoading: boolean): SetIsLoadingAction {
     return {
@@ -145,5 +146,11 @@ export function setPlatformAction(platform: string): SetPlatformAction {
     return {
         type: SET_PLATFORM,
         platform,
+    };
+}
+
+export function setWalletInitedAction(): SetWalletInitedAction {
+    return {
+        type: WALLET_IS_INITED,
     };
 }
