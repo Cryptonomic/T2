@@ -12,12 +12,13 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import NodesStatus from '../../components/NodesStatus';
 import HomeMain from '../HomeMain';
 import HomeAdd from '../HomeAdd';
+import FaqBar from '../../components/FaqBar';
 
 import { getNodesError } from '../../utils/general';
 import { RootState, AppState, SettingsState } from '../../types/store';
 
 function HomePage() {
-    const { isLedger, nodesStatus } = useSelector<RootState, AppState>((state) => state.app, shallowEqual);
+    const { isLedger, nodesStatus, isInitedWallet } = useSelector<RootState, AppState>((state) => state.app, shallowEqual);
     const { nodesList, selectedNode } = useSelector<RootState, SettingsState>((state) => state.settings, shallowEqual);
     const isIdentities = useSelector(getIsIdentitesSelector);
     const nodesErrorMessage = getNodesError(nodesStatus, nodesList, selectedNode);
@@ -57,6 +58,7 @@ function HomePage() {
                 <Route path="/home/add" component={HomeAdd} />
                 <Redirect to={redirectTo} />
             </Switch>
+            {!isInitedWallet && <FaqBar />}
         </Fragment>
     );
 }

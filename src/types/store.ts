@@ -25,6 +25,7 @@ export interface AppState {
     beaconLoading: boolean;
     launchUrl: string | null;
     platform: string;
+    isInitedWallet: boolean;
 }
 
 export interface WalletState {

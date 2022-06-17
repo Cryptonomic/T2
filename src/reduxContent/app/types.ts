@@ -18,6 +18,7 @@ export const SET_BEACON_LOADING = 'SET_BEACON_LOADING';
 export const SET_BEACON_CLIENT = 'SET_BEACON_CLIENT';
 export const SET_LAUNCH_URL = 'SET_LAUNCH_URL';
 export const SET_PLATFORM = 'SET_PLATFORM';
+export const WALLET_IS_INITED = 'WALLET_IS_INITED';
 
 export interface SetBeaconClientAction {
     type: typeof SET_BEACON_CLIENT;
@@ -88,6 +89,10 @@ export interface SetLaunchUrlAction {
     url: string;
 }
 
+export interface SetWalletInitedAction {
+    type: typeof WALLET_IS_INITED;
+}
+
 export interface ChangeAccountType {
     selectedAccountHash: string;
     selectedParentHash: string;
@@ -127,4 +132,5 @@ export type AppActionTypes =
     | SetBeaconMessageAction
     | SetBeaconLoadingAction
     | SetLaunchUrlAction
-    | SetPlatformAction;
+    | SetPlatformAction
+    | SetWalletInitedAction;

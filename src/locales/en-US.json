@@ -609,6 +609,9 @@
             "nft_title": "The NFT gallery is unavailable in the App Store version of Galleon",
             "nft_description": "Due to App Store compliance requirements, dapp connectivity and the NFT gallery is not available in the App Store version of Galleon. <1>Learn More</1>",
             "beacon_title": "Dapp Interactions Unavailable"
+        },
+        "faq": {
+            "description": "Please visit our <1>FAQ</1> for questions about app features."
         }
     },
     "containers": {
