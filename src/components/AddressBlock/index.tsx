@@ -325,10 +325,11 @@ function AddressBlock(props: Props) {
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
                 />
             )}
-
-            <AddDelegateLabel isActive={!isModalOpen && isNFTGallerysPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.NFTGallery)}>
-                <DelegateTitle>{t('general.nouns.nft_gallery')}</DelegateTitle>
-            </AddDelegateLabel>
+            {!(platform.indexOf('Mac') === 0 && isAppStore) && (
+                <AddDelegateLabel isActive={!isModalOpen && isNFTGallerysPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.NFTGallery)}>
+                    <DelegateTitle>{t('general.nouns.nft_gallery')}</DelegateTitle>
+                </AddDelegateLabel>
+            )}
 
             <AddDelegateLabel isActive={!isModalOpen && isLiquidityPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.PlatformLiquidity)}>
                 <DelegateTitle>{t('general.nouns.platform_liquidity')}</DelegateTitle>
