@@ -224,12 +224,7 @@ function AddressBlock(props: Props) {
     };
 
     function goToAccount(addressId, index, addressType, tokenName = '') {
-        const isMac = platform.indexOf('Mac') === 0;
-        if (isMac && addressType === AddressType.NFTGallery && isAppStore) {
-            setIsModalOpen(true, 'DisableNftModal');
-        } else {
-            dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType, tokenName));
-        }
+        dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType, tokenName));
     }
 
     function setIsModalOpen(open, active) {
@@ -325,10 +320,6 @@ function AddressBlock(props: Props) {
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
                 />
             )}
-
-            <AddDelegateLabel isActive={!isModalOpen && isNFTGallerysPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.NFTGallery)}>
-                <DelegateTitle>{t('general.nouns.nft_gallery')}</DelegateTitle>
-            </AddDelegateLabel>
 
             <AddDelegateLabel isActive={!isModalOpen && isLiquidityPageActive} onClick={() => goToAccount(publicKeyHash, 0, AddressType.PlatformLiquidity)}>
                 <DelegateTitle>{t('general.nouns.platform_liquidity')}</DelegateTitle>
