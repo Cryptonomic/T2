@@ -1821,7 +1821,7 @@ export const knownContractNames = {
     KT1D56HQfMmwdopmFLTwNHFJSs6Dsg2didFo: 'Dexter wXTZ Pool',
     KT1AbYeDbjjcAnV1QK7EZUUdqku77CdkTuv6: 'Dexter kUSD Pool',
 
-    KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5: 'Granada tzBTC Pool',
+    KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5: 'Sirius tzBTC Pool',
 
     KT1WxgZ1ZSfMgmsSDDcUn8Xn577HwnQ7e1Lb: 'QuipuSwap USDtz Pool',
     KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6: 'QuipuSwap kUSD Pool',
@@ -1959,9 +1959,9 @@ export const knownContractNames = {
     KT1Dq4XtyD83Bm7Nn4PMxj9MDp2n9HXijqkx: 'PixelDebates Tactics Claims',
     KT1Qm7MHmbdiBzoRs7xqBiqoRxw7T2cxTTJN: 'Mooncakes',
     KT1CzVSa18hndYupV9NcXy3Qj7p8YFDZKVQv: 'Mooncakes v2',
-    KT19oLahfvtuEHWBGzWKYuUqpt2s78isuPvq: "Ottez Gen2 Fusion",
-    KT1QXngq1CCuWv5RtnuYCSvGdKGeBxsRCWvQ: "Decathlon NFT",
-    KT1JBNFcB5tiycHNdYGYCtR3kk6JaJysUCi8: "EURL"
+    KT19oLahfvtuEHWBGzWKYuUqpt2s78isuPvq: 'Ottez Gen2 Fusion',
+    KT1QXngq1CCuWv5RtnuYCSvGdKGeBxsRCWvQ: 'Decathlon NFT',
+    KT1JBNFcB5tiycHNdYGYCtR3kk6JaJysUCi8: 'EURL',
 };
 
 export const knownMarketMetadata = [
@@ -1993,7 +1993,7 @@ export const knownMarketMetadata = [
         network: 'mainnet',
         address: 'KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5',
         token: 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn',
-        name: 'Granada tzBTC Pool',
+        name: 'Sirius tzBTC Pool',
         scale: 8,
         symbol: 'tzBTC',
     },
