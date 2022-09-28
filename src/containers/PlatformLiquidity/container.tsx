@@ -318,7 +318,7 @@ const PlatformLiquidity = () => {
                             size={ms(4.5)}
                             amount={ammTokenBalance}
                             weight="light"
-                            symbol={'LP'}
+                            symbol={'SIRS'}
                             showTooltip={true}
                             scale={6}
                             precision={6}
@@ -379,7 +379,7 @@ const PlatformLiquidity = () => {
                                         amount={lpAmount}
                                         onChange={updateLPAmount}
                                         errorText={lpError}
-                                        symbol={'LP'}
+                                        symbol={'SIRS'}
                                         scale={6}
                                         precision={6}
                                     />

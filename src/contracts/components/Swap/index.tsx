@@ -392,7 +392,7 @@ function Swap(props: Props) {
                             <div style={{ alignItems: 'left' }}>
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && dexterTokenCost > 0 && (
                                     <div>
-                                        Cost {quipuTokenCost > 0 ? (token.symbol.toLocaleLowerCase() === 'tzbtc' ? ' on GranadaSwap' : 'on Dexter') : ''}{' '}
+                                        Cost {quipuTokenCost > 0 ? (token.symbol.toLocaleLowerCase() === 'tzbtc' ? ' on Sirius' : 'on Dexter') : ''}{' '}
                                         {formatAmount(dexterTokenCost)} XTZ
                                     </div>
                                 )}
@@ -405,8 +405,7 @@ function Swap(props: Props) {
 
                                 {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && dexterTokenProceeds > 0 && (
                                     <div>
-                                        Proceeds{' '}
-                                        {quipuTokenProceeds > 0 ? (token.symbol.toLocaleLowerCase() === 'tzbtc' ? ' on GranadaSwap' : 'on Dexter') : ''}{' '}
+                                        Proceeds {quipuTokenProceeds > 0 ? (token.symbol.toLocaleLowerCase() === 'tzbtc' ? ' on Sirius' : 'on Dexter') : ''}{' '}
                                         {formatAmount(dexterTokenProceeds)} XTZ
                                     </div>
                                 )}
@@ -442,8 +441,7 @@ function Swap(props: Props) {
                     {bestMarket && bestMarket.length > 0 && (
                         <>
                             {' '}
-                            {t('general.prepositions.on')}{' '}
-                            {bestMarket === 'Dexter' && token.symbol.toLocaleLowerCase() === 'tzbtc' ? 'Granada Swap' : bestMarket}
+                            {t('general.prepositions.on')} {bestMarket === 'Dexter' && token.symbol.toLocaleLowerCase() === 'tzbtc' ? 'Sirius' : bestMarket}
                         </>
                     )}
                 </InvokeButton>
