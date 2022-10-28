@@ -1,15 +1,29 @@
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage
+.eslintcache
+
+# Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+node_modules
+
+# OSX
 .DS_Store
 
-node_modules/
-dist/
-release/
-assets/
-dll/
-coverage/
+release/app/dist
+release/build
+.erb/dll
 
-src/dist/
-src/main.prod.js
-src/main.prod.js.map
-src/node_modules
-
-**/walletSettings.json
+.idea
+npm-debug.log.*
+*.css.d.ts
+*.sass.d.ts
+*.scss.d.ts
