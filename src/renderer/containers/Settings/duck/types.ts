@@ -6,8 +6,9 @@ export const CHANGE_PATH = 'SET_PATH';
 export const ADD_PATH = 'ADD_PATH';
 export const REMOVE_PATH = 'REMOVE_PATH';
 export const CLEAR_STATE = 'CLEAR_STATE';
+export const INIT_SETTINGS = 'INIT_SETTINGS';
 
-import { Node, Path } from '../../../types/general';
+import { Node, Path, SettingsType } from '../../../types/general';
 
 // export interface SettingsCustomSelectItemProps {
 //   value: string;
@@ -56,6 +57,11 @@ export interface RemovePathAction {
   label: string;
 }
 
+export interface InitSettingsAction {
+  type: typeof INIT_SETTINGS;
+  settings: SettingsType;
+}
+
 export type SettingsActionTypes =
   | ChangeNodeAction
   | ChangeLocaleAction
@@ -63,4 +69,5 @@ export type SettingsActionTypes =
   | RemoveNodeAction
   | AddPathAction
   | ChangePathAction
-  | RemovePathAction;
+  | RemovePathAction
+  | InitSettingsAction;

@@ -24,7 +24,7 @@ import {
     BalanceAmount,
     ListsWrapper,
     SearchForm,
-    SearchInput,
+    // SearchInput,
     BoxesGrid,
     BoxFront,
     BoxBack,
@@ -174,14 +174,14 @@ const TokensPage = () => {
             </TopWrapper>
             <ListsWrapper>
                 <SearchForm>
-                    <SearchInput
+                    {/* <SearchInput
                         defaultValue=""
                         id="token-search-input"
                         placeholder="Search Tokens"
                         startAdornment={<SearchIcon style={{ fill: search ? '#000000' : '#BDBDBD' }} />}
                         onChange={onSearchTokens}
                         value={search}
-                    />
+                    /> */}
                 </SearchForm>
                 {!!activeTokens.length && (
                     <>

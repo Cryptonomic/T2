@@ -1,5 +1,5 @@
 import { Channels } from 'main/preload';
-import { KeyStore } from 'conseiljs';
+import { KeyStore, Signer } from 'conseiljs';
 
 declare global {
   interface Window {
@@ -29,6 +29,13 @@ declare global {
       dialog: {
         openDialog: (filters) => Promise<any>,
         saveDialog: (filters) => Promise<any>,
+      };
+      path: {
+        join: (str1, str2) => string;
+      };
+      fs: {
+        writeFile: (filename, wallet) => Promise<any>,
+        readFile: (filename: string) => Promise<any>
       }
     };
 
@@ -51,11 +58,24 @@ declare global {
         encryptMessage: (message: Buffer, passphrase: string, salt: Buffer) => Promise<Buffer>,
         checkTextSignature: (signature: string, message: string, publicKey: string, prehash?: boolean) => Promise<boolean>,
         checkSignature: (signature: string, bytes: Buffer, publicKey: string) => Promise<boolean>
+      };
+      CryptoUtils: {
+        decryptMessage: (message: Buffer, passphrase: string, salt: Buffer) => Promise<string>
+      }
+      SoftSigner: {
+        createSigner: (secretKey: Buffer, password?: string) => Promise<Signer>;
       }
     };
     conseiljsLedgerSigner: {
       KeyStoreUtils: {
         unlockAddress: (derivationPath: string) => Promise<KeyStore>,
+        getTezosPublicKey: (derivationPath: string) => Promise<string>
+      }
+    };
+    conseiljs: {
+      TezosMessageUtils: {
+        writeKeyWithHint: (txt, pre) => any,
+        writeBufferWithHint: (txt: string) => any,
         getTezosPublicKey: (derivationPath: string) => Promise<string>
       }
     };

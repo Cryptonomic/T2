@@ -21,8 +21,8 @@ export const routes: RouteObject[] = [
                 <Home />
             </RequireAuth>,
         children: [
-            // { index: true, element: <HomeMain /> },
-            // { path: '/add', element: <HomeAdd /> },
+            { index: true, element: <HomeMain /> },
+            { path: '/add', element: <HomeAdd /> },
         ]
     },
     { path: "/settings", element: <Settings /> },

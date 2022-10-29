@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import path from 'path';
 import { KeyStore, KeyStoreType, TezosMessageUtils, Signer } from 'conseiljs';
 import { CryptoUtils, SoftSigner } from 'conseiljs-softsigner';
 // import { KeyStoreUtils } from 'conseiljs-ledgersigner';
@@ -15,7 +13,7 @@ import { knownTokenContracts } from '../constants/Token';
 // const { unlockAddress } = KeyStoreUtils;
 
 export async function saveUpdatedWallet(identities, walletLocation, walletFileName, password) {
-    const completeWalletPath = path.join(walletLocation, walletFileName);
+    const completeWalletPath = window.electron.path.join(walletLocation, walletFileName);
     return await saveWallet(completeWalletPath, { identities }, password);
 }
 
@@ -103,16 +101,7 @@ export async function saveWallet(filename: string, wallet: Wallet, passphrase: s
         kdf: 'Argon2',
     };
 
-    const p = new Promise((resolve, reject) => {
-        fs.writeFile(filename, JSON.stringify(encryptedWallet), { mode: 0o600 }, (err) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(undefined);
-        });
-    });
-    await p;
+    const p = await window.electron.fs.writeFile(filename, JSON.stringify(encryptedWallet));
     return loadWallet(filename, passphrase);
 }
 
@@ -124,22 +113,14 @@ export async function saveWallet(filename: string, wallet: Wallet, passphrase: s
  * @returns {Promise<Wallet>} Loaded wallet
  */
 export async function loadWallet(filename: string, passphrase: string): Promise<Wallet> {
-    const p = new Promise<EncryptedWalletVersionOne>((resolve, reject) => {
-        fs.readFile(filename, (err, data) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            const encryptedWallet: EncryptedWalletVersionOne = JSON.parse(data.toString()) as EncryptedWalletVersionOne;
-            resolve(encryptedWallet);
-        });
-    });
-
-    const ew = await p;
-    const encryptedKeys = TezosMessageUtils.writeBufferWithHint(ew.ciphertext);
-    const salt = TezosMessageUtils.writeBufferWithHint(ew.salt);
-
-    const walletData: any[] = JSON.parse((await CryptoUtils.decryptMessage(encryptedKeys, passphrase, salt)).toString());
+    const p = await window.electron.fs.readFile(filename);
+    const ew: EncryptedWalletVersionOne = JSON.parse(p.toString()) as EncryptedWalletVersionOne;
+    const encryptedKeys = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.ciphertext);
+    console.log('111111')
+    const salt = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.salt);
+    console.log('222222')
+    const walletData: any[] = JSON.parse(await window.conseiljsSoftSigner.CryptoUtils.decryptMessage(encryptedKeys, passphrase, salt));
+    console.log('333333', walletData)
     const keys: KeyStore[] = [];
 
     walletData.forEach((w) => {

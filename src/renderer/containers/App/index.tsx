@@ -22,8 +22,10 @@ import { getNewVersionThunk } from '../../reduxContent/app/thunks';
 import { getIsNodesSelector } from '../../reduxContent/settings/selectors';
 import { getWalletName } from '../../reduxContent/wallet/selectors';
 import { getLoggedIn } from '../../utils/login';
+import { getWalletSettings } from '../../utils/settings';
 import { RootState, WalletState, AppState } from '../../types/store';
 import { routes } from '../routes';
+import { resetAllLocalData } from '../../utils/localData';
 
 
 const Container = styled.div`
@@ -56,6 +58,8 @@ function  App() {
         });
 
         window.electron.ipcRenderer.on('login', (msg: any, ...args: any) => {
+
+            console.log('loggedin', msg, args)
             dispatch(createMessageAction(msg, true));
 
             let param = '';
@@ -124,7 +128,9 @@ function  App() {
 
         const onGetWalletSettings = async () => {
             try {
-                const fileSettings = require('../../extraResources/walletSettings.json');
+                const walletSettings = getWalletSettings();
+                console.log('walletsettings', walletSettings)
+                dispatch({type: 'INIT_SETTINGS', settings: walletSettings});
               } catch (err) {
                 window.setTimeout(() => {
                     navigate('/walletNodesRequired', { replace: true });
@@ -132,6 +138,8 @@ function  App() {
                 console.error('load setting error', err);
               }
         }
+
+        // resetAllLocalData()
 
         onGetWalletSettings();
     }, []);

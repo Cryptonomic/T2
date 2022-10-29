@@ -15,7 +15,7 @@ import log from 'electron-log';
 import Store from 'electron-store';
 import * as png from 'pngjs';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
+
 import { KeyStoreUtils as  KeyStoreUtilsLedger } from 'conseiljs-ledgersigner';
 import os from 'os';
 
@@ -26,8 +26,12 @@ import { schema, defaultStore } from '../renderer/utils/localData';
 import { registerFetch, registerLogger } from 'conseiljs';
 import fetch from 'electron-fetch';
 import * as loglevel from 'loglevel';
+import * as fs from 'fs';
 
 import config from '../renderer/config.json';
+
+import './modules/conseiljs';
+import './modules/conseiljsSoftSigner';
 
 // require('@electron/remote/main').initialize()
 
@@ -57,52 +61,6 @@ ipcMain.on('electron-store-delete', async (event, key) => {
 
 ipcMain.on('open-enternal-link', async (event, url) => {
   shell.openExternal(url);
-});
-
-ipcMain.on('conseiljs-softsigner-generateMnemonic', async (event, val) => {
-  event.returnValue = KeyStoreUtils.generateMnemonic(val);
-});
-
-ipcMain.on('conseiljs-softsigner-generateIdentity', async (event, strength?: number, password?: string, mnemonic?: string) => {
-  const keyStore = await KeyStoreUtils.generateIdentity(strength, password, mnemonic);
-  event.returnValue = keyStore;
-});
-
-ipcMain.on('conseiljs-softsigner-restoreIdentityFromSecretKey', async (event, secretKey: string) => {
-  const keyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(secretKey);
-  event.returnValue = keyStore;
-});
-
-ipcMain.on('conseiljs-softsigner-restoreIdentityFromMnemonic', async (event, mnemonic: string, password?: string, pkh?: string, derivationPath?: string, validate?: boolean) => {
-  const keyStore = await KeyStoreUtils.restoreIdentityFromMnemonic(mnemonic, password, pkh, derivationPath, validate);
-  event.returnValue = keyStore;
-});
-
-ipcMain.on('conseiljs-softsigner-restoreIdentityFromFundraiser', async (event, mnemonic: string, email: string, password: string, pkh: string) => {
-  const keyStore = await KeyStoreUtils.restoreIdentityFromFundraiser(mnemonic, email, password, pkh);
-  event.returnValue = keyStore;
-});
-
-
-ipcMain.on('conseiljs-softsigner-generateKeys', async (event, seed: Buffer) => {
-  const {publicKey, secretKey} = await KeyStoreUtils.generateKeys(seed);
-  event.returnValue = {publicKey, secretKey};
-});
-ipcMain.on('conseiljs-softsigner-recoverKeys', async (event, secretKey: Buffer) => {
-  const val = await KeyStoreUtils.recoverKeys(secretKey);
-  event.returnValue = val;
-});
-ipcMain.on('conseiljs-softsigner-decryptMessage', async (event, message: Buffer, passphrase: string, salt: Buffer) => {
-  event.returnValue = await KeyStoreUtils.decryptMessage(message, passphrase, salt);;
-});
-ipcMain.on('conseiljs-softsigner-encryptMessage', async (event, message: Buffer, passphrase: string, salt: Buffer) => {
-  event.returnValue = await KeyStoreUtils.encryptMessage(message, passphrase, salt);
-});
-ipcMain.on('conseiljs-softsigner-checkTextSignature', async (event, signature: string, message: string, publicKey: string, prehash?: boolean) => {
-  event.returnValue = await KeyStoreUtils.checkTextSignature(signature, message, publicKey, prehash);
-});
-ipcMain.on('conseiljs-softsigner-checkSignature', async (event, signature: string, bytes: Buffer, publicKey: string) => {
-  event.returnValue = await KeyStoreUtils.checkSignature(signature, bytes, publicKey);
 });
 
 ipcMain.on('conseiljs-ledgersigner-KeyStoreUtils-unlockAddress', async (event, derivationPath: string) => {
@@ -161,6 +119,20 @@ ipcMain.on('electron-dialog-save', async (event, dialogFilters) => {
     event.returnValue = {}
   }
 });
+
+ipcMain.on('node-path-join', async (event, str1, str2) => {
+  event.returnValue = path.join(str1, str2);
+});
+
+ipcMain.on('node-fs-writeFile', async (event, filename, wallet) => {
+  event.returnValue = await fs.writeFileSync(filename, wallet, { mode: 0o600 })
+});
+
+ipcMain.on('node-fs-readfile', async (event, filename) => {
+  event.returnValue = await fs.readFileSync(filename, {encoding:'utf8', flag:'r'})
+});
+
+
 
 // ipcMain.on('electron-remote-dialog-showSaveDialog', async (event, text) => {
   

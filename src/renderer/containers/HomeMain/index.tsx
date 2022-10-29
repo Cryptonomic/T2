@@ -38,7 +38,7 @@ function HomeMain() {
 
     useEffect(() => {
         if (launchUrl) {
-            // ipcRenderer.send('wallet', launchUrl);
+            window.electron.ipcRenderer.sendMessage('wallet', [launchUrl]);
             dispatch(setLaunchUrl(''));
         }
     }, []);

@@ -18,7 +18,6 @@ import { getBakerDetails, getTezosDomains, getPrices } from '../../reduxContent/
 import config from '../../config.json';
 import { RootState } from '../../types/store';
 
-const { shell } = require('electron');
 const { Mnemonic } = KeyStoreType;
 
 import {
@@ -113,7 +112,7 @@ function BalanceBanner(props: Props) {
         let url = config.wertUrl;
         url = url + publicKeyHash;
         url = url + '&currency=USD&currency_amount=100';
-        await shell.openExternal(url);
+        await window.electron.shell.openExternal(url);
     };
 
     return (

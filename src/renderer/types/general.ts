@@ -215,3 +215,11 @@ export interface EncryptedWalletVersionOne {
      */
     kdf: string;
 }
+
+export interface SettingsType {
+    locale: string,
+    selectedNode: string,
+    nodesList: Node[],
+    selectedPath: string,
+    pathsList: Path[]
+  }

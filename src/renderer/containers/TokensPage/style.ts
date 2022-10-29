@@ -177,24 +177,24 @@ export const SearchForm = mStyled(FormControl)({
     display: 'flex',
 });
 
-export const SearchInput = withStyles((theme) => ({
-    root: {
-        'label + &': {
-            marginTop: theme.spacing(3),
-        },
-        backgroundColor: '#F4F4F4',
-        borderRadius: '4px',
-        height: '32px',
-        maxWidth: '462px',
-        padding: '0px 12px',
-    },
-    input: {
-        borderRadius: 4,
-        position: 'relative',
-        backgroundColor: '#F4F4F4',
-        fontSize: 16,
-        width: 'auto',
-        padding: '0px 0px 0px 12px',
-        transition: theme.transitions.create(['border-color', 'box-shadow']),
-    },
-}))(InputBase);
+// export const SearchInput = withStyles((theme) => ({
+//     root: {
+//         'label + &': {
+//             marginTop: theme.spacing(3),
+//         },
+//         backgroundColor: '#F4F4F4',
+//         borderRadius: '4px',
+//         height: '32px',
+//         maxWidth: '462px',
+//         padding: '0px 12px',
+//     },
+//     input: {
+//         borderRadius: 4,
+//         position: 'relative',
+//         backgroundColor: '#F4F4F4',
+//         fontSize: 16,
+//         width: 'auto',
+//         padding: '0px 0px 0px 12px',
+//         transition: theme.transitions.create(['border-color', 'box-shadow']),
+//     },
+// }))(InputBase);

@@ -1,7 +1,7 @@
 import { getLocalData, resetLocalData } from '../utils/localData';
-import { Node, Path } from '../types/general';
+import { Node, Path, SettingsType } from '../types/general';
 
-const defaultSettings = {
+export const defaultSettings: SettingsType = {
   locale: 'en-US',
   selectedNode: '',
   nodesList: [],
@@ -11,9 +11,10 @@ const defaultSettings = {
 
 export function getWalletSettings() {
   const localSettings = getLocalData('settings');
+  console.log('localSettings----', localSettings)
   if (
-    (!!localSettings.selectedNode && localSettings.nodesList.length === 0) ||
-    (!!localSettings.selectedPath && localSettings.pathsList.length === 0)
+    (!localSettings.selectedNode && localSettings.nodesList.length === 0) ||
+    (!localSettings.selectedPath && localSettings.pathsList.length === 0)
   ) {
     resetLocalData('settings');
     return getInitWalletSettings();

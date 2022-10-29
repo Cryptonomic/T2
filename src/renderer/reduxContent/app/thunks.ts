@@ -12,7 +12,7 @@ import {
     KeyStoreCurve,
     KeyStoreType,
 } from 'conseiljs';
-import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
+// import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
 import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
 
 import { changeAccountAction, addNewVersionAction, setSignerAction } from './actions';
@@ -365,8 +365,8 @@ export function setSignerThunk(key: string, password: string) {
     }
 
     return async (dispatch: any) => {
-        const keyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(key);
-        const signer = await SoftSigner.createSigner(TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'), password);
+        const keyStore = await window.conseiljsSoftSigner.KeyStoreUtils.restoreIdentityFromSecretKey(key);
+        const signer = await window.conseiljsSoftSigner.SoftSigner.createSigner(window.conseiljs.TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'), password);
         dispatch(setSignerAction(signer));
     };
 }

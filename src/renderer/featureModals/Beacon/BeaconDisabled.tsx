@@ -3,7 +3,6 @@ import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { BeaconMessageType, BeaconErrorType, ErrorResponse } from '@airgap/beacon-sdk';
-const { shell } = require('electron');
 
 import config from '../../config.json';
 import { RootState, ModalState } from '../../types/store';
@@ -48,7 +47,7 @@ const BeaconDisabled = ({ open, onClose }: Props) => {
     };
 
     const onLinkClick = async () => {
-        await shell.openExternal(config.fullVersionUrl);
+        await window.electron.shell.openExternal(config.fullVersionUrl);
     };
 
     return (

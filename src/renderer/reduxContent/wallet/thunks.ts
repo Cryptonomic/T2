@@ -1,7 +1,4 @@
-import path from 'path';
-import { ipcRenderer } from 'electron';
 import { push } from '@lagunovsky/redux-react-router';
-import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import {
     TezosNodeWriter,
     KeyStoreType,
@@ -824,7 +821,7 @@ export function importSecretKeyThunk(key) {
 
 export function loginThunk(loginType, walletLocation, walletFileName, password): any {
     return async (dispatch, state) => {
-        const completeWalletPath = path.join(walletLocation, walletFileName);
+        const completeWalletPath = window.electron.path.join(walletLocation, walletFileName);
         dispatch(setIsLoadingAction(true));
         dispatch(createMessageAction('', false));
         dispatch(setLedgerAction(false));
@@ -854,7 +851,7 @@ export function loginThunk(loginType, walletLocation, walletFileName, password):
 
             dispatch(automaticAccountRefresh());
             dispatch(setIsLoadingAction(false));
-            dispatch(push('/home'));
+            dispatch(push('/'));
             await dispatch(syncWalletThunk());
         } catch (e: any) {
             console.error(e);

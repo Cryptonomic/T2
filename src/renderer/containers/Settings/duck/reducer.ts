@@ -1,4 +1,4 @@
-import { getWalletSettings } from '../../../utils/settings';
+import { defaultSettings } from '../../../utils/settings';
 import {
   CHANGE_LOCALE,
   CHANGE_NODE,
@@ -6,16 +6,15 @@ import {
   REMOVE_NODE,
   CHANGE_PATH,
   ADD_PATH,
-  REMOVE_PATH
+  REMOVE_PATH,
+  INIT_SETTINGS
 } from './types';
 
 import { SettingsActionTypes } from './types';
 import { SettingsState } from '../../../types/store';
 
-const walletSettings = getWalletSettings();
-
 export function settingsReducer(
-  state = walletSettings,
+  state = defaultSettings,
   action: SettingsActionTypes
 ): SettingsState {
   switch (action.type) {
@@ -55,6 +54,9 @@ export function settingsReducer(
         selectedPath = state.selectedPath;
       }
       return { ...state, pathsList: [...pathsList], selectedPath };
+    }
+    case INIT_SETTINGS: {
+      return { ...state,  ...action.settings };
     }
     default:
       return state;

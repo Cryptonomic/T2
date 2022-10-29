@@ -32,6 +32,14 @@
             "tezosUrl": "https://tezos-jakarta.cryptonomic-infra.tech:443",
             "conseilUrl": "https://conseil-jakarta.cryptonomic-infra.tech:443",
             "apiKey": "galleon"
+        },
+        {
+            "displayName": "Kathmandunet testnet (nautilus.cloud)",
+            "platform": "tezos",
+            "network": "kathmandunet",
+            "tezosUrl": "https://tezos-kathmandu.cryptonomic-infra.tech:443",
+            "conseilUrl": "https://conseil-kathmandu.cryptonomic-infra.tech:443",
+            "apiKey": "6491ad53-bcab-4fa3-872d-e01e6f5f4b1f"
         }
     ],
     "selectedPath": "Default",
