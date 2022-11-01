@@ -18,7 +18,6 @@
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
     "test": "jest"
   },
-  
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "cross-env NODE_ENV=development eslint --cache"
@@ -249,7 +248,6 @@
     "loglevel": "^1.8.0",
     "moment": "^2.29.4",
     "nft-image-proxy": "^1.0.2",
-    "node-abi": "^3.28.0",
     "path-browserify": "^1.0.1",
     "pngjs": "^6.0.0",
     "polished": "^4.2.2",
@@ -280,10 +278,5 @@
       "src/main/**"
     ],
     "logLevel": "quiet"
-  },
-  "overrides": {
-    "electron-rebuild": {
-      "node-abi": "3.28.0"
-    }
   }
 }

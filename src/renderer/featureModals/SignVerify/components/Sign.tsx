@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { cloneDecryptedSigner } from '../../../utils/wallet';
 import TextField from '../../../components/TextField';
 import PasswordInput from '../../../components/PasswordInput';
-// import CustomTextArea from '../../../components/CustomTextArea';
+import CustomTextArea from '../../../components/CustomTextArea';
 import CopyButton from '../../../components/CopyButton';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { findIdentity } from '../../../utils/identity';
@@ -98,7 +98,7 @@ const Sign = () => {
                 {t('components.signVerifyModal.sign_guidance')}
             </MessageContainer>
             <MainContainer>
-                {/* <CustomTextArea label={t('general.nouns.message')} onChange={(val) => setMessage(val)} defaultValue={message} /> */}
+                <CustomTextArea label={t('general.nouns.message')} onChange={(val) => setMessage(val)} defaultValue={message} />
             </MainContainer>
             <ResultContainer>
                 {error && <WarningIcon />}

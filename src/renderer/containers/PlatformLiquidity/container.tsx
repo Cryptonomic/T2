@@ -301,17 +301,18 @@ const PlatformLiquidity = () => {
                         )}
                     </BottomRowInner>
                     <BottomRowInner>
-                        <AmountView
-                            color="white"
-                            size={ms(4.5)}
-                            amount={token.balance}
-                            weight="light"
-                            symbol={token.symbol}
-                            showTooltip={true}
-                            scale={token.scale}
-                            precision={token.precision}
-                            round={token.round}
-                        />
+                        {token && <AmountView
+                                color="white"
+                                size={ms(4.5)}
+                                amount={token.balance}
+                                weight="light"
+                                symbol={token.symbol}
+                                showTooltip={true}
+                                scale={token.scale}
+                                precision={token.precision}
+                                round={token.round}
+                            />
+                        }
 
                         <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} showTooltip={true} />
 
@@ -356,7 +357,7 @@ const PlatformLiquidity = () => {
                             </ColumnContainer>
                             <ColumnContainer>
                                 <div style={{ width: '100%' }}>
-                                    <NumericInput
+                                    {token && <NumericInput
                                         label={t('components.platformLiquidity.token_deposit')}
                                         amount={formatAmount(tokenMatch, token.precision, token.scale)}
                                         onChange={(v) => {
@@ -368,6 +369,7 @@ const PlatformLiquidity = () => {
                                         precision={token.precision || 8}
                                         disabled={true}
                                     />
+                                    }
                                 </div>
                             </ColumnContainer>
                         </>

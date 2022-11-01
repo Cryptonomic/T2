@@ -73,7 +73,7 @@ const pools = [
 const poolBalanceMaps = [4494, 4491, 4496, 4490, 4492, 4493, 7985, 7988];
 
 export async function getSimpleStorage(server: string, address: string): Promise<{ mapid: number; supply: number; administrator: string; paused: boolean }> {
-    const storageResult = await TezosNodeReader.getContractStorage(server, address);
+    const storageResult = await window.conseiljs.TezosNodeReader.getContractStorage(server, address);
 
     const administratorPath = '$.args[0].args[0].args[0].string';
     const ledgerPath = '$.args[0].args[0].args[1].int';

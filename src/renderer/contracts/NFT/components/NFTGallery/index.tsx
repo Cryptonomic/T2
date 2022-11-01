@@ -25,9 +25,7 @@ import { ManageNFTsModal } from '../../../../components/ManageNFTsModal';
 
 import SearchIcon from '@mui/icons-material/Search';
 
-import { AddIcon, SearchForm, 
-    // SearchInput, 
-    AddButton } from './style';
+import { AddIcon, SearchForm, SearchInput, AddButton } from './style';
 import { RowContainer } from '../../../components/style';
 import { setModalOpen } from '../../../../reduxContent/modal/actions';
 
@@ -122,7 +120,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                 <TabPanel key={`pb-tab-panel-${tab.value}`} index={tab.value} value={activeTab}>
                     <RowContainer>
                         <SearchForm>
-                            {/* <SearchInput
+                            <SearchInput
                                 id="NFT-search-input"
                                 placeholder="Search NFT by name, collection or token ID"
                                 startAdornment={<SearchIcon style={{ fill: search ? '#000000' : '#BDBDBD' }} />}
@@ -130,7 +128,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                                     setSearch(e.target.value);
                                 }}
                                 value={search}
-                            /> */}
+                            />
                         </SearchForm>
                         <AddButton
                             startIcon={<AddIcon />}

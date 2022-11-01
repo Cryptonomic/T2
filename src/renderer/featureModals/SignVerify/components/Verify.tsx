@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { KeyStoreUtils } from 'conseiljs-softsigner';
 
-// import CustomTextArea from '../../../components/CustomTextArea';
+import CustomTextArea from '../../../components/CustomTextArea';
 import TextField from '../../../components/TextField';
 import InputAddress from '../../../components/InputAddress';
 import { RootState } from '../../../types/store';
@@ -68,7 +68,7 @@ const Verify = () => {
                 {t('components.signVerifyModal.verify_guidance')}
             </MessageContainer>
             <MainContainer>
-                {/* <CustomTextArea label={t('general.nouns.message')} onChange={(val) => setMessage(val)} /> */}
+                <CustomTextArea label={t('general.nouns.message')} onChange={(val) => setMessage(val)} />
                 <TextField label={t('general.nouns.signature')} onChange={(val) => setSignature(val)} />
 
                 <InputAddress

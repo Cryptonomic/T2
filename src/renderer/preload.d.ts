@@ -77,6 +77,9 @@ declare global {
         writeKeyWithHint: (txt, pre) => any,
         writeBufferWithHint: (txt: string) => any,
         getTezosPublicKey: (derivationPath: string) => Promise<string>
+      },
+      TezosNodeReader: {
+        getContractStorage: (server, address) => Promise<any>
       }
     };
     pngJS: {

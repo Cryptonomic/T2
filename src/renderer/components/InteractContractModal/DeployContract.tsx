@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { TezosParameterFormat } from 'conseiljs';
 import TextField from '../TextField';
-// import CustomTextArea from '../CustomTextArea';
+import CustomTextArea from '../CustomTextArea';
 import TezosNumericInput from '../TezosNumericInput';
 import { ms } from '../../styles/helpers';
 import Fees from '../Fees';
@@ -149,10 +149,10 @@ function DeployContract(props: Props) {
         <MainContainer>
             <TabContainer>
                 <InputAddressContainer>
-                    {/* <CustomTextArea
+                    <CustomTextArea
                         label={t('components.interactModal.paste_micheline_code', { format: codeFormat })}
                         onChange={(val) => updateState({ michelsonCode: val })}
-                    /> */}
+                    />
                 </InputAddressContainer>
 
                 <StorageFormatContainer>

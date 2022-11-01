@@ -8,6 +8,8 @@ import * as status from '../constants/StatusTypes';
 import { SEND, TRANSACTIONS } from '../constants/TabConstants';
 import config from '../config.json';
 
+console.log('KeyStoreType', KeyStoreType)
+
 const  { blockExplorerHost } = config;
 const { Mnemonic, Hardware } = KeyStoreType;
 

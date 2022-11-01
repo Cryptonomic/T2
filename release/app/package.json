@@ -1,12 +1,13 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.6.0",
-  "description": "A foundation for scalable desktop apps",
-  "license": "MIT",
+  "name": "tezori",
+  "productName": "Tezori",
+  "version": "1.3.5-beta",
+  "description": "An open-source wallet framework for the Tezos blockchain.",
+  "license": "GPL-3.0-only",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "Cryptonomic Inc",
+    "email": "info@cryptonomic.tech",
+    "url": "https://github.com/cryptonomic/T2"
   },
   "main": "./dist/main/main.js",
   "scripts": {
@@ -16,12 +17,7 @@
   },
   "dependencies": {
     "@ledgerhq/hw-transport-node-hid": "5.29.0",
-    "conseiljs-ledgersigner": "5.0.4",
-    "conseiljs-softsigner": "^5.0.4-1"
-  },
-  "overrides": {
-    "electron-rebuild": {
-      "node-abi": "3.28.0"
-    }
+    "conseiljs-ledgersigner": "^5.0.5-beta.1",
+    "conseiljs-softsigner": "^5.0.5-beta.1"
   }
 }

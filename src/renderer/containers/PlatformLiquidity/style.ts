@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import { styled as mStyled } from '@mui/system';
-import { withStyles } from 'tss-react/mui';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import InputBase from '@mui/material/InputBase';
 import FormControl from '@mui/material/FormControl';

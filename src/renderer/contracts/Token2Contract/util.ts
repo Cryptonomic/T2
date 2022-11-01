@@ -198,7 +198,7 @@ export async function getTokenTransactions(tokenAddress: string, managerAddress:
  * Parses storage of contracts matching the youves FA2 implementation in smartpy.
  */
 export async function getSimpleStorageYV(tezosUrl: string, tokenAddress: string, accountAddress?: string) {
-    const storageResult = await TezosNodeReader.getContractStorage(tezosUrl, tokenAddress);
+    const storageResult = await window.conseiljs.TezosNodeReader.getContractStorage(tezosUrl, tokenAddress);
 
     const packedKey = TezosMessageUtils.encodeBigMapKey(
         Buffer.from(

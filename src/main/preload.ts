@@ -94,9 +94,11 @@ contextBridge.exposeInMainWorld('conseiljs', {
     writeBufferWithHint(txt: string) {
       return ipcRenderer.sendSync('conseiljs-tezosmessageutils-writeBufferWithHint', txt);
     },
-    getTezosPublicKey(derivationPath: string) {
-      return ipcRenderer.sendSync('conseiljs-ledgersigner-KeyStoreUtils-getTezosPublicKey', derivationPath);
-    },
+  },
+  TezosNodeReader: {
+    getContractStorage(server, address) {
+      return ipcRenderer.sendSync('conseiljs-TezosNodeReader-getContractStorage', server, address);
+    }
   }
 });
 
