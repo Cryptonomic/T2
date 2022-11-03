@@ -22,7 +22,6 @@ import os from 'os';
 import { registerFetch, registerLogger } from 'conseiljs';
 import fetch from 'electron-fetch';
 import * as loglevel from 'loglevel';
-import * as fs from 'fs';
 import { schema, defaultStore } from '../renderer/utils/localData';
 import { resolveHtmlPath } from './util';
 import MenuBuilder from './menu';
@@ -31,6 +30,7 @@ import config from '../renderer/config.json';
 
 import './modules/conseiljs';
 import './modules/conseiljsSoftSigner';
+import './modules/node';
 
 // require('@electron/remote/main').initialize()
 
@@ -116,18 +116,6 @@ ipcMain.on('electron-dialog-save', async (event, dialogFilters) => {
     } else {
         event.returnValue = {};
     }
-});
-
-ipcMain.on('node-path-join', async (event, str1, str2) => {
-    event.returnValue = path.join(str1, str2);
-});
-
-ipcMain.on('node-fs-writeFile', async (event, filename, wallet) => {
-    event.returnValue = await fs.writeFileSync(filename, wallet, { mode: 0o600 });
-});
-
-ipcMain.on('node-fs-readfile', async (event, filename) => {
-    event.returnValue = await fs.readFileSync(filename, { encoding: 'utf8', flag: 'r' });
 });
 
 // ipcMain.on('electron-remote-dialog-showSaveDialog', async (event, text) => {

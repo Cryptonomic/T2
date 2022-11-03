@@ -93,7 +93,7 @@ const App = () => {
                     // app.focus();
                 } else if (['sign', 'beaconRegistration', 'beaconEvent'].includes(pathname) && searchParams.has('r')) {
                     const req = searchParams.get('r') || '';
-                    dispatch(setModalValue(JSON.parse(Buffer.from(req, 'base64').toString('utf8')), pathname));
+                    dispatch(setModalValue(JSON.parse(window.electron.buffer.from(req, 'base64').toString('utf8')), pathname));
 
                     if (pathname === 'sign') {
                         dispatch(setModalActiveTab(pathname));
@@ -102,7 +102,7 @@ const App = () => {
                         dispatch(setModalOpen(true, pathname));
                     } else if (!config.beaconEnable) {
                         dispatch(setModalValue({}, pathname));
-                        dispatch(setModalValue(JSON.parse(Buffer.from(req, 'base64').toString('utf8')), 'beaconDisable'));
+                        dispatch(setModalValue(JSON.parse(window.electron.buffer.from(req, 'base64').toString('utf8')), 'beaconDisable'));
                         dispatch(setModalOpen(true, 'beaconDisable'));
                     }
 

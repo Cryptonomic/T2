@@ -1,4 +1,4 @@
-import { TezosConstants, TezosMessageUtils, TezosNodeReader, TezosNodeWriter, TezosParameterFormat, Transaction, TzbtcTokenHelper } from 'conseiljs';
+import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosParameterFormat, Transaction, TzbtcTokenHelper } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
@@ -122,7 +122,7 @@ export function addLiquidityThunk(
         ops.push(constructFA1ApprovalOperation(keyStore.publicKeyHash, 0, { fee: 0, gas: 0, storage: 0 }, selectedAccountHash, destination));
         ops.push(constructFA1ApprovalOperation(keyStore.publicKeyHash, 0, { fee: 0, gas: 0, storage: 0 }, selectedAccountHash, destination, tokenAmount));
 
-        const params = `{ "prim": "Pair","args": [ { "bytes": "${TezosMessageUtils.writeAddress(
+        const params = `{ "prim": "Pair","args": [ { "bytes": "${window.conseiljs.TezosMessageUtils.writeAddress(
             keyStore.publicKeyHash
         )}" }, { "prim": "Pair", "args": [ { "int": "${poolShare}" }, { "prim": "Pair", "args": [ { "int": "${tokenAmount}" }, { "string": "${expiration.toISOString()}" } ] } ] } ] }`;
 

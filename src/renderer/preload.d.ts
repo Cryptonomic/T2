@@ -1,5 +1,5 @@
 import { Channels } from 'main/preload';
-import { KeyStore, Signer } from 'conseiljs';
+import { KeyStore, Signer, SignerCurve, TezosParameterFormat } from 'conseiljs';
 
 declare global {
     interface Window {
@@ -33,6 +33,9 @@ declare global {
                 writeFile: (filename, wallet) => Promise<any>;
                 readFile: (filename: string) => Promise<any>;
             };
+            buffer: {
+                from: (data, encoding) => Buffer;
+            };
         };
 
         conseiljsSoftSigner: {
@@ -62,7 +65,9 @@ declare global {
                 checkSignature: (signature: string, bytes: Buffer, publicKey: string) => Promise<boolean>;
             };
             CryptoUtils: {
+                generateSaltForPwHash: () => Promise<Buffer>;
                 decryptMessage: (message: Buffer, passphrase: string, salt: Buffer) => Promise<string>;
+                encryptMessage: (message: Buffer, passphrase: string, salt: Buffer) => Promise<Buffer>;
             };
             SoftSigner: {
                 createSigner: (secretKey: Buffer, password?: string) => Promise<Signer>;
@@ -76,9 +81,16 @@ declare global {
         };
         conseiljs: {
             TezosMessageUtils: {
+                readAddress: (hex: string) => string;
+                writeAddress: (address: string) => string;
+                readKeyWithHint: (b: Buffer | Uint8Array, hint: string) => string;
                 writeKeyWithHint: (txt, pre) => any;
+                readSignatureWithHint: (b: Buffer | Uint8Array, hint: string | SignerCurve) => string;
                 writeBufferWithHint: (txt: string) => any;
-                getTezosPublicKey: (derivationPath: string) => Promise<string>;
+                readBufferWithHint: (b: Buffer | Uint8Array, hint?: string) => string;
+                writePackedData: (value: string | number | Buffer, type: string, format?: TezosParameterFormat) => string;
+                readPackedData: (hex: string, type: string) => string | number;
+                encodeBigMapKey: (key: Buffer) => string;
             };
             TezosNodeReader: {
                 getContractStorage: (server, address) => Promise<any>;

@@ -1,6 +1,6 @@
 import { JSONPath } from 'jsonpath-plus';
 import { BigNumber } from 'bignumber.js';
-import { TezosMessageUtils, TezosNodeReader } from 'conseiljs';
+import { TezosNodeReader } from 'conseiljs';
 
 const farms = [
     'KT1DjDZio7k2GJwCJCXwK82ing3n51AE55DW', // kalam quipu lp
@@ -68,7 +68,9 @@ export async function getSimpleStorage(server: string, address: string): Promise
 }
 
 export async function getAccountBalance(server: string, mapid: number, account: string): Promise<number> {
-    const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
+    const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
+    );
     const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
@@ -80,7 +82,9 @@ export async function getAccountBalance(server: string, mapid: number, account: 
 }
 
 export async function getAccountAllowance(server: string, mapid: number, account: string, source: string) {
-    const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(source, 'address'), 'hex'));
+    const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(source, 'address'), 'hex')
+    );
     const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
@@ -99,7 +103,9 @@ export async function getActivePools(server: string, account: string): Promise<{
     const hasKey = await Promise.all(
         maps.map(async (m) => {
             try {
-                const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
+                const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+                    window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
+                );
                 const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
 
                 return mapResult !== undefined && JSONPath({ path: '$.args[0].args[1].int', json: mapResult }).toString() !== '0';
@@ -179,7 +185,9 @@ async function readPoolStorage(server, address) {
 }
 
 async function readUserPoolRecord(server, mapid, address) {
-    const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(address, 'address'), 'hex'));
+    const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
+    );
     const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {

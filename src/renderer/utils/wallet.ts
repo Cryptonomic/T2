@@ -1,5 +1,4 @@
-import { KeyStore, KeyStoreType, TezosMessageUtils, Signer } from 'conseiljs';
-import { CryptoUtils, SoftSigner } from 'conseiljs-softsigner';
+import { KeyStore, KeyStoreType, Signer } from 'conseiljs';
 // import { KeyStoreUtils } from 'conseiljs-ledgersigner';
 import { omit, cloneDeep } from 'lodash';
 
@@ -22,11 +21,8 @@ export async function loadWallet(filename: string, passphrase: string): Promise<
     const p = await window.electron.fs.readFile(filename);
     const ew: EncryptedWalletVersionOne = JSON.parse(p.toString()) as EncryptedWalletVersionOne;
     const encryptedKeys = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.ciphertext);
-    console.log('111111');
     const salt = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.salt);
-    console.log('222222');
     const walletData: any[] = JSON.parse(await window.conseiljsSoftSigner.CryptoUtils.decryptMessage(encryptedKeys, passphrase, salt));
-    console.log('333333', walletData);
     const keys: KeyStore[] = [];
 
     walletData.forEach((w) => {
@@ -50,14 +46,14 @@ export async function loadWallet(filename: string, passphrase: string): Promise<
  * @returns {Promise<Wallet>} Wallet object loaded from disk
  */
 export async function saveWallet(filename: string, wallet: Wallet, passphrase: string): Promise<Wallet> {
-    const keys = Buffer.from(JSON.stringify(wallet.identities), 'utf8');
-    const salt = await CryptoUtils.generateSaltForPwHash();
-    const encryptedKeys = await CryptoUtils.encryptMessage(keys, passphrase, salt);
+    const keys = window.electron.buffer.from(JSON.stringify(wallet.identities), 'utf8');
+    const salt = await window.conseiljsSoftSigner.CryptoUtils.generateSaltForPwHash();
+    const encryptedKeys = await window.conseiljsSoftSigner.CryptoUtils.encryptMessage(keys, passphrase, salt);
 
     const encryptedWallet: EncryptedWalletVersionOne = {
         version: '1',
-        salt: TezosMessageUtils.readBufferWithHint(salt, ''),
-        ciphertext: TezosMessageUtils.readBufferWithHint(encryptedKeys, ''),
+        salt: window.conseiljs.TezosMessageUtils.readBufferWithHint(salt, ''),
+        ciphertext: window.conseiljs.TezosMessageUtils.readBufferWithHint(encryptedKeys, ''),
         kdf: 'Argon2',
     };
 
@@ -70,8 +66,8 @@ export async function saveUpdatedWallet(identities, walletLocation, walletFileNa
     return saveWallet(completeWalletPath, { identities }, password);
 }
 
-export async function cloneDecryptedSigner(signer: SoftSigner, password: string): Promise<Signer> {
-    return SoftSigner.createSigner(await signer.getKey(password));
+export async function cloneDecryptedSigner(signer: any, password: string): Promise<Signer> {
+    return window.conseiljsSoftSigner.SoftSigner.createSigner(await signer.getKey(password));
 }
 
 export function saveIdentitiesToLocal(identities: Identity[]) {

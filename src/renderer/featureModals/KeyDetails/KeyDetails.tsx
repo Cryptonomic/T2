@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { TezosMessageUtils } from 'conseiljs';
 // import { SoftSigner } from 'conseiljs-softsigner';
 
 import { createMessageAction } from '../../reduxContent/message/actions';
@@ -55,7 +54,7 @@ const KeyDetails = (props: Props) => {
     const onShowSecretKey = async () => {
         try {
             const rawSecretKey = await (signer as any).getKey(password);
-            const stringSecretKey = TezosMessageUtils.readKeyWithHint(rawSecretKey, 'edsk');
+            const stringSecretKey = window.conseiljs.TezosMessageUtils.readKeyWithHint(rawSecretKey, 'edsk');
 
             if (!stringSecretKey.startsWith('edsk')) {
                 dispatch(createMessageAction('components.messageBar.messages.invalid_wallet_password', true));

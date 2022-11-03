@@ -329,7 +329,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].int', json: transaction.parameters.value })[0]).toString();
                 const royaltyAmount = Number(JSONPath({ path: '$.args[1].args[1].int', json: transaction.parameters.value })[0]);
                 const metadataString = JSONPath({ path: '$.args[1].args[0].bytes', json: transaction.parameters.value })[0].toString();
-                const metadataUrl = Buffer.from(metadataString, 'hex').toString(); // TODO: download and parse metadata
+                const metadataUrl = window.electron.buffer.from(metadataString, 'hex').toString(); // TODO: download and parse metadata
 
                 return (
                     <>
@@ -412,7 +412,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (transaction.destination === 'KT191reDVKrLxU9rjTSxg53wRqj6zh8pnHgr') {
             if (transaction.parameters.entrypoint === 'buy') {
                 const domainBytes = JSONPath({ path: '$.args[0].bytes', json: transaction.parameters.value })[0].toString();
-                const domainName = Buffer.from(domainBytes, 'hex').toString();
+                const domainName = window.electron.buffer.from(domainBytes, 'hex').toString();
 
                 const formattedAmount = formatAmount(amount);
 
@@ -446,7 +446,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (transaction.destination === 'KT1CaSP4dn8wasbMsfdtGiCPgYFW7bvnPRRT') {
             if (transaction.parameters.entrypoint === 'bid') {
                 const domainBytes = JSONPath({ path: '$.args[0].bytes', json: transaction.parameters.value })[0].toString();
-                const domainName = Buffer.from(domainBytes, 'hex').toString();
+                const domainName = window.electron.buffer.from(domainBytes, 'hex').toString();
 
                 const bidAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]).dividedBy(1_000_000).toFixed();
 
@@ -461,7 +461,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
         if (transaction.destination === 'KT1TnTr6b2YxSx2xUQ8Vz3MoWy771ta66yGx') {
             if (transaction.parameters.entrypoint === 'claim_reverse_record') {
                 const domainBytes = JSONPath({ path: '$.args[0].args[0].bytes', json: transaction.parameters.value })[0].toString();
-                const domainName = Buffer.from(domainBytes, 'hex').toString();
+                const domainName = window.electron.buffer.from(domainBytes, 'hex').toString();
                 const domainAddress = JSONPath({ path: '$.args[1].string', json: transaction.parameters.value })[0].toString();
 
                 return (
@@ -480,7 +480,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                 if (updateAction === 'Some') {
                     const domainBytes = JSONPath({ path: '$.args[1].args[0].args[0].bytes', json: transaction.parameters.value })[0].toString();
-                    domainName = Buffer.from(domainBytes, 'hex').toString();
+                    domainName = window.electron.buffer.from(domainBytes, 'hex').toString();
 
                     return (
                         <>

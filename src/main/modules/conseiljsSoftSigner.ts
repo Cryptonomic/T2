@@ -53,20 +53,22 @@ ipcMain.on('conseiljs-softsigner-CryptoUtils-generateSaltForPwHash', async (even
     event.returnValue = await CryptoUtils.generateSaltForPwHash();
 });
 
+ipcMain.on('conseiljs-softsigner-CryptoUtils-encryptMessage', async (event, message: Buffer, passphrase: string, salt: Buffer) => {
+    try {
+        const aa = await CryptoUtils.encryptMessage(message, passphrase, salt);
+        event.returnValue = aa;
+    } catch (e) {
+        event.returnValue = e;
+    }
+});
+
 ipcMain.on('conseiljs-softsigner-CryptoUtils-decryptMessage', async (event, message: Buffer, passphrase: string, salt: Buffer) => {
     try {
         const aa = await CryptoUtils.decryptMessage(message, passphrase, salt);
         event.returnValue = aa.toString();
     } catch (e) {
-        console.log('111111111', e);
         event.returnValue = e;
     }
-
-    // console.log('111111')
-    // event.returnValue = await KeyStoreUtils.decryptMessage(message, passphrase, salt).catch(e => {
-    //     console.log('22222', e)
-    //     return {}
-    // });
 });
 
 ipcMain.on('conseiljs-softsigner-main-createSigner', async (event, secretKey: Buffer, password?: string) => {

@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { SignerCurve, TezosParameterFormat } from 'conseiljs';
 
 // console.log('conseiljsSoftSigner', KeyStoreUtils)
 
@@ -82,16 +83,45 @@ contextBridge.exposeInMainWorld('electron', {
             return ipcRenderer.sendSync('node-fs-readfile', filename);
         },
     },
+    buffer: {
+        from(data, encoding) {
+            return ipcRenderer.sendSync('node-buffer-from', data, encoding);
+        },
+    },
     // conseiljsSoftSigner: conseiljsSoftSigner
 });
 
 contextBridge.exposeInMainWorld('conseiljs', {
     TezosMessageUtils: {
+        readAddress(hex: string) {
+            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readAddress', hex);
+        },
+        writeAddress(address: string) {
+            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-writeAddress', address);
+        },
+        readKeyWithHint(b: Buffer | Uint8Array, hint: string) {
+            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readKeyWithHint', b, hint);
+        },
+        readSignatureWithHint(b: Buffer | Uint8Array, hint: string | SignerCurve) {
+            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readSignatureWithHint', b, hint);
+        },
         writeKeyWithHint(txt, pre) {
             return ipcRenderer.sendSync('conseiljs-tezosmessageutils-writeKeyWithHint', txt, pre);
         },
         writeBufferWithHint(txt: string) {
             return ipcRenderer.sendSync('conseiljs-tezosmessageutils-writeBufferWithHint', txt);
+        },
+        readBufferWithHint(b: Buffer | Uint8Array, hint?: string) {
+            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readBufferWithHint', b, hint);
+        },
+        writePackedData(value: string | number | Buffer, type: string, format?: TezosParameterFormat) {
+            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-writePackedData', value, type, format);
+        },
+        readPackedData(hex: string, type: string) {
+            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readPackedData', hex, type);
+        },
+        encodeBigMapKey(key: Buffer) {
+            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-encodeBigMapKey', key);
         },
     },
     TezosNodeReader: {
@@ -138,6 +168,12 @@ contextBridge.exposeInMainWorld('conseiljsSoftSigner', {
         },
     },
     CryptoUtils: {
+        generateSaltForPwHash() {
+            return ipcRenderer.sendSync('conseiljs-softsigner-CryptoUtils-generateSaltForPwHash');
+        },
+        encryptMessage(message: Buffer, passphrase: string, salt: Buffer) {
+            return ipcRenderer.sendSync('conseiljs-softsigner-CryptoUtils-encryptMessage', message, passphrase, salt);
+        },
         decryptMessage(message: Buffer, passphrase: string, salt: Buffer) {
             return ipcRenderer.sendSync('conseiljs-softsigner-CryptoUtils-decryptMessage', message, passphrase, salt);
         },

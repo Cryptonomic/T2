@@ -1,5 +1,5 @@
 import { JSONPath } from 'jsonpath-plus';
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosMessageUtils, TezosNodeReader } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosNodeReader } from 'conseiljs';
 
 import * as status from '../../constants/StatusTypes';
 import { Node } from '../../types/general';
@@ -122,7 +122,9 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
 }
 
 export async function getAccountBalance(server: string, mapid: number, account: string): Promise<number> {
-    const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(account, 'address'), 'hex'));
+    const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
+    );
     const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {

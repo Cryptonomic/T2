@@ -6,7 +6,6 @@ import {
     TezosNodeReader,
     TezosNodeWriter,
     OperationKindType,
-    TezosMessageUtils,
     TezosParameterFormat,
     KeyStore,
     KeyStoreCurve,
@@ -238,10 +237,12 @@ const queryHarpoon = async (accountAddress: string): Promise<HarpoonInfo> => {
 
 export const queryTezosDomains = async (nodeUrl: string, address: string): Promise<string> => {
     try {
-        const packedKey = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(address, 'address'), 'hex'));
+        const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+            window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
+        );
         const mapResult = await TezosNodeReader.getValueForBigMapKey(nodeUrl, 1265, packedKey);
         const domainBytes = JSONPath({ path: '$.args[0].args[1].args[0].bytes', json: mapResult })[0];
-        return Buffer.from(domainBytes, 'hex').toString();
+        return window.electron.buffer.from(domainBytes, 'hex').toString();
     } catch (err) {
         return '';
     }
