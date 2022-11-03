@@ -125,7 +125,7 @@ export const tokenPoolMap = {
     KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4: {
         dexterPool: '',
         quipuPool: 'KT1FbYwEWU8BTfrvNoL5xDEC5owsDxv9nqKT',
-        vortexPool: 'KT1MRMsyWYCwf2ex2wN4yuihJbNykCDHdRTT'
+        vortexPool: 'KT1MRMsyWYCwf2ex2wN4yuihJbNykCDHdRTT',
     }, // ctez
     KT1KRvNVubq64ttPbQarxec5XdS6ZQU4DVD2: {
         dexterPool: '',
@@ -151,7 +151,7 @@ export function isTradeable(tokenAddress: string, tokenIndex?: number) {
  * @param side buy | sell
  * @returns
  */
-export function applyFees(amount: number, side: string, slippage: number = 0.01) {
+export function applyFees(amount: number, side: string, slippage = 0.01) {
     const fee = 0.05;
     const feeThreshold = '500000000';
 
@@ -460,13 +460,7 @@ export async function sendQuipuSell(
     }
 }
 
-export function getTokenToCashExchangeRate(
-    tokenAmount: string,
-    tokenBalance: string,
-    cashBalance: string,
-    tokenDecimals: number = 6,
-    exchangeMultiplier: number = 997
-) {
+export function getTokenToCashExchangeRate(tokenAmount: string, tokenBalance: string, cashBalance: string, tokenDecimals = 6, exchangeMultiplier = 997) {
     const n = bigInt(tokenAmount).multiply(bigInt(cashBalance)).multiply(bigInt(exchangeMultiplier));
     const d = bigInt(tokenBalance)
         .multiply(bigInt(1000))
@@ -479,13 +473,7 @@ export function getTokenToCashExchangeRate(
     return { cashAmount: cashAmount.toJSNumber(), rate: parseFloat(`${dm.quotient.toJSNumber()}.${f.toJSNumber()}`) };
 }
 
-export function getTokenToCashInverse(
-    tokenAmount: string,
-    tokenBalance: string,
-    cashBalance: string,
-    tokenDecimals: number = 6,
-    exchangeMultiplier: number = 997
-) {
+export function getTokenToCashInverse(tokenAmount: string, tokenBalance: string, cashBalance: string, tokenDecimals = 6, exchangeMultiplier = 997) {
     const n = bigInt(tokenAmount).multiply(bigInt(cashBalance)).multiply(bigInt(1000));
     const d = bigInt(tokenBalance)
         .multiply(bigInt(exchangeMultiplier))
@@ -537,7 +525,7 @@ export function constructFA1ApprovalOperation(
     fee: OperationFee,
     tokenAddress: string,
     destinationAddress: string,
-    amount: string = '0'
+    amount = '0'
 ) {
     const params = `{ "prim": "Pair", "args": [ { "string": "${destinationAddress}" }, { "int": "${amount}" } ] }`;
 
@@ -560,7 +548,7 @@ export function constructFA2ApprovalOperation(
     fee: OperationFee,
     tokenAddress: string,
     destinationAddress: string,
-    tokenIndex: string = '0'
+    tokenIndex = '0'
 ) {
     const params = `[{"prim":"Left","args":[{"prim":"Pair","args":[{"string":"${sourceAddress}"},{"prim":"Pair","args":[{"string":"${destinationAddress}"},{"int":"${tokenIndex}"}]}]}]}]`;
 

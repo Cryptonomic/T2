@@ -3,7 +3,7 @@ import Fab from '@mui/material/Fab';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 
-import TezosIcon from '../../components/TezosIcon/';
+import TezosIcon from '../../components/TezosIcon';
 
 export const WalletFileName = styled.div`
     font-size: 15px;

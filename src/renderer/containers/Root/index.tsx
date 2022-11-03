@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { Provider } from 'react-redux';
-import { ReduxRouter } from '@lagunovsky/redux-react-router'
+import { ReduxRouter } from '@lagunovsky/redux-react-router';
 import { ThemeProvider } from 'styled-components';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 // import { hot } from 'react-hot-loader/root';

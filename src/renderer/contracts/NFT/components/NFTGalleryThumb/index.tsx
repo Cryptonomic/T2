@@ -45,7 +45,7 @@ export const NFTGalleryThumb: FunctionComponent<GalleryThumbProps> = ({ nftObjec
                     loop: false,
                     thumbnailUri,
                 }}
-                useNFTFailedBox={true}
+                useNFTFailedBox
                 nftProvider={provider}
                 artifactModerationMessage={artifactModerationMessage}
             />

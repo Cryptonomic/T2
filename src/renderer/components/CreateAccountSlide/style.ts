@@ -3,8 +3,8 @@ import Fab from '@mui/material/Fab';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import TezosIcon from '../../components/TezosIcon';
-import { H4 } from '../../components/Heading';
+import TezosIcon from '../TezosIcon';
+import { H4 } from '../Heading';
 import { ms } from '../../styles/helpers';
 
 import ButtonCom from '../Button';

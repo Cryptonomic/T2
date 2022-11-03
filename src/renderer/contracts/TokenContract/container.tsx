@@ -60,7 +60,7 @@ function ActionPanel() {
                 const transactionSlice = processedTransactions.slice(firstNumber, lastNumber);
 
                 return (
-                    <Fragment>
+                    <>
                         <Transactions transactions={transactionSlice} selectedParentHash={selectedParentHash} token={selectedToken} />
                         {pageCount > 1 && (
                             <PageNumbers
@@ -72,24 +72,24 @@ function ActionPanel() {
                             />
                         )}
                         {isLoading && <Loader />}
-                    </Fragment>
+                    </>
                 );
             }
             case MINT:
-                return <Mint isReady={true} token={selectedToken} tokenMintAction={mintThunk} />;
+                return <Mint isReady token={selectedToken} tokenMintAction={mintThunk} />;
             case BURN:
-                return <Burn isReady={true} token={selectedToken} tokenBurnAction={burnThunk} />;
+                return <Burn isReady token={selectedToken} tokenBurnAction={burnThunk} />;
             case SWAP:
-                return <Swap isReady={true} token={selectedToken} />;
+                return <Swap isReady token={selectedToken} />;
             case SEND:
             default:
-                return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
+                return <Send isReady token={selectedToken} tokenTransferAction={transferThunk} />;
         }
     }
     return (
         <Container>
             <BalanceBanner
-                isReady={true}
+                isReady
                 balance={selectedToken.balance}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 displayName={displayName}
@@ -98,8 +98,8 @@ function ActionPanel() {
 
             <TabList count={tabs.length}>
                 {tabs.map((tab) => (
-                    <Tab isActive={activeTab === tab} key={tab} ready={true} buttonTheme="plain" onClick={() => onChangeTab(tab)}>
-                        <TabText ready={true}>{t(tab)}</TabText>
+                    <Tab isActive={activeTab === tab} key={tab} ready buttonTheme="plain" onClick={() => onChangeTab(tab)}>
+                        <TabText ready>{t(tab)}</TabText>
                     </Tab>
                 ))}
             </TabList>

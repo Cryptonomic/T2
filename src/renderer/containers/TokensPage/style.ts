@@ -177,12 +177,12 @@ export const SearchForm = mStyled(FormControl)({
 });
 
 export const SearchInput = mStyled(InputBase)({
-        borderRadius: 4,
-        position: 'relative',
-        backgroundColor: '#F4F4F4',
-        fontSize: 16,
-        width: 'auto',
-        padding: '0px 0px 0px 12px',
-        maxWidth: '462px',
-        height: '32px',
+    borderRadius: 4,
+    position: 'relative',
+    backgroundColor: '#F4F4F4',
+    fontSize: 16,
+    width: 'auto',
+    padding: '0px 0px 0px 12px',
+    maxWidth: '462px',
+    height: '32px',
 });

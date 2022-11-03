@@ -19,7 +19,7 @@ const TransactionContainer = (props: Props) => {
         <Container>
             {Object.keys(transactionsByDate).map((day, indexParent) => (
                 <SectionContainer key={indexParent}>
-                    <TransactionsLabel date={day} skipFormat={true} />
+                    <TransactionsLabel date={day} skipFormat />
                     {transactionsByDate[day].map((transaction, indexChild) => {
                         return <Transaction key={indexChild} transaction={transaction} selectedParentHash={selectedParentHash} token={token} />;
                     })}

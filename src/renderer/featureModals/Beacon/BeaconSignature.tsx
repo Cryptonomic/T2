@@ -154,21 +154,21 @@ const BeaconSignature = ({ open, onClose }: Props) => {
                             {signingType === SigningType.RAW && (
                                 <div>
                                     <p className="inputLabel">Plain Text Content</p>
-                                    <textarea className="inputField" readOnly={true} value={content} />
+                                    <textarea className="inputField" readOnly value={content} />
                                 </div>
                             )}
 
                             {signingType === SigningType.MICHELINE && (
                                 <div>
                                     <p className="inputLabel">Code Content</p>
-                                    <textarea className="inputField" readOnly={true} value={content} />
+                                    <textarea className="inputField" readOnly value={content} />
                                 </div>
                             )}
 
                             {signingType === SigningType.OPERATION && (
                                 <div>
                                     <p className="inputLabel">Operation Content</p>
-                                    <textarea className="inputField" readOnly={true} value={content} />
+                                    <textarea className="inputField" readOnly value={content} />
                                 </div>
                             )}
 
@@ -181,7 +181,7 @@ const BeaconSignature = ({ open, onClose }: Props) => {
                                     <p className="inputLabel">Error Details</p>
                                     <p className="subtitleText" style={{ height: '40px', overflow: 'scroll' }}>
                                         {parseError.split(',').map((p, i) => (
-                                            <div key={'error' + i}>{p}</div>
+                                            <div key={`error${i}`}>{p}</div>
                                         ))}
                                     </p>
                                 </div>

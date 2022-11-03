@@ -9,12 +9,12 @@ import TezosNumericInput from '../../../../components/TezosNumericInput';
 import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';
 
 import Modal from '../../../../components/CustomModal';
-import Tooltip from '../../../../components/Tooltip/';
+import Tooltip from '../../../../components/Tooltip';
 import { ms } from '../../../../styles/helpers';
 import TezosIcon from '../../../../components/TezosIcon';
 import Button from '../../../../components/Button';
 import Loader from '../../../../components/Loader';
-import Fees from '../../../../components/Fees/';
+import Fees from '../../../../components/Fees';
 import PasswordInput from '../../../../components/PasswordInput';
 import InputAddress from '../../../../components/InputAddress';
 import TezosAmount from '../../../../components/TezosAmount';
@@ -284,7 +284,7 @@ function DepositModal(props: Props) {
 
         setConfirmOpen(false);
         dispatch(setIsLoadingAction(false));
-        if (!!deposited) {
+        if (deposited) {
             onClose();
         }
     }
@@ -326,7 +326,7 @@ function DepositModal(props: Props) {
     return (
         <Modal
             // TODO(keefertaylor): Translations
-            title={'Deposit to Vault'}
+            title="Deposit to Vault"
             open={open}
             onClose={onCloseClick}
         >

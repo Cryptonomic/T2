@@ -18,8 +18,6 @@ import { getBakerDetails, getTezosDomains, getPrices } from '../../reduxContent/
 import config from '../../config.json';
 import { RootState } from '../../types/store';
 
-const { Mnemonic } = KeyStoreType;
-
 import {
     Container,
     TopRow,
@@ -42,6 +40,8 @@ import {
     CurrencySymbol,
     WertButton,
 } from './style';
+
+const { Mnemonic } = KeyStoreType;
 
 interface Props {
     storeType?: string | number;
@@ -110,8 +110,8 @@ function BalanceBanner(props: Props) {
 
     const openWertUrl = async () => {
         let url = config.wertUrl;
-        url = url + publicKeyHash;
-        url = url + '&currency=USD&currency_amount=100';
+        url += publicKeyHash;
+        url += '&currency=USD&currency_amount=100';
         await window.electron.shell.openExternal(url);
     };
 
@@ -146,13 +146,13 @@ function BalanceBanner(props: Props) {
                 <AddressInfo>
                     <Column>
                         {domainName && domainName.length > 0 && <>{domainName}</>}
-                        <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
+                        <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten />
                     </Column>
                     <Gap />
                     {isReady || storeType === Mnemonic ? (
                         <div style={{ marginLeft: 'auto' }}>
                             <div>
-                                <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip={true} />
+                                <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} symbol={symbol} showTooltip />
                             </div>
                             {config.wertUrl.length > 0 && (
                                 <>
@@ -185,7 +185,7 @@ function BalanceBanner(props: Props) {
                         {bakerName && <DelegateName>{bakerName}</DelegateName>}
                         {!bakerName && (
                             <span style={{ marginLeft: '3px', marginRight: '3px' }}>
-                                <TezosAddress address={delegatedAddress} color="white" size={ms(0)} weight={400} shorten={true} />
+                                <TezosAddress address={delegatedAddress} color="white" size={ms(0)} weight={400} shorten />
                             </span>
                         )}
                         <LinkContainer onClick={() => openHarpoonUrl()}>

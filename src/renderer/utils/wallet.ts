@@ -6,15 +6,68 @@ import { omit, cloneDeep } from 'lodash';
 import { getLocalData, setLocalData } from './localData';
 import { createIdentity } from './identity';
 import { combineAccounts } from './account';
-import { EncryptedWalletVersionOne, Wallet } from '../types/general';
-import { Identity } from '../types/general';
+import { EncryptedWalletVersionOne, Wallet, Identity } from '../types/general';
 import { knownTokenContracts } from '../constants/Token';
 
 // const { unlockAddress } = KeyStoreUtils;
 
+/**
+ * Loads a wallet from a given file.
+ *
+ * @param {string} filename Name of file
+ * @param {string} passphrase User-supplied passphrase
+ * @returns {Promise<Wallet>} Loaded wallet
+ */
+export async function loadWallet(filename: string, passphrase: string): Promise<Wallet> {
+    const p = await window.electron.fs.readFile(filename);
+    const ew: EncryptedWalletVersionOne = JSON.parse(p.toString()) as EncryptedWalletVersionOne;
+    const encryptedKeys = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.ciphertext);
+    console.log('111111');
+    const salt = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.salt);
+    console.log('222222');
+    const walletData: any[] = JSON.parse(await window.conseiljsSoftSigner.CryptoUtils.decryptMessage(encryptedKeys, passphrase, salt));
+    console.log('333333', walletData);
+    const keys: KeyStore[] = [];
+
+    walletData.forEach((w) => {
+        const pk = w.privateKey;
+        delete w.privateKey; // TODO: pre v100 wallet data
+        keys.push({
+            ...w,
+            secretKey: w.secretKey || pk,
+        });
+    });
+
+    return { identities: keys };
+}
+
+/**
+ * Saves a wallet to a given file.
+ *
+ * @param {string} filename Path to file
+ * @param {Wallet} wallet Wallet object
+ * @param {string} passphrase User-supplied passphrase
+ * @returns {Promise<Wallet>} Wallet object loaded from disk
+ */
+export async function saveWallet(filename: string, wallet: Wallet, passphrase: string): Promise<Wallet> {
+    const keys = Buffer.from(JSON.stringify(wallet.identities), 'utf8');
+    const salt = await CryptoUtils.generateSaltForPwHash();
+    const encryptedKeys = await CryptoUtils.encryptMessage(keys, passphrase, salt);
+
+    const encryptedWallet: EncryptedWalletVersionOne = {
+        version: '1',
+        salt: TezosMessageUtils.readBufferWithHint(salt, ''),
+        ciphertext: TezosMessageUtils.readBufferWithHint(encryptedKeys, ''),
+        kdf: 'Argon2',
+    };
+
+    const p = await window.electron.fs.writeFile(filename, JSON.stringify(encryptedWallet));
+    return loadWallet(filename, passphrase);
+}
+
 export async function saveUpdatedWallet(identities, walletLocation, walletFileName, password) {
     const completeWalletPath = window.electron.path.join(walletLocation, walletFileName);
-    return await saveWallet(completeWalletPath, { identities }, password);
+    return saveWallet(completeWalletPath, { identities }, password);
 }
 
 export async function cloneDecryptedSigner(signer: SoftSigner, password: string): Promise<Signer> {
@@ -67,6 +120,7 @@ export async function loadWalletFromLedger(derivationPath: string): Promise<Iden
             name: 'components.messageBar.messages.ledger_not_connect',
         };
         console.error('TezosLedgerWallet.unlockAddress', err);
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw errorObj;
     });
 
@@ -79,60 +133,6 @@ export async function loadWalletFromLedger(derivationPath: string): Promise<Iden
 
 export function loadTokens(network: string) {
     return knownTokenContracts.filter((token) => token.network === network);
-}
-
-/**
- * Saves a wallet to a given file.
- *
- * @param {string} filename Path to file
- * @param {Wallet} wallet Wallet object
- * @param {string} passphrase User-supplied passphrase
- * @returns {Promise<Wallet>} Wallet object loaded from disk
- */
-export async function saveWallet(filename: string, wallet: Wallet, passphrase: string): Promise<Wallet> {
-    const keys = Buffer.from(JSON.stringify(wallet.identities), 'utf8');
-    const salt = await CryptoUtils.generateSaltForPwHash();
-    const encryptedKeys = await CryptoUtils.encryptMessage(keys, passphrase, salt);
-
-    const encryptedWallet: EncryptedWalletVersionOne = {
-        version: '1',
-        salt: TezosMessageUtils.readBufferWithHint(salt, ''),
-        ciphertext: TezosMessageUtils.readBufferWithHint(encryptedKeys, ''),
-        kdf: 'Argon2',
-    };
-
-    const p = await window.electron.fs.writeFile(filename, JSON.stringify(encryptedWallet));
-    return loadWallet(filename, passphrase);
-}
-
-/**
- * Loads a wallet from a given file.
- *
- * @param {string} filename Name of file
- * @param {string} passphrase User-supplied passphrase
- * @returns {Promise<Wallet>} Loaded wallet
- */
-export async function loadWallet(filename: string, passphrase: string): Promise<Wallet> {
-    const p = await window.electron.fs.readFile(filename);
-    const ew: EncryptedWalletVersionOne = JSON.parse(p.toString()) as EncryptedWalletVersionOne;
-    const encryptedKeys = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.ciphertext);
-    console.log('111111')
-    const salt = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.salt);
-    console.log('222222')
-    const walletData: any[] = JSON.parse(await window.conseiljsSoftSigner.CryptoUtils.decryptMessage(encryptedKeys, passphrase, salt));
-    console.log('333333', walletData)
-    const keys: KeyStore[] = [];
-
-    walletData.forEach((w) => {
-        const pk = w.privateKey;
-        delete w.privateKey; // TODO: pre v100 wallet data
-        keys.push({
-            ...w,
-            secretKey: w.secretKey || pk,
-        });
-    });
-
-    return { identities: keys };
 }
 
 /**

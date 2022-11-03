@@ -143,7 +143,7 @@ function InvokeContract(props: Props) {
 
         onLedgerConfirmation(false);
         dispatch(setIsLoadingAction(false));
-        if (!!isOperationCompleted) {
+        if (isOperationCompleted) {
             onClose();
         }
     }
@@ -169,10 +169,10 @@ function InvokeContract(props: Props) {
                         onIssue={(status) => updateState({ isAddressIssue: status })}
                     />
                     {!isAddressIssue && contractAddress && (
-                        <React.Fragment>
+                        <>
                             <ViewScan onClick={() => onOpenLink(contractAddress)}>{t('components.interactModal.view_scan')}</ViewScan>
                             <LinkIcon iconName="new-window" size={ms(-1)} color="primary" onClick={() => onOpenLink(contractAddress)} />
-                        </React.Fragment>
+                        </>
                     )}
                 </InputAddressContainer>
                 <StorageFormatContainer>

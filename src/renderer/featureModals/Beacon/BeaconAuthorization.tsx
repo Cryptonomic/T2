@@ -113,7 +113,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                           sendOperations(password, operationDetails, tezToUtez(customFee), parseInt(customGasLimit, 10), parseInt(customStorageLimit, 10))
                       );
 
-                if (!!operationResult) {
+                if (operationResult) {
                     setLedgerModalOpen(false);
                     dispatch(setBeaconLoading(false));
                     onClose();
@@ -124,7 +124,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
             } else {
                 dispatch(sendTezThunk(password, destination, formatAmount(amount), utezFee));
             }
-        } catch (e) {
+        } catch (e: any) {
             console.log('Transaction.Error', e);
             dispatch(createMessageAction(e.message || e.toString(), true));
             dispatch(setBeaconLoading(false));
@@ -168,7 +168,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
 
                 dispatch(setBeaconLoading());
                 dispatch(setModalOpen(false, activeModal));
-            } catch (e) {
+            } catch (e: any) {
                 dispatch(createMessageAction(`Beacon authorization failed with "${e.message}"`, true));
             }
         };
@@ -313,19 +313,19 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             {swapInfo.nftId} is "{swapInfo.nftName}", described as "{swapInfo.nftDescription}".
                         </>
                     );
-                } else {
-                    return (
-                        <>
-                            &nbsp;to collect{' '}
-                            <strong>
-                                {tokenAmount}/{swapInfo.stock}
-                            </strong>{' '}
-                            OBJKT #{swapInfo.nftId} from {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #{swapInfo.nftId} is "
-                            {swapInfo.nftName}", described as "{swapInfo.nftDescription}", created by {swapInfo.nftCreators}.
-                        </>
-                    );
                 }
-            } else if (transaction.parameters.entrypoint === 'mint_OBJKT') {
+                return (
+                    <>
+                        &nbsp;to collect{' '}
+                        <strong>
+                            {tokenAmount}/{swapInfo.stock}
+                        </strong>{' '}
+                        OBJKT #{swapInfo.nftId} from {swapInfo.source} for a balance of <strong>{formattedAmount}</strong> XTZ. OBJKT #{swapInfo.nftId} is "
+                        {swapInfo.nftName}", described as "{swapInfo.nftDescription}", created by {swapInfo.nftCreators}.
+                    </>
+                );
+            }
+            if (transaction.parameters.entrypoint === 'mint_OBJKT') {
                 const tokenAmount = new BigNumber(JSONPath({ path: '$.args[0].args[1].int', json: transaction.parameters.value })[0]).toString();
                 const royaltyAmount = Number(JSONPath({ path: '$.args[1].args[1].int', json: transaction.parameters.value })[0]);
                 const metadataString = JSONPath({ path: '$.args[1].args[0].bytes', json: transaction.parameters.value })[0].toString();
@@ -345,7 +345,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 );
                 // } else if (transaction.parameters.entrypoint === 'transfer') {
                 //
-            } else if (transaction.parameters.entrypoint === 'swap') {
+            }
+            if (transaction.parameters.entrypoint === 'swap') {
                 const volume = Number(JSONPath({ path: '$.args[0].int', json: transaction.parameters.value })[0]);
                 const item = Number(JSONPath({ path: '$.args[1].args[0].int', json: transaction.parameters.value })[0]);
                 const price = JSONPath({ path: '$.args[1].args[1].int', json: transaction.parameters.value })[0];
@@ -387,7 +388,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                         &nbsp;to receive <strong>{tokenAmount.toString()}</strong> {selectedTokenSymbol} at <strong>{holder}</strong>
                     </>
                 );
-            } else if (transaction.parameters.entrypoint === 'approve') {
+            }
+            if (transaction.parameters.entrypoint === 'approve') {
                 let approvedAddress = JSONPath({ path: '$.args[0].string', json: transaction.parameters.value })[0];
                 approvedAddress = knownContractNames[approvedAddress] || approvedAddress;
                 const tokenAmount = new BigNumber(JSONPath({ path: '$.args[1].int', json: transaction.parameters.value })[0]).dividedBy(6).toFixed();
@@ -485,13 +487,12 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                             &nbsp;to associate <strong>{domainName}</strong> with <strong>{domainAddress}</strong>.
                         </>
                     );
-                } else {
-                    return (
-                        <>
-                            &nbsp;to clear domain association from <strong>{domainAddress}</strong>.
-                        </>
-                    );
                 }
+                return (
+                    <>
+                        &nbsp;to clear domain association from <strong>{domainAddress}</strong>.
+                    </>
+                );
             }
         }
 
@@ -577,8 +578,8 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                         <ExpandMore style={{ verticalAlign: 'bottom' }} />
                                     )}
                                 </OperationDetailHeader>
-                                <Collapse easing={'none'} enter={false} exit={false} in={showOperationDetails} timeout="auto" unmountOnExit={true}>
-                                    <textarea className="inputField" readOnly={true} value={JSON.stringify(operationDetails, null, 2)} />
+                                <Collapse easing="none" enter={false} exit={false} in={showOperationDetails} timeout="auto" unmountOnExit>
+                                    <textarea className="inputField" readOnly value={JSON.stringify(operationDetails, null, 2)} />
                                 </Collapse>
                             </div>
 
@@ -588,12 +589,12 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                         <div style={{ width: '75%', float: 'left' }}>
                                             <TezosNumericInput
                                                 decimalSeparator={t('general.decimal_separator')}
-                                                label={'Estimated Fee'}
+                                                label="Estimated Fee"
                                                 amount={fee}
                                                 onChange={setFee}
                                                 errorText={feeError}
                                                 disabled={useCustomFee}
-                                                readOnly={true}
+                                                readOnly
                                             />
                                         </div>
                                         <div style={{ width: '25%', position: 'relative', top: '17px', float: 'left' }}>
@@ -647,7 +648,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                                     <p className="inputLabel">Error Details</p>
                                     <p className="subtitleText" style={{ height: '40px', overflow: 'scroll' }}>
                                         {feeError.split(',').map((p, i) => (
-                                            <div key={'error' + i}>{p}</div>
+                                            <div key={`error${i}`}>{p}</div>
                                         ))}
                                     </p>
                                 </div>

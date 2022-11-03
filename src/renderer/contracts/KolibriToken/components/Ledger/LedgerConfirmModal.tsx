@@ -50,25 +50,26 @@ interface Props {
 
 const LedgerConfirmModal = (props: Props) => {
     const { t } = useTranslation();
+    const { open, onClose, message, source, fee, amount, vaultAddress, isLoading } = props;
 
     return (
         // TODO(keefertaylor): Use translations
-        <Modal title={'Confirm Operation'} open={props.open} onClose={props.onClose}>
+        <Modal title="Confirm Operation" open={open} onClose={onClose}>
             <MainContainer>
                 <DescriptionContainer>
                     <SendSvg src={sendImg} />
-                    <SendDes>{props.message}</SendDes>
+                    <SendDes>{message}</SendDes>
                 </DescriptionContainer>
 
                 <ItemContainer>
                     <ItemTitle>{t('general.nouns.source')}</ItemTitle>
-                    <TezosAddress address={props.source} size="16px" weight={300} color="primary" />
+                    <TezosAddress address={source} size="16px" weight={300} color="primary" />
                 </ItemContainer>
 
                 <ItemContainer>
                     <ItemTitle>{t('general.nouns.fee')}</ItemTitle>
                     <ItemContent>
-                        {formatAmount(props.fee)}
+                        {formatAmount(fee)}
                         <TezosIcon color="secondary" iconName="tezos" />
                     </ItemContent>
                 </ItemContainer>
@@ -76,16 +77,16 @@ const LedgerConfirmModal = (props: Props) => {
                 <ItemContainer>
                     <ItemTitle>{t('general.nouns.amount')}</ItemTitle>
                     <ItemContent>
-                        {formatAmount(props.amount)}
+                        {formatAmount(amount)}
                         <TezosIcon color="secondary" iconName="tezos" />
                     </ItemContent>
                 </ItemContainer>
 
-                {props.vaultAddress && (
+                {vaultAddress && (
                     <ItemContainer>
                         {/* TODO(keefertaylor): translations */}
-                        <ItemTitle> {'Vault'}</ItemTitle>
-                        <TezosAddress address={props.vaultAddress} size="16px" weight={300} color="primary" />
+                        <ItemTitle> Vault</ItemTitle>
+                        <TezosAddress address={vaultAddress} size="16px" weight={300} color="primary" />
                     </ItemContainer>
                 )}
             </MainContainer>
@@ -98,7 +99,7 @@ const LedgerConfirmModal = (props: Props) => {
                 </ConfirmDes>
                 <ConfirmImg src={confirmImg} />
             </BottomContainer>
-            {props.isLoading && <Loader />}
+            {isLoading && <Loader />}
         </Modal>
     );
 };

@@ -5,7 +5,7 @@ import moment from 'moment';
 const DateFormat = {
     lastDay: '[Yesterday]',
     sameDay: '[Today]',
-    sameElse: 'MMMM DD'
+    sameElse: 'MMMM DD',
 };
 
 const DateContainer = styled.div`

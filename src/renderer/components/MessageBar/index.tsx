@@ -33,6 +33,13 @@ function MessageBar() {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
 
+    function onClose() {
+        setOpen(false);
+        setTimeout(() => {
+            dispatch(clearMessageAction());
+        }, 200);
+    }
+
     function openLinkHandler(link) {
         if (link) {
             openLink(link);
@@ -50,13 +57,6 @@ function MessageBar() {
             return `${hash.slice(0, 4)}...${hash.slice(hash.length - 4, hash.length)}`;
         }
         return hash;
-    }
-
-    function onClose() {
-        setOpen(false);
-        setTimeout(() => {
-            dispatch(clearMessageAction());
-        }, 200);
     }
 
     useEffect(() => {

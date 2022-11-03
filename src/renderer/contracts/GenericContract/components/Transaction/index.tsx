@@ -176,7 +176,8 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     color: isAmount ? 'error1' : 'gray8',
                     sign: isAmount ? '-' : '',
                 };
-            } else if (isSameLocation && !isFlag) {
+            }
+            if (isSameLocation && !isFlag) {
                 return {
                     icon: 'send',
                     preposition: t('general.of'),
@@ -185,7 +186,8 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     color: isAmount ? 'error1' : 'gray8',
                     sign: isAmount ? '-' : '',
                 };
-            } else if (!isSameLocation && isFlag) {
+            }
+            if (!isSameLocation && isFlag) {
                 return {
                     icon: 'receive',
                     preposition: t('general.from'),
@@ -194,16 +196,15 @@ const getStatus = (transaction, selectedAccountHash, t) => {
                     color: isAmount ? 'check' : 'gray8',
                     sign: isAmount ? '+' : '',
                 };
-            } else {
-                return {
-                    icon: 'receive',
-                    preposition: t('general.by'),
-                    state: t('components.transaction.invoked'),
-                    isFee,
-                    color: isAmount ? 'check' : 'gray8',
-                    sign: isAmount ? '+' : '',
-                };
             }
+            return {
+                icon: 'receive',
+                preposition: t('general.by'),
+                state: t('components.transaction.invoked'),
+                isFee,
+                color: isAmount ? 'check' : 'gray8',
+                sign: isAmount ? '+' : '',
+            };
         }
     }
 };

@@ -79,7 +79,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
 }
 
 export async function estimatePendingRewards(tezosUrl, selectedParentHash): Promise<string> {
-    return await calcPendingRewards(tezosUrl, selectedParentHash);
+    return calcPendingRewards(tezosUrl, selectedParentHash);
 }
 
 export function harvestRewards(password: string) {

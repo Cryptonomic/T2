@@ -13,7 +13,7 @@ export type MediaElementProps = {
     controls?: boolean;
     loop?: boolean;
     thumbnailUri?: string;
-}
+};
 
 /**
  * Media component props
@@ -42,4 +42,4 @@ export type MediaProps = {
     nftProvider?: string;
     thumbProps?: MediaElementProps;
     previewProps?: MediaElementProps;
-}
+};

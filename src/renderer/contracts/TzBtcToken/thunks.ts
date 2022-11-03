@@ -78,9 +78,9 @@ export function addLiquidityThunk(
     cashAmount: string,
     tokenAmount: string,
     password: string,
-    shortfall: string = '',
-    shortfallCost: string = ''
-) {
+    shortfall = '',
+    shortfallCost = ''
+): any {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword } = state().wallet;
@@ -168,7 +168,7 @@ export function addLiquidityThunk(
     };
 }
 
-export function removeLiquidityThunk(destination: string, poolShare: string, cashAmount: string, tokenAmount: string, password: string) {
+export function removeLiquidityThunk(destination: string, poolShare: string, cashAmount: string, tokenAmount: string, password: string): any {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword } = state().wallet;

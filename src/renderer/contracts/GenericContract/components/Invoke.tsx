@@ -13,7 +13,7 @@ import InvokeLedgerConfirmationModal from '../../../components/ConfirmModals/Inv
 import FormatSelector from '../../../components/FormatSelector';
 
 import { useFetchFees } from '../../../reduxContent/app/thunks';
-import { invokeAddressThunk } from '../../../contracts/duck/thunks';
+import { invokeAddressThunk } from '../../duck/thunks';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 
 import { OPERATIONFEE, AVERAGEFEES } from '../../../constants/FeeValue';
@@ -114,7 +114,7 @@ function Invoke(props: Props) {
     }, [isFeeLoaded]);
 
     function onUseMax() {
-        const balance = addresses[selected].balance;
+        const { balance } = addresses[selected];
         const max = balance - fee - gas - storage;
         let newAmount = '0';
         if (max > 0) {
@@ -129,12 +129,6 @@ function Invoke(props: Props) {
         // this.setState({ selectedInvokeAddress: pkh, balance: address.balance });
     }
 
-    function onEnterPress(keyVal) {
-        if (keyVal === 'Enter' && !isDisabled) {
-            onInvokeOperation();
-        }
-    }
-
     async function onInvokeOperation() {
         dispatch(setIsLoadingAction(true));
         if (isLedger) {
@@ -147,8 +141,14 @@ function Invoke(props: Props) {
         setOpen(false);
         dispatch(setIsLoadingAction(false));
 
-        if (!!operationResult) {
+        if (operationResult) {
             onSuccess();
+        }
+    }
+
+    function onEnterPress(keyVal) {
+        if (keyVal === 'Enter' && !isDisabled) {
+            onInvokeOperation();
         }
     }
 

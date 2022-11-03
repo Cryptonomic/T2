@@ -27,7 +27,7 @@ import { RootState } from '../../types/store';
 
 import { fetchWithTimeout } from '../../utils/network';
 
-const  { LocalVersionIndex, versionReferenceURL } = config;
+const { LocalVersionIndex, versionReferenceURL } = config;
 
 interface FetchFees {
     newFees: AverageFees;
@@ -71,7 +71,7 @@ export interface BakerInfo {
 
 const minimumOperationEstimate: OperationEstimate = { gas: 20_000, storage: 0, fee: 2_500 };
 
-export const useFetchFees = (operationKind: OperationKindType, isReveal: boolean = false, isManager: boolean = false): FetchFees => {
+export const useFetchFees = (operationKind: OperationKindType, isReveal = false, isManager = false): FetchFees => {
     const [state, setState] = useState<FetchFees>(initialFeesState);
     const store = useStore<RootState>();
     const { newFees, isFeeLoaded, miniFee, isRevealed } = state;
@@ -117,6 +117,7 @@ export const useFetchFees = (operationKind: OperationKindType, isReveal: boolean
             }
         };
         fetchFeesData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return { newFees, isFeeLoaded, miniFee, isRevealed };
 };
@@ -227,9 +228,8 @@ const queryHarpoon = async (accountAddress: string): Promise<HarpoonInfo> => {
                 grade: String(responseJSON[0].grade),
                 cycle: Number(responseJSON[0].cycle),
             };
-        } else {
-            throw new Error(`Empty response from Harpoon for ${JSON.stringify(query)}`);
         }
+        throw new Error(`Empty response from Harpoon for ${JSON.stringify(query)}`);
     } catch (e) {
         console.log('queryHarpoon failed with ', e);
         return { address: accountAddress, grade: '', cycle: 0 };
@@ -248,7 +248,7 @@ export const queryTezosDomains = async (nodeUrl: string, address: string): Promi
 };
 
 export const queryPrices = async () => {
-    return await fetchWithTimeout(`https://api.coingecko.com/api/v3/simple/price?ids=tezos&vs_currencies=usd,eur,jpy`, { timeout: 5000 })
+    return fetchWithTimeout(`https://api.coingecko.com/api/v3/simple/price?ids=tezos&vs_currencies=usd,eur,jpy`, { timeout: 5000 })
         .then((r) => r.json())
         .then((j) => j.tezos)
         .catch((e) => {
@@ -339,7 +339,7 @@ export function changeAccountThunk(
     parentIndex: number,
     addressType: AddressType,
     tokenName?: string
-) {
+): any {
     return async (dispatch: any) => {
         dispatch(changeAccountAction(accountHash, parentHash, accountIndex, parentIndex, addressType, tokenName));
         dispatch(syncAccountOrIdentityThunk(accountHash, parentHash, addressType));
@@ -349,13 +349,12 @@ export function changeAccountThunk(
 export function getNewVersionThunk(): any {
     return async (dispatch: any) => {
         const result = await getDataFromApi(versionReferenceURL);
-        if(result && result.currentVersionIndex) {
+        if (result && result.currentVersionIndex) {
             const RemoteVersionIndex = parseInt(result.currentVersionIndex, 10);
             if (RemoteVersionIndex > parseInt(LocalVersionIndex, 10)) {
                 dispatch(addNewVersionAction(result.currentVersionString));
             }
         }
-        
     };
 }
 
@@ -366,7 +365,10 @@ export function setSignerThunk(key: string, password: string) {
 
     return async (dispatch: any) => {
         const keyStore = await window.conseiljsSoftSigner.KeyStoreUtils.restoreIdentityFromSecretKey(key);
-        const signer = await window.conseiljsSoftSigner.SoftSigner.createSigner(window.conseiljs.TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'), password);
+        const signer = await window.conseiljsSoftSigner.SoftSigner.createSigner(
+            window.conseiljs.TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'),
+            password
+        );
         dispatch(setSignerAction(signer));
     };
 }

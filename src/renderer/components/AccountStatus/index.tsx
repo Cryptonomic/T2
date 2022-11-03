@@ -6,13 +6,14 @@ import { useSelector } from 'react-redux';
 import { ms } from '../../styles/helpers';
 import transactionsEmptyState from '../../../resources/transactionsEmptyState.svg';
 import LoaderSpinner from '../LoaderSpinner';
-import { H4 } from '../Heading/';
+import { H4 } from '../Heading';
 
 import * as statuses from '../../constants/StatusTypes';
 import { formatAmount } from '../../utils/currency';
 import Info from './Info';
 import { RootState } from '../../types/store';
 import { AddressType } from '../../types/general';
+
 const { Mnemonic, Hardware } = KeyStoreType;
 
 const Container = styled.section`

@@ -89,7 +89,7 @@ function Mint(props: Props) {
                         label={t('general.nouns.amount')}
                         amount={amount}
                         onChange={(val) => setAmount(val)}
-                        errorText={''}
+                        errorText=""
                         symbol={token.symbol}
                         scale={token.scale || 0}
                         precision={token.precision || 6}

@@ -1,18 +1,17 @@
 import { TezosNodeWriter, BabylonDelegationHelper, TezosParameterFormat } from 'conseiljs';
-import { createMessageAction } from '../../reduxContent/message/actions';
-import { updateIdentityAction } from '../../reduxContent/wallet/actions';
+import { createMessageAction } from '../message/actions';
+import { updateIdentityAction } from '../wallet/actions';
 import { displayError } from '../../utils/formValidation';
 import { tezToUtez } from '../../utils/currency';
 import { createAccount } from '../../utils/account';
 import { findIdentity } from '../../utils/identity';
 import { getMainNode, getMainPath } from '../../utils/settings';
 import { CREATED } from '../../constants/StatusTypes';
-import { saveIdentitiesToLocal } from '../../utils/wallet';
+import { saveIdentitiesToLocal, cloneDecryptedSigner } from '../../utils/wallet';
 import { createTransaction } from '../../utils/transaction';
 import { ORIGINATION } from '../../constants/TransactionTypes';
 
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
-import { cloneDecryptedSigner } from '../../utils/wallet';
 
 const { sendContractOriginationOperation } = TezosNodeWriter;
 const { deployManagerContract } = BabylonDelegationHelper;
@@ -23,13 +22,13 @@ export function originateContractThunk(
     fee: number,
     passPhrase: string,
     publicKeyHash: string,
-    storageLimit: number = 0,
-    gasLimit: number = 0,
-    code: string = '',
-    storage: string = '',
+    storageLimit = 0,
+    gasLimit = 0,
+    code = '',
+    storage = '',
     codeFormat?: TezosParameterFormat,
-    isSmartContract: boolean = false
-) {
+    isSmartContract = false
+): any {
     return async (dispatch, state) => {
         const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;

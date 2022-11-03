@@ -1,6 +1,6 @@
-import { NodeStatus, AddressType } from '../../types/general';
 import { Signer } from 'conseiljs';
 import { BeaconRequestOutputMessage, ConnectionContext } from '@airgap/beacon-sdk';
+import { NodeStatus, AddressType } from '../../types/general';
 
 export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_LEDGER = 'SET_LEDGER';
@@ -100,10 +100,6 @@ export interface ChangeAccountType {
 export interface ChangeAccountAction {
     type: typeof CHANGE_ACCOUNT_HASH;
     payload: ChangeAccountType;
-}
-
-export interface ShowSignVerifyAction {
-    type: typeof SHOW_SIGN_VERIFY;
 }
 
 export interface SetPlatformAction {

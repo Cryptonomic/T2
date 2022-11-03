@@ -10,7 +10,24 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
-import { Attribute, AttributesList, AttributeLabel, AttributeValue, Capitalize, Container, Col, Creator, CustomDivider, Description, Header, MenuButton, Title, StyledListItemIcon, StyledMenuItem, StyledTezosIcon } from './style';
+import {
+    Attribute,
+    AttributesList,
+    AttributeLabel,
+    AttributeValue,
+    Capitalize,
+    Container,
+    Col,
+    Creator,
+    CustomDivider,
+    Description,
+    Header,
+    MenuButton,
+    Title,
+    StyledListItemIcon,
+    StyledMenuItem,
+    StyledTezosIcon,
+} from './style';
 
 import { NFT_PROVIDERS } from '../../constants';
 
@@ -102,7 +119,7 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                         source={nftObject.artifactUrl}
                         type={nftObject.artifactType}
                         alt={nftObject.name}
-                        useNFTFailedBox={true}
+                        useNFTFailedBox
                         nftProvider={nftObject.provider}
                         thumbProps={{
                             thumbnailUri: nftObject.artifactType?.startsWith('image') ? nftObject.artifactUrl : nftObject.thumbnailUri,
@@ -137,8 +154,8 @@ export const NFTMoreInfo: FunctionComponent<NFTMoreInfoProps> = ({ nftObject }) 
                                     vertical: 'top',
                                     horizontal: 'right',
                                 }}
-                                disableAutoFocus={true}
-                                disableEnforceFocus={true}
+                                disableAutoFocus
+                                disableEnforceFocus
                             >
                                 <StyledMenuItem onClick={() => openArtifactSite()}>
                                     <StyledListItemIcon>

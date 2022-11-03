@@ -46,12 +46,12 @@ export const NFTModal: FunctionComponent<NFTModalProps> = ({ nftObject, onClose 
                         <Tab
                             key={`nft-modal-tab-${index}`}
                             isActive={activeTab === tab.value}
-                            ready={true}
+                            ready
                             buttonTheme="plain"
                             size={TAB_SIZES.LG}
                             onClick={() => setActiveTab(tab.value as NFTModalTabType)}
                         >
-                            <TabText ready={true}>{tab.label}</TabText>
+                            <TabText ready>{tab.label}</TabText>
                         </Tab>
                     ))}
                 </StyledTabMenu>

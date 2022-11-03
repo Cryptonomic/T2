@@ -76,7 +76,7 @@ function Deposit(props: Props) {
         setOpen(false);
         dispatch(setIsLoadingAction(false));
 
-        if (!!operationResult) {
+        if (operationResult) {
             onSuccess();
         }
     }

@@ -2,8 +2,9 @@ import React, { FunctionComponent, ReactElement, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
+import SearchIcon from '@mui/icons-material/Search';
 import { NFT_PAGE_TABS, NFT_PROVIDERS } from '../../constants';
-import { LoaderWrapper, TokensCount } from './style';
+import { LoaderWrapper, TokensCount, AddIcon, SearchForm, SearchInput, AddButton } from './style';
 import { NFTGalleryProps, NFTGalleryTabType, NFTObject } from '../../types';
 
 import { Gallery, GalleryItem } from '../../../../components/Gallery';
@@ -23,9 +24,6 @@ import { NFTModal } from '../NFTModal';
 // import { TokensDetailsModal } from '../../../../components/TokensDetailsModal';
 import { ManageNFTsModal } from '../../../../components/ManageNFTsModal';
 
-import SearchIcon from '@mui/icons-material/Search';
-
-import { AddIcon, SearchForm, SearchInput, AddButton } from './style';
 import { RowContainer } from '../../../components/style';
 import { setModalOpen } from '../../../../reduxContent/modal/actions';
 
@@ -111,9 +109,8 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                 if (search) {
                     const foundToken = (token.name && token.name.toLowerCase().includes(search.toLowerCase())) || token.objectId.toString().includes(search);
                     return foundToken;
-                } else {
-                    return token;
                 }
+                return token;
             });
 
             return (
@@ -133,7 +130,7 @@ export const NFTGallery: FunctionComponent<NFTGalleryProps> = ({
                         <AddButton
                             startIcon={<AddIcon />}
                             onClick={() => dispatch(setModalOpen(true, 'NFTAdd'))}
-                            disableRipple={true}
+                            disableRipple
                             style={{ margin: '35px 37px 44px 0' }}
                         >
                             Add NFT

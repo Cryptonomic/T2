@@ -11,7 +11,19 @@ import CopyButton from '../../components/CopyButton';
 import PasswordInput from '../../components/PasswordInput';
 import { RootState } from '../../types/store';
 
-import { CloseIconWrapper, ModalContainer, ModalTitle, ModalWrapper, KeyWrapper, KeyTitle, KeyAddress, Keys, SecretKeyMessage, InvokeButton, ButtonContainer } from '../style';
+import {
+    CloseIconWrapper,
+    ModalContainer,
+    ModalTitle,
+    ModalWrapper,
+    KeyWrapper,
+    KeyTitle,
+    KeyAddress,
+    Keys,
+    SecretKeyMessage,
+    InvokeButton,
+    ButtonContainer,
+} from '../style';
 
 interface Props {
     open: boolean;
@@ -74,7 +86,7 @@ const KeyDetails = (props: Props) => {
                             <KeyTitle>{t('components.keyDetailsModal.publicKey')}</KeyTitle>
                             <KeyAddress>
                                 {publicKey}
-                                <CopyButton text={'Tezos Public Key: ' + publicKey} title="" color="accent" />
+                                <CopyButton text={`Tezos Public Key: ${publicKey}`} title="" color="accent" />
                             </KeyAddress>
                         </KeyWrapper>
                         {!isLedger && (
@@ -82,7 +94,12 @@ const KeyDetails = (props: Props) => {
                                 <KeyTitle>{t('components.keyDetailsModal.secretKey')}</KeyTitle>
                                 {!secretKeyVisible && (
                                     <ButtonContainer>
-                                        <PasswordInput label={t('general.nouns.wallet_password')} password={password} onChange={(val) => setPassword(val)} containerStyle={{ width: '60%', marginTop: '10px' }} />
+                                        <PasswordInput
+                                            label={t('general.nouns.wallet_password')}
+                                            password={password}
+                                            onChange={(val) => setPassword(val)}
+                                            containerStyle={{ width: '60%', marginTop: '10px' }}
+                                        />
                                         <InvokeButton buttonTheme="primary" disabled={false} onClick={onShowSecretKey}>
                                             {t('general.verbs.show')}
                                         </InvokeButton>
@@ -92,7 +109,7 @@ const KeyDetails = (props: Props) => {
                                     <>
                                         <KeyAddress>
                                             {secretKey}
-                                            <CopyButton text={'Tezos Secret Key: ' + secretKey} title="" color="accent" />
+                                            <CopyButton text={`Tezos Secret Key: ${secretKey}`} title="" color="accent" />
                                         </KeyAddress>
                                     </>
                                 )}

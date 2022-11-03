@@ -3,19 +3,19 @@ import { Schema } from 'electron-store';
 
 export type SchemaType = {
     settings: {
-        locale: string,
-        selectedNode: string,
-        nodesList: any[],
-        selectedPath: string,
-        pathsList: any[]
-    },
-    identities: any[],
-    isPPAccepted: boolean,
-    isShowedInitScene: boolean,
-    isNotShowMessage: boolean,
-    isHideDelegateTooltip: boolean,
-    tokens: any[],
-}
+        locale: string;
+        selectedNode: string;
+        nodesList: any[];
+        selectedPath: string;
+        pathsList: any[];
+    };
+    identities: any[];
+    isPPAccepted: boolean;
+    isShowedInitScene: boolean;
+    isNotShowMessage: boolean;
+    isHideDelegateTooltip: boolean;
+    tokens: any[];
+};
 
 export const schema: Schema<SchemaType> = {
     settings: {
@@ -41,7 +41,7 @@ export const schema: Schema<SchemaType> = {
                 type: 'array',
                 default: [],
             },
-        }
+        },
     },
     identities: {
         type: 'array',
@@ -76,7 +76,7 @@ const defaultSettings = {
     selectedNode: '',
     nodesList: [],
     selectedPath: '',
-    pathsList: []
+    pathsList: [],
 };
 
 export const defaultStore = {

@@ -138,7 +138,7 @@ function ActionPanel() {
                         description={<Description onReceiveClick={() => onChangeTab(RECEIVE)} onSendClick={() => onChangeTab(SEND)} />}
                     />
                 ) : (
-                    <Fragment>
+                    <>
                         <Transactions transactions={showedTransactions} selectedAccountHash={selectedAccountHash} selectedParentHash={selectedParentHash} />
                         {pageCount > 1 && (
                             <PageNumbers
@@ -150,7 +150,7 @@ function ActionPanel() {
                             />
                         )}
                         {isLoading && <Loader />}
-                    </Fragment>
+                    </>
                 );
             }
         }

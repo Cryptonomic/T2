@@ -42,9 +42,9 @@ function ActionPanel() {
     function renderSection() {
         switch (activeTab) {
             case SEND:
-                return <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />;
+                return <Send isReady token={selectedToken} tokenTransferAction={transferThunk} />;
             case SWAP:
-                return <Swap isReady={true} token={selectedToken} />;
+                return <Swap isReady token={selectedToken} />;
             case TRANSACTIONS:
             default: {
                 if (!transactions || transactions.length === 0) {
@@ -82,7 +82,7 @@ function ActionPanel() {
     return (
         <Container>
             <BalanceBanner
-                isReady={true}
+                isReady
                 balance={selectedToken.balance}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 displayName={displayName}
@@ -91,8 +91,8 @@ function ActionPanel() {
 
             <TabList count={tabs.length}>
                 {tabs.map((tab) => (
-                    <Tab isActive={activeTab === tab} key={tab} ready={true} buttonTheme="plain" onClick={() => onChangeTab(tab)}>
-                        <TabText ready={true}>{t(tab)}</TabText>
+                    <Tab isActive={activeTab === tab} key={tab} ready buttonTheme="plain" onClick={() => onChangeTab(tab)}>
+                        <TabText ready>{t(tab)}</TabText>
                     </Tab>
                 ))}
             </TabList>

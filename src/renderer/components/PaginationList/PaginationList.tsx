@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 
-import EmptyState from '../../components/EmptyState';
-import PageNumbers from '../../components/PageNumbers';
-import Loader from '../../components/Loader';
+import EmptyState from '../EmptyState';
+import PageNumbers from '../PageNumbers';
+import Loader from '../Loader';
 
 import { RootState } from '../../types/store';
 
@@ -11,7 +11,7 @@ const Pagination = ({ list, ListComponent, listComponentProps, componentListName
     const [currentPage, setCurrentPage] = useState(1);
     const isLoading = useSelector((rootState: RootState) => rootState.app.isLoading, shallowEqual);
     const isEmpty = !list || list.length === 0;
-    const processedList = list.filter(e => e).sort((a, b) => b.timestamp - a.timestamp);
+    const processedList = list.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
     const itemsCount = 5;
     const pageCount = Math.ceil(processedList.length / itemsCount);
     const firstNumber = (currentPage - 1) * itemsCount;
@@ -20,7 +20,7 @@ const Pagination = ({ list, ListComponent, listComponentProps, componentListName
 
     const componentProps = {
         ...listComponentProps,
-        [componentListName]: listSlice
+        [componentListName]: listSlice,
     };
 
     return (
@@ -35,7 +35,7 @@ const Pagination = ({ list, ListComponent, listComponentProps, componentListName
                             totalNumber={list.length}
                             firstNumber={firstNumber}
                             lastNumber={lastNumber}
-                            onClick={value => setCurrentPage(value)}
+                            onClick={(value) => setCurrentPage(value)}
                         />
                     )}
                     {isLoading && <Loader />}

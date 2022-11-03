@@ -130,7 +130,7 @@ function DeployContract(props: Props) {
 
         onLedgerConfirmation(false);
         dispatch(setIsLoadingAction(false));
-        if (!!isOperationCompleted) {
+        if (isOperationCompleted) {
             onClose();
         }
     }

@@ -6,7 +6,7 @@ import createRootReducer from '../reduxContent';
 import { RootState } from '../types/store';
 
 const history = createHashHistory();
-const routerMiddleware = createRouterMiddleware(history)
+const routerMiddleware = createRouterMiddleware(history);
 const enhancer = applyMiddleware(reduxThunk, routerMiddleware);
 const rootReducer = createRootReducer(history);
 
@@ -15,7 +15,7 @@ const rootReducer = createRootReducer(history);
 // };
 
 const configureStore = (initialState?: RootState): any => {
-  return createStore(rootReducer, initialState, enhancer);
+    return createStore(rootReducer, initialState, enhancer);
 };
 
 export default { configureStore, history };

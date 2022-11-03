@@ -72,7 +72,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
     };
 }
 
-export function deployOven(fee: number, password: string, initialDelegate: string | undefined) {
+export function deployOven(fee: number, password: string, initialDelegate: string | undefined): any {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword, tokens } = state().wallet;
@@ -201,9 +201,10 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
             }
 
             // Increment oven balance and wXTZ balance.
-            token.balance = token.balance += amount;
-            token.vaultList[ovenIndex].ovenBalance = token.vaultList[ovenIndex].ovenBalance += amount;
-            tokens[tokenIndex] = token;
+            const newVault = { ...token.vaultList[ovenIndex], ovenBalance: (token.vaultList[ovenIndex].ovenBalance += amount) };
+            token.vaultList[ovenIndex] = newVault;
+            const newToken = { ...token, balance: (token.balance += amount) };
+            tokens[tokenIndex] = newToken;
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -258,9 +259,10 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
             }
 
             // Increment oven balance and wXTZ balance.
-            token.balance = token.balance -= amount;
-            token.vaultList[ovenIndex].ovenBalance = token.vaultList[ovenIndex].ovenBalance -= amount;
-            tokens[tokenIndex] = token;
+            const newVault = { ...token.vaultList[ovenIndex], ovenBalance: (token.vaultList[ovenIndex].ovenBalance -= amount) };
+            token.vaultList[ovenIndex] = newVault;
+            const newToken = { ...token, balance: (token.balance -= amount) };
+            tokens[tokenIndex] = newToken;
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -334,7 +336,7 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
 }
 
 export async function estimatePendingRewards(tezosUrl, selectedParentHash): Promise<string> {
-    return await calcPendingRewards(tezosUrl, selectedParentHash);
+    return calcPendingRewards(tezosUrl, selectedParentHash);
 }
 
 export function harvestRewards(password: string) {

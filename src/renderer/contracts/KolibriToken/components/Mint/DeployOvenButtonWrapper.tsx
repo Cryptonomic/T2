@@ -1,10 +1,10 @@
 import React from 'react';
-import { Container } from '../style';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import styled from 'styled-components';
+import { Container } from '../style';
 import { setModalOpen, clearModal } from '../../../../reduxContent/modal/actions';
 import { RootState } from '../../../../types/store';
 import DeployOvenModal from './DeployOvenModal';
-import styled from 'styled-components';
 
 import { AddCircleWrapper } from './style';
 
@@ -27,14 +27,18 @@ export const SectionContainer = styled.div``;
 const ADD_OVEN_MODAL_IDENTIFIER = 'add_oven';
 
 /** Renders a wrapper around a component that includes a "Deploy Vault" button */
-const DeployOvenButtonWrapper = (props) => {
+type Props = {
+    children: JSX.Element;
+};
+
+const DeployOvenButtonWrapper = (props: Props) => {
     const { children } = props;
 
     // T2 only supports one identity. This *WILL* break in the future if multiple identities are
     // supported.
     const identities = useSelector((state: RootState) => state.wallet.identities, shallowEqual);
     const activeIdentity = identities[0];
-    const balance = activeIdentity.balance;
+    const { balance } = activeIdentity;
 
     const dispatch = useDispatch();
 

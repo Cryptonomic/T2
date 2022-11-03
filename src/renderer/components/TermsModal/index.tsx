@@ -103,7 +103,7 @@ function TermsModal(props: Props) {
         <Modal open={isOpen} onClose={onModalClose}>
             <ModalContent>
                 <Container>
-                    <Title>{t('components.termsModal.welcome_to', { config.name })}</Title>
+                    <Title>{t('components.termsModal.welcome_to', { name: config.name })}</Title>
                     <MainContainer>
                         <TermsLogo src={termsLogoIcon} />
                         <Description>

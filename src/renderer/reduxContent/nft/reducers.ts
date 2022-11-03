@@ -1,6 +1,14 @@
 import { NFTState } from '../../types/store';
 
-import { CLEAR_NFT_GET_COLLECTIONS_ERRORS, ENABLE_NFT_SYNC, START_NFT_SYNC, END_NFT_SYNC, SET_NFT_COLLECTIONS, SET_NFT_COLLECTIONS_ARE_LOADING, NFTActionTypes } from './types';
+import {
+    CLEAR_NFT_GET_COLLECTIONS_ERRORS,
+    ENABLE_NFT_SYNC,
+    START_NFT_SYNC,
+    END_NFT_SYNC,
+    SET_NFT_COLLECTIONS,
+    SET_NFT_COLLECTIONS_ARE_LOADING,
+    NFTActionTypes,
+} from './types';
 
 const defaultState: NFTState = {
     isNFTSyncing: false,

@@ -5,14 +5,13 @@ import { BigNumber } from 'bignumber.js';
 
 import { formatAmount } from '../../../utils/currency';
 import { getMainNode } from '../../../utils/settings';
-import { Token } from '../../../types/general';
+import { Token, TokenKind } from '../../../types/general';
 import PasswordInput from '../../../components/PasswordInput';
 import NumericInput from '../../../components/NumericInput';
 import InputError from '../../../components/InputError';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { RootState, AppState, SettingsState } from '../../../types/store';
 import { knownTokenContracts } from '../../../constants/Token';
-import { TokenKind } from '../../../types/general';
 import { Container, PasswordButtonContainer, InvokeButton, RowContainer } from '../../components/style';
 import { InfoIcon } from '../../../featureModals/style';
 
@@ -69,7 +68,7 @@ function Swap(props: Props) {
 
     const { isLoading, isLedger } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
     const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((state: RootState) => state.settings, shallowEqual);
-    const tezosUrl = getMainNode(nodesList, selectedNode).tezosUrl;
+    const { tezosUrl } = getMainNode(nodesList, selectedNode);
 
     const { isReady, token } = props;
 
@@ -197,15 +196,11 @@ function Swap(props: Props) {
                         />
 
                         {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'buy' && quipuTokenCost > 0 && (
-                            <>
-                                Cost {'on QuipuSwap'} {formatAmount(quipuTokenCost)} XTZ
-                            </>
+                            <>Cost on QuipuSwap {formatAmount(quipuTokenCost)} XTZ</>
                         )}
 
                         {tokenAmount.length > 0 && tokenAmount !== '0' && tradeSide === 'sell' && quipuTokenProceeds > 0 && (
-                            <>
-                                Proceeds {'on QuipuSwap'} {formatAmount(quipuTokenProceeds)} XTZ
-                            </>
+                            <>Proceeds on QuipuSwap {formatAmount(quipuTokenProceeds)} XTZ</>
                         )}
                     </div>
                 </ColumnContainer>

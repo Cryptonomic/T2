@@ -69,7 +69,7 @@ function Delegate(props: Props) {
         }
     }
 
-    const renderFeeToolTip = () => {
+    const renderFeeToolTip: any = () => {
         return (
             <TooltipContainer>
                 <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>

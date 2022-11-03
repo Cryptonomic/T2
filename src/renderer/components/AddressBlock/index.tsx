@@ -13,7 +13,7 @@ import TezosIcon from '../TezosIcon';
 import { H3 } from '../Heading';
 import Button from '../Button';
 import AmountView from '../AmountView';
-import Address from '../Address/';
+import Address from '../Address';
 import AddressStatus from '../AddressStatus';
 import { READY, PENDING } from '../../constants/StatusTypes';
 import { isReady } from '../../utils/general';
@@ -223,19 +223,19 @@ function AddressBlock(props: Props) {
         setIsSecurityModalOpen(false);
     };
 
+    function setIsModalOpen(open, active) {
+        dispatch(setModalOpen(open, active));
+        if (!open) {
+            dispatch(clearModal());
+        }
+    }
+
     function goToAccount(addressId, index, addressType, tokenName = '') {
         const isMac = platform.indexOf('Mac') === 0;
         if (isMac && addressType === AddressType.NFTGallery && config.isAppStore) {
             setIsModalOpen(true, 'DisableNftModal');
         } else {
             dispatch(changeAccountThunk(addressId, publicKeyHash, index, identityIndex, addressType, tokenName));
-        }
-    }
-
-    function setIsModalOpen(open, active) {
-        dispatch(setModalOpen(open, active));
-        if (!open) {
-            dispatch(clearModal());
         }
     }
 
@@ -312,14 +312,14 @@ function AddressBlock(props: Props) {
         <Container>
             {ready ? (
                 <Address
-                    isManager={true}
+                    isManager
                     isActive={!isModalOpen && isManagerActive}
                     balance={balance}
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
                 />
             ) : (
                 <AddressStatus
-                    isManager={true}
+                    isManager
                     isActive={!isModalOpen && isManagerActive}
                     status={status}
                     onClick={() => goToAccount(publicKeyHash, 0, AddressType.Manager)}
@@ -410,7 +410,7 @@ function AddressBlock(props: Props) {
                 return delegatedAddressReady ? (
                     <Address
                         key={addressId}
-                        isContract={true}
+                        isContract
                         accountId={addressId}
                         isActive={!isModalOpen && isDelegatedActive}
                         balance={address.balance}
@@ -419,7 +419,7 @@ function AddressBlock(props: Props) {
                 ) : (
                     <AddressStatus
                         key={addressId}
-                        isContract={true}
+                        isContract
                         isActive={!isModalOpen && isDelegatedActive}
                         status={address.status}
                         onClick={() => goToAccount(addressId, index, AddressType.Delegated)}
@@ -459,7 +459,7 @@ function AddressBlock(props: Props) {
                 return smartAddressReady ? (
                     <Address
                         key={addressId}
-                        isContract={true}
+                        isContract
                         accountId={addressId}
                         isActive={isActive}
                         balance={address.balance}
@@ -470,14 +470,14 @@ function AddressBlock(props: Props) {
                         key={addressId}
                         isActive={isActive}
                         status={address.status}
-                        isContract={true}
+                        isContract
                         onClick={() => goToAccount(addressId, index, AddressType.Smart)}
                     />
                 );
             })}
 
             {isSignModalOpen && <SignVerifyModal open={isSignModalOpen} onClose={() => setIsModalOpen(false, 'sign')} />}
-            {/*isAuthModalOpen && <AuthModal open={isAuthModalOpen} onClose={() => setIsModalOpen(false, 'auth')} />*/}
+            {/* isAuthModalOpen && <AuthModal open={isAuthModalOpen} onClose={() => setIsModalOpen(false, 'auth')} /> */}
 
             {isBeaconRegistrationModalOpen && (
                 <BeaconConnectionRequest open={isBeaconRegistrationModalOpen} onClose={() => setIsModalOpen(false, 'beaconRegistration')} />
@@ -510,12 +510,7 @@ function AddressBlock(props: Props) {
                     <CloseIconWrapper onClick={() => hideDelegateTooltip()} />
                     <NoSmartAddressesTitle>{t('components.addressBlock.delegation_tips')}</NoSmartAddressesTitle>
                     {renderNoSmartAddressesDescription(noSmartAddressesDescriptionContent)}
-                    <NoSmartAddressesButton
-                        small={true}
-                        buttonTheme="secondary"
-                        onClick={() => setIsModalOpen(true, 'delegate_contract')}
-                        disabled={!isManagerReady}
-                    >
+                    <NoSmartAddressesButton small buttonTheme="secondary" onClick={() => setIsModalOpen(true, 'delegate_contract')} disabled={!isManagerReady}>
                         {t('components.addDelegateModal.add_delegate_title')}
                     </NoSmartAddressesButton>
                 </NoSmartAddressesContainer>

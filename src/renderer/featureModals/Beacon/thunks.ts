@@ -83,7 +83,7 @@ export function getAverageOperationGroupFee(publicKeyHash: string, operations: a
                 const result = await ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'operations', query).catch(() => []);
 
                 setFee(Math.ceil(Number(result[0].avg_fee)));
-            } catch (e) {
+            } catch (e: any) {
                 console.log('estimateInvocation failed with ', e);
                 setFee(e.message);
             }
@@ -95,7 +95,7 @@ export function getAverageOperationGroupFee(publicKeyHash: string, operations: a
     return fee;
 }
 
-export function sendOperations(password: string, operations: any[], fee: number = 0, gasLimit: number = 0, storageLimit: number = 0) {
+export function sendOperations(password: string, operations: any[], fee = 0, gasLimit = 0, storageLimit = 0): any {
     // TODO: type
     return async (dispatch, state): Promise<boolean> => {
         const { selectedNode, nodesList } = state().settings;
@@ -260,7 +260,7 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
         }
     }
 
-    return await TezosNodeWriter.appendRevealOperation(tezosUrl, publicKey, publicKeyHash, networkCounter, formedOperations);
+    return TezosNodeWriter.appendRevealOperation(tezosUrl, publicKey, publicKeyHash, networkCounter, formedOperations);
 }
 
 export function queryHicEtNuncSwap(swapId: number) {

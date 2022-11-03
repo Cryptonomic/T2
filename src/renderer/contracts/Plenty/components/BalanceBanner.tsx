@@ -75,14 +75,13 @@ function BalanceBanner(props: Props) {
                 .dividedBy(10 ** (token.scale || 0))
                 .toNumber()
                 .toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        } else {
-            const minDigits = Math.min(token.round || 0, 18);
-            const maxDigits = Math.min(token.precision || 0, 18);
-            return new BigNumber(amount)
-                .dividedBy(10 ** (token.scale || 0))
-                .toNumber()
-                .toLocaleString(undefined, { minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits });
         }
+        const minDigits = Math.min(token.round || 0, 18);
+        const maxDigits = Math.min(token.precision || 0, 18);
+        return new BigNumber(amount)
+            .dividedBy(10 ** (token.scale || 0))
+            .toNumber()
+            .toLocaleString(undefined, { minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits });
     }
 
     function harvestTrigger() {
@@ -106,7 +105,7 @@ function BalanceBanner(props: Props) {
                     )}
                 </AddressInfo>
                 <AddressInfo>
-                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten={true} />
+                    <TezosAddress address={publicKeyHash} weight={100} color="white" text={publicKeyHash} size={ms(1.7)} shorten />
                     <Gap />
                     <div style={{ marginLeft: 'auto' }}>
                         <Column>
@@ -116,7 +115,7 @@ function BalanceBanner(props: Props) {
                                 amount={balance}
                                 weight="light"
                                 symbol={token.symbol}
-                                showTooltip={true}
+                                showTooltip
                                 scale={token.scale}
                                 precision={token.precision}
                                 round={token.round}
@@ -136,8 +135,8 @@ function BalanceBanner(props: Props) {
                 </AddressInfo>
                 <AddressInfo>
                     {token.details && token.details.paused === false && 'Token is active.'}{' '}
-                    {token.details && token.details.supply && 'Total supply is ' + formatAmount(token.details.supply) + '.'}
-                    {token.details && token.details.holders && ' ' + Number(token.details.holders) + ' holders.'}
+                    {token.details && token.details.supply && `Total supply is ${formatAmount(token.details.supply)}.`}
+                    {token.details && token.details.holders && ` ${Number(token.details.holders)} holders.`}
                 </AddressInfo>
             </BottomRow>
         </Container>

@@ -53,7 +53,7 @@ function TokenNav(props: Props) {
     const icon = token.icon ? token.icon : defaultIcon;
 
     const shortName = token.displayName.substring(0, 24);
-    const displayName = shortName.length < token.displayName.length ? shortName + '...' : token.displayName;
+    const displayName = shortName.length < token.displayName.length ? `${shortName}...` : token.displayName;
 
     return (
         <Container isActive={isActive} onClick={onClick}>

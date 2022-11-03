@@ -63,7 +63,7 @@ const PageBanner: FunctionComponent<PageBannerProps> = ({
 }) => {
     return (
         <PageBannerContainer>
-            <PageBannerRow opacity={isAddressReady ? '1' : '0.5'} justify={breadcrumbs ? 'space-between' : 'flex-end'} lightColor={true}>
+            <PageBannerRow opacity={isAddressReady ? '1' : '0.5'} justify={breadcrumbs ? 'space-between' : 'flex-end'} lightColor>
                 {breadcrumbs && <Breadcrumbs>{breadcrumbs}</Breadcrumbs>}
                 {onSyncWallet && (
                     <span style={{ marginRight: '-4px' }}>

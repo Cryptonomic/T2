@@ -12,7 +12,7 @@ const farmBalanceMaps = [7264, 7262, 7263];
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[]) {
     let newTransactions: any[] = (
         await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
-            console.log('-debug: Error in: getSyncAccount -> getTokenTransactions for:' + tokenAddress);
+            console.log(`-debug: Error in: getSyncAccount -> getTokenTransactions for:${tokenAddress}`);
             console.error(e);
             return [];
         })
@@ -56,6 +56,8 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
             // TODO
             console.log('kusd mismatch', transaction);
         }
+
+        return {};
     });
 
     return syncTransactionsWithState(newTransactions, stateTransactions);
@@ -77,7 +79,7 @@ export async function getActivePools(server: string, account: string): Promise<{
 
     const activeContracts: string[] = [];
     const activeMaps: number[] = [];
-    hasKey.map((b, i) => {
+    hasKey.forEach((b, i) => {
         if (b) {
             activeContracts.push(farms[i]);
             activeMaps.push(farmBalanceMaps[i]);

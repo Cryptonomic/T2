@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { InputLabel, Input, FormControl, FormHelperText } from '@mui/material';
-import { NumericFormat  } from 'react-number-format';
+import { NumericFormat } from 'react-number-format';
 
 const Container = styled(FormControl)`
     width: 100%;
@@ -56,7 +56,7 @@ const NumberFormatCustom: React.ComponentType<any> = (props: Props1) => {
                     },
                 });
             }}
-            thousandSeparator={true}
+            thousandSeparator
         />
     );
 };
@@ -80,7 +80,7 @@ function TextField(props: Props) {
     // Don't shrink the label if the numeric input gets the NaN value:
     const labelProps: { shrink?: boolean } = {};
     if (type === 'number' && other.value !== undefined && other.value !== '') {
-        labelProps.shrink = other.value && other.value !== 'NaN' ? true : false;
+        labelProps.shrink = !!(other.value && other.value !== 'NaN');
     }
 
     return (

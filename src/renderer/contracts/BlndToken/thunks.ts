@@ -31,7 +31,7 @@ export function transferThunk(destination: string, amount: number, fee: number, 
 
         const operationId: string | undefined = await WrappedTezosHelper.transferBalance(
             tezosUrl,
-            (isLedger ? signer : await cloneDecryptedSigner(signer, password)),
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
             keyStore,
             selectedAccountHash,
             fee,
@@ -95,7 +95,14 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
             coreContractAddress = token.vaultCoreAddress;
         }
 
-        const result = await WrappedTezosHelper.deployOven(tezosUrl, (isLedger ? signer : await cloneDecryptedSigner(signer, password)), keyStore, fee, coreContractAddress, initialDelegate).catch((err) => {
+        const result = await WrappedTezosHelper.deployOven(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            fee,
+            coreContractAddress,
+            initialDelegate
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`deployOven failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
@@ -158,7 +165,14 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.depositToOven(tezosUrl, (isLedger ? signer : await cloneDecryptedSigner(signer, password)), keyStore, ovenAddress, fee, amount).catch((err) => {
+        const operationId: string | undefined = await WrappedTezosHelper.depositToOven(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            ovenAddress,
+            fee,
+            amount
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`deposit failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
@@ -186,9 +200,10 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
             }
 
             // Increment oven balance and wXTZ balance.
-            token.balance = token.balance += amount;
-            token.vaultList[ovenIndex].ovenBalance = token.vaultList[ovenIndex].ovenBalance += amount;
-            tokens[tokenIndex] = token;
+            const newVault = { ...token.vaultList[ovenIndex], ovenBalance: (token.vaultList[ovenIndex].ovenBalance += amount) };
+            token.vaultList[ovenIndex] = newVault;
+            const newToken = { ...token, balance: (token.balance += amount) };
+            tokens[tokenIndex] = newToken;
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -215,7 +230,14 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.withdrawFromOven(tezosUrl, (isLedger ? signer : await cloneDecryptedSigner(signer, password)), keyStore, ovenAddress, fee, amount).catch((err) => {
+        const operationId: string | undefined = await WrappedTezosHelper.withdrawFromOven(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            ovenAddress,
+            fee,
+            amount
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`withdraw failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
@@ -243,9 +265,10 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
             }
 
             // Increment oven balance and wXTZ balance.
-            token.balance = token.balance -= amount;
-            token.vaultList[ovenIndex].ovenBalance = token.vaultList[ovenIndex].ovenBalance -= amount;
-            tokens[tokenIndex] = token;
+            const newVault = { ...token.vaultList[ovenIndex], ovenBalance: (token.vaultList[ovenIndex].ovenBalance -= amount) };
+            token.vaultList[ovenIndex] = newVault;
+            const newToken = { ...token, balance: (token.balance -= amount) };
+            tokens[tokenIndex] = newToken;
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -272,14 +295,19 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.setOvenBaker(tezosUrl, (isLedger ? signer : await cloneDecryptedSigner(signer, password)), keyStore, fee, ovenAddress, newDelegate).catch(
-            (err) => {
-                const errorObj = { name: err.message, ...err };
-                console.error(`withdraw failed with ${JSON.stringify(errorObj)}`);
-                dispatch(createMessageAction(errorObj.name, true));
-                return undefined;
-            }
-        );
+        const operationId: string | undefined = await WrappedTezosHelper.setOvenBaker(
+            tezosUrl,
+            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            keyStore,
+            fee,
+            ovenAddress,
+            newDelegate
+        ).catch((err) => {
+            const errorObj = { name: err.message, ...err };
+            console.error(`withdraw failed with ${JSON.stringify(errorObj)}`);
+            dispatch(createMessageAction(errorObj.name, true));
+            return undefined;
+        });
 
         if (operationId === undefined) {
             return false;

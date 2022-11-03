@@ -4,19 +4,19 @@ import styled from 'styled-components';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { OperationKindType } from 'conseiljs';
 import IconButton from '@mui/material/IconButton';
+import { BigNumber } from 'bignumber.js';
 import TextField from '../../../../components/TextField';
 import TezosNumericInput from '../../../../components/TezosNumericInput';
 import NumericInput from '../../../../components/NumericInput';
-import { BigNumber } from 'bignumber.js';
 import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';
 
 import Modal from '../../../../components/CustomModal';
-import Tooltip from '../../../../components/Tooltip/';
+import Tooltip from '../../../../components/Tooltip';
 import { ms } from '../../../../styles/helpers';
 import TezosIcon from '../../../../components/TezosIcon';
 import Button from '../../../../components/Button';
 import Loader from '../../../../components/Loader';
-import Fees from '../../../../components/Fees/';
+import Fees from '../../../../components/Fees';
 import PasswordInput from '../../../../components/PasswordInput';
 import InputAddress from '../../../../components/InputAddress';
 import TezosAmount from '../../../../components/TezosAmount';
@@ -289,7 +289,7 @@ function DepositModal(props: Props) {
         const isWithdrawn = await dispatch(withdraw(ovenAddress, wxtzToWithdrawNumber, fee, passPhrase));
         setConfirmOpen(false);
         dispatch(setIsLoadingAction(false));
-        if (!!isWithdrawn) {
+        if (isWithdrawn) {
             onClose();
         }
     }
@@ -341,7 +341,7 @@ function DepositModal(props: Props) {
     return (
         <Modal
             // TODO(keefertaylor): Translations
-            title={'Withdraw from Vault'}
+            title="Withdraw from Vault"
             open={open}
             onClose={onCloseClick}
         >
@@ -356,17 +356,7 @@ function DepositModal(props: Props) {
                 <MessageContainer>
                     {/* TODO(keefertaylor): Use Translations */}
                     <BoldSpan>Locked balance:&nbsp;</BoldSpan>
-                    <AmountView
-                        color="black"
-                        size={ms(0.5)}
-                        amount={vaultBalance}
-                        weight="light"
-                        symbol={'wXTZ'}
-                        showTooltip={true}
-                        scale={6}
-                        precision={6}
-                        round={6}
-                    />
+                    <AmountView color="black" size={ms(0.5)} amount={vaultBalance} weight="light" symbol="wXTZ" showTooltip scale={6} precision={6} round={6} />
                 </MessageContainer>
                 <MessageContainer>
                     <BoldSpan>Available balance:&nbsp;</BoldSpan>
@@ -375,8 +365,8 @@ function DepositModal(props: Props) {
                         size={ms(0.5)}
                         amount={wrappedTezBalance}
                         weight="light"
-                        symbol={'wXTZ'}
-                        showTooltip={true}
+                        symbol="wXTZ"
+                        showTooltip
                         scale={6}
                         precision={6}
                         round={6}
@@ -398,7 +388,7 @@ function DepositModal(props: Props) {
                             label={t('general.nouns.amount')}
                             amount={wxtzToWithdraw}
                             onChange={changeWxtzToWithdraw}
-                            symbol={'wXTZ'}
+                            symbol="wXTZ"
                             scale={6}
                             precision={6}
                             maxValue={new BigNumber(wrappedTezBalance).dividedBy(10 ** (6 || 0)).toNumber()}

@@ -11,7 +11,6 @@ import { IMPORT } from '../../constants/CreationTypes';
 import { loginThunk } from '../../reduxContent/wallet/thunks';
 import { RootState } from '../../types/store';
 
-
 const CreateContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -84,7 +83,7 @@ function LoginImport() {
         }
 
         const result = await window.electron.dialog.openDialog(dialogFilters);
-        const {location, fileName} = result;
+        const { location, fileName } = result;
         if (location && fileName) {
             setWalletLocation(location);
             setWalletFileName(fileName);

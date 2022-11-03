@@ -65,7 +65,7 @@ const CustomTextArea = (props: Props) => {
                 id="micheline-input"
                 key={label}
                 onChange={(event) => onChange(event.target.value)}
-                multiline={true}
+                multiline
                 rows={5}
                 defaultValue={defaultValue}
                 {...other}

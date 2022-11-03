@@ -8,12 +8,12 @@ import TextField from '../../../../components/TextField';
 import TezosNumericInput from '../../../../components/TezosNumericInput';
 
 import Modal from '../../../../components/CustomModal';
-import Tooltip from '../../../../components/Tooltip/';
+import Tooltip from '../../../../components/Tooltip';
 import { ms } from '../../../../styles/helpers';
 import TezosIcon from '../../../../components/TezosIcon';
 import Button from '../../../../components/Button';
 import Loader from '../../../../components/Loader';
-import Fees from '../../../../components/Fees/';
+import Fees from '../../../../components/Fees';
 import PasswordInput from '../../../../components/PasswordInput';
 import InputAddress from '../../../../components/InputAddress';
 import TezosAmount from '../../../../components/TezosAmount';
@@ -215,11 +215,10 @@ function DeployOvenModal(props: Props) {
     // Total cost of the operation.
     const [total, setTotal] = useState(fee + GAS);
     // Remaining balance for user
-    const [balance, setBalance] = useState(props.managerBalance - total);
+    const { open, managerBalance, onClose } = props;
+    const [balance, setBalance] = useState(managerBalance - total);
 
     const { isLoading, isLedger, selectedParentHash } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
-
-    const { open, managerBalance, onClose } = props;
 
     const isDisabled = isLoading || (!passPhrase && !isLedger) || balance < 0 || isDelegateIssue;
 
@@ -243,7 +242,7 @@ function DeployOvenModal(props: Props) {
 
         setConfirmOpen(false);
         dispatch(setIsLoadingAction(false));
-        if (!!isDeployed) {
+        if (isDeployed) {
             onClose();
         }
     }
@@ -283,7 +282,7 @@ function DeployOvenModal(props: Props) {
     const { isIssue, warningMessage, balanceColor } = getBalanceState();
     return (
         // TODO(keefertaylor): Use translations here.
-        <Modal title={'Deploy Vault'} open={open} onClose={onCloseClick}>
+        <Modal title="Deploy Vault" open={open} onClose={onCloseClick}>
             <MainContainer>
                 <MessageContainer>
                     <InfoIcon color="info" iconName="info" />
@@ -298,9 +297,9 @@ function DeployOvenModal(props: Props) {
             <InputAddressContainer>
                 <InputAddress
                     // TODO(keefertaylor): Use translations here.
-                    label={'Baker (optional)'}
+                    label="Baker (optional)"
                     operationType="delegate"
-                    tooltip={true}
+                    tooltip
                     onChange={(val) => setDelegate(val)}
                     onIssue={(flag) => setIsDelegateIssue(flag)}
                 />
@@ -311,7 +310,7 @@ function DeployOvenModal(props: Props) {
                         <Fees low={FEES.low} medium={FEES.medium} high={FEES.high} fee={fee} miniFee={FEES.low} onChange={changeFee} />
                     </FeeContainer>
                     <GasInputContainer>
-                        <TextField disabled={true} label={t('general.verbs.burn')} defaultValue="0.06425" />
+                        <TextField disabled label={t('general.verbs.burn')} defaultValue="0.06425" />
                         <TezosIconInput color="gray5" iconName="tezos" />
                         <Tooltip position="bottom" content={renderGasToolTip()}>
                             <BurnTooltip size="small">
@@ -324,7 +323,7 @@ function DeployOvenModal(props: Props) {
                     <BalanceArrow />
                     <BalanceContent>
                         <BalanceTitle>{t('general.nouns.total')}</BalanceTitle>
-                        <TotalAmount weight="500" color={'gray3'} size={ms(0.65)} amount={total} />
+                        <TotalAmount weight="500" color="gray3" size={ms(0.65)} amount={total} />
                         <BalanceTitle>{t('general.nouns.remaining_balance')}</BalanceTitle>
                         <BalanceAmount weight="500" color={balanceColor} size={ms(-0.75)} amount={balance} />
                         {isIssue && (

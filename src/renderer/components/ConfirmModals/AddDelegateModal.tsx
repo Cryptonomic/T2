@@ -8,12 +8,12 @@ import TextField from '../TextField';
 import TezosNumericInput from '../TezosNumericInput';
 
 import Modal from '../CustomModal';
-import Tooltip from '../Tooltip/';
+import Tooltip from '../Tooltip';
 import { ms } from '../../styles/helpers';
 import TezosIcon from '../TezosIcon';
 import Button from '../Button';
 import Loader from '../Loader';
-import Fees from '../Fees/';
+import Fees from '../Fees';
 import PasswordInput from '../PasswordInput';
 import InputAddress from '../InputAddress';
 import TezosAmount from '../TezosAmount';
@@ -261,7 +261,7 @@ function AddDelegateModal(props: Props) {
         const isCreated = await dispatch(originateContractThunk(delegate, amount, Math.floor(fee), passPhrase, selectedParentHash));
         setConfirmOpen(false);
         dispatch(setIsLoadingAction(false));
-        if (!!isCreated) {
+        if (isCreated) {
             onClose();
         }
     }
@@ -327,7 +327,7 @@ function AddDelegateModal(props: Props) {
                 <InputAddress
                     label={t('general.nouns.delegate_address')}
                     operationType="delegate"
-                    tooltip={true}
+                    tooltip
                     onChange={(val) => setDelegate(val)}
                     onIssue={(flag) => setIsDelegateIssue(flag)}
                 />
@@ -363,7 +363,7 @@ function AddDelegateModal(props: Props) {
                         />
                     </FeeContainer>
                     <GasInputContainer>
-                        <TextField disabled={true} label={t('general.verbs.burn')} defaultValue="0.06425" />
+                        <TextField disabled label={t('general.verbs.burn')} defaultValue="0.06425" />
                         <TezosIconInput color="gray5" iconName="tezos" />
                         <Tooltip position="bottom" content={renderGasToolTip()}>
                             <BurnTooltip size="small">

@@ -33,9 +33,10 @@ import {
     SET_BEACON_LOADING,
     SET_LAUNCH_URL,
     SetLaunchUrlAction,
+    SetPlatformAction,
+    SET_PLATFORM,
 } from './types';
 import { NodeStatus, AddressType } from '../../types/general';
-import { SetPlatformAction, SET_PLATFORM } from './types';
 
 export function setIsLoadingAction(isLoading: boolean): SetIsLoadingAction {
     return {
@@ -119,7 +120,7 @@ export function setSignerAction(signer: Signer): SetSignerAction {
     return { type: SET_SIGNER, signer };
 }
 
-export function setBeaconClientAction(beaconClient: boolean = false): SetBeaconClientAction {
+export function setBeaconClientAction(beaconClient = false): SetBeaconClientAction {
     return { type: SET_BEACON_CLIENT, beaconClient };
 }
 

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { WalletClient, BeaconMessageType, BeaconRequestOutputMessage, ConnectionContext } from '@airgap/beacon-sdk';
-import { BeaconErrorType } from '@airgap/beacon-sdk';
+import { WalletClient, BeaconMessageType, BeaconRequestOutputMessage, ConnectionContext, BeaconErrorType } from '@airgap/beacon-sdk';
 import { setBeaconMessageAction, setBeaconLoading, setBeaconClientAction } from '../../reduxContent/app/actions';
 import { setModalOpen, setModalValue } from '../../reduxContent/modal/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
@@ -13,7 +12,7 @@ import { RootState } from '../../types/store';
 
 export const beaconClient = new WalletClient({ name: 'Beacon Wallet Client' });
 
-const  { isAppStore } = config;
+const { isAppStore } = config;
 
 export const BeaconMessageRouter = () => {
     const dispatch = useDispatch();
@@ -36,15 +35,15 @@ export const BeaconMessageRouter = () => {
                 return;
             }
 
-            /*if (!Object.keys(modalValues).length || !Object.keys(modalValues).includes('beaconRegistration')) {
+            /* if (!Object.keys(modalValues).length || !Object.keys(modalValues).includes('beaconRegistration')) {
                 dispatch(createMessageAction('Received unexpected Beacon request', true));
                 return;
-            }*/
+            } */
 
-            /*if (connection.id !== modalValues.beaconRegistration.publicKey) {
+            /* if (connection.id !== modalValues.beaconRegistration.publicKey) {
                 dispatch(createMessageAction('Beacon connection id did not match', true));
                 return;
-            }*/
+            } */
 
             dispatch(setBeaconLoading());
             dispatch(setModalValue(message, 'beaconPermission'));

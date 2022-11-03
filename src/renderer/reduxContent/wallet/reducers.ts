@@ -8,7 +8,7 @@ import {
     ADD_NEW_IDENTITY,
     UPDATE_IDENTITY,
     UPDATE_TOKENS,
-    WalletActionTypes
+    WalletActionTypes,
 } from './types';
 
 import { LOGOUT, LogoutAction } from '../app/types';
@@ -18,7 +18,7 @@ const defaultState: WalletState = {
     walletPassword: '',
     walletFileName: '',
     walletLocation: '',
-    tokens: []
+    tokens: [],
 };
 
 export function walletReducer(state: WalletState = defaultState, action: WalletActionTypes | LogoutAction) {
@@ -39,7 +39,7 @@ export function walletReducer(state: WalletState = defaultState, action: WalletA
         case UPDATE_IDENTITY: {
             const { publicKeyHash } = action.identity;
             const stateIdentities = [...state.identities];
-            const indexFound = stateIdentities.findIndex(identity => publicKeyHash === identity.publicKeyHash);
+            const indexFound = stateIdentities.findIndex((identity) => publicKeyHash === identity.publicKeyHash);
 
             if (indexFound > -1) {
                 stateIdentities[indexFound] = action.identity;

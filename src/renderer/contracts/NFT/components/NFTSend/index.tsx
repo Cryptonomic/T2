@@ -176,7 +176,8 @@ export const NFTSend: FunctionComponent<NFTSendProps> = ({ nftObject, closeModal
                     </TooltipContent>
                 </TooltipContainer>
             );
-        } else if (isRevealed && isCustomFee()) {
+        }
+        if (isRevealed && isCustomFee()) {
             return renderFeeToolTipWrapper(
                 <TooltipContainer>
                     <TooltipContent>{t('components.nftGallery.custom_fee_tooltip')}</TooltipContent>
@@ -215,7 +216,7 @@ export const NFTSend: FunctionComponent<NFTSendProps> = ({ nftObject, closeModal
                         <TextField
                             label={t('components.nftGallery.modal.token')}
                             value={`${t('components.nftGallery.modal.token')} ${nftObject.objectId.toString()}`}
-                            readOnly={true}
+                            readOnly
                         />
                         <FeeContainer>
                             <Fees
@@ -247,7 +248,7 @@ export const NFTSend: FunctionComponent<NFTSendProps> = ({ nftObject, closeModal
                             type={nftObject.artifactType}
                             alt={nftObject.name}
                             enablePreview={false}
-                            useNFTFailedBox={true}
+                            useNFTFailedBox
                             nftProvider={nftObject.provider}
                             thumbProps={{
                                 thumbnailUri: nftObject.thumbnailUri,

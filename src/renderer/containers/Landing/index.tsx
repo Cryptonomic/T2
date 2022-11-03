@@ -41,25 +41,24 @@ interface Props {
 }
 
 function Landing(props: Props) {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const { selectedLanguage, onLanguageChange, goTo, onContinue } = props;
     const [isTos, setIsTos] = useState(() => {
         const isFlag = localStorage.getItem('isTos');
-        return !!isFlag && isFlag === 'true' ? true : false;
+        return !!(!!isFlag && isFlag === 'true');
     });
 
     const [isPP, setIsPP] = useState(() => {
         const isFlag = localStorage.getItem('isPP');
-        return !!isFlag && isFlag === 'true' ? true : false;
+        return !!(!!isFlag && isFlag === 'true');
     });
 
     const [selectedIndex, setSelectedIndex] = useState(() => {
         const index = localStorage.getItem('initIndex');
         if (!index) {
             return 0;
-        } else {
-            return Number(index);
         }
+        return Number(index);
     });
 
     function saveData() {
@@ -148,7 +147,7 @@ function Landing(props: Props) {
     const getPrevButton = (onClickHandler, hasPrev) => {
         if (!hasPrev) return null;
         return (
-            <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} startIcon={<BackCaret />} isleft={1}>
+            <ButtonContainer color="secondary" disableRipple onClick={onClickHandler} startIcon={<BackCaret />} isleft={1}>
                 {t('general.back') as string}
             </ButtonContainer>
         );
@@ -157,20 +156,20 @@ function Landing(props: Props) {
     const getNextButton = (onClickHandler, hasNext, label) => {
         if (!hasNext) {
             return (
-                <StartBtn variant="contained" color="secondary" disableRipple={true} onClick={() => gotoMainPage()}>
+                <StartBtn variant="contained" color="secondary" disableRipple onClick={() => gotoMainPage()}>
                     {t('general.get_started') as string}
                 </StartBtn>
             );
         }
         if (selectedIndex === 1 && (!isTos || !isPP)) {
             return (
-                <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} endIcon={<NextCaret />} isleft={0} disabled={true}>
+                <ButtonContainer color="secondary" disableRipple onClick={onClickHandler} endIcon={<NextCaret />} isleft={0} disabled>
                     {t('general.next') as string}
                 </ButtonContainer>
             );
         }
         return (
-            <ButtonContainer color="secondary" disableRipple={true} onClick={onClickHandler} endIcon={<NextCaret />} isleft={0}>
+            <ButtonContainer color="secondary" disableRipple onClick={onClickHandler} endIcon={<NextCaret />} isleft={0}>
                 {t('general.next') as string}
             </ButtonContainer>
         );
@@ -179,7 +178,7 @@ function Landing(props: Props) {
     return (
         <Carousel
             showThumbs={false}
-            showArrows={true}
+            showArrows
             autoPlay={false}
             showStatus={false}
             useKeyboardArrows={false}

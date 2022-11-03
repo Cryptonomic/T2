@@ -8,20 +8,24 @@ import { activateAndUpdateAccount } from './general';
 import { getSyncTransactions, syncTransactionsWithState } from './transaction';
 import { createAccount, getAccountsForIdentity, getSyncAccount, syncAccountWithState, combineAccounts } from './account';
 
+const defaultIdentity = {
+    balance: 0,
+    accounts: [],
+    publicKeyHash: '',
+    publicKey: '',
+    secretKey: '',
+    operations: {},
+    order: 0,
+    storeType: KeyStoreType.Fundraiser,
+    activeTab: TRANSACTIONS,
+    status: CREATED,
+    transactions: [],
+    delegate_value: '',
+};
+
 export function createIdentity(identity: Identity): Identity {
     return {
-        balance: 0,
-        accounts: [],
-        publicKeyHash: '',
-        publicKey: '',
-        secretKey: '',
-        operations: {},
-        order: 0,
-        storeType: KeyStoreType.Fundraiser,
-        activeTab: TRANSACTIONS,
-        status: CREATED,
-        transactions: [],
-        delegate_value: '',
+        ...defaultIdentity,
         ...identity,
     };
 }
@@ -37,7 +41,7 @@ export function findIdentityIndex(identities: Identity[], pkh: string): number {
 export async function getSyncIdentity(identity: Identity, node: Node, selectedAccountHash: string) {
     const { publicKeyHash, accounts } = identity;
 
-    identity = await activateAndUpdateAccount(identity, node);
+    const newIdentity = await activateAndUpdateAccount(identity, node);
 
     let serverAccounts: any[] = await getAccountsForIdentity(node, publicKeyHash).catch((error) => {
         console.log(`-debug: Error in: status.getAccountsForIdentity for: ${publicKeyHash}`);
@@ -47,7 +51,7 @@ export async function getSyncIdentity(identity: Identity, node: Node, selectedAc
 
     serverAccounts = combineAccounts(accounts, serverAccounts);
 
-    identity.accounts = await Promise.all(
+    newIdentity.accounts = await Promise.all(
         (serverAccounts || []).map(async (account, index) => {
             let newAccount = createAccount({ ...account, order: account.order || index + 1 });
             if (account.status !== READY) {
@@ -78,10 +82,10 @@ export async function getSyncIdentity(identity: Identity, node: Node, selectedAc
     );
 
     if (publicKeyHash === selectedAccountHash) {
-        identity.transactions = await getSyncTransactions(publicKeyHash, node, identity.transactions);
+        newIdentity.transactions = await getSyncTransactions(publicKeyHash, node, newIdentity.transactions);
     }
 
-    return identity;
+    return newIdentity;
 }
 
 export function syncIdentityWithState(syncIdentity: Identity, stateIdentity: Identity) {

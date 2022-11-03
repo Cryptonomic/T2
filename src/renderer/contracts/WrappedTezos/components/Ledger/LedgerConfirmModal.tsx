@@ -53,7 +53,7 @@ const LedgerConfirmModal = (props: Props) => {
 
     return (
         // TODO(keefertaylor): Use translations
-        <Modal title={'Confirm Operation'} open={props.open} onClose={props.onClose}>
+        <Modal title="Confirm Operation" open={props.open} onClose={props.onClose}>
             <MainContainer>
                 <DescriptionContainer>
                     <SendSvg src={sendImg} />
@@ -84,7 +84,7 @@ const LedgerConfirmModal = (props: Props) => {
                 {props.vaultAddress && (
                     <ItemContainer>
                         {/* TODO(keefertaylor): translations */}
-                        <ItemTitle> {'Vault'}</ItemTitle>
+                        <ItemTitle> Vault</ItemTitle>
                         <TezosAddress address={props.vaultAddress} size="16px" weight={300} color="primary" />
                     </ItemContainer>
                 )}

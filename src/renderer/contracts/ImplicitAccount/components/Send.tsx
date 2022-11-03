@@ -154,6 +154,17 @@ function Send(props: Props) {
         });
     }
 
+    async function onSend() {
+        try {
+            dispatch(setIsLoadingAction(true));
+            await dispatch(sendTezThunk(password, toAddress, amount, Math.floor(fee)));
+        } finally {
+            setPassword('');
+            setOpen(false);
+            dispatch(setIsLoadingAction(false));
+        }
+    }
+
     function onEnterPress(keyVal) {
         if (keyVal === 'Enter') {
             onSend();
@@ -219,17 +230,6 @@ function Send(props: Props) {
         }
     }
 
-    async function onSend() {
-        try {
-            dispatch(setIsLoadingAction(true));
-            await dispatch(sendTezThunk(password, toAddress, amount, Math.floor(fee)));
-        } finally {
-            setPassword('');
-            setOpen(false);
-            dispatch(setIsLoadingAction(false));
-        }
-    }
-
     function getBalanceState() {
         const realAmount = !amount ? Number(amount) : 0;
         if (balance <= 0 || balance < realAmount) {
@@ -281,9 +281,22 @@ function Send(props: Props) {
     return (
         <Container>
             <SendTitle>{t('components.send.send_xtz')}</SendTitle>
-            <InputAddress label={t('components.send.recipient_address')} address={selectedAccountHash} operationType="send" onChange={handleToAddressChange} onIssue={(err) => setIsAddressIssue(err)} onAddressType={(type) => setAddressType(type)} />
+            <InputAddress
+                label={t('components.send.recipient_address')}
+                address={selectedAccountHash}
+                operationType="send"
+                onChange={handleToAddressChange}
+                onIssue={(err) => setIsAddressIssue(err)}
+                onAddressType={(type) => setAddressType(type)}
+            />
             <AmountContainer>
-                <TezosNumericInput decimalSeparator={t('general.decimal_separator')} label={t('general.nouns.amount')} amount={amount} onChange={handleAmountChange} errorText={error} />
+                <TezosNumericInput
+                    decimalSeparator={t('general.decimal_separator')}
+                    label={t('general.nouns.amount')}
+                    amount={amount}
+                    onChange={handleAmountChange}
+                    errorText={error}
+                />
                 <UseMax onClick={() => onUseMax()}>{t('general.verbs.use_max')}</UseMax>
             </AmountContainer>
             <FeesBurnContainer>
@@ -308,7 +321,7 @@ function Send(props: Props) {
                 </FeeContainer>
                 {isBurn && (
                     <BurnsContainer>
-                        <TextField disabled={true} label={t('components.transaction.burn')} defaultValue="0.06425" />
+                        <TextField disabled label={t('components.transaction.burn')} defaultValue="0.06425" />
                         <TezosIconInput color="gray5" iconName="tezos" />
                         <Tooltip position="bottom" content={renderBurnToolTip()}>
                             <BurnTooltipBtn size="small">
@@ -334,9 +347,30 @@ function Send(props: Props) {
             </BottomContainer>
 
             {!isLedger ? (
-                <SendConfirmationModal onEnterPress={(event) => onEnterPress(event.key)} amount={amount} fee={fee} source={selectedAccountHash} password={password} address={toAddress} open={open} onClose={() => setOpen(false)} onPasswordChange={(val) => setPassword(val)} onSend={() => onSend()} isLoading={isLoading} isBurn={isBurn} />
+                <SendConfirmationModal
+                    onEnterPress={(event) => onEnterPress(event.key)}
+                    amount={amount}
+                    fee={fee}
+                    source={selectedAccountHash}
+                    password={password}
+                    address={toAddress}
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    onPasswordChange={(val) => setPassword(val)}
+                    onSend={() => onSend()}
+                    isLoading={isLoading}
+                    isBurn={isBurn}
+                />
             ) : (
-                <SendLedgerConfirmationModal amount={amount} fee={fee} address={toAddress} source={selectedAccountHash} open={open} onClose={() => setOpen(false)} isLoading={isLoading} />
+                <SendLedgerConfirmationModal
+                    amount={amount}
+                    fee={fee}
+                    address={toAddress}
+                    source={selectedAccountHash}
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    isLoading={isLoading}
+                />
             )}
         </Container>
     );

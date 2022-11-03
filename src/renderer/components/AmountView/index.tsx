@@ -40,13 +40,6 @@ const AmountView = (props: Props) => {
 
     const textCursor = selectable === undefined || selectable ? SelectableText : NonSelectableText;
 
-    function getRealValue() {
-        return {
-            fullAmount: formatAmount(true),
-            truncatedAmount: formatAmount(false),
-        };
-    }
-
     function formatAmount(truncateAmount): string {
         const digits = Math.min(truncateAmount ? precision : round, 18);
         return new BigNumber(amount)
@@ -55,12 +48,19 @@ const AmountView = (props: Props) => {
             .toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits });
     }
 
+    function getRealValue() {
+        return {
+            fullAmount: formatAmount(true),
+            truncatedAmount: formatAmount(false),
+        };
+    }
+
     function getIcon() {
-        if (!!symbol) {
+        if (symbol) {
             return ` ${symbol}`;
         }
 
-        if (!!iconName) {
+        if (iconName) {
             return <Icon size={size} color={color} iconName={iconName} />;
         }
 

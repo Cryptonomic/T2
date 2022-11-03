@@ -34,7 +34,7 @@ import {
     ShowHidePwd,
 } from './style';
 
-const PasswordTooltip = (t) => {
+const PasswordTooltip = (t: any) => {
     return (
         <TooltipContainer>
             <TooltipTitle>{t('containers.homeAddAddress.fundraiser_password')}</TooltipTitle>
@@ -52,7 +52,7 @@ const EmailTooltip = (t) => {
     );
 };
 
-const ActivationTooltip = (t) => {
+const ActivationTooltip = (t: any) => {
     const openALink = () => openLink('https://verification.tezos.com/');
 
     return (
@@ -60,14 +60,14 @@ const ActivationTooltip = (t) => {
             <TooltipTitle>{t('containers.homeAddAddress.activation_code')}</TooltipTitle>
             <Trans i18nKey="containers.homeAddAddress.tooltips.activation_code_tooltip">
                 This is the activation code that you received after completing the KYC/AML process. An activation code corresponds to a public key hash and is
-                required if you participated in the Fundraiser. You may complete the process at <Link onClick={openALink}>verification.tezos.com</Link> if you
-                have not done so already.
+                required if you participated in the Fundraiser. You may complete the process at <Link onClick={openALink}>verification.tezos.com</Link>
+                if you have not done so already.
             </Trans>
         </TooltipContainer>
     );
 };
 
-const PkhTooltip = (t) => {
+const PkhTooltip = (t: any) => {
     return (
         <TooltipContainer>
             <TooltipTitle>{t('containers.homeAddAddress.public_key_hash')}</TooltipTitle>
@@ -105,8 +105,8 @@ function AddAddress() {
             case ADD_ADDRESS_TYPES.FUNDRAISER:
             default:
                 return (
-                    <Fragment>
-                        <FormTitle>{t('containers.homeAddAddress.refer_pdf_title') as string}</FormTitle>
+                    <>
+                        <FormTitle>{t('containers.homeAddAddress.refer_pdf_title')}</FormTitle>
                         <SeedInput
                             placeholder={t('containers.homeAddAddress.secret_key_15')}
                             seeds={seeds}
@@ -125,7 +125,7 @@ function AddAddress() {
                                 />
 
                                 <ShowHidePwd onClick={() => setIsShowedPwd(!isShowedPwd)} style={{ cursor: 'pointer' }}>
-                                    {t(isShowedPwd ? 'general.verbs.hide' : 'general.verbs.show') as string}
+                                    {t(isShowedPwd ? 'general.verbs.hide' : 'general.verbs.show')}
                                 </ShowHidePwd>
 
                                 <Tooltip position="bottom" content={PasswordTooltip(t)}>
@@ -178,7 +178,7 @@ function AddAddress() {
                         <ImportButton onClick={() => onImport()} color="secondary" variant="extended" disabled={isDisabled}>
                             {t('general.verbs.import') as string}
                         </ImportButton>
-                    </Fragment>
+                    </>
                 );
         }
     }

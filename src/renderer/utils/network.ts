@@ -12,3 +12,5 @@ export async function fetchWithTimeout(resource, options) {
 
     return response;
 }
+
+export default fetchWithTimeout;

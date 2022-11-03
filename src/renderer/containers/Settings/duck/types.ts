@@ -1,3 +1,5 @@
+import { Node, Path, SettingsType } from '../../../types/general';
+
 export const CHANGE_LOCALE = 'SET_LOCALE';
 export const CHANGE_NODE = 'SET_NODE';
 export const ADD_NODE = 'ADD_NODE';
@@ -7,8 +9,6 @@ export const ADD_PATH = 'ADD_PATH';
 export const REMOVE_PATH = 'REMOVE_PATH';
 export const CLEAR_STATE = 'CLEAR_STATE';
 export const INIT_SETTINGS = 'INIT_SETTINGS';
-
-import { Node, Path, SettingsType } from '../../../types/general';
 
 // export interface SettingsCustomSelectItemProps {
 //   value: string;
@@ -24,50 +24,50 @@ import { Node, Path, SettingsType } from '../../../types/general';
 // }
 
 export interface ChangeLocaleAction {
-  type: typeof CHANGE_LOCALE;
-  locale: string;
+    type: typeof CHANGE_LOCALE;
+    locale: string;
 }
 export interface ChangeNodeAction {
-  type: typeof CHANGE_NODE;
-  name: string;
+    type: typeof CHANGE_NODE;
+    name: string;
 }
 
 export interface AddNodeAction {
-  type: typeof ADD_NODE;
-  node: Node;
+    type: typeof ADD_NODE;
+    node: Node;
 }
 
 export interface RemoveNodeAction {
-  type: typeof REMOVE_NODE;
-  name: string;
+    type: typeof REMOVE_NODE;
+    name: string;
 }
 
 export interface ChangePathAction {
-  type: typeof CHANGE_PATH;
-  label: string;
+    type: typeof CHANGE_PATH;
+    label: string;
 }
 
 export interface AddPathAction {
-  type: typeof ADD_PATH;
-  path: Path;
+    type: typeof ADD_PATH;
+    path: Path;
 }
 
 export interface RemovePathAction {
-  type: typeof REMOVE_PATH;
-  label: string;
+    type: typeof REMOVE_PATH;
+    label: string;
 }
 
 export interface InitSettingsAction {
-  type: typeof INIT_SETTINGS;
-  settings: SettingsType;
+    type: typeof INIT_SETTINGS;
+    settings: SettingsType;
 }
 
 export type SettingsActionTypes =
-  | ChangeNodeAction
-  | ChangeLocaleAction
-  | AddNodeAction
-  | RemoveNodeAction
-  | AddPathAction
-  | ChangePathAction
-  | RemovePathAction
-  | InitSettingsAction;
+    | ChangeNodeAction
+    | ChangeLocaleAction
+    | AddNodeAction
+    | RemoveNodeAction
+    | AddPathAction
+    | ChangePathAction
+    | RemovePathAction
+    | InitSettingsAction;

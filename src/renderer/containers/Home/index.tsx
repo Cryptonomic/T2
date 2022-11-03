@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { Routes, Route, redirect, Outlet } from 'react-router';
+import { Outlet } from 'react-router';
 // import Transport from '@ledgerhq/hw-transport-node-hid';
 import { BigNumber } from 'bignumber.js';
 
@@ -48,10 +48,10 @@ function HomePage() {
     BigNumber.config({ EXPONENTIAL_AT: 54 });
 
     return (
-        <Fragment>
+        <>
             {nodesErrorMessage && <NodesStatus message={nodesErrorMessage} />}
             <Outlet />
-        </Fragment>
+        </>
     );
 }
 

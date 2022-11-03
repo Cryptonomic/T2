@@ -50,7 +50,7 @@ const TezosNumericInput = (props: Props) => {
         });
 
         if (preventSeparatorAtStart.test(validatedAmount)) {
-            validatedAmount = '0' + validatedAmount;
+            validatedAmount = `0${validatedAmount}`;
         }
 
         const precisionCount = validatedAmount.includes(decimalSeparator) ? validatedAmount.split(decimalSeparator)[1].length : 0;

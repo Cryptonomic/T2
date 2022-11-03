@@ -21,10 +21,10 @@ interface Props {
 function SignVerifyModal(props: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [enterCounts, setEnterCounts] = useState<{}>({});
+    const [enterCounts, setEnterCounts] = useState({});
     const isLoading = useSelector<RootState, boolean>((state: RootState) => state.app.isLoading);
     const activeTab = useSelector<RootState, string | null>((state: RootState) => state.modal.activeTab);
-    const { tabs } = useSelector<RootState, ModalState>(state => state.modal, shallowEqual);
+    const { tabs } = useSelector<RootState, ModalState>((state) => state.modal, shallowEqual);
     const { open, onClose } = props;
     const swipeIndex = tabs.findIndex((type: string) => type === activeTab);
 

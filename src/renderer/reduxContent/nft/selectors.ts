@@ -10,15 +10,12 @@ export const getNFT = (state: RootState) => state.nft;
  *
  * @return {GetNFTCollectionsDataSelector}
  */
-export const getNFTCollectionsDataSelector = createSelector(
-    getNFT,
-    (nft): GetNFTCollectionsDataSelector => {
-        return {
-            collections: nft.collections,
-            errors: nft.getCollectionsErrors,
-            loading: nft.collectionsAreLoading,
-            lastSyncAt: nft.lastSyncAt,
-            isNFTSyncing: nft.isNFTSyncing,
-        };
-    }
-);
+export const getNFTCollectionsDataSelector = createSelector(getNFT, (nft): GetNFTCollectionsDataSelector => {
+    return {
+        collections: nft.collections,
+        errors: nft.getCollectionsErrors,
+        loading: nft.collectionsAreLoading,
+        lastSyncAt: nft.lastSyncAt,
+        isNFTSyncing: nft.isNFTSyncing,
+    };
+});

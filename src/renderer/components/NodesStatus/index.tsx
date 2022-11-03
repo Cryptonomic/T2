@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 import { ms } from '../../styles/helpers';
-import TezosIcon from '../TezosIcon/';
+import TezosIcon from '../TezosIcon';
 import { openLink } from '../../utils/general';
 
 const Container = styled.div`

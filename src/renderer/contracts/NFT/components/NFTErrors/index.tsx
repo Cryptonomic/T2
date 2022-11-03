@@ -62,7 +62,7 @@ export const NFTErrors: FunctionComponent<NFTErrorsProps> = ({ errors, clearErro
     const interpolateMessage = (error) => {
         if (error.data && error.data.length > 0) {
             const valuesMap = {};
-            error.data.map((d) => {
+            error.data.forEach((d) => {
                 if (d.value) {
                     valuesMap[d.key] = d.value;
                 } else if (d.translate_value) {

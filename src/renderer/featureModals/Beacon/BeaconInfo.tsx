@@ -117,14 +117,14 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                                         Learn more
                                     </AddressInfoLink>
                                 </p>
-                                <img className="img" src={beaconIntegration} />
+                                <img className="img" src={beaconIntegration} alt="beacon-img" />
                             </BeaconNotConnected>
                         )}
                         {connected && (
                             <div className="items">
                                 {beaconState.map((i: Record<string, string>, index: number) => (
                                     <BeaconConnected key={index}>
-                                        {/*<div className="img"> <img src={i.icon} /> </div>*/}
+                                        {/* <div className="img"> <img src={i.icon} /> </div> */}
                                         <div className="list">
                                             <div className="name">
                                                 {i.name}
@@ -134,7 +134,7 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
                                             {i.connectedAt && <div className="item">Connected on {i.connectedAt}</div>}
                                             {i.scopes && <div className="item">Permissions: {i.scopes}</div>}
                                             {!i.scopes && <div className="item">Missing Beacon permission record</div>}
-                                            {/*<div> removeAppMetadata(senderId: string): Promise<void>;*/}
+                                            {/* <div> removeAppMetadata(senderId: string): Promise<void>; */}
                                         </div>
                                     </BeaconConnected>
                                 ))}

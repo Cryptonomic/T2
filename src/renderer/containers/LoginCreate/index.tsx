@@ -108,7 +108,7 @@ function LoginCreate() {
 
     async function onLogin(loginType: string) {
         const result = await window.electron.dialog.saveDialog(dialogFilters);
-        const {location, fileName} = result;
+        const { location, fileName } = result;
         if (location && fileName) {
             dispatch(loginThunk(loginType, location, fileName, password));
         }
@@ -152,17 +152,17 @@ function LoginCreate() {
                             error={pwdError}
                             suggestion={pwdSuggestion}
                             score={pwdScore}
-                            visibilityIcon={true}
+                            visibilityIcon
                             changFunc={onChangePassword}
                             onShow={() => onPasswordShow(0)}
                         />
                         <ValidInput
                             label={t('containers.loginCreate.confirm_wallet_password_label')}
-                            status={true}
+                            status
                             isShowed={isConfirmPwdShowed}
                             error={confirmPwdText}
                             score={confirmPwdScore}
-                            visibilityIcon={true}
+                            visibilityIcon
                             changFunc={onConfirmPassword}
                             onShow={() => onPasswordShow(1)}
                         />

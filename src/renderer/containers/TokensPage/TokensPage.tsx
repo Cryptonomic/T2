@@ -120,7 +120,7 @@ const TokensPage = () => {
     };
 
     const onSearchTokens = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
+        const { value } = event.target;
 
         if (!value) {
             const tokensList = [...tokens].filter((token) => !token.hideOnLanding);
@@ -229,7 +229,7 @@ const TokensPage = () => {
                 )}
                 {!!supportedTokens.length && (
                     <>
-                        {<TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>}
+                        <TokensTitle>{!activeTokens.length ? '' : 'Supported Tokens'}</TokensTitle>
                         <BoxesGrid>
                             {supportedTokens.map((token, index) => (
                                 <Box key={token.symbol} onMouseEnter={() => onHover(`${token.address}_${index || 0}`)} onMouseLeave={() => onHover('')}>

@@ -26,7 +26,7 @@ import { AudioStyled, AudioContainer, AudioLoader, IconContainer, FailedIcon, Fa
  * } />
  */
 
- interface AudioProps {
+interface AudioProps {
     className?: string;
     src?: string;
     alt?: string;
@@ -78,7 +78,7 @@ const Audio: FunctionComponent<AudioProps> = ({ src, thumbnailUri, onLoad, onErr
             <IconContainer>
                 <DefaultAudioIcon />
             </IconContainer>{' '}
-            {/*TODO: if thumbnailUri, show that instead */}
+            {/* TODO: if thumbnailUri, show that instead */}
             <AudioStyled
                 onError={onElementError}
                 onLoadStart={onElementLoad}

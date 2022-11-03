@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface GalleryBreakpointsProps {
     breakpoint: string;
     cols: number;
@@ -10,4 +12,5 @@ export interface GalleryProps {
     containerPadding?: string;
     itempadding?: string;
     isEmpty?: boolean;
+    children: JSX.Element;
 }

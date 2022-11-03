@@ -6,7 +6,7 @@ import Drawer from '@mui/material/Drawer';
 import i18n from 'i18next';
 
 import LandingCar from '../Landing';
-import Checkbox from '../../components/Checkbox/';
+import Checkbox from '../../components/Checkbox';
 import config from '../../config.json';
 import { setLocalData, getLocalData, resetLocalData } from '../../utils/localData';
 import { changeLocaleThunk } from '../Settings/duck/thunk';
@@ -51,7 +51,7 @@ const AGREEMENT_STORAGE = 'isPPAccepted';
 
 function LoginHome() {
     // const { match } = props;
-    const match = {path: ''};
+    const match = { path: '' };
     const navigate = useNavigate();
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -110,8 +110,8 @@ function LoginHome() {
 
                         <CardTitle>{t('containers.loginHome.ledger_wallet') as string}</CardTitle>
                         <UnlockWalletButton color="secondary" variant="extended" onClick={() => onLedgerConnect()} disabled={!isAgreement}>
-                            {isLedgerConnecting && t('containers.loginHome.connecting') as string}
-                            {!isLedgerConnecting && t('containers.loginHome.connect_ledger') as string}
+                            {isLedgerConnecting && (t('containers.loginHome.connecting') as string)}
+                            {!isLedgerConnecting && (t('containers.loginHome.connect_ledger') as string)}
                         </UnlockWalletButton>
                         {activePath && (
                             <SelectedPath>
@@ -173,7 +173,7 @@ function LoginHome() {
                     </Trans>
                 </Description>
             </TermsAndPolicySection>
-            <Drawer anchor={'bottom'} open={!isShowedInitScene}>
+            <Drawer anchor="bottom" open={!isShowedInitScene}>
                 <LandingCar selectedLanguage={locale} onLanguageChange={onChangeLanguage} onContinue={() => goToMain()} goTo={goTo} />
             </Drawer>
         </SectionContainer>

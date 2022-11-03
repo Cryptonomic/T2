@@ -19,7 +19,7 @@ import { Node } from '../../types/general';
 const { sendContractInvocationOperation, sendTransactionOperation } = TezosNodeWriter;
 const { withdrawDelegatedFunds, depositDelegatedFunds, setDelegate, unSetDelegate, sendDelegatedFunds } = BabylonDelegationHelper;
 
-export function delegateThunk(delegateAddress: string, fee: number, password: string) {
+export function delegateThunk(delegateAddress: string, fee: number, password: string): any {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword } = state().wallet;
@@ -122,7 +122,7 @@ export function invokeAddressThunk(
     selectedInvokeAddress: string,
     entryPoint: string,
     parameterFormat: TezosParameterFormat
-) {
+): any {
     return async (dispatch, state) => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
         const { identities, walletPassword } = state().wallet;
@@ -299,7 +299,7 @@ export function withdrawThunk(fee: number, amount: string, password: string) {
     };
 }
 
-export function depositThunk(fee: number, amount: string, password: string, toAddress: string) {
+export function depositThunk(fee: number, amount: string, password: string, toAddress: string): any {
     return async (dispatch, state) => {
         const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
@@ -381,7 +381,7 @@ export function depositThunk(fee: number, amount: string, password: string, toAd
     };
 }
 
-export function sendTezThunk(password: string, toAddress: string, amount: string, fee: number) {
+export function sendTezThunk(password: string, toAddress: string, amount: string, fee: number): any {
     return async (dispatch, state) => {
         const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
@@ -570,7 +570,7 @@ export function sendDelegatedFundsThunk(password: string, toAddress: string, amo
 export async function getIsImplicitAndEmptyThunk(recipientHash: string, nodesList: Node[], selectedNode: string) {
     const mainNode = getMainNode(nodesList, selectedNode);
     const { tezosUrl } = mainNode;
-    return await TezosNodeReader.isImplicitAndEmpty(tezosUrl, recipientHash);
+    return TezosNodeReader.isImplicitAndEmpty(tezosUrl, recipientHash);
 }
 
 export function validateAmountThunk(amount: string, toAddress: string) {

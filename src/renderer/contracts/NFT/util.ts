@@ -21,7 +21,7 @@ import config from '../../config.json';
 
 import { ArtToken, Node, TokenKind } from '../../types/general';
 
-const  { imageProxyURL, imageAPIKey } = config;
+const { imageProxyURL, imageAPIKey } = config;
 
 const proxySupportedTypes = ['image/png', 'image/apng', 'image/jpeg', 'image/gif'];
 const GenesisBlockTime = new Date(2018, 5, 30, 12, 7, 32);
@@ -64,16 +64,11 @@ async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: s
     let moderationMessage = '';
 
     const fetchPromise = proxyFetch(server, artifactUrl, ImageProxyDataType.Json, false)
-        .then((response) => {
-            // @ts-ignore
+        .then((response: any) => {
             if (response.rpc_status === 'Ok') {
-                // @ts-ignore
                 if (response.result.moderation_status === 'Allowed') {
-                    // @ts-ignore
                     content = response.result.data;
-                    // @ts-ignore
                 } else if (response.result.moderation_status === 'Blocked') {
-                    // @ts-ignore
                     moderationMessage = `Image was hidden due to: ${response.result.categories.join(', ')}`;
                 }
             }
@@ -131,12 +126,10 @@ export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number)
     if (artifactProxy && artifactProxy.content.length > 1000) {
         nftArtifact = artifactProxy.content;
         nftArtifactModerationMessage = artifactProxy.moderationMessage;
+    } else if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
+        nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
     } else {
-        if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
-            nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
-        } else {
-            nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
-        }
+        nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
     }
 
     return {
@@ -202,11 +195,11 @@ export async function getNFTCollections(
     tokens: ArtToken[],
     managerAddress: string,
     node: Node,
-    skipDetails: boolean = false,
+    skipDetails = false,
     dateBoundary?: Date
 ): Promise<GetNFTCollections> {
     const promises: Promise<any>[] = [];
-    tokens.map((token) => {
+    tokens.forEach((token) => {
         switch (token.displayName.toLowerCase()) {
             case 'hic et nunc':
                 promises.push(getHicEtNuncCollection(token.address, token.mapid, managerAddress, node, skipDetails, dateBoundary));
@@ -250,7 +243,7 @@ export async function getNFTCollections(
     let errors: NFTError[] = [];
     let collection: NFTObject[] = [];
 
-    responses.map((response) => {
+    responses.forEach((response) => {
         if (response.errors && response.errors.length > 0) {
             errors = errors.concat(response.errors);
         }
@@ -278,7 +271,7 @@ export async function getHicEtNuncCollection(
     tokenMapId: number,
     managerAddress: string,
     node: Node,
-    skipDetails: boolean = false,
+    skipDetails = false,
     dateBoundary?: Date
 ): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
@@ -307,7 +300,7 @@ export async function getHicEtNuncCollection(
                     return false;
                 }
             } catch (err) {
-                /* meh*/
+                /* meh */
             }
             return true;
         })
@@ -319,39 +312,35 @@ export async function getHicEtNuncCollection(
 
     const priceMap: any = {};
     await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
+        priceQueries.map(async (q) =>
+            TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
+                result.forEach((row) => {
+                    let amount = 0;
+                    let action = row.parameters_entrypoints;
 
-                        if (action === 'collect') {
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint_OBJKT') {
-                            action = 'mint';
-                        } else {
-                            action = 'collect';
-                        }
+                    if (action === 'collect') {
+                        amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
+                    } else if (action === 'transfer') {
+                        action = 'collect';
+                        amount = Number(
+                            row.parameters
+                                .toString()
+                                .replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1')
+                        );
+                    } else if (action === 'mint_OBJKT') {
+                        action = 'mint';
+                    } else {
+                        action = 'collect';
+                    }
 
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
+                    priceMap[row.operation_group_hash] = {
+                        price: new BigNumber(row.amount),
+                        amount,
+                        timestamp: row.timestamp,
+                        action,
+                    };
+                })
+            )
         )
     );
 
@@ -376,7 +365,7 @@ export async function getHicEtNuncCollection(
                 objectId,
                 provider: NFT_PROVIDERS.HIC_ET_NUNC,
                 amount: Number(row.value),
-                price: isNaN(price) ? 0 : price,
+                price: Number.isNaN(price) ? 0 : price,
                 receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
@@ -466,7 +455,7 @@ export async function getKalamintCollection(
     tokenMapId: number,
     managerAddress: string,
     node: Node,
-    skipDetails: boolean = false,
+    skipDetails = false,
     dateBoundary?: Date
 ): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
@@ -496,39 +485,35 @@ export async function getKalamintCollection(
 
     const priceMap: any = {};
     await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
+        priceQueries.map(async (q) =>
+            TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
+                result.forEach((row) => {
+                    let amount = 0;
+                    let action = row.parameters_entrypoints;
 
-                        if (action === 'collect') {
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint') {
-                            action = 'mint';
-                        } else {
-                            action = 'collect';
-                        }
+                    if (action === 'collect') {
+                        amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
+                    } else if (action === 'transfer') {
+                        action = 'collect';
+                        amount = Number(
+                            row.parameters
+                                .toString()
+                                .replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1')
+                        );
+                    } else if (action === 'mint') {
+                        action = 'mint';
+                    } else {
+                        action = 'collect';
+                    }
 
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
+                    priceMap[row.operation_group_hash] = {
+                        price: new BigNumber(row.amount),
+                        amount,
+                        timestamp: row.timestamp,
+                        action,
+                    };
+                })
+            )
         )
     );
 
@@ -553,7 +538,7 @@ export async function getKalamintCollection(
                 objectId,
                 provider: NFT_PROVIDERS.KALAMINT,
                 amount: Number(row.value),
-                price: isNaN(price) ? 0 : price,
+                price: Number.isNaN(price) ? 0 : price,
                 receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
@@ -596,7 +581,7 @@ export async function getKalamintCollection(
     return { collection, errors };
 }
 
-export async function getObjktNFTDetails(tezosUrl: string, objectId: number | string, metadataMap: number, urlPath: string = '$.args[1][0].args[1].bytes') {
+export async function getObjktNFTDetails(tezosUrl: string, objectId: number | string, metadataMap: number, urlPath = '$.args[1][0].args[1].bytes') {
     const packedNftId = TezosMessageUtils.encodeBigMapKey(Buffer.from(TezosMessageUtils.writePackedData(objectId, 'int'), 'hex'));
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
 
@@ -640,20 +625,18 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     if (artifactProxy && artifactProxy.content.length > 1000) {
         nftArtifact = artifactProxy.content;
         nftArtifactModerationMessage = artifactProxy.moderationMessage;
-    } else {
-        if (nftDetailJson.formats !== undefined && nftDetailJson.formats.length > 0 && nftDetailJson.formats[0].uri) {
-            if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
-                nftArtifact = makeUrl(nftDetailJson.formats[0].uri.toString());
-            } else if (/image|audio/.test(nftArtifactType.toLowerCase())) {
-                nftArtifact = makeUrl(nftDetailJson.formats[0].uri.toString());
-            }
-        } else {
-            if (nftThumbnailUri === nftArtifact && !/image/.test(nftArtifactType.toLowerCase())) {
-                nftThumbnailUri = '';
-            }
-
-            nftArtifact = makeUrl(nftDetailJson.artifactUri.toString());
+    } else if (nftDetailJson.formats !== undefined && nftDetailJson.formats.length > 0 && nftDetailJson.formats[0].uri) {
+        if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
+            nftArtifact = makeUrl(nftDetailJson.formats[0].uri.toString());
+        } else if (/image|audio/.test(nftArtifactType.toLowerCase())) {
+            nftArtifact = makeUrl(nftDetailJson.formats[0].uri.toString());
         }
+    } else {
+        if (nftThumbnailUri === nftArtifact && !/image/.test(nftArtifactType.toLowerCase())) {
+            nftThumbnailUri = '';
+        }
+
+        nftArtifact = makeUrl(nftDetailJson.artifactUri.toString());
     }
 
     return {
@@ -726,7 +709,7 @@ export async function getDogamiDetails(tezosUrl: string, objectId: number | stri
     };
 }
 
-function makeUrl(source: string, type: string = '') {
+function makeUrl(source: string, type = '') {
     if (source.startsWith('http')) {
         return source;
     }
@@ -737,7 +720,8 @@ function makeUrl(source: string, type: string = '') {
 
     if (/video|mp4|ogg|webm/.test(type.toLowerCase())) {
         return `https://ipfs.io/ipfs/${source.slice(7)}`;
-    } else if (/image|audio/.test(type.toLowerCase())) {
+    }
+    if (/image|audio/.test(type.toLowerCase())) {
         return `https://cloudflare-ipfs.com/ipfs/${source.slice(7)}`;
     }
 }
@@ -747,7 +731,7 @@ export async function getPotusCollection(
     tokenMapId: number,
     managerAddress: string,
     node: Node,
-    skipDetails: boolean = false,
+    skipDetails = false,
     dateBoundary?: Date
 ): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
@@ -791,7 +775,7 @@ export async function getPotusCollection(
                 objectId,
                 provider: NFT_PROVIDERS.PIXEL_POTUS,
                 amount: 1,
-                price: isNaN(price) ? 0 : price,
+                price: Number.isNaN(price) ? 0 : price,
                 receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
@@ -879,7 +863,7 @@ export async function getCollection(
     provider: string,
     managerAddress: string,
     node: Node,
-    skipDetails: boolean = false,
+    skipDetails = false,
     urlPath?: string,
     dateBoundary?: Date
 ): Promise<GetNFTCollection> {
@@ -917,49 +901,45 @@ export async function getCollection(
 
     const priceMap: any = {};
     await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
+        priceQueries.map(async (q) =>
+            TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
+                result.forEach((row) => {
+                    let amount = 0;
+                    let action = row.parameters_entrypoints;
 
-                        if (action === 'collect' || action === 'fulfill_ask') {
-                            // hen, objkt
-                            action = 'collect';
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint' && tokenAddress === 'KT1KEa8z6vWXDJrVqtMrAeDVzsvxat3kHaCE') {
-                            // fxhash
-                            action = 'collect';
-                            amount = row.amount;
-                        } else if (action === 'match_orders' && tokenAddress === 'KT18pVpRXKPY2c4U2yFEGSH3ZnhB2kL8kwXS') {
-                            // rarible
-                            action = 'collect';
-                            amount = row.amount;
-                        } else if (action === 'mint_OBJKT') {
-                            action = 'mint';
-                        } else {
-                            action = 'collect';
-                        }
+                    if (action === 'collect' || action === 'fulfill_ask') {
+                        // hen, objkt
+                        action = 'collect';
+                        amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
+                    } else if (action === 'transfer') {
+                        action = 'collect';
+                        amount = Number(
+                            row.parameters
+                                .toString()
+                                .replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1')
+                        );
+                    } else if (action === 'mint' && tokenAddress === 'KT1KEa8z6vWXDJrVqtMrAeDVzsvxat3kHaCE') {
+                        // fxhash
+                        action = 'collect';
+                        amount = row.amount;
+                    } else if (action === 'match_orders' && tokenAddress === 'KT18pVpRXKPY2c4U2yFEGSH3ZnhB2kL8kwXS') {
+                        // rarible
+                        action = 'collect';
+                        amount = row.amount;
+                    } else if (action === 'mint_OBJKT') {
+                        action = 'mint';
+                    } else {
+                        action = 'collect';
+                    }
 
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
+                    priceMap[row.operation_group_hash] = {
+                        price: new BigNumber(row.amount),
+                        amount,
+                        timestamp: row.timestamp,
+                        action,
+                    };
+                })
+            )
         )
     );
 
@@ -993,7 +973,7 @@ export async function getCollection(
                 objectId,
                 provider,
                 amount: 1,
-                price: isNaN(price) ? 0 : price,
+                price: Number.isNaN(price) ? 0 : price,
                 receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
@@ -1043,7 +1023,7 @@ export async function getHashThreeCollection(
     tokenMapId: number,
     managerAddress: string,
     node: Node,
-    skipDetails: boolean = false,
+    skipDetails = false,
     dateBoundary?: Date
 ): Promise<GetNFTCollection> {
     const { conseilUrl, apiKey, network } = node;
@@ -1071,41 +1051,37 @@ export async function getHashThreeCollection(
 
     const priceMap: any = {};
     await Promise.all(
-        priceQueries.map(
-            async (q) =>
-                await TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
-                    result.map((row) => {
-                        let amount = 0;
-                        let action = row.parameters_entrypoints;
+        priceQueries.map(async (q) =>
+            TezosConseilClient.getTezosEntityData({ url: conseilUrl, apiKey, network }, network, 'operations', q).then((result) =>
+                result.forEach((row) => {
+                    let amount = 0;
+                    let action = row.parameters_entrypoints;
 
-                        if (action === 'collect' || action === 'fulfill_ask') {
-                            // hen, objkt
-                            action = 'collect';
-                            amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
-                        } else if (action === 'transfer') {
-                            // fa2
-                            action = 'collect';
-                            amount = Number(
-                                row.parameters
-                                    .toString()
-                                    .replace(
-                                        /[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/,
-                                        '$1'
-                                    )
-                            );
-                        } else if (action === 'mint_OBJKT') {
-                            // hen
-                            action = 'mint';
-                        }
+                    if (action === 'collect' || action === 'fulfill_ask') {
+                        // hen, objkt
+                        action = 'collect';
+                        amount = Number(row.parameters.toString().replace(/^Pair ([0-9]+) [0-9]+/, '$1'));
+                    } else if (action === 'transfer') {
+                        // fa2
+                        action = 'collect';
+                        amount = Number(
+                            row.parameters
+                                .toString()
+                                .replace(/[{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [{] Pair \"[1-9A-HJ-NP-Za-km-z]{36}\" [(]Pair [0-9]+ [0-9]+[)] [}] [}]/, '$1')
+                        );
+                    } else if (action === 'mint_OBJKT') {
+                        // hen
+                        action = 'mint';
+                    }
 
-                        priceMap[row.operation_group_hash] = {
-                            price: new BigNumber(row.amount),
-                            amount,
-                            timestamp: row.timestamp,
-                            action,
-                        };
-                    })
-                )
+                    priceMap[row.operation_group_hash] = {
+                        price: new BigNumber(row.amount),
+                        amount,
+                        timestamp: row.timestamp,
+                        action,
+                    };
+                })
+            )
         )
     );
 
@@ -1130,7 +1106,7 @@ export async function getHashThreeCollection(
                 objectId,
                 provider: NFT_PROVIDERS.H3P,
                 amount: 1,
-                price: isNaN(price) ? 0 : price,
+                price: Number.isNaN(price) ? 0 : price,
                 receivedOn: new Date(row.timestamp),
                 action,
             } as NFTObject;
@@ -1195,12 +1171,10 @@ export async function getHashThreeNFTDetails(tezosUrl: string, objectId: number 
     if (artifactProxy && artifactProxy.content.length > 1000) {
         nftArtifact = artifactProxy.content;
         nftArtifactModerationMessage = artifactProxy.moderationMessage;
+    } else if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
+        nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
     } else {
-        if (/video|mp4|ogg|webm/.test(nftArtifactType.toLowerCase())) {
-            nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
-        } else {
-            nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
-        }
+        nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
     }
 
     return {
@@ -1378,7 +1352,7 @@ function sortAndGroupCollection(objects: NFTObject[]) {
         minted: [] as NFTObject[],
     };
 
-    sorted.map((token, index) => {
+    sorted.forEach((token) => {
         if (token.action === NFT_ACTION_TYPES.MINTED) {
             grouped.minted.push(token);
         } else {

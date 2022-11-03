@@ -200,9 +200,10 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
             }
 
             // Increment oven balance and wXTZ balance.
-            token.balance = token.balance += amount;
-            token.vaultList[ovenIndex].ovenBalance = token.vaultList[ovenIndex].ovenBalance += amount;
-            tokens[tokenIndex] = token;
+            const newVault = { ...token.vaultList[ovenIndex], ovenBalance: (token.vaultList[ovenIndex].ovenBalance += amount) };
+            token.vaultList[ovenIndex] = newVault;
+            const newToken = { ...token, balance: (token.balance += amount) };
+            tokens[tokenIndex] = newToken;
         }
         dispatch(updateTokensAction([...tokens]));
 
@@ -264,9 +265,10 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
             }
 
             // Increment oven balance and wXTZ balance.
-            token.balance = token.balance -= amount;
-            token.vaultList[ovenIndex].ovenBalance = token.vaultList[ovenIndex].ovenBalance -= amount;
-            tokens[tokenIndex] = token;
+            const newVault = { ...token.vaultList[ovenIndex], ovenBalance: (token.vaultList[ovenIndex].ovenBalance -= amount) };
+            token.vaultList[ovenIndex] = newVault;
+            const newToken = { ...token, balance: (token.balance -= amount) };
+            tokens[tokenIndex] = newToken;
         }
         dispatch(updateTokensAction([...tokens]));
 

@@ -41,7 +41,7 @@ export function createTransaction(transaction: any): WalletTransaction {
     };
 }
 
-export function processNodeOperationGroup(group: any, ttl: number = 0): WalletTransaction {
+export function processNodeOperationGroup(group: any, ttl = 0): WalletTransaction {
     const first = group.contents[0];
 
     return {

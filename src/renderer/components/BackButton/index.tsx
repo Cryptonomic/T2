@@ -36,7 +36,7 @@ function BackButton(props: Props) {
         }
     }
     return (
-        <Container color="secondary" disableRipple={true} onClick={goBack} startIcon={<BackCaret />}>
+        <Container color="secondary" disableRipple onClick={goBack} startIcon={<BackCaret />}>
             {label}
         </Container>
     );

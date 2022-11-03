@@ -149,7 +149,7 @@ function InputValid(props: Props) {
                 <LabelWrapper variant="standard">{label}</LabelWrapper>
                 <InputWrapper key={label} type={isShowed ? 'text' : 'password'} onChange={(event) => changFunc(event.target.value)} score={score} />
             </Content>
-            <CheckContainer visibilityIcon={true}>
+            <CheckContainer visibilityIcon>
                 {getIcon(score)}
                 <ShowHidePwd onClick={onShow} style={{ cursor: 'pointer' }}>
                     {visibilityIcon && (isShowed ? <VisibilityIcon color="secondary" /> : <VisibilityIcon color="action" />)}

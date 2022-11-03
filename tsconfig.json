@@ -6,15 +6,16 @@
     "lib": ["dom", "es2021"],
     "jsx": "react-jsx",
     "strict": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "baseUrl": "./src",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "allowJs": true,
-    "outDir": ".erb/dll",
-    "declaration": false,
+    "outDir": ".erb/dll"
   },
   "exclude": ["test", "release/build", "release/app/dist", ".erb/dll"]
 }
+

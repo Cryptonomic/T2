@@ -107,7 +107,7 @@ function ActionPanel() {
                 return transactions.length === 0 ? (
                     <EmptyState imageSrc={transactionsEmptyState} title={t('components.actionPanel.empty-title')} description={null} />
                 ) : (
-                    <Fragment>
+                    <>
                         <Transactions transactions={showedTransactions} selectedAccountHash={selectedAccountHash} selectedParentHash={selectedParentHash} />
                         {pageCount > 1 && (
                             <PageNumbers
@@ -115,11 +115,11 @@ function ActionPanel() {
                                 totalNumber={JSTransactions.length}
                                 firstNumber={firstNumber}
                                 lastNumber={lastNumber}
-                                onClick={val => setCurrentPage(val)}
+                                onClick={(val) => setCurrentPage(val)}
                             />
                         )}
                         {isLoading && <Loader />}
-                    </Fragment>
+                    </>
                 );
             }
         }
@@ -130,13 +130,13 @@ function ActionPanel() {
                 storeType={storeType}
                 isReady={isReady(status, storeType)}
                 balance={balance || 0}
-                secretKey={''}
+                secretKey=""
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 delegatedAddress={delegate_value}
             />
 
             <TabList count={tabs.length}>
-                {tabs.map(tab => {
+                {tabs.map((tab) => {
                     const ready = isReady(status, storeType, tab);
                     return (
                         <Tab

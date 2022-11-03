@@ -12,8 +12,15 @@ import { AddButton, AddIcon } from '../../contracts/NFT/components/NFTGallery/st
 
 import { getLocalData, setLocalData } from '../../utils/localData';
 import { setModalOpen } from '../../reduxContent/modal/actions';
+import { Token } from '../../types/general';
 
-export const ManageNFTsModal = ({ open, onClose, tokens }) => {
+type Props = {
+    open: boolean;
+    onClose: () => any;
+    tokens: Token[];
+};
+
+export const ManageNFTsModal = ({ open, onClose, tokens }: Props) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
@@ -48,7 +55,7 @@ export const ManageNFTsModal = ({ open, onClose, tokens }) => {
                     headerOne="Custom Added NFTs"
                     headerTwo="Quantity"
                     headerThree="Remove"
-                    icon={true}
+                    icon
                     deleteToken={(token) => deleteToken(token)}
                 />
                 <TableComponent tableData={sortedTokens} headerOne="Other NFTs" headerTwo="Quantity" headerThree="" />
@@ -64,7 +71,7 @@ export const ManageNFTsModal = ({ open, onClose, tokens }) => {
                             onClose();
                             dispatch(setModalOpen(true, 'NFTAdd'));
                         }}
-                        disableRipple={true}
+                        disableRipple
                     >
                         Add NFT
                     </AddButton>

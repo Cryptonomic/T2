@@ -82,10 +82,10 @@ const Auth = (props: Props) => {
             if (!response.ok) {
                 throw new Error('Signature response rejected'); // TODO: localization
             }
-        } catch (error) {
+        } catch (e: any) {
             setError(true);
             setResult('Signature submission failed'); // TODO: localization
-            console.error(error);
+            console.error(e);
         }
     };
 

@@ -69,16 +69,16 @@ export async function getAccountsForIdentity(node: Node, pkh: string) {
 }
 
 export async function getSyncAccount(account: Account, node: Node, accountHash: string, selectedAccountHash: string) {
-    account = await activateAndUpdateAccount(account, node).catch((e) => {
+    const newAccount = await activateAndUpdateAccount(account, node).catch((e) => {
         console.log(`-debug: Error in: getSyncAccount for: ${accountHash}`);
         console.error(e);
         return account;
     });
 
     if (accountHash === selectedAccountHash) {
-        account.transactions = await getSyncTransactions(accountHash, node, account.transactions);
+        newAccount.transactions = await getSyncTransactions(accountHash, node, newAccount.transactions);
     }
-    return { ...account };
+    return { ...newAccount };
 }
 
 export function syncAccountWithState(syncAccount, stateAccount) {

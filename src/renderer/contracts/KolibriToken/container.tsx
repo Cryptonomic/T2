@@ -32,7 +32,7 @@ const ActionPanel = () => {
     if (activeTab === TRANSACTIONS) {
         activeTab = SEND;
     }
-    const tabs = [SEND, SWAP /*, VAULTS*/];
+    const tabs = [SEND, SWAP /* , VAULTS */];
     const transactionList = transactions.filter((e) => e).sort((a, b) => b.timestamp - a.timestamp);
 
     // TODO(keefertaylor): Sort ovens in a deterministic way.
@@ -44,7 +44,7 @@ const ActionPanel = () => {
     return (
         <Container>
             <BalanceBanner
-                isReady={true}
+                isReady
                 balance={selectedToken.balance}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 displayName={displayName}
@@ -53,15 +53,15 @@ const ActionPanel = () => {
 
             <TabList count={tabs.length}>
                 {tabs.map((tab) => (
-                    <Tab isActive={activeTab === tab} key={tab} ready={true} buttonTheme="plain" onClick={() => onChangeTab(tab)}>
-                        <TabText ready={true}>{t(tab)}</TabText>
+                    <Tab isActive={activeTab === tab} key={tab} ready buttonTheme="plain" onClick={() => onChangeTab(tab)}>
+                        <TabText ready>{t(tab)}</TabText>
                     </Tab>
                 ))}
             </TabList>
             <SectionContainer>
-                {activeTab === SEND && <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />}
-                {activeTab === SWAP && <Swap isReady={true} token={selectedToken} />}
-                {/*activeTab === VAULTS && (
+                {activeTab === SEND && <Send isReady token={selectedToken} tokenTransferAction={transferThunk} />}
+                {activeTab === SWAP && <Swap isReady token={selectedToken} />}
+                {/* activeTab === VAULTS && (
                     <DeployOvenButtonWrapper>
                         <PaginationList
                             list={vaultList}
@@ -73,7 +73,7 @@ const ActionPanel = () => {
                             emptyStateTitle={t('components.actionPanel.empty-title')}
                         />
                     </DeployOvenButtonWrapper>
-                )*/}
+                ) */}
                 {activeTab === TRANSACTIONS && (
                     <PaginationList
                         list={transactionList}

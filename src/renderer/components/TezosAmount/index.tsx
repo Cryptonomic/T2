@@ -77,7 +77,7 @@ interface Props {
 const TezosAmount = (props: Props) => {
     const { size, color, amount, iconName, weight, showTooltip, format, symbol } = props;
     function getRealValue() {
-        if (!!symbol) {
+        if (symbol) {
             return {
                 strBalance: amount.toString(),
                 view: amount.toString(),
@@ -93,11 +93,11 @@ const TezosAmount = (props: Props) => {
     }
 
     function getIcon() {
-        if (!!symbol) {
+        if (symbol) {
             return ` ${symbol}`;
         }
 
-        if (!!iconName) {
+        if (iconName) {
             return <Icon size={size} color={color} iconName={iconName} />;
         }
         return null;

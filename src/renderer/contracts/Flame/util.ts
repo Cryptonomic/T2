@@ -37,7 +37,7 @@ export async function getActivePools(server: string, account: string): Promise<{
 
     const activeContracts: string[] = [];
     const activeMaps: number[] = [];
-    hasKey.map((b, i) => {
+    hasKey.forEach((b, i) => {
         if (b) {
             activeContracts.push(contracts[i]);
             activeMaps.push(maps[i]);
@@ -47,43 +47,6 @@ export async function getActivePools(server: string, account: string): Promise<{
     return activeContracts.map((c, i) => {
         return { contract: c, map: activeMaps[i] };
     });
-}
-
-export async function calcPendingRewards(server: string, account: string): Promise<string> {
-    const accountPools = await getActivePools(server, account);
-    const pendingRewards: BigNumber[] = [];
-
-    await Promise.all(
-        accountPools.map(async (p) => {
-            try {
-                const head = await TezosNodeReader.getBlockHead(server);
-                const poolState = await readPoolStorage(server, p.contract);
-                const accountState = await readUserPoolRecord(server, p.map, account);
-                const currentBlockLevel = head.header.level;
-
-                const durationSinceClaim = BigNumber.min(new BigNumber(currentBlockLevel), new BigNumber(poolState.periodFinish)).minus(poolState.lastUpdateTime);
-                const rewardRate = new BigNumber(poolState.rewardRate).multipliedBy('1000000000000000000');
-                const rewardPerToken = new BigNumber(durationSinceClaim).multipliedBy(rewardRate).dividedBy(poolState.totalSupply).plus(new BigNumber(poolState.rewardPerTokenStored));
-
-                let totalRewards = new BigNumber(accountState.balance).multipliedBy(rewardPerToken.minus(new BigNumber(accountState.tokenRewardsPaid)));
-                totalRewards = totalRewards.dividedBy('1000000000000000000').plus(new BigNumber(accountState.rewards));
-                totalRewards = totalRewards.dividedBy('1000000000000000000');
-
-                if (!totalRewards.isNaN()) {
-                    pendingRewards.push(totalRewards);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        })
-    );
-
-    return pendingRewards
-        .reduce((a, c) => {
-            a = a.plus(c);
-            return a;
-        })
-        .toFixed(6);
 }
 
 async function readPoolStorage(server, address) {
@@ -111,4 +74,46 @@ async function readUserPoolRecord(server, mapid, address) {
         rewards: JSONPath({ path: '$.args[2].int', json: mapResult }),
         tokenRewardsPaid: JSONPath({ path: '$.args[3].int', json: mapResult }),
     };
+}
+
+export async function calcPendingRewards(server: string, account: string): Promise<string> {
+    const accountPools = await getActivePools(server, account);
+    const pendingRewards: BigNumber[] = [];
+
+    await Promise.all(
+        accountPools.map(async (p) => {
+            try {
+                const head = await TezosNodeReader.getBlockHead(server);
+                const poolState = await readPoolStorage(server, p.contract);
+                const accountState = await readUserPoolRecord(server, p.map, account);
+                const currentBlockLevel = head.header.level;
+
+                const durationSinceClaim = BigNumber.min(new BigNumber(currentBlockLevel), new BigNumber(poolState.periodFinish)).minus(
+                    poolState.lastUpdateTime
+                );
+                const rewardRate = new BigNumber(poolState.rewardRate).multipliedBy('1000000000000000000');
+                const rewardPerToken = new BigNumber(durationSinceClaim)
+                    .multipliedBy(rewardRate)
+                    .dividedBy(poolState.totalSupply)
+                    .plus(new BigNumber(poolState.rewardPerTokenStored));
+
+                let totalRewards = new BigNumber(accountState.balance).multipliedBy(rewardPerToken.minus(new BigNumber(accountState.tokenRewardsPaid)));
+                totalRewards = totalRewards.dividedBy('1000000000000000000').plus(new BigNumber(accountState.rewards));
+                totalRewards = totalRewards.dividedBy('1000000000000000000');
+
+                if (!totalRewards.isNaN()) {
+                    pendingRewards.push(totalRewards);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        })
+    );
+
+    return pendingRewards
+        .reduce((a, c) => {
+            const b = a.plus(c);
+            return b;
+        })
+        .toFixed(6);
 }

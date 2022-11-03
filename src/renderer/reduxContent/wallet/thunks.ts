@@ -15,12 +15,13 @@ import {
     ConseilDataClient,
     TezosNodeReader,
 } from 'conseiljs';
-import { createMessageAction } from '../../reduxContent/message/actions';
+import { JSONPath } from 'jsonpath-plus';
+import { createMessageAction } from '../message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
 import { CREATED } from '../../constants/StatusTypes';
 import { createTransaction } from '../../utils/transaction';
-import { TokenKind, VaultToken, ArtToken } from '../../types/general';
+import { TokenKind, VaultToken, ArtToken, Identity, Token, AddressType } from '../../types/general';
 
 import { findAccountIndex, getSyncAccount, syncAccountWithState } from '../../utils/account';
 
@@ -28,7 +29,15 @@ import { findIdentity, findIdentityIndex, createIdentity, getSyncIdentity, syncI
 
 import { clearOperationId, getNodesStatus, getNodesError, getSelectedKeyStore } from '../../utils/general';
 
-import { saveUpdatedWallet, loadPersistedState, saveIdentitiesToLocal, loadWalletFromLedger, loadTokens, cloneDecryptedSigner } from '../../utils/wallet';
+import {
+    saveUpdatedWallet,
+    loadPersistedState,
+    saveIdentitiesToLocal,
+    loadWalletFromLedger,
+    loadTokens,
+    cloneDecryptedSigner,
+    createWallet,
+} from '../../utils/wallet';
 
 import { findTokenIndex } from '../../utils/token';
 
@@ -53,21 +62,19 @@ import { setSignerThunk, setLedgerSignerThunk } from '../app/thunks';
 import { syncNFTThunk } from '../nft/thunks';
 
 import { getMainNode, getMainPath } from '../../utils/settings';
-import { createWallet } from '../../utils/wallet';
 import { ACTIVATION } from '../../constants/TransactionTypes';
-import { Identity, Token, AddressType } from '../../types/general';
 
-import * as NFTUtil from '../../contracts/NFT/util';
 import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
-import * as tzip7Util from '../../contracts/TokenContract/util';
-import * as tzip12Util from '../../contracts/Token2Contract/util';
 // import * as wxtzUtil from '../../contracts/WrappedTezos/util';
 import * as plentyUtil from '../../contracts/Plenty/util';
-import { JSONPath } from 'jsonpath-plus';
 import { getLocalData } from '../../utils/localData';
 
 const { sendIdentityActivationOperation } = TezosNodeWriter;
 let currentAccountRefreshInterval: any = null;
+
+export function clearAutomaticAccountRefresh() {
+    clearInterval(currentAccountRefreshInterval);
+}
 
 export function goHomeAndClearState(): any {
     return (dispatch) => {
@@ -77,29 +84,6 @@ export function goHomeAndClearState(): any {
         clearAutomaticAccountRefresh();
         dispatch(push('/'));
     };
-}
-
-export function automaticAccountRefresh() {
-    return (dispatch) => {
-        if (currentAccountRefreshInterval) {
-            clearAutomaticAccountRefresh();
-        }
-
-        currentAccountRefreshInterval = setInterval(() => {
-            // Sync the wallet:
-            dispatch(syncWalletThunk()).then(() => {
-                // When wallet sync is done, try to sync NFT collections and tokens.
-                // The 'syncNFTThunk' not necessary runs anything, ie. it won't do anything
-                // if 'syncEnabled' flag is set to true in the NFT store.
-                // NFT sync is also very expensive so it's run less frequently than wallet sync.
-                dispatch(syncNFTThunk());
-            });
-        }, 60_000);
-    };
-}
-
-export function clearAutomaticAccountRefresh() {
-    clearInterval(currentAccountRefreshInterval);
 }
 
 export function updateAccountActiveTab(selectedAccountHash, selectedParentHash, activeTab) {
@@ -127,7 +111,7 @@ export function updateIdentityActiveTab(selectedAccountHash, activeTab) {
     };
 }
 
-export function updateActiveTabThunk(activeTab: string, isToken?: boolean) {
+export function updateActiveTabThunk(activeTab: string, isToken?: boolean): any {
     return async (dispatch, state) => {
         const { selectedAccountHash, selectedParentHash, selectedTokenName } = state().app;
         if (isToken) {
@@ -193,7 +177,7 @@ export function syncTokenThunk(tokenAddress) {
     return async (dispatch, state) => {
         const { selectedNode, nodesList } = state().settings;
         const { selectedParentHash } = state().app;
-        const tokens: (Token | VaultToken | ArtToken)[] = state().wallet.tokens;
+        const { tokens } = state().wallet;
 
         if (!selectedParentHash || selectedParentHash.length === 0) {
             return;
@@ -365,7 +349,7 @@ export function syncTokenThunk(tokenAddress) {
             try {
                 const [balance, transactions, details] = await Promise.all([balanceAsync, transAsync, detailsAsync]);
 
-                let administrator = tokens[tokenIndex].administrator;
+                let { administrator } = tokens[tokenIndex];
                 administrator = details?.administrator || '';
 
                 tokens[tokenIndex] = { ...tokens[tokenIndex], administrator, balance, transactions, details };
@@ -398,12 +382,12 @@ export function syncTokenThunk(tokenAddress) {
     };
 }
 
-export function syncWalletThunk() {
+export function syncWalletThunk(): any {
     return async (dispatch, state) => {
         dispatch(setWalletIsSyncingAction(true));
         const { selectedNode, nodesList } = state().settings;
         const { selectedAccountHash, selectedParentHash } = state().app;
-        const tokens: (Token | VaultToken | ArtToken)[] = state().wallet.tokens;
+        const { tokens } = state().wallet;
 
         if (!selectedParentHash || selectedParentHash.length === 0) {
             return;
@@ -439,7 +423,7 @@ export function syncWalletThunk() {
 
                 if (token.kind === TokenKind.tzip7 || token.kind === TokenKind.usdtz || token.kind === TokenKind.ethtz) {
                     const mapid = token.mapid || -1;
-                    let administrator = token.administrator;
+                    let { administrator } = token;
 
                     let details: any = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
                     administrator = details?.administrator || '';
@@ -463,7 +447,8 @@ export function syncWalletThunk() {
                     const transactions = [];
                     // await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
                     return { ...token, administrator, balance, transactions, details };
-                } else if (token.kind === TokenKind.tzbtc) {
+                }
+                if (token.kind === TokenKind.tzbtc) {
                     const administrator = token.administrator || '';
 
                     const balance = await TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
@@ -471,7 +456,8 @@ export function syncWalletThunk() {
                     // await tzbtcUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions); /* TODO */
 
                     return { ...token, administrator, balance, transactions };
-                } else if (token.kind === TokenKind.wxtz) {
+                }
+                if (token.kind === TokenKind.wxtz) {
                     const vaultToken = token as VaultToken;
 
                     const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
@@ -505,8 +491,9 @@ export function syncWalletThunk() {
                     }
 
                     return { ...token, administrator: '', balance, transactions, vaultList };
-                } else if (token.kind === TokenKind.kusd) {
-                    const administrator = token.administrator;
+                }
+                if (token.kind === TokenKind.kusd) {
+                    const { administrator } = token;
                     let details: any = await KolibriTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
                     const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
@@ -516,12 +503,14 @@ export function syncWalletThunk() {
                     // await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
 
                     return { ...token, administrator, balance, transactions, details };
-                } else if (token.kind === TokenKind.objkt) {
+                }
+                if (token.kind === TokenKind.objkt) {
                     const artToken = token as ArtToken;
 
                     return { ...artToken, administrator: '', balance: 0, transactions: [] };
-                } else if (token.kind === TokenKind.stkr || token.kind === TokenKind.blnd) {
-                    let administrator = token.administrator;
+                }
+                if (token.kind === TokenKind.stkr || token.kind === TokenKind.blnd) {
+                    let { administrator } = token;
 
                     let details: any = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch((e) => {
                         return undefined;
@@ -541,8 +530,9 @@ export function syncWalletThunk() {
                     // ); /* TODO */
 
                     return { ...token, administrator, balance, transactions, details };
-                } else if (token.kind === TokenKind.plenty) {
-                    let administrator = token.administrator;
+                }
+                if (token.kind === TokenKind.plenty) {
+                    let { administrator } = token;
 
                     let details: any = await plentyUtil.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
                     administrator = details?.administrator || '';
@@ -560,8 +550,9 @@ export function syncWalletThunk() {
                     // await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
 
                     return { ...token, administrator, balance, transactions, details };
-                } else if (token.kind === TokenKind.tzip12) {
-                    let administrator = token.administrator;
+                }
+                if (token.kind === TokenKind.tzip12) {
+                    let { administrator } = token;
 
                     let details: any = {};
                     if (token.symbol.toLowerCase() === 'btctz' || token.symbol.toLowerCase() === 'oldbtctz') {
@@ -600,10 +591,9 @@ export function syncWalletThunk() {
                     // ); /* TODO */
 
                     return { ...token, administrator, balance, transactions, details };
-                } else {
-                    console.warn(`warning, unsupported token: ${JSON.stringify(token)}`);
-                    return { ...token, mapid: -1, administrator: '', balance: 0, transactions: [] };
                 }
+                console.warn(`warning, unsupported token: ${JSON.stringify(token)}`);
+                return { ...token, mapid: -1, administrator: '', balance: 0, transactions: [] };
             })
         );
 
@@ -612,7 +602,25 @@ export function syncWalletThunk() {
         dispatch(updateFetchedTimeAction(new Date()));
         await saveIdentitiesToLocal(state().wallet.identities);
         dispatch(setWalletIsSyncingAction(false));
-        return;
+    };
+}
+
+export function automaticAccountRefresh() {
+    return (dispatch) => {
+        if (currentAccountRefreshInterval) {
+            clearAutomaticAccountRefresh();
+        }
+
+        currentAccountRefreshInterval = setInterval(() => {
+            // Sync the wallet:
+            dispatch(syncWalletThunk()).then(() => {
+                // When wallet sync is done, try to sync NFT collections and tokens.
+                // The 'syncNFTThunk' not necessary runs anything, ie. it won't do anything
+                // if 'syncEnabled' flag is set to true in the NFT store.
+                // NFT sync is also very expensive so it's run less frequently than wallet sync.
+                dispatch(syncNFTThunk());
+            });
+        }, 60_000);
     };
 }
 
@@ -675,7 +683,12 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     await dispatch(setSignerThunk(identity.secretKey, walletPassword));
                     break;
                 case FUNDRAISER: {
-                    identity = await window.conseiljsSoftSigner.KeyStoreUtils.restoreIdentityFromFundraiser(seed, username.trim(), passPhrase.trim(), pkh.trim());
+                    identity = await window.conseiljsSoftSigner.KeyStoreUtils.restoreIdentityFromFundraiser(
+                        seed,
+                        username.trim(),
+                        passPhrase.trim(),
+                        pkh.trim()
+                    );
                     identity.storeType = KeyStoreType.Fundraiser;
                     await dispatch(setSignerThunk(identity.secretKey, walletPassword));
 
@@ -777,7 +790,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
     };
 }
 
-export function importSecretKeyThunk(key) {
+export function importSecretKeyThunk(key): any {
     return async (dispatch, state) => {
         const { walletLocation, walletFileName, walletPassword, identities } = state().wallet;
 

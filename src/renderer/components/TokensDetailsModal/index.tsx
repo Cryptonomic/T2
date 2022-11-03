@@ -4,7 +4,24 @@ import { BigNumber } from 'bignumber.js';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
-import { ActionsContainer, CloseButton, ModalHeader, StyledModalBox, TokensList, TokenItem, TokenItemHeader, TokenItemName, TokenItemActiveBadge, BadgeText, TokenDetailsContainer, DetailsCol, RightCol, TokenDetail, AmountsList, AmountItem } from './style';
+import {
+    ActionsContainer,
+    CloseButton,
+    ModalHeader,
+    StyledModalBox,
+    TokensList,
+    TokenItem,
+    TokenItemHeader,
+    TokenItemName,
+    TokenItemActiveBadge,
+    BadgeText,
+    TokenDetailsContainer,
+    DetailsCol,
+    RightCol,
+    TokenDetail,
+    AmountsList,
+    AmountItem,
+} from './style';
 import { TokensDetailsModalProps } from './types';
 
 import AmountView from '../AmountView';
@@ -54,12 +71,16 @@ const TokenDetails = ({ token, onBrowseObjects }: { token: Token; onBrowseObject
             </TokenItemHeader>
             <TokenDetailsContainer>
                 <DetailsCol>
-                    <TezosAddress address={token.address} text={token.address} weight={400} color="gray18" size="16px" shorten={true} />
-                    {token && token.details && token.details.supply ? <TokenDetail>{t('components.tokensDetailsModal.tokenSupplyDetail', { counter: formatAmount(token.details.supply) })}</TokenDetail> : null}
-                    {token && token.details && token.details.holders ? <TokenDetail>{t('components.tokensDetailsModal.tokenHoldersDetail', { counter: Number(token.details.holders) })}</TokenDetail> : null}
+                    <TezosAddress address={token.address} text={token.address} weight={400} color="gray18" size="16px" shorten />
+                    {token && token.details && token.details.supply ? (
+                        <TokenDetail>{t('components.tokensDetailsModal.tokenSupplyDetail', { counter: formatAmount(token.details.supply) })}</TokenDetail>
+                    ) : null}
+                    {token && token.details && token.details.holders ? (
+                        <TokenDetail>{t('components.tokensDetailsModal.tokenHoldersDetail', { counter: Number(token.details.holders) })}</TokenDetail>
+                    ) : null}
                     {token.balance && token.balance > 0 && onBrowseObjects ? (
                         <ActionsContainer>
-                            <Button buttonTheme="secondary" small={true} onClick={() => onBrowseObjects(token)}>
+                            <Button buttonTheme="secondary" small onClick={() => onBrowseObjects(token)}>
                                 Browse objects
                             </Button>
                         </ActionsContainer>
@@ -69,7 +90,17 @@ const TokenDetails = ({ token, onBrowseObjects }: { token: Token; onBrowseObject
                     {token.balance && token.balance > 0 ? (
                         <AmountsList>
                             <AmountItem>
-                                <AmountView color={token.balance && token.balance > 0 ? 'black3' : 'gray18'} size="20px" amount={token.balance} weight="normal" symbol={token.symbol} showTooltip={true} scale={token.scale} precision={token.precision} round={token.round} />
+                                <AmountView
+                                    color={token.balance && token.balance > 0 ? 'black3' : 'gray18'}
+                                    size="20px"
+                                    amount={token.balance}
+                                    weight="normal"
+                                    symbol={token.symbol}
+                                    showTooltip
+                                    scale={token.scale}
+                                    precision={token.precision}
+                                    round={token.round}
+                                />
                             </AmountItem>
                         </AmountsList>
                     ) : null}

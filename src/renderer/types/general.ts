@@ -217,9 +217,9 @@ export interface EncryptedWalletVersionOne {
 }
 
 export interface SettingsType {
-    locale: string,
-    selectedNode: string,
-    nodesList: Node[],
-    selectedPath: string,
-    pathsList: Path[]
-  }
+    locale: string;
+    selectedNode: string;
+    nodesList: Node[];
+    selectedPath: string;
+    pathsList: Path[];
+}

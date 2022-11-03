@@ -64,7 +64,7 @@ const Video: FunctionComponent<VideoProps> = ({ src, thumbnailUri, onLoad, onErr
         <VideoContainer className={className}>
             <VideoLoader className="loader" visible={!loaded && !failed} />
             <VideoStyled width="100%" onError={onElementError} onLoadStart={onElementLoad} {...videoElementProps} hidden={!loaded || failed}>
-                <source src={src} type={type}/>
+                <source src={src} type={type} />
             </VideoStyled>
             {failed && VideoFailedBox ? VideoFailedBox : null}
             {failed && !VideoFailedBox ? (

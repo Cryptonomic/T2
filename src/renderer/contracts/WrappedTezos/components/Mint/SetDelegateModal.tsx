@@ -10,12 +10,12 @@ import { setDelegateForOven } from '../../thunks';
 import LedgerConfirmModal from '../Ledger/LedgerConfirmModal';
 
 import Modal from '../../../../components/CustomModal';
-import Tooltip from '../../../../components/Tooltip/';
+import Tooltip from '../../../../components/Tooltip';
 import { ms } from '../../../../styles/helpers';
 import TezosIcon from '../../../../components/TezosIcon';
 import Button from '../../../../components/Button';
 import Loader from '../../../../components/Loader';
-import Fees from '../../../../components/Fees/';
+import Fees from '../../../../components/Fees';
 import PasswordInput from '../../../../components/PasswordInput';
 import InputAddress from '../../../../components/InputAddress';
 import TezosAmount from '../../../../components/TezosAmount';
@@ -234,7 +234,7 @@ function AddDelegateModal(props: Props) {
 
         setConfirmOpen(false);
         dispatch(setIsLoadingAction(false));
-        if (!!delegateSet) {
+        if (delegateSet) {
             onClose();
         }
     }
@@ -280,7 +280,7 @@ function AddDelegateModal(props: Props) {
     // TODO: if delegate is set, title should be Change Delegate
     return (
         // TODO(keefertaylor): Use translations here.
-        <Modal title={'Set Delegate'} open={open} onClose={onCloseClick}>
+        <Modal title="Set Delegate" open={open} onClose={onCloseClick}>
             <MainContainer>
                 <MessageContainer>
                     {/* TODO(keefertaylor): Use Translations */}
@@ -291,9 +291,9 @@ function AddDelegateModal(props: Props) {
             <InputAddressContainer>
                 <InputAddress
                     // TODO(keefertaylor): translations
-                    label={'Baker'}
+                    label="Baker"
                     operationType="delegate"
-                    tooltip={true}
+                    tooltip
                     onChange={(val) => setDelegate(val)}
                     onIssue={(flag) => setIsDelegateIssue(flag)}
                 />
@@ -308,7 +308,7 @@ function AddDelegateModal(props: Props) {
                     <BalanceArrow />
                     <BalanceContent>
                         <BalanceTitle>{t('general.nouns.total')}</BalanceTitle>
-                        <TotalAmount weight="500" color={'gray8'} size={ms(0.65)} amount={total} />
+                        <TotalAmount weight="500" color="gray8" size={ms(0.65)} amount={total} />
                         <BalanceTitle>{t('general.nouns.remaining_balance')}</BalanceTitle>
                         <BalanceAmount weight="500" color={balanceColor} size={ms(-0.75)} amount={balance} />
                         {isIssue && (

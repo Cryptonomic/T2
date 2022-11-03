@@ -20,10 +20,71 @@ import { Node, TokenKind } from '../../types/general';
 import { createTokenTransaction, syncTransactionsWithState } from '../../utils/transaction';
 import { knownTokenContracts, knownContractNames } from '../../constants/Token';
 
+export async function getTokenTransactions(tokenAddress: string, managerAddress: string, node: Node) {
+    const { conseilUrl, apiKey, network } = node;
+
+    let direct = ConseilQueryBuilder.blankQuery();
+    direct = ConseilQueryBuilder.addFields(
+        direct,
+        'timestamp',
+        'block_level',
+        'source',
+        'destination',
+        'amount',
+        'kind',
+        'fee',
+        'status',
+        'operation_group_hash',
+        'parameters',
+        'parameters_micheline',
+        'parameters_entrypoints'
+    );
+    direct = ConseilQueryBuilder.addPredicate(direct, 'kind', ConseilOperator.EQ, ['transaction'], false);
+    direct = ConseilQueryBuilder.addPredicate(direct, 'status', ConseilOperator.EQ, ['applied'], false);
+    direct = ConseilQueryBuilder.addPredicate(direct, 'destination', ConseilOperator.EQ, [tokenAddress], false);
+    direct = ConseilQueryBuilder.addPredicate(direct, 'source', ConseilOperator.EQ, [managerAddress], false);
+    direct = ConseilQueryBuilder.addOrdering(direct, 'timestamp', ConseilSortDirection.DESC);
+    direct = ConseilQueryBuilder.setLimit(direct, 1_000);
+
+    let indirect = ConseilQueryBuilder.blankQuery();
+    indirect = ConseilQueryBuilder.addFields(
+        indirect,
+        'timestamp',
+        'block_level',
+        'source',
+        'destination',
+        'amount',
+        'kind',
+        'fee',
+        'status',
+        'operation_group_hash',
+        'parameters',
+        'parameters_micheline',
+        'parameters_entrypoints'
+    );
+    indirect = ConseilQueryBuilder.addPredicate(indirect, 'kind', ConseilOperator.EQ, ['transaction'], false);
+    indirect = ConseilQueryBuilder.addPredicate(indirect, 'status', ConseilOperator.EQ, ['applied'], false);
+    indirect = ConseilQueryBuilder.addPredicate(indirect, 'destination', ConseilOperator.EQ, [tokenAddress], false);
+    indirect = ConseilQueryBuilder.addPredicate(indirect, 'parameters', ConseilOperator.LIKE, [managerAddress], false);
+    indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
+    indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
+
+    return Promise.all([direct, indirect].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
+        .then((responses) =>
+            responses.reduce((result, r) => {
+                r.forEach((rr) => result.push(rr));
+                return result;
+            })
+        )
+        .then((transactions) => {
+            return transactions.sort((a, b) => a.timestamp - b.timestamp);
+        });
+}
+
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
     let newTransactions: any[] = (
         await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
-            console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
+            console.log(`-debug: Error in: getSyncAccount -> getTransactions for:${tokenAddress}`);
             console.error(e);
             return [];
         })
@@ -58,7 +119,8 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                 destination: targetAddress,
                 entryPoint: 'approve',
             });
-        } else if (transferAddressPattern.test(params) || transferBytesPattern.test(params)) {
+        }
+        if (transferAddressPattern.test(params) || transferBytesPattern.test(params)) {
             try {
                 let parts: any[] = [];
                 let amount = 0;
@@ -128,70 +190,10 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
         } else {
             console.warn(`cannot render unsupported transaction: "${params}" from ${JSON.stringify(transaction)}`);
         }
+        return transaction;
     });
 
     return syncTransactionsWithState(newTransactions, stateTransactions);
-}
-
-export async function getTokenTransactions(tokenAddress: string, managerAddress: string, node: Node) {
-    const { conseilUrl, apiKey, network } = node;
-
-    let direct = ConseilQueryBuilder.blankQuery();
-    direct = ConseilQueryBuilder.addFields(
-        direct,
-        'timestamp',
-        'block_level',
-        'source',
-        'destination',
-        'amount',
-        'kind',
-        'fee',
-        'status',
-        'operation_group_hash',
-        'parameters',
-        'parameters_micheline',
-        'parameters_entrypoints'
-    );
-    direct = ConseilQueryBuilder.addPredicate(direct, 'kind', ConseilOperator.EQ, ['transaction'], false);
-    direct = ConseilQueryBuilder.addPredicate(direct, 'status', ConseilOperator.EQ, ['applied'], false);
-    direct = ConseilQueryBuilder.addPredicate(direct, 'destination', ConseilOperator.EQ, [tokenAddress], false);
-    direct = ConseilQueryBuilder.addPredicate(direct, 'source', ConseilOperator.EQ, [managerAddress], false);
-    direct = ConseilQueryBuilder.addOrdering(direct, 'timestamp', ConseilSortDirection.DESC);
-    direct = ConseilQueryBuilder.setLimit(direct, 1_000);
-
-    let indirect = ConseilQueryBuilder.blankQuery();
-    indirect = ConseilQueryBuilder.addFields(
-        indirect,
-        'timestamp',
-        'block_level',
-        'source',
-        'destination',
-        'amount',
-        'kind',
-        'fee',
-        'status',
-        'operation_group_hash',
-        'parameters',
-        'parameters_micheline',
-        'parameters_entrypoints'
-    );
-    indirect = ConseilQueryBuilder.addPredicate(indirect, 'kind', ConseilOperator.EQ, ['transaction'], false);
-    indirect = ConseilQueryBuilder.addPredicate(indirect, 'status', ConseilOperator.EQ, ['applied'], false);
-    indirect = ConseilQueryBuilder.addPredicate(indirect, 'destination', ConseilOperator.EQ, [tokenAddress], false);
-    indirect = ConseilQueryBuilder.addPredicate(indirect, 'parameters', ConseilOperator.LIKE, [managerAddress], false);
-    indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
-    indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
-
-    return Promise.all([direct, indirect].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
-        .then((responses) =>
-            responses.reduce((result, r) => {
-                r.forEach((rr) => result.push(rr));
-                return result;
-            })
-        )
-        .then((transactions) => {
-            return transactions.sort((a, b) => a.timestamp - b.timestamp);
-        });
 }
 
 /**
@@ -235,7 +237,7 @@ export async function mintYV(
     fee: number,
     destination: string,
     amount: number,
-    tokenIndex: number = 0
+    tokenIndex = 0
 ): Promise<string> {
     const params = `{ "prim": "Pair", "args": [ {"bytes": "${TezosMessageUtils.writeAddress(
         destination
@@ -268,7 +270,7 @@ export async function burnYV(
     fee: number,
     destination: string,
     amount: number,
-    tokenIndex: number = 0
+    tokenIndex = 0
 ): Promise<string> {
     const params = `{ "prim": "Pair", "args": [ { "bytes": "${TezosMessageUtils.writeAddress(
         destination

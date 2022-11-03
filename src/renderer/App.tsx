@@ -5,9 +5,6 @@ import './styles/app.global.scss';
 
 const store = configureStore();
 
-
 export default function App() {
-  return (
-    <Root store={store} history={history} />
-  )
+    return <Root store={store} history={history} />;
 }

@@ -60,7 +60,7 @@ function CopyButton(props: Props) {
     return (
         <Tooltip
             open={isShowed}
-            title={<React.Fragment>{t('components.copyIcon.copied')}</React.Fragment>}
+            title={<>{t('components.copyIcon.copied')}</>}
             leaveDelay={500}
             placement="top-end"
             onClose={() => setIsShowed(false)}
@@ -79,7 +79,7 @@ function CopyButton(props: Props) {
             }}
         >
             {title ? (
-                <Container realcolor={color} startIcon={<CopyIconWrapper iconstyle={iconStyle} />} disableRipple={true} onClick={() => copyToClipboard()}>
+                <Container realcolor={color} startIcon={<CopyIconWrapper iconstyle={iconStyle} />} disableRipple onClick={() => copyToClipboard()}>
                     {title}
                 </Container>
             ) : (

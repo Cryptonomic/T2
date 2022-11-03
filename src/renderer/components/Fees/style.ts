@@ -2,7 +2,7 @@ import MenuItem from '@mui/material/MenuItem';
 import styled from 'styled-components';
 
 import { ms } from '../../styles/helpers';
-import TezosIcon from '../../components/TezosIcon';
+import TezosIcon from '../TezosIcon';
 import Button from '../Button';
 
 export const StyledSaveButton = styled(Button)`

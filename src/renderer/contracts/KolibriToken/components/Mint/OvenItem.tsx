@@ -82,7 +82,7 @@ function OvenItem(props: Props) {
                     <b>Delegate</b>: {delegate ?? 'None'}
                 </OvenDelegate>
                 <AmountContainer color="check">
-                    <AmountView color={'check'} size={ms(-1)} amount={balance} scale={6} precision={6} round={6} symbol={'XTZ'} />
+                    <AmountView color="check" size={ms(-1)} amount={balance} scale={6} precision={6} round={6} symbol="XTZ" />
                 </AmountContainer>
             </OvenInfoBar>
             <ContentDiv>

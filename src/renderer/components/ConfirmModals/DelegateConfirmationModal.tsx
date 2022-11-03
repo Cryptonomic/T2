@@ -2,11 +2,11 @@ import React, { Fragment } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import styled from 'styled-components';
 import Modal from '../CustomModal';
-import Button from './../Button';
+import Button from '../Button';
 import TezosIcon from '../TezosIcon';
 import { ms } from '../../styles/helpers';
 import TezosAddress from '../TezosAddress';
-import Fees from '../Fees/';
+import Fees from '../Fees';
 import Loader from '../Loader';
 import PasswordInput from '../PasswordInput';
 import InputAddress from '../InputAddress';
@@ -114,7 +114,7 @@ const BoldSpan = styled.span`
 `;
 
 interface Props {
-    onEnterPress: () => {};
+    onEnterPress: () => any;
     open: boolean;
     address: string | null;
     newAddress?: string;
@@ -122,14 +122,14 @@ interface Props {
     fee: number;
     miniFee: number;
     averageFees: any;
-    handleFeeChange: () => {};
-    handlePasswordChange: () => {};
-    onAddressChange: () => {};
-    onDelegate: () => {};
-    onCloseClick: () => {};
+    handleFeeChange: () => any;
+    handlePasswordChange: () => any;
+    onAddressChange: () => any;
+    onDelegate: () => any;
+    onCloseClick: () => any;
     isLoading?: boolean;
     isDelegateIssue: boolean;
-    onDelegateIssue: () => {};
+    onDelegateIssue: () => any;
     isLedger: boolean;
     isDisplayedFeeTooltip: boolean;
 }
@@ -153,12 +153,12 @@ const DelegateConfirmationModal = (props: Props) => {
         isDelegateIssue,
         onDelegateIssue,
         isLedger,
-        isDisplayedFeeTooltip
+        isDisplayedFeeTooltip,
     } = props;
     const { t } = useTranslation();
     const isDisabled = isLoading || !newAddress || (!password && !isLedger) || isDelegateIssue;
 
-    const renderFeeToolTip = () => {
+    const renderFeeToolTip: any = () => {
         return (
             <TooltipContainer>
                 <TooltipTitle>{t('components.send.fee_tooltip_title')}</TooltipTitle>
@@ -181,12 +181,12 @@ const DelegateConfirmationModal = (props: Props) => {
         >
             <ModalContainer isAddress={!!address}>
                 {!!address && (
-                    <Fragment>
+                    <>
                         <DelegateTitle>{t('components.delegate.current_delegate')}</DelegateTitle>
                         <AddressContainer>
                             <TezosAddress address={address} size="16px" color="primary" color2="index0" weight={300} />
                         </AddressContainer>
-                    </Fragment>
+                    </>
                 )}
                 <InputAddressContainer>
                     <InputAddress
@@ -230,7 +230,7 @@ const DelegateConfirmationModal = (props: Props) => {
                         containerStyle={{ width: '60%', marginTop: '10px' }}
                     />
                 )}
-                <DelegateButton buttonTheme="primary" disabled={isDisabled} small={true} onClick={onDelegate}>
+                <DelegateButton buttonTheme="primary" disabled={isDisabled} small onClick={onDelegate}>
                     {t('components.delegate.change_delegate')}
                 </DelegateButton>
             </BottomContainer>

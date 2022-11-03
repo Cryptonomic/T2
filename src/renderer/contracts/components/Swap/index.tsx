@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js';
 
 import { formatAmount } from '../../../utils/currency';
 import { getMainNode } from '../../../utils/settings';
-import { Token } from '../../../types/general';
+import { Token, TokenKind } from '../../../types/general';
 import PasswordInput from '../../../components/PasswordInput';
 import NumericInput from '../../../components/NumericInput';
 import InputError from '../../../components/InputError';
@@ -13,7 +13,6 @@ import EmptyState from '../../../components/EmptyState';
 import { setIsLoadingAction } from '../../../reduxContent/app/actions';
 import { RootState, AppState, SettingsState } from '../../../types/store';
 import { knownTokenContracts } from '../../../constants/Token';
-import { TokenKind } from '../../../types/general';
 import { Container, PasswordButtonContainer, InvokeButton, RowContainer } from '../style';
 import { InfoIcon } from '../../../featureModals/style';
 
@@ -85,7 +84,7 @@ function Swap(props: Props) {
 
     const { isLoading, isLedger } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
     const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((state: RootState) => state.settings, shallowEqual);
-    const tezosUrl = getMainNode(nodesList, selectedNode).tezosUrl;
+    const { tezosUrl } = getMainNode(nodesList, selectedNode);
 
     const { isReady, token } = props;
 
@@ -363,7 +362,7 @@ function Swap(props: Props) {
     if (!showForm) {
         return (
             <Container>
-                <EmptyState imageSrc={''} title={`Trading of ${token.displayName} is not supported yet.`} description={null} />
+                <EmptyState imageSrc="" title={`Trading of ${token.displayName} is not supported yet.`} description={null} />
             </Container>
         );
     }

@@ -6,7 +6,7 @@ const initState = {
     activeModal: '',
     activeTab: 'sign',
     tabs: ['sign', 'verify'],
-    values: {}
+    values: {},
 };
 
 export function modalReducer(state: ModalState = initState, action) {

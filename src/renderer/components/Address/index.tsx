@@ -116,7 +116,7 @@ interface Props {
     onClick?: () => void;
 }
 
-const Address: React.SFC<Props> = (props) => {
+const Address = (props: Props) => {
     const { t } = useTranslation();
     const { isManager, isContract, isActive, balance, index, accountId, onClick } = props;
     const firstLine = getFirstLine(isManager, isContract, isActive, index, accountId, t);

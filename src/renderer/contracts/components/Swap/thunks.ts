@@ -8,37 +8,37 @@ import { sendDexterBuy, sendDexterSell, sendQuipuBuy, sendQuipuSell, sendVortexB
 
 export function buyDexter(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterBuy);
+        return callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterBuy);
     };
 }
 
 export function sellDexter(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterSell);
+        return callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendDexterSell);
     };
 }
 
 export function buyQuipu(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuBuy);
+        return callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuBuy);
     };
 }
 
 export function sellQuipu(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuSell);
+        return callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendQuipuSell);
     };
 }
 
 export function buyVortex(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendVortexBuy);
+        return callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendVortexBuy);
     };
 }
 
 export function sellVortex(marketAddress: string, tokenAddress: string, tokenIndex: number, tokenAmount: string, coinAmount: string, password: string) {
     return async (dispatch, state) => {
-        return await callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendVortexSell);
+        return callMarket(tokenAddress, tokenIndex, marketAddress, tokenAmount, coinAmount, password, dispatch, state, sendVortexSell);
     };
 }
 

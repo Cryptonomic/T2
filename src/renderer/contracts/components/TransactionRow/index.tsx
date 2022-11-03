@@ -26,7 +26,7 @@ const openLink = (element, nodesList: Node[], selectedNode: string) => {
     return openBlockExplorerForOperation(element, currentNode.network);
 };
 
-const timeFormatter = timestamp => {
+const timeFormatter = (timestamp) => {
     const time = new Date(timestamp);
     return moment(time).format('LT');
 };
@@ -43,27 +43,27 @@ const getStatus = (transaction, selectedParentHash, t) => {
             state: t('components.transaction.sent'),
             isFee,
             color: isAmount ? 'error1' : 'gray8',
-            sign: isAmount ? '-' : ''
+            sign: isAmount ? '-' : '',
         };
-    } else if (transaction.destination === selectedParentHash && !transaction.entryPoint) {
+    }
+    if (transaction.destination === selectedParentHash && !transaction.entryPoint) {
         return {
             icon: 'receive',
             preposition: t('general.from'),
             state: t('components.transaction.received'),
             isFee,
             color: isAmount ? 'check' : 'gray8',
-            sign: isAmount ? '+' : ''
-        };
-    } else {
-        return {
-            icon: 'star',
-            preposition: '',
-            state: t('components.transaction.invoked'),
-            isFee,
-            color: 'gray0',
-            sign: ''
+            sign: isAmount ? '+' : '',
         };
     }
+    return {
+        icon: 'star',
+        preposition: '',
+        state: t('components.transaction.invoked'),
+        isFee,
+        color: 'gray0',
+        sign: '',
+    };
 };
 
 const getAddress = (transaction, selectedParentHash) => {
@@ -76,7 +76,7 @@ function Transaction(props: Props) {
     const { t } = useTranslation();
     const fee = transaction.fee ? transaction.fee : 0;
     const { icon, preposition, state, isFee, color, sign } = getStatus(transaction, selectedParentHash, t);
-    const { selectedNode, nodesList } = useSelector<RootState, SettingsState>(rootstate => rootstate.settings, shallowEqual);
+    const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((rootstate) => rootstate.settings, shallowEqual);
     const address = getAddress(transaction, selectedParentHash);
 
     return (

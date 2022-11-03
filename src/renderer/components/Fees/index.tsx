@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 
 import { ms } from '../../styles/helpers';
-import TezosIcon from '../../components/TezosIcon';
+import TezosIcon from '../TezosIcon';
 import TezosNumericInput from '../TezosNumericInput';
 import Modal from '../CustomModal';
 import CustomSelect from '../CustomSelect';
@@ -42,15 +42,15 @@ function Fee(props: Props) {
                     {customFeeLabel}: {formatAmount(fee)} <TezosIcon color="black" iconName="tezos" />
                 </ItemWrapper>
             );
-        } else if (!!custom) {
+        }
+        if (custom) {
             return (
                 <ItemWrapper value={customAmount}>
                     {customFeeLabel}: {formatAmount(customAmount)} <TezosIcon color="black" iconName="tezos" />
                 </ItemWrapper>
             );
-        } else {
-            return null;
         }
+        return null;
     }
 
     function renderError() {
@@ -91,7 +91,7 @@ function Fee(props: Props) {
     }
 
     return (
-        <Fragment>
+        <>
             <CustomSelect
                 label={t('general.nouns.fee')}
                 value={fee}
@@ -147,7 +147,7 @@ function Fee(props: Props) {
                     </StyledSaveButton>
                 </ModalContent>
             </Modal>
-        </Fragment>
+        </>
     );
 }
 

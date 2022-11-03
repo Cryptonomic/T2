@@ -72,12 +72,12 @@ function AddNodeModal(props: Props) {
     }
     function handleAddNode() {
         if (!isValidUrl(tezosUrl)) {
-            setTezosError(t('components.addNodeModal.error'));
+            setTezosError(t('components.addNodeModal.error') as string);
             return;
         }
 
         if (!isValidUrl(conseilUrl)) {
-            setConseilError(t('components.addNodeModal.error'));
+            setConseilError(t('components.addNodeModal.error') as string);
             return;
         }
 

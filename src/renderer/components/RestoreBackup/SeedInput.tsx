@@ -35,12 +35,17 @@ const TextfieldWrapper = styled(TextField)`
     }
 `;
 
-const ChipContent = ({ value, index }) => {
+type ChipProps = {
+    value: string;
+    index: number;
+};
+
+const ChipContent = ({ value, index }: ChipProps) => {
     return (
-        <Fragment>
+        <>
             <IndexSpan>{index + 1}</IndexSpan>
             {value}
-        </Fragment>
+        </>
     );
 };
 
@@ -68,27 +73,6 @@ function SeedInput(props: Props) {
         return seedStr.trim().split(/\s+/);
     }
 
-    function onChangeInput(e, val) {
-        const inputWords = seedPhraseConvert(val);
-        const invalidWords = inputWords.filter((element) => seedJson.indexOf(element) === -1);
-
-        if (inputWords.length > 1 && inputWords.length > invalidWords.length) {
-            // paste multiple
-            onChangeItems(null, [...seeds, ...inputWords.filter((w) => !w.match(/[0-9]{1,2}\./))]);
-        }
-
-        const matchingWords = seedJson.filter((w) => w.startsWith(inputWords[0]));
-        if (inputWords.length === 1 && matchingWords.length === 1) {
-            onChangeItems(null, [...seeds, matchingWords[0]]);
-        }
-
-        if (invalidWords.length > 0) {
-            setBadWords([...badWords, ...invalidWords]); // paint bad words red
-        }
-
-        setInputVal(val);
-    }
-
     function onChangeItems(e, items) {
         const newBadWords = badWords.filter((item) => items.indexOf(item) > -1);
         let newError = '';
@@ -111,12 +95,33 @@ function SeedInput(props: Props) {
         setError(newError);
     }
 
+    function onChangeInput(e, val) {
+        const inputWords = seedPhraseConvert(val);
+        const invalidWords = inputWords.filter((element) => seedJson.indexOf(element) === -1);
+
+        if (inputWords.length > 1 && inputWords.length > invalidWords.length) {
+            // paste multiple
+            onChangeItems(null, [...seeds, ...inputWords.filter((w) => !w.match(/[0-9]{1,2}\./))]);
+        }
+
+        const matchingWords = seedJson.filter((w) => w.startsWith(inputWords[0]));
+        if (inputWords.length === 1 && matchingWords.length === 1) {
+            onChangeItems(null, [...seeds, matchingWords[0]]);
+        }
+
+        if (invalidWords.length > 0) {
+            setBadWords([...badWords, ...invalidWords]); // paint bad words red
+        }
+
+        setInputVal(val);
+    }
+
     return (
         <Autocomplete
-            multiple={true}
+            multiple
             id="tags-standard"
-            autoComplete={true}
-            autoHighlight={true}
+            autoComplete
+            autoHighlight
             options={seedJson}
             clearIcon=""
             popupIcon=""
@@ -139,7 +144,6 @@ function SeedInput(props: Props) {
                     const isBad = badWords.indexOf(option) > -1 ? 1 : 0;
                     return (
                         <ChipWrapper
-                            key={`ac-idx-${index}`}
                             variant="outlined"
                             color="primary"
                             size="small"
@@ -152,15 +156,7 @@ function SeedInput(props: Props) {
                 })
             }
             renderInput={(params) => (
-                <TextfieldWrapper
-                    {...params}
-                    variant="standard"
-                    placeholder={placeholder}
-                    margin="normal"
-                    fullWidth={true}
-                    error={!!error}
-                    helperText={error}
-                />
+                <TextfieldWrapper {...params} variant="standard" placeholder={placeholder} margin="normal" fullWidth error={!!error} helperText={error} />
             )}
         />
     );

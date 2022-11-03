@@ -7,7 +7,7 @@ import { createTokenTransaction, syncTransactionsWithState } from '../../utils/t
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[]) {
     let newTransactions: any[] = (
         await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
-            console.log('-debug: Error in: getSyncAccount -> getTokenTransactions for:' + tokenAddress);
+            console.log(`-debug: Error in: getSyncAccount -> getTokenTransactions for:${tokenAddress}`);
             console.error(e);
             return [];
         })
@@ -51,6 +51,8 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
             // TODO
             console.log('blnd mismatch', transaction);
         }
+
+        return transaction;
     });
 
     return syncTransactionsWithState(newTransactions, stateTransactions);

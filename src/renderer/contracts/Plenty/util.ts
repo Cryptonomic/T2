@@ -36,28 +36,7 @@ const farms = [
     'KT1VRAYxpCo5xHYmBLYmMAWxXoVYCVgpeuak', // WBTC.e-ctez lp farm
 ];
 const farmBalanceMaps = [
-    4488,
-    4503,
-    10768,
-    11019,
-    11057,
-    11823,
-    11819,
-    11821,
-    13080,
-    13081,
-    13082,
-    13083,
-    13085,
-    14292,
-    14293,
-    14299,
-    14295,
-    14291,
-    15911,
-    17071,
-    20167,
-    20166,
+    4488, 4503, 10768, 11019, 11057, 11823, 11819, 11821, 13080, 13081, 13082, 13083, 13085, 14292, 14293, 14299, 14295, 14291, 15911, 17071, 20167, 20166,
     20160,
 ];
 const pools = [
@@ -133,7 +112,7 @@ export async function getActivePools(server: string, account: string): Promise<{
 
     const activeContracts: string[] = [];
     const activeMaps: number[] = [];
-    hasKey.map((b, i) => {
+    hasKey.forEach((b, i) => {
         if (b) {
             activeContracts.push(contracts[i]);
             activeMaps.push(maps[i]);

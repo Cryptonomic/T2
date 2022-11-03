@@ -1,16 +1,8 @@
-import { app } from 'electron';
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { Route, Routes, useNavigate, useRoutes } from 'react-router-dom';
+import { useNavigate, useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
-import base58check from 'bs58check';
-
 import config from '../../config.json';
-
-import Home from '../Home';
-import Login from '../Login';
-import Settings from '../Settings';
-import WalletNodesRequired from '../WalletNodesRequired';
 import Loader from '../../components/Loader';
 import TopBar from '../../components/TopBar';
 import VersionStatus from '../../components/VersionStatus';
@@ -19,14 +11,11 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { setLaunchUrl, setPlatformAction } from '../../reduxContent/app/actions';
 import { setModalOpen, setModalValue, setModalActiveTab } from '../../reduxContent/modal/actions';
 import { getNewVersionThunk } from '../../reduxContent/app/thunks';
-import { getIsNodesSelector } from '../../reduxContent/settings/selectors';
 import { getWalletName } from '../../reduxContent/wallet/selectors';
 import { getLoggedIn } from '../../utils/login';
 import { getWalletSettings } from '../../utils/settings';
 import { RootState, WalletState, AppState } from '../../types/store';
 import { routes } from '../routes';
-import { resetAllLocalData } from '../../utils/localData';
-
 
 const Container = styled.div`
     display: flex;
@@ -35,14 +24,13 @@ const Container = styled.div`
     padding: 0;
 `;
 
-function  App() {
+const App = () => {
     const dispatch = useDispatch();
     const element = useRoutes(routes);
     const navigate = useNavigate();
     const wallet = useSelector<RootState, WalletState>((state) => state.wallet, shallowEqual);
-    const { newVersion, isLedger, isLoading } = useSelector<RootState, AppState>((state) => state.app, shallowEqual);
+    const { newVersion, isLoading } = useSelector<RootState, AppState>((state) => state.app, shallowEqual);
     const walletName = useSelector(getWalletName);
-    const isNodes = useSelector(getIsNodesSelector);
     const isLoggedIn = getLoggedIn(wallet);
 
     localStorage.removeItem('initIndex');
@@ -58,8 +46,7 @@ function  App() {
         });
 
         window.electron.ipcRenderer.on('login', (msg: any, ...args: any) => {
-
-            console.log('loggedin', msg, args)
+            console.log('loggedin', msg, args);
             dispatch(createMessageAction(msg, true));
 
             let param = '';
@@ -89,7 +76,7 @@ function  App() {
         window.electron.ipcRenderer.on('wallet', (url) => {
             const urlProps = new URL(url as string);
             const pathname = urlProps.pathname.slice(2);
-            const searchParams = urlProps.searchParams;
+            const { searchParams } = urlProps;
 
             try {
                 if (searchParams.has('type') && searchParams.get('type') === 'tzip10') {
@@ -129,19 +116,20 @@ function  App() {
         const onGetWalletSettings = async () => {
             try {
                 const walletSettings = getWalletSettings();
-                console.log('walletsettings', walletSettings)
-                dispatch({type: 'INIT_SETTINGS', settings: walletSettings});
-              } catch (err) {
+                console.log('walletsettings', walletSettings);
+                dispatch({ type: 'INIT_SETTINGS', settings: walletSettings });
+            } catch (err) {
                 window.setTimeout(() => {
                     navigate('/walletNodesRequired', { replace: true });
-                })
+                });
                 console.error('load setting error', err);
-              }
-        }
+            }
+        };
 
         // resetAllLocalData()
 
         onGetWalletSettings();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -153,6 +141,6 @@ function  App() {
             {isLoading && <Loader />}
         </Container>
     );
-}
+};
 
 export default App;

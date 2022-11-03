@@ -15,27 +15,29 @@ ipcMain.on('conseiljs-softsigner-restoreIdentityFromSecretKey', async (event, se
     event.returnValue = keyStore;
 });
 
-ipcMain.on('conseiljs-softsigner-restoreIdentityFromMnemonic', async (event, mnemonic: string, password?: string, pkh?: string, derivationPath?: string, validate?: boolean) => {
-    const keyStore = await KeyStoreUtils.restoreIdentityFromMnemonic(mnemonic, password, pkh, derivationPath, validate);
-    event.returnValue = keyStore;
-});
+ipcMain.on(
+    'conseiljs-softsigner-restoreIdentityFromMnemonic',
+    async (event, mnemonic: string, password?: string, pkh?: string, derivationPath?: string, validate?: boolean) => {
+        const keyStore = await KeyStoreUtils.restoreIdentityFromMnemonic(mnemonic, password, pkh, derivationPath, validate);
+        event.returnValue = keyStore;
+    }
+);
 
 ipcMain.on('conseiljs-softsigner-restoreIdentityFromFundraiser', async (event, mnemonic: string, email: string, password: string, pkh: string) => {
     const keyStore = await KeyStoreUtils.restoreIdentityFromFundraiser(mnemonic, email, password, pkh);
     event.returnValue = keyStore;
 });
 
-
 ipcMain.on('conseiljs-softsigner-generateKeys', async (event, seed: Buffer) => {
-    const {publicKey, secretKey} = await KeyStoreUtils.generateKeys(seed);
-    event.returnValue = {publicKey, secretKey};
+    const { publicKey, secretKey } = await KeyStoreUtils.generateKeys(seed);
+    event.returnValue = { publicKey, secretKey };
 });
 ipcMain.on('conseiljs-softsigner-recoverKeys', async (event, secretKey: Buffer) => {
     const val = await KeyStoreUtils.recoverKeys(secretKey);
     event.returnValue = val;
 });
 ipcMain.on('conseiljs-softsigner-decryptMessage', async (event, message: Buffer, passphrase: string, salt: Buffer) => {
-    event.returnValue = await KeyStoreUtils.decryptMessage(message, passphrase, salt)
+    event.returnValue = await KeyStoreUtils.decryptMessage(message, passphrase, salt);
 });
 ipcMain.on('conseiljs-softsigner-encryptMessage', async (event, message: Buffer, passphrase: string, salt: Buffer) => {
     event.returnValue = await KeyStoreUtils.encryptMessage(message, passphrase, salt);
@@ -53,14 +55,12 @@ ipcMain.on('conseiljs-softsigner-CryptoUtils-generateSaltForPwHash', async (even
 
 ipcMain.on('conseiljs-softsigner-CryptoUtils-decryptMessage', async (event, message: Buffer, passphrase: string, salt: Buffer) => {
     try {
-        const aa = await CryptoUtils.decryptMessage(message, passphrase, salt)
+        const aa = await CryptoUtils.decryptMessage(message, passphrase, salt);
         event.returnValue = aa.toString();
-    } catch(e) {
-        console.log('111111111', e)
+    } catch (e) {
+        console.log('111111111', e);
         event.returnValue = e;
-
     }
-    
 
     // console.log('111111')
     // event.returnValue = await KeyStoreUtils.decryptMessage(message, passphrase, salt).catch(e => {

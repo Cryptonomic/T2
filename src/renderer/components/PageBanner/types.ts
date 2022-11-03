@@ -10,4 +10,5 @@ export interface PageBannerProps {
     onSyncWallet?: () => void;
     time: Date;
     title?: string;
+    children?: JSX.Element;
 }

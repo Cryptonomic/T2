@@ -63,7 +63,7 @@ import EmptyState from '../EmptyState';
  *   ))}
  * </Gallery>
  */
-export const Gallery: FunctionComponent<GalleryProps> = ({ children, cols, breakpoints, containerPadding = '0 12px', itempadding = '0 16px', isEmpty }) => {
+export const Gallery: React.FC<GalleryProps> = ({ children, cols, breakpoints, containerPadding = '0 12px', itempadding = '0 16px', isEmpty }) => {
     const { t } = useTranslation();
 
     return (

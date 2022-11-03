@@ -21,6 +21,12 @@ function LanguageSelector(props: Props) {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
 
+    function onLanguageChange(lang: string) {
+        changeLocale(lang);
+        i18n.changeLanguage(lang);
+        setOpen(false);
+    }
+
     function renderOptions() {
         return Object.keys(localesMap).map((key) => {
             return (
@@ -39,12 +45,6 @@ function LanguageSelector(props: Props) {
                 langScrollEl.scrollTop = 40 * (index - 4);
             }
         }
-    }
-
-    function onLanguageChange(lang: string) {
-        changeLocale(lang);
-        i18n.changeLanguage(lang);
-        setOpen(false);
     }
 
     return (

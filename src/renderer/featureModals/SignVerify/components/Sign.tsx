@@ -64,7 +64,7 @@ const Sign = () => {
             return;
         }
 
-        let signature: string = '';
+        let signature = '';
         if (isLedger) {
             try {
                 setLedgerModalOpen(true);
@@ -107,7 +107,7 @@ const Sign = () => {
                     <TextField
                         label={t('general.nouns.signature')}
                         value={result}
-                        readOnly={true}
+                        readOnly
                         endAdornment={
                             <InputAdornment position="end">
                                 <CopyButton text={result} title="" color="accent" />

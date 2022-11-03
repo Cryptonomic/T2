@@ -70,7 +70,7 @@ function Liquidity(props: Props) {
 
     const { isLoading, isLedger, selectedParentHash, isWalletSyncing } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
     const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((state: RootState) => state.settings, shallowEqual);
-    const tezosUrl = getMainNode(nodesList, selectedNode).tezosUrl;
+    const { tezosUrl } = getMainNode(nodesList, selectedNode);
 
     const { isReady, token } = props;
 
@@ -130,7 +130,7 @@ function Liquidity(props: Props) {
             );
 
             const proposedShareInt = calcProposedShare(cashRequirement.toString(), marketState.coinBalance, marketState.liquidityBalance);
-            proposedShare = new BigNumber(proposedShareInt).dividedBy(marketState.liquidityBalance).multipliedBy(100).toFixed(3) + '%';
+            proposedShare = `${new BigNumber(proposedShareInt).dividedBy(marketState.liquidityBalance).multipliedBy(100).toFixed(3)}%`;
         }
 
         setCashMatch(applyFees(cashRequirement, 'buy', 0));

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import styled from 'styled-components';
 import { Vault } from '../../../../types/general';
 
 import OvenItem from './OvenItem';
 
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { setModalOpen, clearModal } from '../../../../reduxContent/modal/actions';
 import { RootState } from '../../../../types/store';
 import SetDelegateModal from './SetDelegateModal';
 import DepositModal from './DepositModal';
 import WithdrawModal from './WithdrawModal';
-import styled from 'styled-components';
 import { getTokenSelector } from '../../../duck/selectors';
 
 export const Container = styled.section`
@@ -40,7 +40,7 @@ const OvenList = (props: OvenListProps) => {
 
     // TODO: T2 only supports one identity. This *WILL* break in the future if multiple identities are supported.
     const activeIdentity = identities[0];
-    const balance = activeIdentity.balance;
+    const { balance } = activeIdentity;
 
     const dispatch = useDispatch();
 

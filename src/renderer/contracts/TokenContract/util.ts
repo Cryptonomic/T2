@@ -10,7 +10,7 @@ import { knownTokenContracts, knownContractNames } from '../../constants/Token';
 export async function syncTokenTransactions(tokenAddress: string, managerAddress: string, node: Node, stateTransactions: any[], tokenKind: TokenKind) {
     let newTransactions: any[] = (
         await getTokenTransactions(tokenAddress, managerAddress, node).catch((e) => {
-            console.log('-debug: Error in: getSyncAccount -> getTransactions for:' + tokenAddress);
+            console.log(`-debug: Error in: getSyncAccount -> getTransactions for:${tokenAddress}`);
             console.error(e);
             return [];
         })
@@ -44,7 +44,8 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                 destination: targetAddress,
                 entryPoint: 'approve',
             });
-        } else if (transferPattern.test(params) || transferShortPattern.test(params)) {
+        }
+        if (transferPattern.test(params) || transferShortPattern.test(params)) {
             try {
                 let parts: any[] = [];
 
@@ -105,6 +106,8 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
         } else {
             console.warn(`cannot render unsupported transaction: "${params}" from ${transaction}`);
         }
+
+        return transaction;
     });
 
     return syncTransactionsWithState(newTransactions, stateTransactions);

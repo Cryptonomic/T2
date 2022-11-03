@@ -9,15 +9,12 @@ function Login() {
     // const { match } = props;
     return (
         <Routes>
-            <Route path={`home`} element={<LoginHome />} />
-            <Route path={`/login/import`} element={<LoginImport />} />
+            <Route path="home" element={<LoginHome />} />
+            <Route path="/login/import" element={<LoginImport />} />
             {/* <Route path={`create`} element={<LoginCreate />} /> */}
-            <Route path={`/login/conditions/:type`} element={<LoginConditions />} />
+            <Route path="/login/conditions/:type" element={<LoginConditions />} />
             {/* <Route path={'/'} element={<LoginImport />} /> */}
-            <Route
-                path="/login"
-                element={<Navigate to="/login/import" />}
-            />
+            <Route path="/login" element={<Navigate to="/login/import" />} />
         </Routes>
     );
 }

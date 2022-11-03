@@ -1,16 +1,15 @@
 import { TezosConseilClient, TezosNodeReader, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
-import { KeyStoreUtils } from 'conseiljs-softsigner';
-import { Node, NodeStatus } from '../types/general';
 import moment from 'moment';
+import { Node, NodeStatus } from '../types/general';
 
 import { findIdentity } from './identity';
 import * as status from '../constants/StatusTypes';
 import { SEND, TRANSACTIONS } from '../constants/TabConstants';
 import config from '../config.json';
 
-console.log('KeyStoreType', KeyStoreType)
+console.log('KeyStoreType', KeyStoreType);
 
-const  { blockExplorerHost } = config;
+const { blockExplorerHost } = config;
 const { Mnemonic, Hardware } = KeyStoreType;
 
 export async function getNodesStatus(node: Node): Promise<NodeStatus> {
@@ -31,7 +30,7 @@ export async function getNodesStatus(node: Node): Promise<NodeStatus> {
     };
 }
 
-export function getNodesError({ tezos, conseil }: NodeStatus, nodes: Node[] = [], displayName: string = ''): string {
+export function getNodesError({ tezos, conseil }: NodeStatus, nodes: Node[] = [], displayName = ''): string {
     if (nodes.length > 0 && displayName) {
         const selectedNode = nodes.find((node) => node.displayName === displayName) || nodes[0];
         if (selectedNode.tezosUrl.indexOf('cryptonomic-infra.tech') === -1) {
@@ -58,13 +57,7 @@ export function getNodesError({ tezos, conseil }: NodeStatus, nodes: Node[] = []
 }
 
 // TODO: deprecate this
-export function getSelectedKeyStore(
-    identities: any[],
-    selectedAccountHash: string,
-    selectedParentHash: string,
-    isLedger: boolean = false,
-    mainPath?: string
-): KeyStore {
+export function getSelectedKeyStore(identities: any[], selectedAccountHash: string, selectedParentHash: string, isLedger = false, mainPath?: string): KeyStore {
     const identity = findIdentity(identities, selectedParentHash);
     const { publicKey, secretKey } = identity;
 
@@ -84,7 +77,7 @@ export async function activateAndUpdateAccount(account, node: Node) {
     const accountHash = account.publicKeyHash || account.account_id;
     if (account.status === status.READY || account.status === status.CREATED) {
         const updatedAccount: any = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, accountHash).catch((error) => {
-            console.log('-debug: Error in: status.READY for:' + accountHash);
+            console.log(`-debug: Error in: status.READY for:${accountHash}`);
             console.error(error);
             return null;
         });
@@ -111,7 +104,7 @@ export async function activateAndUpdateAccount(account, node: Node) {
 }
 
 export function generateNewMnemonic() {
-    return KeyStoreUtils.generateMnemonic();
+    return window.conseiljsSoftSigner.KeyStoreUtils.generateMnemonic();
 }
 
 export function isReady(addressStatus, storeType?, tab?) {
@@ -131,7 +124,7 @@ export function openLink(link: string) {
     window.electron.shell.openExternal(link);
 }
 
-export function openBlockExplorerForOperation(operation: string, network: string = 'mainnet') {
+export function openBlockExplorerForOperation(operation: string, network = 'mainnet') {
     if (!blockExplorerHost.startsWith('https://')) {
         throw new Error('Invalid URL provided, only https scheme is accepted');
     }
@@ -143,7 +136,7 @@ export function openBlockExplorerForOperation(operation: string, network: string
     }
 }
 
-export function openBlockExplorerForAccount(account: string, network: string = 'mainnet') {
+export function openBlockExplorerForAccount(account: string, network = 'mainnet') {
     if (!blockExplorerHost.startsWith('https://')) {
         throw new Error('Invalid URL provided, only https scheme is accepted');
     }
@@ -161,7 +154,7 @@ export const getDataFromApi = async (url: string) => {
         const responseJson = await response.json();
         return responseJson;
     } catch (error) {
-        console.log('dddddd----', error)
+        console.log('dddddd----', error);
         console.error(error);
     }
 };

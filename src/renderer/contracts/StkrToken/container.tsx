@@ -37,7 +37,7 @@ const ActionPanel = () => {
     return (
         <Container>
             <BalanceBanner
-                isReady={true}
+                isReady
                 balance={selectedToken.balance}
                 publicKeyHash={selectedAccountHash || 'Inactive'}
                 displayName={displayName}
@@ -46,14 +46,14 @@ const ActionPanel = () => {
 
             <TabList count={tabs.length}>
                 {tabs.map((tab) => (
-                    <Tab isActive={activeTab === tab} key={tab} ready={true} buttonTheme="plain" onClick={() => onChangeTab(tab)}>
-                        <TabText ready={true}>{t(tab)}</TabText>
+                    <Tab isActive={activeTab === tab} key={tab} ready buttonTheme="plain" onClick={() => onChangeTab(tab)}>
+                        <TabText ready>{t(tab)}</TabText>
                     </Tab>
                 ))}
             </TabList>
             <SectionContainer>
-                {activeTab === SEND && <Send isReady={true} token={selectedToken} tokenTransferAction={transferThunk} />}
-                {activeTab === SWAP && <Swap isReady={true} token={selectedToken} />}
+                {activeTab === SEND && <Send isReady token={selectedToken} tokenTransferAction={transferThunk} />}
+                {activeTab === SWAP && <Swap isReady token={selectedToken} />}
                 {activeTab === TRANSACTIONS && (
                     <PaginationList
                         list={transactionList}

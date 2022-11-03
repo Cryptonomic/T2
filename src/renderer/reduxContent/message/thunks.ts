@@ -1,7 +1,7 @@
 import { createMessageAction } from './actions';
 
 export function placeHolder() {
-  // just noop
+    // just noop
 }
 
 // export function addMessageThunk(message, isError, hash = '', localeParam = 0) {

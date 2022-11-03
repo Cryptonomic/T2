@@ -70,6 +70,15 @@ const ActionSelector = (props: ActionSelectorProps) => {
     );
 };
 
+const defaultToken = {
+    address: '',
+    balance: 0,
+    symbol: '',
+    scale: 0,
+    precision: 0,
+    round: 0,
+};
+
 const PlatformLiquidity = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -80,7 +89,7 @@ const PlatformLiquidity = () => {
     const { storeType, status, balance } = selectedAccount;
     const isReadyProp = isReady(status, storeType);
 
-    const token = tokens.find((tkn) => tkn.address === 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn')!;
+    const token = tokens.find((tkn) => tkn.address === 'KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn') || defaultToken;
 
     const onSyncWallet = () => dispatch(syncWalletThunk());
 
@@ -109,7 +118,7 @@ const PlatformLiquidity = () => {
 
     const { isLoading, isLedger, selectedParentHash, isWalletSyncing } = useSelector<RootState, AppState>((state: RootState) => state.app, shallowEqual);
     const { selectedNode, nodesList } = useSelector<RootState, SettingsState>((state: RootState) => state.settings, shallowEqual);
-    const tezosUrl = getMainNode(nodesList, selectedNode).tezosUrl;
+    const { tezosUrl } = getMainNode(nodesList, selectedNode);
 
     const isDisabled = !isReady || isLoading || (!passPhrase && !isLedger);
 
@@ -142,7 +151,7 @@ const PlatformLiquidity = () => {
 
     async function updateCashAmount(val: string) {
         setCashAmount(val);
-        const _tokenMatch = await updateTokenRequirement(val);
+        const newTokenMatch = await updateTokenRequirement(val);
 
         if (new BigNumber(balance).dividedBy(1_000_000).lt(val)) {
             setCashError('Amount exceeds account balance');
@@ -150,11 +159,11 @@ const PlatformLiquidity = () => {
             setCashError('');
         }
 
-        if (new BigNumber(token.balance).lt(_tokenMatch)) {
+        if (token && new BigNumber(token.balance).lt(newTokenMatch)) {
             setTokenError('Token requirement exceeds account balance');
 
             const marketState = await getPoolState(tezosUrl, tokenPoolMap[token.address].granadaPool, granadaPoolStorageMap);
-            const diff = new BigNumber(_tokenMatch).minus(token.balance);
+            const diff = new BigNumber(newTokenMatch).minus(token.balance);
 
             const diffCost = getTokenToCashInverse(diff.toString(), marketState!.tokenBalance, marketState!.coinBalance, token.scale).cashAmount;
             const diffCostSlippage = new BigNumber(diffCost).multipliedBy(101).dividedBy(100).decimalPlaces(0, 1);
@@ -197,14 +206,14 @@ const PlatformLiquidity = () => {
             );
 
             const proposedShareInt = calcProposedShare(tokenRequirement.toString(), marketState.tokenBalance, marketState.liquidityBalance);
-            proposedShare = new BigNumber(proposedShareInt).dividedBy(marketState.liquidityBalance).multipliedBy(100).toFixed(3) + '%';
+            proposedShare = `${new BigNumber(proposedShareInt).dividedBy(marketState.liquidityBalance).multipliedBy(100).toFixed(3)}%`;
         }
 
-        const _tokenMatch = applyFees(tokenRequirement, 'buy', 0);
-        setTokenMatch(_tokenMatch);
+        const newTokenMatch = applyFees(tokenRequirement, 'buy', 0);
+        setTokenMatch(newTokenMatch);
         setPoolPercent(proposedShare);
 
-        return _tokenMatch;
+        return newTokenMatch;
     }
 
     async function updateLPAmount(val: string) {
@@ -259,7 +268,7 @@ const PlatformLiquidity = () => {
             const poolShare = calcProposedShare(tokenRequirement.toString(), marketState.tokenBalance, marketState.liquidityBalance);
             const tokenRequirementSlippage = new BigNumber(tokenRequirement).multipliedBy(101).dividedBy(100).decimalPlaces(0, 1).toNumber();
 
-            await dispatch(
+            dispatch(
                 addLiquidityThunk(
                     tokenPoolMap[token.address].granadaPool,
                     poolShare.toString(),
@@ -301,28 +310,29 @@ const PlatformLiquidity = () => {
                         )}
                     </BottomRowInner>
                     <BottomRowInner>
-                        {token && <AmountView
+                        {token && (
+                            <AmountView
                                 color="white"
                                 size={ms(4.5)}
                                 amount={token.balance}
                                 weight="light"
                                 symbol={token.symbol}
-                                showTooltip={true}
+                                showTooltip
                                 scale={token.scale}
                                 precision={token.precision}
                                 round={token.round}
                             />
-                        }
+                        )}
 
-                        <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} showTooltip={true} />
+                        <TezosAmount color="white" size={ms(4.5)} amount={balance} weight="light" format={2} showTooltip />
 
                         <AmountView
                             color="white"
                             size={ms(4.5)}
                             amount={ammTokenBalance}
                             weight="light"
-                            symbol={'SIRS'}
-                            showTooltip={true}
+                            symbol="SIRS"
+                            showTooltip
                             scale={6}
                             precision={6}
                             round={6}
@@ -357,19 +367,18 @@ const PlatformLiquidity = () => {
                             </ColumnContainer>
                             <ColumnContainer>
                                 <div style={{ width: '100%' }}>
-                                    {token && <NumericInput
-                                        label={t('components.platformLiquidity.token_deposit')}
-                                        amount={formatAmount(tokenMatch, token.precision, token.scale)}
-                                        onChange={(v) => {
-                                            return;
-                                        }}
-                                        errorText={''}
-                                        symbol={token.symbol}
-                                        scale={token.scale}
-                                        precision={token.precision || 8}
-                                        disabled={true}
-                                    />
-                                    }
+                                    {token && (
+                                        <NumericInput
+                                            label={t('components.platformLiquidity.token_deposit')}
+                                            amount={formatAmount(tokenMatch, token.precision, token.scale)}
+                                            onChange={(v) => {}}
+                                            errorText=""
+                                            symbol={token.symbol}
+                                            scale={token.scale}
+                                            precision={token.precision || 8}
+                                            disabled
+                                        />
+                                    )}
                                 </div>
                             </ColumnContainer>
                         </>
@@ -383,7 +392,7 @@ const PlatformLiquidity = () => {
                                         amount={lpAmount}
                                         onChange={updateLPAmount}
                                         errorText={lpError}
-                                        symbol={'SIRS'}
+                                        symbol="SIRS"
                                         scale={6}
                                         precision={6}
                                     />

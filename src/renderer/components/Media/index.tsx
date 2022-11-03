@@ -99,7 +99,7 @@ const Media: FunctionComponent<MediaProps> = ({
     const [loaded, setLoaded] = useState(false);
     const [loadFailed, setLoadFailed] = useState(false);
 
-    const TheFailedBox = FailedBox ? FailedBox : useNFTFailedBox ? <NFTFailedBox provider={nftProvider || ''} url={source} /> : <MediaFailedBox />;
+    const TheFailedBox = FailedBox || (useNFTFailedBox ? <NFTFailedBox provider={nftProvider || ''} url={source} /> : <MediaFailedBox />);
 
     const renderImage = (innerProps) => {
         const theSource = (innerProps && innerProps.thumbnailUri) || source;
@@ -139,7 +139,7 @@ const Media: FunctionComponent<MediaProps> = ({
                 AudioFailedBox={TheFailedBox}
                 onLoad={() => setLoaded(true)}
                 onError={() => setLoadFailed(true)}
-                controls={true}
+                controls
                 {...innerProps}
             />
         );
@@ -173,8 +173,8 @@ const Media: FunctionComponent<MediaProps> = ({
         <ModalContainer
             open={openPreview}
             onClose={() => setOpenPreview(false)}
-            disableAutoFocus={true}
-            disableEnforceFocus={true}
+            disableAutoFocus
+            disableEnforceFocus
             BackdropProps={{
                 className: 'dark-backdrop',
             }}

@@ -130,6 +130,13 @@ function RestoreBackup() {
         }
     };
 
+    const onChangeSeed = (val: string[]) => {
+        const newVal = val.map((s) => s.toLowerCase());
+        setSeeds(newVal);
+        setRestoreDisabled(![12, 15, 18, 21, 24].includes(newVal.length));
+        setError(false);
+    };
+
     return (
         <MainContainer onKeyDown={(event) => onEnterPress(event.key, restoreDisabled)}>
             <RestoreHeader>
@@ -137,16 +144,11 @@ function RestoreBackup() {
                 <RestoreTabs type={type} t={t} changeFunc={(val) => onTypeChange(val)} />
             </RestoreHeader>
             {type === 'phrase' && (
-                <Fragment>
+                <>
                     <SeedInput
                         placeholder={t('containers.homeAddAddress.restore_mnemonic')}
                         seeds={seeds}
-                        onChange={(val) => {
-                            val = val.map((s) => s.toLowerCase());
-                            setSeeds(val);
-                            setRestoreDisabled(![12, 15, 18, 21, 24].includes(val.length));
-                            setError(false);
-                        }}
+                        onChange={(val) => onChangeSeed(val)}
                         onError={(err) => {
                             setError(err);
                             setRestoreDisabled(err);
@@ -178,7 +180,7 @@ function RestoreBackup() {
                             <TextField label="Derivation Path (e.g m/44'/1729'/0'/0'/0')" value={derivationPath} onChange={(val) => setDerivationPath(val)} />
                         </div>
                     )}
-                </Fragment>
+                </>
             )}
 
             {type === 'key' && (

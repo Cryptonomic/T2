@@ -46,14 +46,14 @@ function BackUpSeedPhrase(props: Props) {
     }, [seed]);
 
     return (
-        <Fragment>
+        <>
             <DescriptionContainer>{t('components.createAccountSlide.descriptions.description3')}</DescriptionContainer>
             <ValidFormContainer>
                 {randomSeeds.map((item, index) => (
                     <SeedInput key={index} value={item.value} index={item.index + 1} onValidate={(val) => checkValidation(index, val)} />
                 ))}
             </ValidFormContainer>
-        </Fragment>
+        </>
     );
 }
 

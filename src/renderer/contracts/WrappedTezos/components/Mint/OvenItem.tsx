@@ -82,9 +82,9 @@ function OvenItem(props: Props) {
     return (
         <Container>
             <OvenInfoBar>
-                <TezosAddress address={address} size="16px" weight={300} color="primary" shorten={true} text={address} />
+                <TezosAddress address={address} size="16px" weight={300} color="primary" shorten text={address} />
                 <AmountContainer color="check">
-                    <AmountView color={'check'} size={ms(-1)} amount={balance} scale={6} precision={6} round={6} symbol={'XTZ'} />
+                    <AmountView color="check" size={ms(-1)} amount={balance} scale={6} precision={6} round={6} symbol="XTZ" />
                 </AmountContainer>
             </OvenInfoBar>
 
