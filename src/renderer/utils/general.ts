@@ -103,8 +103,9 @@ export async function activateAndUpdateAccount(account, node: Node) {
     return account;
 }
 
-export function generateNewMnemonic() {
-    return window.conseiljsSoftSigner.KeyStoreUtils.generateMnemonic();
+export async function generateNewMnemonic() {
+    const res = await window.conseiljsSoftSigner.KeyStoreUtils.generateMnemonic();
+    return res;
 }
 
 export function isReady(addressStatus, storeType?, tab?) {

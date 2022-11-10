@@ -67,8 +67,8 @@ export async function getActivePools(server: string, account: string): Promise<{
     const hasKey = await Promise.all(
         farmBalanceMaps.map(async (m) => {
             try {
-                const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-                    window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
+                const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+                    window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
                 );
                 const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
 
@@ -209,8 +209,8 @@ async function readPoolStorage(server, address) {
 }
 
 async function readUserPoolRecord(server, mapid, address) {
-    const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
+    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
     );
     const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 

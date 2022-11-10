@@ -122,8 +122,8 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
 }
 
 export async function getAccountBalance(server: string, mapid: number, account: string): Promise<number> {
-    const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
+    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
     );
     const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 

@@ -93,29 +93,26 @@ ipcMain.on('electron-clipboard', async (event, text) => {
     clipboard.writeText(text);
 });
 
-ipcMain.on('electron-dialog-open', async (event, dialogFilters) => {
-    const result = await dialog.showOpenDialog({ properties: ['openFile'], filters: dialogFilters });
-    const { filePaths } = result;
-    if (filePaths && filePaths.length) {
-        event.returnValue = {
-            location: path.dirname(filePaths[0]),
-            fileName: path.basename(filePaths[0]),
-        };
-    } else {
-        event.returnValue = {};
+ipcMain.handle('electron-dialog-open', async (event, dialogFilters) => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile'], filters: dialogFilters });
+    if (canceled) {
+        return;
     }
+    return {
+        location: path.dirname(filePaths[0]),
+        fileName: path.basename(filePaths[0]),
+    };
 });
 
-ipcMain.on('electron-dialog-save', async (event, dialogFilters) => {
-    const result = await dialog.showSaveDialog({ filters: dialogFilters });
-    if (result.filePath) {
-        event.returnValue = {
-            location: path.dirname(result.filePath),
-            fileName: path.basename(result.filePath),
-        };
-    } else {
-        event.returnValue = {};
+ipcMain.handle('electron-dialog-save', async (event, dialogFilters) => {
+    const { canceled, filePath } = await dialog.showSaveDialog({ filters: dialogFilters });
+    if (canceled || !filePath) {
+        return;
     }
+    return {
+        location: path.dirname(filePath),
+        fileName: path.basename(filePath),
+    };
 });
 
 // ipcMain.on('electron-remote-dialog-showSaveDialog', async (event, text) => {

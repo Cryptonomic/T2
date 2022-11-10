@@ -834,7 +834,7 @@ export function importSecretKeyThunk(key): any {
 
 export function loginThunk(loginType, walletLocation, walletFileName, password): any {
     return async (dispatch, state) => {
-        const completeWalletPath = window.electron.path.join(walletLocation, walletFileName);
+        const completeWalletPath = await window.electron.path.join(walletLocation, walletFileName);
         dispatch(setIsLoadingAction(true));
         dispatch(createMessageAction('', false));
         dispatch(setLedgerAction(false));

@@ -1,4 +1,4 @@
-import { TezosNodeWriter, TezosNodeReader, BabylonDelegationHelper, TezosParameterFormat } from 'conseiljs';
+import { TezosNodeWriter, TezosNodeReader, BabylonDelegationHelper, TezosParameterFormat, TezosConstants } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { tezToUtez } from '../../utils/currency';
@@ -220,7 +220,7 @@ export function invokeAddressThunk(
     };
 }
 
-export function withdrawThunk(fee: number, amount: string, password: string) {
+export function withdrawThunk(fee: number, amount: string, password: string): any {
     return async (dispatch, state): Promise<boolean> => {
         const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
@@ -405,9 +405,10 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
 
         const parsedAmount = tezToUtez(amount);
 
-        const res: any = await sendTransactionOperation(
+        const res: any = await window.conseiljs.TezosNodeWriter.sendTransactionOperation(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             toAddress,
             parsedAmount,
@@ -474,7 +475,7 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
     };
 }
 
-export function sendDelegatedFundsThunk(password: string, toAddress: string, amount: string, fee: number) {
+export function sendDelegatedFundsThunk(password: string, toAddress: string, amount: string, fee: number): any {
     return async (dispatch, state) => {
         const { selectedNode, nodesList } = state().settings;
         const { identities, walletPassword } = state().wallet;
@@ -570,7 +571,11 @@ export function sendDelegatedFundsThunk(password: string, toAddress: string, amo
 export async function getIsImplicitAndEmptyThunk(recipientHash: string, nodesList: Node[], selectedNode: string) {
     const mainNode = getMainNode(nodesList, selectedNode);
     const { tezosUrl } = mainNode;
-    return TezosNodeReader.isImplicitAndEmpty(tezosUrl, recipientHash);
+    try {
+        return await window.conseiljs.TezosNodeReader.isImplicitAndEmpty(tezosUrl, recipientHash);
+    } catch (e: any) {
+        return false;
+    }
 }
 
 export function validateAmountThunk(amount: string, toAddress: string) {

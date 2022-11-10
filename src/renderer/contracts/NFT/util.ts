@@ -89,13 +89,13 @@ async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: s
  * @return
  */
 export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number) {
-    const packedNftId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
+    const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 514, packedNftId);
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
-
+    // todo
     const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
     const nftDetailJson = await nftDetails.json();
 
@@ -137,8 +137,8 @@ export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number)
 }
 
 export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: number) {
-    const packedNftId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
+    const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 860, packedNftId);
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
@@ -277,7 +277,7 @@ export async function getHicEtNuncCollection(
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
-        `Pair 0x${window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
+        `Pair 0x${await window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
     ]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
@@ -461,7 +461,7 @@ export async function getKalamintCollection(
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
-        `Pair 0x${window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
+        `Pair 0x${await window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
     ]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
@@ -577,8 +577,8 @@ export async function getKalamintCollection(
 }
 
 export async function getObjktNFTDetails(tezosUrl: string, objectId: number | string, metadataMap: number, urlPath = '$.args[1][0].args[1].bytes') {
-    const packedNftId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
+    const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
 
@@ -648,8 +648,8 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
 }
 
 export async function get8bidouDetails(tezosUrl: string, objectId: number | string, metadataMap: number) {
-    const packedNftId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
+    const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId);
 
@@ -680,8 +680,8 @@ export async function get8bidouDetails(tezosUrl: string, objectId: number | stri
 }
 
 export async function getDogamiDetails(tezosUrl: string, objectId: number | string, metadataMap: number) {
-    const packedNftId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
+    const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId);
 
@@ -743,7 +743,7 @@ export async function getPotusCollection(
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [`${tokenMapId}`]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
-        `Pair 0x${window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
+        `Pair 0x${await window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
     ]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
@@ -819,8 +819,8 @@ export async function getPotusCollection(
 }
 
 export async function getPotusNFTObjectDetails(tezosUrl: string, objectId: number) {
-    const packedNftId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
+    const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 5631, packedNftId); // TODO: store in token definition
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
@@ -878,12 +878,12 @@ export async function getCollection(
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     if (queryArg === 'key') {
         collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.LIKE, [
-            `0x${window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
+            `0x${await window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
         ]);
         collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [0], true);
     } else if (queryArg === 'value') {
         collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'value', ConseilOperator.EQ, [
-            `0x${window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
+            `0x${await window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
         ]);
     } else {
         throw new Error('invalid ledger query');
@@ -1037,7 +1037,7 @@ export async function getHashThreeCollection(
     collectionQuery = ConseilQueryBuilder.addFields(collectionQuery, 'key', 'value', 'timestamp', 'operation_group_id');
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'big_map_id', ConseilOperator.EQ, [tokenMapId]);
     collectionQuery = ConseilQueryBuilder.addPredicate(collectionQuery, 'key', ConseilOperator.STARTSWITH, [
-        `Pair 0x${window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
+        `Pair 0x${await window.conseiljs.TezosMessageUtils.writeAddress(managerAddress)}`,
     ]);
     collectionQuery = ConseilQueryBuilder.setLimit(collectionQuery, 10_000);
 
@@ -1151,8 +1151,8 @@ export async function getHashThreeCollection(
 }
 
 export async function getHashThreeNFTDetails(tezosUrl: string, objectId: number | string, metadataMap: number) {
-    const packedNftId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(`token_${objectId}_metadata`, 'string'), 'hex')
+    const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(`token_${objectId}_metadata`, 'string'), 'hex')
     );
     const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
     const metadataBytes = JSONPath({ path: '$.bytes', json: nftInfo })[0];
@@ -1286,8 +1286,8 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
 
     let contractMetadataJson: any = {};
     try {
-        const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-            window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData('meta', 'string'), 'hex')
+        const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+            window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData('meta', 'string'), 'hex')
         );
         const contractMetadataResult = await TezosNodeReader.getValueForBigMapKey(tezosNode, contractMetadataMapId, packedKey);
         contractMetadataJson = JSON.parse(window.electron.buffer.from(contractMetadataResult.bytes, 'hex').toString());
@@ -1305,8 +1305,8 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
 
     try {
         if (!tokenDefinition.displayName) {
-            const packedNftId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-                window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData('', 'string'), 'hex')
+            const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+                window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData('', 'string'), 'hex')
             );
             const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosNode, metadataMapId, packedNftId);
             const ipfsUrlBytes = JSONPath({ path: '$.bytes', json: nftInfo })[0];

@@ -3,22 +3,31 @@ import * as fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-ipcMain.on('os-platform', (event) => {
-    event.returnValue = os.platform();
+ipcMain.handle('os-platform', (event) => {
+    const res = os.platform();
+    return res;
 });
 
-ipcMain.on('node-path-join', async (event, str1, str2) => {
-    event.returnValue = path.join(str1, str2);
+ipcMain.handle('node-path-join', async (event, str1, str2) => {
+    return path.join(str1, str2);
 });
 
-ipcMain.on('node-fs-writeFile', async (event, filename, wallet) => {
-    event.returnValue = await fs.writeFileSync(filename, wallet, { mode: 0o600 });
+ipcMain.handle('node-fs-writeFile', async (event, filename, wallet) => {
+    const res = await fs.writeFileSync(filename, wallet, { mode: 0o600 });
+    return res;
 });
 
-ipcMain.on('node-fs-readfile', async (event, filename) => {
-    event.returnValue = await fs.readFileSync(filename, { encoding: 'utf8', flag: 'r' });
+ipcMain.handle('node-fs-readfile', async (event, filename) => {
+    const res = await fs.readFileSync(filename, { encoding: 'utf8', flag: 'r' });
+    return res;
 });
 
-ipcMain.on('node-buffer-from', async (event, data: string, encoding = 'utf8') => {
-    event.returnValue = Buffer.from(data, encoding);
+ipcMain.handle('node-buffer-from', async (event, data: string, encoding = 'utf8') => {
+    const res = Buffer.from(data, encoding);
+    return res;
+});
+
+ipcMain.handle('node-buffer-alloc', async (event, val: number) => {
+    const res = Buffer.alloc(val);
+    return res;
 });

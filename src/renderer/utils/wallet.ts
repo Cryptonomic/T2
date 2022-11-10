@@ -7,6 +7,7 @@ import { createIdentity } from './identity';
 import { combineAccounts } from './account';
 import { EncryptedWalletVersionOne, Wallet, Identity } from '../types/general';
 import { knownTokenContracts } from '../constants/Token';
+import { SoftSigner } from './softsigner';
 
 // const { unlockAddress } = KeyStoreUtils;
 
@@ -19,9 +20,9 @@ import { knownTokenContracts } from '../constants/Token';
  */
 export async function loadWallet(filename: string, passphrase: string): Promise<Wallet> {
     const p = await window.electron.fs.readFile(filename);
-    const ew: EncryptedWalletVersionOne = JSON.parse(p.toString()) as EncryptedWalletVersionOne;
-    const encryptedKeys = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.ciphertext);
-    const salt = window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.salt);
+    const ew: EncryptedWalletVersionOne = JSON.parse(p) as EncryptedWalletVersionOne;
+    const encryptedKeys = await window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.ciphertext);
+    const salt = await window.conseiljs.TezosMessageUtils.writeBufferWithHint(ew.salt);
     const walletData: any[] = JSON.parse(await window.conseiljsSoftSigner.CryptoUtils.decryptMessage(encryptedKeys, passphrase, salt));
     const keys: KeyStore[] = [];
 
@@ -52,8 +53,8 @@ export async function saveWallet(filename: string, wallet: Wallet, passphrase: s
 
     const encryptedWallet: EncryptedWalletVersionOne = {
         version: '1',
-        salt: window.conseiljs.TezosMessageUtils.readBufferWithHint(salt, ''),
-        ciphertext: window.conseiljs.TezosMessageUtils.readBufferWithHint(encryptedKeys, ''),
+        salt: await window.conseiljs.TezosMessageUtils.readBufferWithHint(salt, ''),
+        ciphertext: await window.conseiljs.TezosMessageUtils.readBufferWithHint(encryptedKeys, ''),
         kdf: 'Argon2',
     };
 
@@ -66,8 +67,8 @@ export async function saveUpdatedWallet(identities, walletLocation, walletFileNa
     return saveWallet(completeWalletPath, { identities }, password);
 }
 
-export async function cloneDecryptedSigner(signer: any, password: string): Promise<Signer> {
-    return window.conseiljsSoftSigner.SoftSigner.createSigner(await signer.getKey(password));
+export async function cloneDecryptedSigner(signer: SoftSigner, password: string): Promise<Signer> {
+    return SoftSigner.createSigner(await signer.getKey(password));
 }
 
 export function saveIdentitiesToLocal(identities: Identity[]) {

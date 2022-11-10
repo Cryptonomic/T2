@@ -71,7 +71,7 @@ const BeaconSignature = ({ open, onClose }: Props) => {
                     } else {
                         const signatureBytes =
                             (await signer?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
-                        sig = window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, signer?.getSignerCurve() || 'edsig');
+                        sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, signer?.getSignerCurve() || 'edsig');
                     }
                 } finally {
                     setLedgerModalOpen(false);
@@ -83,7 +83,7 @@ const BeaconSignature = ({ open, onClose }: Props) => {
                 } else {
                     const signatureBytes =
                         (await plainSigner?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
-                    sig = window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, plainSigner?.getSignerCurve() || 'edsig');
+                    sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, plainSigner?.getSignerCurve() || 'edsig');
                 }
             }
 
@@ -98,17 +98,20 @@ const BeaconSignature = ({ open, onClose }: Props) => {
     };
 
     useEffect(() => {
-        if (signingType === SigningType.MICHELINE || signingType === SigningType.OPERATION) {
-            try {
-                const parsedContent = window.conseiljs.TezosMessageUtils.readPackedData(payload, '').toString();
-                setContent(parsedContent);
-            } catch {
-                setParseError('Could not parse signature request.');
+        const onInit = async () => {
+            if (signingType === SigningType.MICHELINE || signingType === SigningType.OPERATION) {
+                try {
+                    const parsedContent = await window.conseiljs.TezosMessageUtils.readPackedData(payload, '').toString();
+                    setContent(parsedContent);
+                } catch {
+                    setParseError('Could not parse signature request.');
+                    setContent(payload);
+                }
+            } else {
                 setContent(payload);
             }
-        } else {
-            setContent(payload);
-        }
+        };
+        onInit();
     }, [content]);
 
     useEffect(() => {

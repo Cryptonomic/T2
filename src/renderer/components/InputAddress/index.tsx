@@ -143,7 +143,9 @@ function InputAddress(props: Props) {
         }
 
         if (!errorState && addressText && addressPrefixes.test(addressText)) {
+            console.log('1111111');
             const account = await getAccountFromServer(addressText);
+            console.log('22222');
 
             if (!account || account.length === 0) {
                 newError = t('components.inputAddress.errors.not_exist');
@@ -169,10 +171,12 @@ function InputAddress(props: Props) {
 
         setError(newError);
 
-        if (!errorState) {
+        if (!errorState && addressText !== '') {
+            console.log('333333');
             const mainNode = getMainNode(nodesList, selectedNode);
             const { tezosUrl } = mainNode;
             const domainResponse = await queryTezosDomains(tezosUrl, String(addressText));
+            console.log('444444', domainResponse);
             setDomainName(domainResponse);
         } else {
             setDomainName('');

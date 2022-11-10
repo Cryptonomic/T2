@@ -100,7 +100,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
     const pausePatternFalse = new RegExp('Right[(]Left[(]LeftFalse[))]');
     const pausePatternTrue = new RegExp('Right[(]Left[(]LeftTrue[))]');
 
-    newTransactions = newTransactions.map((transaction) => {
+    newTransactions = newTransactions.map(async (transaction) => {
         const params = transaction.parameters;
 
         if (transaction.parameters_entrypoints === 'approve') {
@@ -134,8 +134,8 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
                 } else if (transferBytesPattern.test(params)) {
                     parts = params.match(transferBytesPattern);
                     amount = Number(parts[3]);
-                    source = window.conseiljs.TezosMessageUtils.readAddress(parts[1]);
-                    destination = window.conseiljs.TezosMessageUtils.readAddress(parts[2]);
+                    source = await window.conseiljs.TezosMessageUtils.readAddress(parts[1]);
+                    destination = await window.conseiljs.TezosMessageUtils.readAddress(parts[2]);
                 }
 
                 return createTokenTransaction({
@@ -203,9 +203,9 @@ export async function getSimpleStorageYV(tezosUrl: string, tokenAddress: string,
 
     const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(
-            window.conseiljs.TezosMessageUtils.writePackedData(
+            await window.conseiljs.TezosMessageUtils.writePackedData(
                 `
-    { "prim": "Pair", "args": [ { "bytes": "${window.conseiljs.TezosMessageUtils.writeAddress(accountAddress || '')}" }, { "int": "0" } ] }`,
+    { "prim": "Pair", "args": [ { "bytes": "${await window.conseiljs.TezosMessageUtils.writeAddress(accountAddress || '')}" }, { "int": "0" } ] }`,
                 ''
             ),
             'hex'
@@ -238,7 +238,7 @@ export async function mintYV(
     amount: number,
     tokenIndex = 0
 ): Promise<string> {
-    const params = `{ "prim": "Pair", "args": [ {"bytes": "${window.conseiljs.TezosMessageUtils.writeAddress(
+    const params = `{ "prim": "Pair", "args": [ {"bytes": "${await window.conseiljs.TezosMessageUtils.writeAddress(
         destination
     )}"}, { "prim": "Pair", "args": [ { "int": "${tokenIndex}" }, { "int": "${amount}" } ] } ] }`;
 
@@ -271,7 +271,7 @@ export async function burnYV(
     amount: number,
     tokenIndex = 0
 ): Promise<string> {
-    const params = `{ "prim": "Pair", "args": [ { "bytes": "${window.conseiljs.TezosMessageUtils.writeAddress(
+    const params = `{ "prim": "Pair", "args": [ { "bytes": "${await window.conseiljs.TezosMessageUtils.writeAddress(
         destination
     )}" }, { "prim": "Pair", "args": [ { "int": "${tokenIndex}" }, { "int": "${amount}" } ] } ] }`;
 

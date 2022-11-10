@@ -25,6 +25,7 @@ import { AverageFees, AddressType } from '../../types/general';
 import { RootState } from '../../types/store';
 
 import { fetchWithTimeout } from '../../utils/network';
+import { SoftSigner } from '../../utils/softsigner';
 
 const { LocalVersionIndex, versionReferenceURL } = config;
 
@@ -82,6 +83,7 @@ export const useFetchFees = (operationKind: OperationKindType, isReveal = false,
                 const serverFees = await TezosConseilClient.getFeeStatistics({ url: conseilUrl, apiKey, network }, network, operationKind).catch(() => [
                     AVERAGEFEES,
                 ]);
+
                 const fees = {
                     low: serverFees[0].low,
                     medium: serverFees[0].medium,
@@ -92,7 +94,7 @@ export const useFetchFees = (operationKind: OperationKindType, isReveal = false,
                 if (isReveal) {
                     const { selectedAccountHash, selectedParentHash } = store.getState().app;
                     const pkh = isManager ? selectedParentHash : selectedAccountHash;
-                    isNewRevealed = await TezosNodeReader.isManagerKeyRevealedForAccount(tezosUrl, pkh).catch(() => false);
+                    isNewRevealed = await window.conseiljs.TezosNodeReader.isManagerKeyRevealedForAccount(tezosUrl, pkh).catch(() => false);
                 }
 
                 if (!isNewRevealed) {
@@ -240,8 +242,10 @@ export const queryTezosDomains = async (nodeUrl: string, address: string): Promi
         const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
             window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
         );
-        const mapResult = await TezosNodeReader.getValueForBigMapKey(nodeUrl, 1265, packedKey);
+        console.log('1222222111');
+        const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(nodeUrl, 1265, packedKey);
         const domainBytes = JSONPath({ path: '$.args[0].args[1].args[0].bytes', json: mapResult })[0];
+        console.log('232323232323232', domainBytes);
         return window.electron.buffer.from(domainBytes, 'hex').toString();
     } catch (err) {
         return '';
@@ -366,10 +370,8 @@ export function setSignerThunk(key: string, password: string) {
 
     return async (dispatch: any) => {
         const keyStore = await window.conseiljsSoftSigner.KeyStoreUtils.restoreIdentityFromSecretKey(key);
-        const signer = await window.conseiljsSoftSigner.SoftSigner.createSigner(
-            window.conseiljs.TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'),
-            password
-        );
+        const signer = await SoftSigner.createSigner(await window.conseiljs.TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'), password);
+        // eslint-disable-next-line no-underscore-dangle
         dispatch(setSignerAction(signer));
     };
 }

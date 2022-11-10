@@ -1,5 +1,8 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { SignerCurve, TezosParameterFormat } from 'conseiljs';
+import { SignerCurve, TezosParameterFormat, Signer, KeyStore } from 'conseiljs';
+import { SoftSigner } from 'conseiljs-softsigner';
+import * as fs from 'fs';
+import path from 'path';
 
 // console.log('conseiljsSoftSigner', KeyStoreUtils)
 
@@ -49,7 +52,7 @@ contextBridge.exposeInMainWorld('electron', {
     },
     osPlatform: {
         get() {
-            return ipcRenderer.sendSync('os-platform');
+            return ipcRenderer.invoke('os-platform');
         },
     },
     transportNodeHid: {
@@ -64,28 +67,31 @@ contextBridge.exposeInMainWorld('electron', {
     },
     dialog: {
         openDialog(filters) {
-            return ipcRenderer.sendSync('electron-dialog-open', filters);
+            return ipcRenderer.invoke('electron-dialog-open', filters);
         },
         saveDialog(filters) {
-            return ipcRenderer.sendSync('electron-dialog-save', filters);
+            return ipcRenderer.invoke('electron-dialog-save', filters);
         },
     },
     path: {
         join(str1, str2) {
-            return ipcRenderer.sendSync('node-path-join', str1, str2);
+            return ipcRenderer.invoke('node-path-join', str1, str2);
         },
     },
     fs: {
         writeFile(filename, wallet) {
-            return ipcRenderer.sendSync('node-fs-writeFile', filename, wallet);
+            return ipcRenderer.invoke('node-fs-writeFile', filename, wallet);
         },
         readFile(filename) {
-            return ipcRenderer.sendSync('node-fs-readfile', filename);
+            return ipcRenderer.invoke('node-fs-readfile', filename);
         },
     },
     buffer: {
         from(data, encoding) {
-            return ipcRenderer.sendSync('node-buffer-from', data, encoding);
+            return ipcRenderer.invoke('node-buffer-from', data, encoding);
+        },
+        alloc(val: number) {
+            return ipcRenderer.invoke('node-buffer-alloc', val);
         },
     },
     // conseiljsSoftSigner: conseiljsSoftSigner
@@ -94,39 +100,77 @@ contextBridge.exposeInMainWorld('electron', {
 contextBridge.exposeInMainWorld('conseiljs', {
     TezosMessageUtils: {
         readAddress(hex: string) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readAddress', hex);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-readAddress', hex);
         },
         writeAddress(address: string) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-writeAddress', address);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-writeAddress', address);
         },
         readKeyWithHint(b: Buffer | Uint8Array, hint: string) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readKeyWithHint', b, hint);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-readKeyWithHint', b, hint);
         },
         readSignatureWithHint(b: Buffer | Uint8Array, hint: string | SignerCurve) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readSignatureWithHint', b, hint);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-readSignatureWithHint', b, hint);
         },
         writeKeyWithHint(txt, pre) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-writeKeyWithHint', txt, pre);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-writeKeyWithHint', txt, pre);
         },
         writeBufferWithHint(txt: string) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-writeBufferWithHint', txt);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-writeBufferWithHint', txt);
         },
         readBufferWithHint(b: Buffer | Uint8Array, hint?: string) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readBufferWithHint', b, hint);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-readBufferWithHint', b, hint);
         },
         writePackedData(value: string | number | Buffer, type: string, format?: TezosParameterFormat) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-writePackedData', value, type, format);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-writePackedData', value, type, format);
         },
         readPackedData(hex: string, type: string) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-readPackedData', hex, type);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-readPackedData', hex, type);
         },
         encodeBigMapKey(key: Buffer) {
-            return ipcRenderer.sendSync('conseiljs-tezosmessageutils-encodeBigMapKey', key);
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-encodeBigMapKey', key);
+        },
+        simpleHash(payload: Buffer, length: number) {
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-simpleHash', payload, length);
         },
     },
     TezosNodeReader: {
         getContractStorage(server, address) {
-            return ipcRenderer.sendSync('conseiljs-TezosNodeReader-getContractStorage', server, address);
+            return ipcRenderer.invoke('conseiljs-TezosNodeReader-getContractStorage', server, address);
+        },
+        isImplicitAndEmpty(server, hash) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeReader-isImplicitAndEmpty', server, hash);
+        },
+        getValueForBigMapKey(server: string, index: number, key: string, block?: string, chainid?: string) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeReader-getValueForBigMapKey', server, index, key, block, chainid);
+        },
+        isManagerKeyRevealedForAccount(server: string, accountHash: string) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeReader-isManagerKeyRevealedForAccount', server, accountHash);
+        },
+    },
+    TezosNodeWriter: {
+        sendTransactionOperation(
+            server: string,
+            isLedger: boolean,
+            password: string,
+            keyStore: KeyStore,
+            to: string,
+            amount: number,
+            fee?: number,
+            offset?: number,
+            optimizeFee?: boolean
+        ) {
+            return ipcRenderer.sendSync(
+                'conseiljs-TezosNodeWriter-sendTransactionOperation',
+                server,
+                isLedger,
+                password,
+                keyStore,
+                to,
+                amount,
+                fee,
+                offset,
+                optimizeFee
+            );
         },
     },
 });
@@ -134,55 +178,65 @@ contextBridge.exposeInMainWorld('conseiljs', {
 contextBridge.exposeInMainWorld('conseiljsSoftSigner', {
     KeyStoreUtils: {
         generateMnemonic(strength?: number) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-generateMnemonic', strength);
+            return ipcRenderer.invoke('conseiljs-softsigner-generateMnemonic', strength);
         },
         generateIdentity(strength?: number, password?: string, mnemonic?: string) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-generateIdentity', strength, password, mnemonic);
+            return ipcRenderer.invoke('conseiljs-softsigner-generateIdentity', strength, password, mnemonic);
         },
         restoreIdentityFromSecretKey(secretKey: string) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-restoreIdentityFromSecretKey', secretKey);
+            return ipcRenderer.invoke('conseiljs-softsigner-restoreIdentityFromSecretKey', secretKey);
         },
         restoreIdentityFromMnemonic(mnemonic: string, password?: string, pkh?: string, derivationPath?: string, validate?: boolean) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-restoreIdentityFromMnemonic', mnemonic, password, pkh, derivationPath, validate);
+            return ipcRenderer.invoke('conseiljs-softsigner-restoreIdentityFromMnemonic', mnemonic, password, pkh, derivationPath, validate);
         },
         restoreIdentityFromFundraiser(mnemonic: string, email: string, password: string, pkh: string) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-restoreIdentityFromFundraiser', mnemonic, email, password, pkh);
+            return ipcRenderer.invoke('conseiljs-softsigner-restoreIdentityFromFundraiser', mnemonic, email, password, pkh);
         },
         generateKeys(seed: Buffer) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-generateKeys', seed);
+            return ipcRenderer.invoke('conseiljs-softsigner-generateKeys', seed);
         },
         recoverKeys(secretKey: Buffer) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-recoverKeys', secretKey);
+            return ipcRenderer.invoke('conseiljs-softsigner-recoverKeys', secretKey);
         },
         decryptMessage(message: Buffer, passphrase: string, salt: Buffer) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-decryptMessage', message, passphrase, salt);
+            return ipcRenderer.invoke('conseiljs-softsigner-decryptMessage', message, passphrase, salt);
         },
         encryptMessage(message: Buffer, passphrase: string, salt: Buffer) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-encryptMessage', message, passphrase, salt);
+            return ipcRenderer.invoke('conseiljs-softsigner-encryptMessage', message, passphrase, salt);
         },
         checkTextSignature(signature: string, message: string, publicKey: string, prehash?: boolean) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-checkTextSignature', signature, message, publicKey, prehash);
+            return ipcRenderer.invoke('conseiljs-softsigner-checkTextSignature', signature, message, publicKey, prehash);
         },
         checkSignature(signature: string, bytes: Buffer, publicKey: string) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-checkSignature', signature, bytes, publicKey);
+            return ipcRenderer.invoke('conseiljs-softsigner-checkSignature', signature, bytes, publicKey);
         },
     },
     CryptoUtils: {
         generateSaltForPwHash() {
-            return ipcRenderer.sendSync('conseiljs-softsigner-CryptoUtils-generateSaltForPwHash');
+            return ipcRenderer.invoke('conseiljs-softsigner-CryptoUtils-generateSaltForPwHash');
         },
         encryptMessage(message: Buffer, passphrase: string, salt: Buffer) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-CryptoUtils-encryptMessage', message, passphrase, salt);
+            return ipcRenderer.invoke('conseiljs-softsigner-CryptoUtils-encryptMessage', message, passphrase, salt);
         },
         decryptMessage(message: Buffer, passphrase: string, salt: Buffer) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-CryptoUtils-decryptMessage', message, passphrase, salt);
+            return ipcRenderer.invoke('conseiljs-softsigner-CryptoUtils-decryptMessage', message, passphrase, salt);
+        },
+        signDetached(payload: Buffer, secretKey: Buffer) {
+            return ipcRenderer.invoke('conseiljs-softsigner-CryptoUtils-signDetached', payload, secretKey);
         },
     },
     SoftSigner: {
         createSigner(secretKey: Buffer, password?: string) {
-            return ipcRenderer.sendSync('conseiljs-softsigner-main-createSigner', secretKey, password);
+            return ipcRenderer.invoke('conseiljs-softsigner-main-createSigner', secretKey, password);
+        },
+        getKey(signer: SoftSigner, password: string) {
+            return ipcRenderer.invoke('conseiljs-softsigner-main-getKey', signer, password);
+        },
+        cloneDecryptedSigner(signer: SoftSigner, password: string) {
+            return ipcRenderer.invoke('conseiljs-softsigner-main-cloneDecryptedSigner', signer, password);
         },
     },
+    test: 'aaaaa',
 });
 
 contextBridge.exposeInMainWorld('conseiljsLedgerSigner', {

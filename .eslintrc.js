@@ -39,6 +39,7 @@ module.exports = {
         'react/no-unescaped-entities': 'off',
         'jsx-a11y/no-static-element-interactions': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+        'no-underscore-dangle': 'off',
     },
     parserOptions: {
         ecmaVersion: 2020,

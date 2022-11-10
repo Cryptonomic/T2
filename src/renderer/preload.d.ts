@@ -1,5 +1,6 @@
 import { Channels } from 'main/preload';
 import { KeyStore, Signer, SignerCurve, TezosParameterFormat } from 'conseiljs';
+import { SoftSigner } from 'conseiljs-softsigner';
 
 declare global {
     interface Window {
@@ -35,6 +36,7 @@ declare global {
             };
             buffer: {
                 from: (data, encoding) => Buffer;
+                alloc: (val: number) => Buffer;
             };
         };
 
@@ -68,10 +70,14 @@ declare global {
                 generateSaltForPwHash: () => Promise<Buffer>;
                 decryptMessage: (message: Buffer, passphrase: string, salt: Buffer) => Promise<string>;
                 encryptMessage: (message: Buffer, passphrase: string, salt: Buffer) => Promise<Buffer>;
+                signDetached: (payload: Buffer, secretKey: Buffer) => Promise<Buffer>;
             };
             SoftSigner: {
-                createSigner: (secretKey: Buffer, password?: string) => Promise<Signer>;
+                createSigner: (secretKey: Buffer, password?: string) => Promise<SoftSigner>;
+                getKey: (signer: SoftSigner, password?: string) => Promise<Buffer>;
+                cloneDecryptedSigner: (signer: SoftSigner, password?: string) => any;
             };
+            test: SoftSigner;
         };
         conseiljsLedgerSigner: {
             KeyStoreUtils: {
@@ -91,9 +97,26 @@ declare global {
                 writePackedData: (value: string | number | Buffer, type: string, format?: TezosParameterFormat) => string;
                 readPackedData: (hex: string, type: string) => string | number;
                 encodeBigMapKey: (key: Buffer) => string;
+                simpleHash: (payload: Buffer, length: number) => Buffer;
             };
             TezosNodeReader: {
                 getContractStorage: (server, address) => Promise<any>;
+                isImplicitAndEmpty: (server, hash) => Promise<boolean>;
+                getValueForBigMapKey: (server: string, index: number, key: string, block?: string, chainid?: string) => Promise<any>;
+                isManagerKeyRevealedForAccount: (server: string, accountHash: string) => Promise<boolean>;
+            };
+            TezosNodeWriter: {
+                sendTransactionOperation: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    to: string,
+                    amount: number,
+                    fee?: number,
+                    offset?: number,
+                    optimizeFee?: boolean
+                ) => Promise<any>;
             };
         };
         pngJS: {
