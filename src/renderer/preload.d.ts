@@ -1,5 +1,21 @@
 import { Channels } from 'main/preload';
-import { KeyStore, Signer, SignerCurve, TezosParameterFormat } from 'conseiljs';
+import {
+    KeyStore,
+    Signer,
+    SignerCurve,
+    TezosParameterFormat,
+    OperationResult,
+    OpenOvenResult,
+    ConseilServerInfo,
+    Transaction,
+    StackableOperation,
+    Delegation,
+    Reveal,
+    Operation,
+    TransferPair,
+    ConseilQuery,
+    TezosBlock,
+} from 'conseiljs';
 import { SoftSigner } from 'conseiljs-softsigner';
 
 declare global {
@@ -73,11 +89,10 @@ declare global {
                 signDetached: (payload: Buffer, secretKey: Buffer) => Promise<Buffer>;
             };
             SoftSigner: {
-                createSigner: (secretKey: Buffer, password?: string) => Promise<SoftSigner>;
+                createSigner: (secretKey: string, password?: string) => void;
                 getKey: (signer: SoftSigner, password?: string) => Promise<Buffer>;
                 cloneDecryptedSigner: (signer: SoftSigner, password?: string) => any;
             };
-            test: SoftSigner;
         };
         conseiljsLedgerSigner: {
             KeyStoreUtils: {
@@ -100,10 +115,12 @@ declare global {
                 simpleHash: (payload: Buffer, length: number) => Buffer;
             };
             TezosNodeReader: {
+                getBlockHead: (server: string) => Promise<TezosBlock>;
                 getContractStorage: (server, address) => Promise<any>;
                 isImplicitAndEmpty: (server, hash) => Promise<boolean>;
                 getValueForBigMapKey: (server: string, index: number, key: string, block?: string, chainid?: string) => Promise<any>;
                 isManagerKeyRevealedForAccount: (server: string, accountHash: string) => Promise<boolean>;
+                getCounterForAccount: (server: string, accountHash: string, chainid?: string) => Promise<number>;
             };
             TezosNodeWriter: {
                 sendTransactionOperation: (
@@ -116,7 +133,240 @@ declare global {
                     fee?: number,
                     offset?: number,
                     optimizeFee?: boolean
+                ) => Promise<OperationResult>;
+                sendContractInvocationOperation: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    contract: string,
+                    amount: number,
+                    fee: number,
+                    storageLimit: number,
+                    gasLimit: number,
+                    entrypoint: string | undefined,
+                    parameters: string | undefined,
+                    parameterFormat?: TezosParameterFormat,
+                    offset?: number,
+                    optimizeFee?: boolean
+                ) => Promise<OperationResult>;
+                constructContractInvocationOperation: (
+                    publicKeyHash: string,
+                    counter: number,
+                    to: string,
+                    amount: number,
+                    fee: number,
+                    storageLimit: number,
+                    gasLimit: number,
+                    entrypoint: string | undefined,
+                    parameters: string | undefined,
+                    parameterFormat?: TezosParameterFormat
+                ) => Transaction;
+                prepareOperationGroup: (
+                    server: string,
+                    keyStore: KeyStore,
+                    counter: number,
+                    operations: StackableOperation[],
+                    optimizeFee?: boolean
+                ) => Promise<(Transaction | Delegation | Reveal)[]>;
+                sendOperation(server: string, operations: Operation[], isLedger: boolean, password: string, offset?: number): Promise<OperationResult>;
+            };
+            BabylonDelegationHelper: {
+                unSetDelegate: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    contract: string,
+                    fee: number
+                ) => Promise<OperationResult>;
+                setDelegate: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    contract: string,
+                    delegate: string,
+                    fee: number
+                ) => Promise<OperationResult>;
+                withdrawDelegatedFunds: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    contract: string,
+                    fee: number,
+                    amount: number
+                ) => Promise<OperationResult>;
+                depositDelegatedFunds(
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    contract: string,
+                    fee: number,
+                    amount: number
+                ): Promise<OperationResult>;
+                sendDelegatedFunds(
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    contract: string,
+                    fee: number,
+                    amount: number,
+                    destination: string
+                ): Promise<OperationResult>;
+            };
+            WrappedTezosHelper: {
+                transferBalance(
+                    nodeUrl: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    tokenContractAddress: string,
+                    fee: number,
+                    sourceAddress: string,
+                    destinationAddress: string,
+                    amount: number | string,
+                    gasLimit?: number,
+                    storageLimit?: number
+                ): Promise<string>;
+                deployOven: (
+                    nodeUrl: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    fee: number,
+                    coreAddress: string,
+                    baker?: string | undefined,
+                    gasLimit?: number,
+                    storageLimit?: number
+                ) => Promise<OpenOvenResult>;
+                depositToOven: (
+                    nodeUrl: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    ovenAddress: string,
+                    fee: number,
+                    amountMutez: number,
+                    gasLimit?: number,
+                    storageLimit?: number
+                ) => Promise<string>;
+                withdrawFromOven(
+                    nodeUrl: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    ovenAddress: string,
+                    fee: number,
+                    amountMutez: number,
+                    gasLimit?: number,
+                    storageLimit?: number
+                ): Promise<string>;
+                setOvenBaker: (
+                    nodeUrl: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    fee: number,
+                    ovenAddress: string,
+                    bakerAddress: string,
+                    gasLimit?: number,
+                    storageLimit?: number
+                ) => Promise<string>;
+            };
+            TezosConseilClient: {
+                awaitOperationConfirmation: (
+                    serverInfo: ConseilServerInfo,
+                    network: string,
+                    hash: string,
+                    duration?: number,
+                    blocktime?: number
                 ) => Promise<any>;
+                getOperations: (serverInfo: ConseilServerInfo, network: string, query: ConseilQuery) => Promise<any[]>;
+            };
+            Tzip7ReferenceTokenHelper: {
+                transferBalance: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    contract: string,
+                    fee: number,
+                    source: string,
+                    destination: string,
+                    amount: number,
+                    gas: number,
+                    freight: number
+                ) => Promise<string>;
+                mint: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    contract: string,
+                    fee: number,
+                    destination: string,
+                    amount: number,
+                    gas?: number,
+                    freight?: number
+                ) => Promise<string>;
+                burn: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    contract: string,
+                    fee: number,
+                    source: string,
+                    amount: number,
+                    gas: number,
+                    freight: number
+                ) => Promise<string>;
+            };
+            MultiAssetTokenHelper: {
+                transfer(
+                    server: string,
+                    address: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    fee: number,
+                    transfers: TransferPair[],
+                    gas?: number,
+                    freight?: number
+                ): Promise<string>;
+            };
+            SingleAssetTokenHelper: {
+                transfer(
+                    server: string,
+                    address: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    fee: number,
+                    source: string,
+                    transfers: any[],
+                    gas?: number,
+                    freight?: number
+                ): Promise<string>;
+            };
+            TzbtcTokenHelper: {
+                transferBalance: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keystore: KeyStore,
+                    contract: string,
+                    fee: number,
+                    source: string,
+                    destination: string,
+                    amount: number,
+                    gas?: number,
+                    freight?: number
+                ) => Promise<string>;
             };
         };
         pngJS: {

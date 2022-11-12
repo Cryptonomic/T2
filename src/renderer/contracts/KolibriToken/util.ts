@@ -1,6 +1,6 @@
 import { JSONPath } from 'jsonpath-plus';
 import { BigNumber } from 'bignumber.js';
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosNodeReader } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection } from 'conseiljs';
 
 import * as status from '../../constants/StatusTypes';
 import { Node } from '../../types/general';
@@ -68,9 +68,9 @@ export async function getActivePools(server: string, account: string): Promise<{
         farmBalanceMaps.map(async (m) => {
             try {
                 const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-                    window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
+                    await window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
                 );
-                const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
+                const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
 
                 return mapResult !== undefined && JSONPath({ path: '$.args[1].int', json: mapResult }).toString() !== '0';
             } catch {
@@ -100,7 +100,7 @@ export async function calcPendingRewards(server: string, account: string): Promi
     await Promise.all(
         accountPools.map(async (p) => {
             try {
-                const head = await TezosNodeReader.getBlockHead(server);
+                const head = await window.conseiljs.TezosNodeReader.getBlockHead(server);
                 const poolState = await readPoolStorage(server, p.contract);
                 const userState = await readUserPoolRecord(server, p.map, account);
                 const currentBlockLevel = head.header.level;
@@ -177,7 +177,7 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
     indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
     indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
 
-    return Promise.all([direct, indirect].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
+    return Promise.all([direct, indirect].map((q) => window.conseiljs.TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
         .then((responses) =>
             responses.reduce((result, r) => {
                 r.forEach((rr) => result.push(rr));
@@ -195,7 +195,7 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
 }
 
 async function readPoolStorage(server, address) {
-    const storageResult = await TezosNodeReader.getContractStorage(server, address);
+    const storageResult = await window.conseiljs.TezosNodeReader.getContractStorage(server, address);
 
     return {
         lastBlockUpdate: JSONPath({ path: '$.args[1].args[1].int', json: storageResult })[0],
@@ -210,9 +210,9 @@ async function readPoolStorage(server, address) {
 
 async function readUserPoolRecord(server, mapid, address) {
     const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
+        await window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
     );
-    const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
+    const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
         throw new Error(`Map ${mapid} does not contain a record for ${address}`);

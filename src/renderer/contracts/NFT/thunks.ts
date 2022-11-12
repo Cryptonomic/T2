@@ -76,7 +76,7 @@ export const transferNFT =
             // dispatch(updateTokensAction([...tokens]));
 
             return true;
-        } catch (err) {
+        } catch (err: any) {
             if (err instanceof TransferNFTError) {
                 console.error(`transferNFT/MultiAssetTokenHelper failed with ${JSON.stringify(err)}`);
                 dispatch(createMessageAction(err.message, true));

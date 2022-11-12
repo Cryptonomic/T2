@@ -1,11 +1,10 @@
-import { TezosConstants, TezosNodeReader, TezosNodeWriter, TezosParameterFormat, Transaction, TzbtcTokenHelper } from 'conseiljs';
+import { TezosConstants, TezosParameterFormat, Transaction } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
 import { createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
-import { cloneDecryptedSigner } from '../../utils/wallet';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
@@ -30,9 +29,10 @@ export function transferThunk(destination: string, amount: number, fee: number, 
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await TzbtcTokenHelper.transferBalance(
+        const operationId: string | undefined = await window.conseiljs.TzbtcTokenHelper.transferBalance(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             selectedAccountHash,
             fee,
@@ -103,7 +103,7 @@ export function addLiquidityThunk(
         const ops: Transaction[] = [];
 
         if (shortfall.length > 0 && shortfallCost.length > 0) {
-            const buyOp = TezosNodeWriter.constructContractInvocationOperation(
+            const buyOp = await window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
                 keyStore.publicKeyHash,
                 0,
                 destination,
@@ -127,7 +127,7 @@ export function addLiquidityThunk(
         )}" }, { "prim": "Pair", "args": [ { "int": "${poolShare}" }, { "prim": "Pair", "args": [ { "int": "${tokenAmount}" }, { "string": "${expiration.toISOString()}" } ] } ] } ] }`;
 
         ops.push(
-            TezosNodeWriter.constructContractInvocationOperation(
+            await window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
                 keyStore.publicKeyHash,
                 0,
                 destination,
@@ -142,13 +142,14 @@ export function addLiquidityThunk(
         );
 
         try {
-            const counter = await TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
-            const pricedOps = await TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
+            const counter = await window.conseiljs.TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
+            const pricedOps = await window.conseiljs.TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
 
-            const operationResult = await TezosNodeWriter.sendOperation(
+            const operationResult = await window.conseiljs.TezosNodeWriter.sendOperation(
                 tezosUrl,
                 pricedOps,
-                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                isLedger,
+                password,
                 TezosConstants.HeadBranchOffset
             );
 
@@ -190,7 +191,7 @@ export function removeLiquidityThunk(destination: string, poolShare: string, cas
             keyStore.publicKeyHash
         }" }, { "prim": "Pair", "args": [ { "int": "${poolShare}" }, { "prim": "Pair", "args": [ { "int": "${cashAmount}" }, { "prim": "Pair", "args": [ { "int": "${tokenAmount}" }, { "string": "${expiration.toISOString()}" } ] } ] } ] } ] }`;
         const ops = [
-            TezosNodeWriter.constructContractInvocationOperation(
+            await window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
                 keyStore.publicKeyHash,
                 0,
                 destination,
@@ -205,13 +206,14 @@ export function removeLiquidityThunk(destination: string, poolShare: string, cas
         ];
 
         try {
-            const counter = await TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
-            const pricedOps = await TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
+            const counter = await window.conseiljs.TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
+            const pricedOps = await window.conseiljs.TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
 
-            const operationResult = await TezosNodeWriter.sendOperation(
+            const operationResult = await window.conseiljs.TezosNodeWriter.sendOperation(
                 tezosUrl,
                 pricedOps,
-                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                isLedger,
+                password,
                 TezosConstants.HeadBranchOffset
             );
 

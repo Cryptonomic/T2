@@ -2,9 +2,6 @@ import {
     ConseilQueryBuilder,
     ConseilOperator,
     ConseilSortDirection,
-    TezosConseilClient,
-    TezosNodeReader,
-    TezosNodeWriter,
     TezosConstants,
     TezosContractUtils,
     TezosParameterFormat,
@@ -68,7 +65,7 @@ export async function getTokenTransactions(tokenAddress: string, managerAddress:
     indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
     indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
 
-    return Promise.all([direct, indirect].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
+    return Promise.all([direct, indirect].map((q) => window.conseiljs.TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
         .then((responses) =>
             responses.reduce((result, r) => {
                 r.forEach((rr) => result.push(rr));
@@ -201,7 +198,7 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
 export async function getSimpleStorageYV(tezosUrl: string, tokenAddress: string, accountAddress?: string) {
     const storageResult = await window.conseiljs.TezosNodeReader.getContractStorage(tezosUrl, tokenAddress);
 
-    const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(
             await window.conseiljs.TezosMessageUtils.writePackedData(
                 `
@@ -211,7 +208,7 @@ export async function getSimpleStorageYV(tezosUrl: string, tokenAddress: string,
             'hex'
         )
     );
-    const mapResult = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 16593, packedKey);
+    const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, 16593, packedKey);
     let administrator = '';
     if (mapResult !== undefined) {
         administrator = accountAddress || '';
@@ -231,7 +228,8 @@ export async function getSimpleStorageYV(tezosUrl: string, tokenAddress: string,
 export async function mintYV(
     server: string,
     address: string,
-    signer: Signer,
+    isLedger: boolean,
+    password: string,
     keystore: KeyStore,
     fee: number,
     destination: string,
@@ -242,9 +240,10 @@ export async function mintYV(
         destination
     )}"}, { "prim": "Pair", "args": [ { "int": "${tokenIndex}" }, { "int": "${amount}" } ] } ] }`;
 
-    const nodeResult = await TezosNodeWriter.sendContractInvocationOperation(
+    const nodeResult = await window.conseiljs.TezosNodeWriter.sendContractInvocationOperation(
         server,
-        signer,
+        isLedger,
+        password,
         keystore,
         address,
         0,
@@ -264,7 +263,8 @@ export async function mintYV(
 export async function burnYV(
     server: string,
     address: string,
-    signer: Signer,
+    isLedger: boolean,
+    password: string,
     keystore: KeyStore,
     fee: number,
     destination: string,
@@ -275,9 +275,10 @@ export async function burnYV(
         destination
     )}" }, { "prim": "Pair", "args": [ { "int": "${tokenIndex}" }, { "int": "${amount}" } ] } ] }`;
 
-    const r = await TezosNodeWriter.sendContractInvocationOperation(
+    const r = await window.conseiljs.TezosNodeWriter.sendContractInvocationOperation(
         server,
-        signer,
+        isLedger,
+        password,
         keystore,
         address,
         0,

@@ -239,13 +239,11 @@ const queryHarpoon = async (accountAddress: string): Promise<HarpoonInfo> => {
 
 export const queryTezosDomains = async (nodeUrl: string, address: string): Promise<string> => {
     try {
-        const packedKey = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-            window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
+        const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+            window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
         );
-        console.log('1222222111');
         const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(nodeUrl, 1265, packedKey);
         const domainBytes = JSONPath({ path: '$.args[0].args[1].args[0].bytes', json: mapResult })[0];
-        console.log('232323232323232', domainBytes);
         return window.electron.buffer.from(domainBytes, 'hex').toString();
     } catch (err) {
         return '';
@@ -295,8 +293,10 @@ export const getTezosDomains = (accountAddress: string): string => {
         let isSubscribed = true;
         const getData = async () => {
             const domainResponse = await queryTezosDomains(tezosUrl, accountAddress);
+            console.log('44444444', domainResponse);
 
             if (isSubscribed) {
+                console.log('5555555', domainResponse);
                 setDomainName(domainResponse);
             }
         };
@@ -369,10 +369,7 @@ export function setSignerThunk(key: string, password: string) {
     }
 
     return async (dispatch: any) => {
-        const keyStore = await window.conseiljsSoftSigner.KeyStoreUtils.restoreIdentityFromSecretKey(key);
-        const signer = await SoftSigner.createSigner(await window.conseiljs.TezosMessageUtils.writeKeyWithHint(keyStore.secretKey, 'edsk'), password);
-        // eslint-disable-next-line no-underscore-dangle
-        dispatch(setSignerAction(signer));
+        await window.conseiljsSoftSigner.SoftSigner.createSigner(key, password);
     };
 }
 

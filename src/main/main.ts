@@ -32,8 +32,6 @@ import './modules/conseiljs';
 import './modules/conseiljsSoftSigner';
 import './modules/node';
 
-// require('@electron/remote/main').initialize()
-
 const logger = loglevel.getLogger('conseiljs');
 logger.setLevel(config.logLevel as loglevel.LogLevelDesc, false);
 registerLogger(logger);

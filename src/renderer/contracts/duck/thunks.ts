@@ -1,9 +1,9 @@
-import { TezosNodeWriter, TezosNodeReader, BabylonDelegationHelper, TezosParameterFormat, TezosConstants } from 'conseiljs';
+import { TezosParameterFormat } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateIdentityAction } from '../../reduxContent/wallet/actions';
 import { tezToUtez } from '../../utils/currency';
 
-import { saveIdentitiesToLocal, cloneDecryptedSigner } from '../../utils/wallet';
+import { saveIdentitiesToLocal } from '../../utils/wallet';
 import { createTransaction } from '../../utils/transaction';
 import { TRANSACTION, DELEGATION } from '../../constants/TransactionTypes';
 
@@ -15,9 +15,6 @@ import { findIdentity } from '../../utils/identity';
 import { displayError } from '../../utils/formValidation';
 
 import { Node } from '../../types/general';
-
-const { sendContractInvocationOperation, sendTransactionOperation } = TezosNodeWriter;
-const { withdrawDelegatedFunds, depositDelegatedFunds, setDelegate, unSetDelegate, sendDelegatedFunds } = BabylonDelegationHelper;
 
 export function delegateThunk(delegateAddress: string, fee: number, password: string): any {
     return async (dispatch, state) => {
@@ -40,7 +37,7 @@ export function delegateThunk(delegateAddress: string, fee: number, password: st
 
         let res: any;
         if (delegateAddress === '') {
-            res = await unSetDelegate(tezosUrl, isLedger ? signer : await cloneDecryptedSigner(signer, password), keyStore, selectedAccountHash, fee).catch(
+            res = await window.conseiljs.BabylonDelegationHelper.unSetDelegate(tezosUrl, isLedger, password, keyStore, selectedAccountHash, fee).catch(
                 (err) => {
                     const errorObj = { name: err.message, ...err };
                     console.error(errorObj);
@@ -49,9 +46,10 @@ export function delegateThunk(delegateAddress: string, fee: number, password: st
                 }
             );
         } else {
-            res = await setDelegate(
+            res = await window.conseiljs.BabylonDelegationHelper.setDelegate(
                 tezosUrl,
-                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                isLedger,
+                password,
                 keyStore,
                 selectedAccountHash,
                 delegateAddress,
@@ -141,9 +139,10 @@ export function invokeAddressThunk(
         const parsedAmount = tezToUtez(amount);
         const realEntryPoint = entryPoint !== '' ? entryPoint : undefined;
 
-        const res: any = await sendContractInvocationOperation(
+        const res: any = await window.conseiljs.TezosNodeWriter.sendContractInvocationOperation(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             contractAddress,
             parsedAmount,
@@ -238,9 +237,10 @@ export function withdrawThunk(fee: number, amount: string, password: string): an
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
 
-        const res: any = await withdrawDelegatedFunds(
+        const res: any = await window.conseiljs.BabylonDelegationHelper.withdrawDelegatedFunds(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             selectedAccountHash,
             fee,
@@ -317,9 +317,10 @@ export function depositThunk(fee: number, amount: string, password: string, toAd
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
 
-        const res: any = await depositDelegatedFunds(
+        const res: any = await window.conseiljs.BabylonDelegationHelper.depositDelegatedFunds(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             toAddress,
             fee,
@@ -405,15 +406,8 @@ export function sendTezThunk(password: string, toAddress: string, amount: string
 
         const parsedAmount = tezToUtez(amount);
 
-        const res: any = await window.conseiljs.TezosNodeWriter.sendTransactionOperation(
-            tezosUrl,
-            isLedger,
-            password,
-            keyStore,
-            toAddress,
-            parsedAmount,
-            fee
-        ).catch((err) => {
+        // eslint-disable-next-line prettier/prettier
+        const res: any = await window.conseiljs.TezosNodeWriter.sendTransactionOperation(tezosUrl, isLedger, password, keyStore, toAddress, parsedAmount, fee).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(errorObj);
             dispatch(createMessageAction(errorObj.name, true));
@@ -498,9 +492,10 @@ export function sendDelegatedFundsThunk(password: string, toAddress: string, amo
 
         const parsedAmount = tezToUtez(Number(amount.replace(/,/g, '.')));
 
-        const res: any = await sendDelegatedFunds(
+        const res: any = await window.conseiljs.BabylonDelegationHelper.sendDelegatedFunds(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             selectedAccountHash,
             fee,

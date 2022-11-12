@@ -1,6 +1,28 @@
 import { ipcMain } from 'electron';
-import { TezosMessageUtils, TezosNodeReader, SignerCurve, TezosParameterFormat, TezosNodeWriter, Signer, KeyStore, TezosConstants } from 'conseiljs';
+import {
+    TezosMessageUtils,
+    TezosNodeReader,
+    SignerCurve,
+    TezosParameterFormat,
+    TezosNodeWriter,
+    Signer,
+    KeyStore,
+    TezosConstants,
+    BabylonDelegationHelper,
+    WrappedTezosHelper,
+    TezosConseilClient,
+    ConseilServerInfo,
+    StackableOperation,
+    Operation,
+    Tzip7ReferenceTokenHelper,
+    MultiAssetTokenHelper,
+    TransferPair,
+    SingleAssetTokenHelper,
+    ConseilQuery,
+    TzbtcTokenHelper,
+} from 'conseiljs';
 import { SoftSigner, KeyStoreUtils } from 'conseiljs-softsigner';
+import { onGetSigner, cloneDecryptedSigner } from './global';
 
 ipcMain.handle('conseiljs-tezosmessageutils-readAddress', async (event, hex: string) => {
     return TezosMessageUtils.readAddress(hex);
@@ -46,6 +68,13 @@ ipcMain.handle('conseiljs-tezosmessageutils-simpleHash', async (event, payload: 
     return TezosMessageUtils.simpleHash(payload, length);
 });
 
+// TezosNodeReader
+
+ipcMain.handle('conseiljs-TezosNodeReader-getBlockHead', async (event, server) => {
+    const res = await TezosNodeReader.getBlockHead(server);
+    return res;
+});
+
 ipcMain.handle('conseiljs-TezosNodeReader-getContractStorage', async (event, server, address) => {
     const res = await TezosNodeReader.getContractStorage(server, address);
     return res;
@@ -69,29 +98,440 @@ ipcMain.handle('conseiljs-TezosNodeReader-isManagerKeyRevealedForAccount', async
     return res;
 });
 
+ipcMain.handle('conseiljs-TezosNodeReader-getCounterForAccount', async (event, server: string, accountHash: string, chainid?: string) => {
+    const res = await TezosNodeReader.getCounterForAccount(server, accountHash, chainid);
+    return res;
+});
+
+// TezosNodeWriter
+
 ipcMain.handle(
     'conseiljs-TezosNodeWriter-sendTransactionOperation',
+    async (event, server: string, isLedger, password, keyStore: KeyStore, to: string, amount: number, fee?: number, offset?: number, optimizeFee?: boolean) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await TezosNodeWriter.sendTransactionOperation(server, signer, keyStore, to, amount, fee, offset, optimizeFee);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-TezosNodeWriter-sendContractInvocationOperation',
+    async (
+        event,
+        server: string,
+        isLedger,
+        password,
+        keyStore: KeyStore,
+        contract: string,
+        amount: number,
+        fee: number,
+        storageLimit: number,
+        gasLimit: number,
+        entrypoint: string | undefined,
+        parameters: string | undefined,
+        parameterFormat?: TezosParameterFormat,
+        offset?: number,
+        optimizeFee?: boolean
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await TezosNodeWriter.sendContractInvocationOperation(
+            server,
+            signer,
+            keyStore,
+            contract,
+            amount,
+            fee,
+            storageLimit,
+            gasLimit,
+            entrypoint,
+            parameters,
+            parameterFormat,
+            offset,
+            optimizeFee
+        );
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-TezosNodeWriter-constructContractInvocationOperation',
+    async (
+        event,
+        publicKeyHash: string,
+        counter: number,
+        to: string,
+        amount: number,
+        fee: number,
+        storageLimit: number,
+        gasLimit: number,
+        entrypoint: string | undefined,
+        parameters: string | undefined,
+        parameterFormat?: TezosParameterFormat
+    ) => {
+        const res = await TezosNodeWriter.constructContractInvocationOperation(
+            publicKeyHash,
+            counter,
+            to,
+            amount,
+            fee,
+            storageLimit,
+            gasLimit,
+            entrypoint,
+            parameters,
+            parameterFormat
+        );
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-TezosNodeWriter-prepareOperationGroup',
+    async (event, server: string, keyStore: KeyStore, counter: number, operations: StackableOperation[], optimizeFee?: boolean) => {
+        const res = await TezosNodeWriter.prepareOperationGroup(server, keyStore, counter, operations, optimizeFee);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-TezosNodeWriter-sendOperation',
+    async (event, server: string, operations: Operation[], isLedger: boolean, password: string, offset?: number) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await TezosNodeWriter.sendOperation(server, operations, signer, offset);
+        return res;
+    }
+);
+
+// BabylonDelegationHelper
+
+ipcMain.handle(
+    'conseiljs-BabylonDelegationHelper-unSetDelegate',
+    async (event, server: string, isLedger, password, keyStore: KeyStore, selectedAccountHash, fee) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await BabylonDelegationHelper.unSetDelegate(server, signer, keyStore, selectedAccountHash, fee);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-BabylonDelegationHelper-setDelegate',
+    async (event, server: string, isLedger, password, keyStore: KeyStore, selectedAccountHash, delegateAddress, fee) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await BabylonDelegationHelper.setDelegate(server, signer, keyStore, selectedAccountHash, delegateAddress, fee);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-BabylonDelegationHelper-withdrawDelegatedFunds',
+    async (event, server: string, isLedger, password, keyStore: KeyStore, contract: string, fee: number, amount: number) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await BabylonDelegationHelper.withdrawDelegatedFunds(server, signer, keyStore, contract, fee, amount);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-BabylonDelegationHelper-depositDelegatedFunds',
+    async (event, server: string, isLedger, password, keyStore: KeyStore, contract: string, fee: number, amount: number) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await BabylonDelegationHelper.depositDelegatedFunds(server, signer, keyStore, contract, fee, amount);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-BabylonDelegationHelper-sendDelegatedFunds',
+    async (event, server: string, isLedger, password, keyStore: KeyStore, contract: string, fee: number, amount: number, destination: string) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await BabylonDelegationHelper.sendDelegatedFunds(server, signer, keyStore, contract, fee, amount, destination);
+        return res;
+    }
+);
+
+// WrappedTezosHelper
+ipcMain.handle(
+    'conseiljs-WrappedTezosHelper-transferBalance',
+    async (
+        event,
+        server: string,
+        isLedger,
+        password,
+        keyStore: KeyStore,
+        tokenContractAddress: string,
+        fee: number,
+        sourceAddress: string,
+        destinationAddress: string,
+        amount: number | string,
+        gasLimit?: number,
+        storageLimit?: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await WrappedTezosHelper.transferBalance(
+            server,
+            signer,
+            keyStore,
+            tokenContractAddress,
+            fee,
+            sourceAddress,
+            destinationAddress,
+            amount,
+            gasLimit,
+            storageLimit
+        );
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-WrappedTezosHelper-deployOven',
+    async (
+        event,
+        server: string,
+        isLedger,
+        password,
+        keyStore: KeyStore,
+        fee: number,
+        coreAddress: string,
+        baker?: string | undefined,
+        gasLimit?: number,
+        storageLimit?: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await WrappedTezosHelper.deployOven(server, signer, keyStore, fee, coreAddress, baker, gasLimit, storageLimit);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-WrappedTezosHelper-depositToOven',
+    async (
+        event,
+        server: string,
+        isLedger,
+        password,
+        keyStore: KeyStore,
+        ovenAddress: string,
+        fee: number,
+        amountMutez: number,
+        gasLimit?: number,
+        storageLimit?: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await WrappedTezosHelper.depositToOven(server, signer, keyStore, ovenAddress, fee, amountMutez, gasLimit, storageLimit);
+        return res;
+    }
+);
+ipcMain.handle(
+    'conseiljs-WrappedTezosHelper-withdrawFromOven',
+    async (
+        event,
+        server: string,
+        isLedger,
+        password,
+        keyStore: KeyStore,
+        ovenAddress: string,
+        fee: number,
+        amountMutez: number,
+        gasLimit?: number,
+        storageLimit?: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await WrappedTezosHelper.withdrawFromOven(server, signer, keyStore, ovenAddress, fee, amountMutez, gasLimit, storageLimit);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-WrappedTezosHelper-setOvenBaker',
+    async (
+        event,
+        server: string,
+        isLedger,
+        password,
+        keyStore: KeyStore,
+        fee: number,
+        ovenAddress: string,
+        bakerAddress: string,
+        gasLimit?: number,
+        storageLimit?: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await WrappedTezosHelper.setOvenBaker(server, signer, keyStore, fee, ovenAddress, bakerAddress, gasLimit, storageLimit);
+        return res;
+    }
+);
+
+// TezosConseilClient
+ipcMain.handle(
+    'conseiljs-TezosConseilClient-awaitOperationConfirmation',
+    async (event, serverInfo: ConseilServerInfo, network: string, hash: string, duration?: number, blocktime?: number) => {
+        const res = await TezosConseilClient.awaitOperationConfirmation(serverInfo, network, hash, duration, blocktime);
+        return res;
+    }
+);
+
+ipcMain.handle('conseiljs-TezosConseilClient-getOperations', async (event, serverInfo: ConseilServerInfo, network: string, query: ConseilQuery) => {
+    const res = await TezosConseilClient.getOperations(serverInfo, network, query);
+    return res;
+});
+
+// Tzip7ReferenceTokenHelper
+ipcMain.handle(
+    'conseiljs-Tzip7ReferenceTokenHelper-transferBalance',
+    async (
+        event,
+        server: string,
+        isLedger,
+        password,
+        keyStore: KeyStore,
+        tokenContractAddress: string,
+        fee: number,
+        sourceAddress: string,
+        destinationAddress: string,
+        amount: number,
+        gas: number,
+        freight: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await Tzip7ReferenceTokenHelper.transferBalance(
+            server,
+            signer,
+            keyStore,
+            tokenContractAddress,
+            fee,
+            sourceAddress,
+            destinationAddress,
+            amount,
+            gas,
+            freight
+        );
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-Tzip7ReferenceTokenHelper-mint',
     async (
         event,
         server: string,
         isLedger: boolean,
         password: string,
-        keyStore: KeyStore,
-        to: string,
+        keystore: KeyStore,
+        contract: string,
+        fee: number,
+        destination: string,
         amount: number,
-        fee?: number,
-        offset?: number,
-        optimizeFee?: boolean
+        gas?: number,
+        freight?: number
     ) => {
-        const newkeyStore = await KeyStoreUtils.restoreIdentityFromSecretKey(keyStore.secretKey);
-        const signer = await SoftSigner.createSigner(TezosMessageUtils.writeKeyWithHint(newkeyStore.secretKey, 'edsk'), password);
-        console.log('1111111111----', (signer as SoftSigner).getKey());
-        const endcoded =
-            '98e230e7f1cae4f16ecff2af4c756498158dc95ce233399f5e56a471b4e3fcbd6c007f28708e3db106d493dd509dabc64393206ad53a9e18abfb0ce852f003c094de0f0000f33423d14d19dc0da9325700cfd052840e447fef00';
-        const dd = Buffer.from(TezosConstants.OperationGroupWatermark + endcoded, 'hex');
-        const op = await signer.signOperation(dd);
-        console.log('123123123213213213', op);
-        // event.returnValue = await TezosNodeWriter.sendTransactionOperation(server, signer, keyStore, to, amount, fee, offset, optimizeFee);
-        event.returnValue = op;
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await Tzip7ReferenceTokenHelper.mint(server, signer, keystore, contract, fee, destination, amount, gas, freight);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-Tzip7ReferenceTokenHelper-burn',
+    async (
+        event,
+        server: string,
+        isLedger: boolean,
+        password: string,
+        keystore: KeyStore,
+        contract: string,
+        fee: number,
+        source: string,
+        amount: number,
+        gas: number,
+        freight: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await Tzip7ReferenceTokenHelper.burn(server, signer, keystore, contract, fee, source, amount, gas, freight);
+        return res;
+    }
+);
+
+// MultiAssetTokenHelper
+ipcMain.handle(
+    'conseiljs-MultiAssetTokenHelper-transfer',
+    async (
+        event,
+        server: string,
+        address: string,
+        isLedger: boolean,
+        password: string,
+        keystore: KeyStore,
+        fee: number,
+        transfers: TransferPair[],
+        gas?: number,
+        freight?: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await MultiAssetTokenHelper.transfer(server, address, signer, keystore, fee, transfers, gas, freight);
+        return res;
+    }
+);
+
+// SingleAssetTokenHelper
+ipcMain.handle(
+    'conseiljs-SingleAssetTokenHelper-transfer',
+    async (
+        event,
+        server: string,
+        address: string,
+        isLedger: boolean,
+        password: string,
+        keystore: KeyStore,
+        fee: number,
+        source: string,
+        transfers: any[],
+        gas?: number,
+        freight?: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await SingleAssetTokenHelper.transfer(server, address, signer, keystore, fee, source, transfers, gas, freight);
+        return res;
+    }
+);
+
+// TzbtcTokenHelper
+ipcMain.handle(
+    'conseiljs-TzbtcTokenHelper-transferBalance',
+    async (
+        event,
+        server: string,
+        isLedger: boolean,
+        password: string,
+        keystore: KeyStore,
+        contract: string,
+        fee: number,
+        source: string,
+        destination: string,
+        amount: number,
+        gas?: number,
+        freight?: number
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await TzbtcTokenHelper.transferBalance(server, signer, keystore, contract, fee, source, destination, amount, gas, freight);
+        return res;
     }
 );

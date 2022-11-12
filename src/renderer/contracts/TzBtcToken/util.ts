@@ -1,5 +1,5 @@
 import { JSONPath } from 'jsonpath-plus';
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosNodeReader } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection } from 'conseiljs';
 
 import * as status from '../../constants/StatusTypes';
 import { Node } from '../../types/general';
@@ -104,7 +104,7 @@ async function getTokenTransactions(tokenAddress, managerAddress, node: Node) {
     indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
     indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
 
-    return Promise.all([direct, indirect].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
+    return Promise.all([direct, indirect].map((q) => window.conseiljs.TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
         .then((responses) =>
             responses.reduce((result, r) => {
                 r.forEach((rr) => result.push(rr));
@@ -125,7 +125,7 @@ export async function getAccountBalance(server: string, mapid: number, account: 
     const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
     );
-    const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
+    const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
         throw new Error(`Map ${mapid} does not contain a record for ${account}`);

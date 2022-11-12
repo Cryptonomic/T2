@@ -1,11 +1,9 @@
-import { MultiAssetTokenHelper, SingleAssetTokenHelper } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
 import { createTransaction, createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
-import { cloneDecryptedSigner } from '../../utils/wallet';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
@@ -34,10 +32,11 @@ export function transferThunk(tokenAddress: string, tokenIndex: number | undefin
 
         let operationId: string | undefined = '';
         if (token !== undefined && tokenIndex !== undefined) {
-            operationId = await MultiAssetTokenHelper.transfer(
+            operationId = await window.conseiljs.MultiAssetTokenHelper.transfer(
                 tezosUrl,
                 tokenAddress,
-                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                isLedger,
+                password,
                 keyStore,
                 fee,
                 [{ source: selectedParentHash, txs: [{ destination, token_id: tokenIndex, amount }] }],
@@ -50,10 +49,11 @@ export function transferThunk(tokenAddress: string, tokenIndex: number | undefin
                 return undefined;
             });
         } else if (token !== undefined) {
-            operationId = await SingleAssetTokenHelper.transfer(
+            operationId = await window.conseiljs.SingleAssetTokenHelper.transfer(
                 tezosUrl,
                 selectedAccountHash,
-                isLedger ? signer : await cloneDecryptedSigner(signer, password),
+                isLedger,
+                password,
                 keyStore,
                 fee,
                 selectedParentHash,
@@ -112,15 +112,7 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
         let groupid = '';
         if (selectedToken.symbol.toLowerCase() === 'btctz') {
             // Not meant for initial mint
-            groupid = await mintYV(
-                tezosUrl,
-                selectedAccountHash,
-                isLedger ? signer : await cloneDecryptedSigner(signer, password),
-                keyStore,
-                fee,
-                destination,
-                amount
-            ).catch((err) => {
+            groupid = await mintYV(tezosUrl, selectedAccountHash, isLedger, password, keyStore, fee, destination, amount).catch((err) => {
                 console.log(err);
                 const errorObj = { name: err.message, ...err };
                 console.error(errorObj);
@@ -180,15 +172,7 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
 
         let groupid = '';
         if (selectedToken.symbol.toLowerCase() === 'btctz' || selectedToken.symbol.toLowerCase() === 'oldbtctz') {
-            groupid = await burnYV(
-                tezosUrl,
-                selectedAccountHash,
-                isLedger ? signer : await cloneDecryptedSigner(signer, password),
-                keyStore,
-                fee,
-                destination,
-                amount
-            ).catch((err) => {
+            groupid = await burnYV(tezosUrl, selectedAccountHash, isLedger, password, keyStore, fee, destination, amount).catch((err) => {
                 const errorObj = { name: err.message, ...err };
                 console.error(errorObj);
                 dispatch(createMessageAction(errorObj.name, true));

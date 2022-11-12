@@ -1,5 +1,7 @@
 import { ipcMain } from 'electron';
 import { KeyStoreUtils, CryptoUtils, SoftSigner } from 'conseiljs-softsigner';
+import { TezosMessageUtils } from 'conseiljs';
+import { onGetSigner, onSetSigner } from './global';
 
 ipcMain.handle('conseiljs-softsigner-generateMnemonic', async (event, val) => {
     return KeyStoreUtils.generateMnemonic(val);
@@ -73,8 +75,10 @@ ipcMain.handle('conseiljs-softsigner-CryptoUtils-signDetached', async (event, pa
     return res;
 });
 
-ipcMain.handle('conseiljs-softsigner-main-createSigner', async (event, secretKey: Buffer, password?: string) => {
-    const res = await SoftSigner.createSigner(secretKey, password);
+ipcMain.handle('conseiljs-softsigner-main-createSigner', async (event, secretKey: string, password?: string) => {
+    const secBuf = await TezosMessageUtils.writeKeyWithHint(secretKey, 'edsk');
+    const res = await SoftSigner.createSigner(secBuf, password);
+    onSetSigner(res);
     return res;
 });
 

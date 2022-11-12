@@ -69,9 +69,7 @@ function BalanceBanner(props: Props) {
     const [isShowKey, setIsShowKey] = useState(false);
 
     const bakerName = getBakerDetails(String(delegatedAddress));
-    console.log('aaaaaaa');
     const domainName = getTezosDomains(String(publicKeyHash));
-    console.log('bbbbbbb');
     const xtzPrices = getPrices();
 
     let addressLabel = '';

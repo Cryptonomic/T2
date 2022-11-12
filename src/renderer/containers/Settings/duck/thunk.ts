@@ -14,6 +14,7 @@ export const changeNodeThunk = (name: string) => {
     return (dispatch) => {
         dispatch({ type: CHANGE_NODE, name });
         setLocalData('settings.selectedNode', name);
+        // window.electron.store.get('')
     };
 };
 
@@ -53,5 +54,12 @@ export const removePathThunk = (label: string) => {
         dispatch({ type: REMOVE_PATH, label });
         setLocalData('settings.pathsList', state().settings.pathsList);
         setLocalData('settings.selectedPath', state().settings.selectedPath);
+    };
+};
+
+export const initWalltSettingsThunk: any = (walletSettings) => {
+    return (dispatch) => {
+        dispatch({ type: 'INIT_SETTINGS', settings: walletSettings });
+        setLocalData('settings', walletSettings);
     };
 };

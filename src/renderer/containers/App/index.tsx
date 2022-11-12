@@ -16,6 +16,7 @@ import { getLoggedIn } from '../../utils/login';
 import { getWalletSettings } from '../../utils/settings';
 import { RootState, WalletState, AppState } from '../../types/store';
 import { routes } from '../routes';
+import { initWalltSettingsThunk } from '../Settings/duck/thunk';
 
 const Container = styled.div`
     display: flex;
@@ -73,7 +74,7 @@ const App = () => {
             }
         });
 
-        window.electron.ipcRenderer.on('wallet', (url) => {
+        window.electron.ipcRenderer.on('wallet', async (url) => {
             const urlProps = new URL(url as string);
             const pathname = urlProps.pathname.slice(2);
             const { searchParams } = urlProps;
@@ -93,7 +94,7 @@ const App = () => {
                     // app.focus();
                 } else if (['sign', 'beaconRegistration', 'beaconEvent'].includes(pathname) && searchParams.has('r')) {
                     const req = searchParams.get('r') || '';
-                    dispatch(setModalValue(JSON.parse(window.electron.buffer.from(req, 'base64').toString('utf8')), pathname));
+                    dispatch(setModalValue(JSON.parse(await window.electron.buffer.from(req, 'base64').toString('utf8')), pathname));
 
                     if (pathname === 'sign') {
                         dispatch(setModalActiveTab(pathname));
@@ -102,7 +103,7 @@ const App = () => {
                         dispatch(setModalOpen(true, pathname));
                     } else if (!config.beaconEnable) {
                         dispatch(setModalValue({}, pathname));
-                        dispatch(setModalValue(JSON.parse(window.electron.buffer.from(req, 'base64').toString('utf8')), 'beaconDisable'));
+                        dispatch(setModalValue(JSON.parse(await window.electron.buffer.from(req, 'base64').toString('utf8')), 'beaconDisable'));
                         dispatch(setModalOpen(true, 'beaconDisable'));
                     }
 
@@ -117,7 +118,7 @@ const App = () => {
             try {
                 const walletSettings = getWalletSettings();
                 console.log('walletsettings', walletSettings);
-                dispatch({ type: 'INIT_SETTINGS', settings: walletSettings });
+                dispatch(initWalltSettingsThunk(walletSettings));
             } catch (err) {
                 window.setTimeout(() => {
                     navigate('/walletNodesRequired', { replace: true });

@@ -1,11 +1,10 @@
-import { WrappedTezosHelper, OpenOvenResult, TezosNodeReader, TezosConseilClient, ConseilServerInfo } from 'conseiljs';
+import { OpenOvenResult, ConseilServerInfo } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
 import { createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
-import { cloneDecryptedSigner } from '../../utils/wallet';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
@@ -29,9 +28,10 @@ export function transferThunk(destination: string, amount: string, fee: number, 
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.transferBalance(
+        const operationId: string | undefined = await window.conseiljs.WrappedTezosHelper.transferBalance(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             selectedAccountHash,
             fee,
@@ -95,9 +95,10 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
             coreContractAddress = token.vaultCoreAddress;
         }
 
-        const result = await WrappedTezosHelper.deployOven(
+        const result = await window.conseiljs.WrappedTezosHelper.deployOven(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             fee,
             coreContractAddress,
@@ -121,7 +122,7 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, openOvenResult.operationHash, 5, 60);
+        await window.conseiljs.TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, openOvenResult.operationHash, 5, 60);
 
         dispatch(
             createMessageAction(
@@ -165,9 +166,10 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.depositToOven(
+        const operationId: string | undefined = await window.conseiljs.WrappedTezosHelper.depositToOven(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             ovenAddress,
             fee,
@@ -189,7 +191,7 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
+        await window.conseiljs.TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
@@ -230,9 +232,10 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.withdrawFromOven(
+        const operationId: string | undefined = await window.conseiljs.WrappedTezosHelper.withdrawFromOven(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             ovenAddress,
             fee,
@@ -254,7 +257,7 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
+        await window.conseiljs.TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
@@ -295,9 +298,10 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.setOvenBaker(
+        const operationId: string | undefined = await window.conseiljs.WrappedTezosHelper.setOvenBaker(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             fee,
             ovenAddress,
@@ -319,7 +323,7 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
+        await window.conseiljs.TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {

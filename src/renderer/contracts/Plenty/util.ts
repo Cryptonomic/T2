@@ -1,6 +1,5 @@
 import { JSONPath } from 'jsonpath-plus';
 import { BigNumber } from 'bignumber.js';
-import { TezosNodeReader } from 'conseiljs';
 
 const farms = [
     'KT1DjDZio7k2GJwCJCXwK82ing3n51AE55DW', // kalam quipu lp
@@ -71,7 +70,7 @@ export async function getAccountBalance(server: string, mapid: number, account: 
     const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
     );
-    const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
+    const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
         throw new Error(`Map ${mapid} does not contain a record for ${account}`);
@@ -85,7 +84,7 @@ export async function getAccountAllowance(server: string, mapid: number, account
     const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(source, 'address'), 'hex')
     );
-    const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
+    const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
         throw new Error(`Map ${mapid} does not contain a record for ${source}/${account}`);
@@ -106,7 +105,7 @@ export async function getActivePools(server: string, account: string): Promise<{
                 const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
                     window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
                 );
-                const mapResult = await TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
+                const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
 
                 return mapResult !== undefined && JSONPath({ path: '$.args[0].args[1].int', json: mapResult }).toString() !== '0';
             } catch (error) {
@@ -137,7 +136,7 @@ export async function calcPendingRewards(server: string, account: string): Promi
     await Promise.all(
         accountPools.map(async (p) => {
             try {
-                const head = await TezosNodeReader.getBlockHead(server);
+                const head = await window.conseiljs.TezosNodeReader.getBlockHead(server);
                 const poolState = await readPoolStorage(server, p.contract);
                 const accountState = await readUserPoolRecord(server, p.map, account);
                 const currentBlockLevel = head.header.level;
@@ -173,7 +172,7 @@ export async function calcPendingRewards(server: string, account: string): Promi
 }
 
 async function readPoolStorage(server, address) {
-    const storageResult = await TezosNodeReader.getContractStorage(server, address);
+    const storageResult = await window.conseiljs.TezosNodeReader.getContractStorage(server, address);
 
     return {
         periodFinish: new BigNumber(JSONPath({ path: '$.args[1].args[0].args[0].int', json: storageResult })[0]).toString(),
@@ -186,9 +185,9 @@ async function readPoolStorage(server, address) {
 
 async function readUserPoolRecord(server, mapid, address) {
     const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
+        await window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
     );
-    const mapResult = await TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
+    const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
         throw new Error(`Map ${mapid} does not contain a record for ${address}`);

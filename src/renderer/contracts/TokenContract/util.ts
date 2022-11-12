@@ -1,4 +1,4 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection } from 'conseiljs';
 import { BigNumber } from 'bignumber.js';
 import { JSONPath } from 'jsonpath-plus';
 
@@ -162,7 +162,7 @@ export async function getTokenTransactions(tokenAddress, managerAddress, node: N
     indirect = ConseilQueryBuilder.addOrdering(indirect, 'timestamp', ConseilSortDirection.DESC);
     indirect = ConseilQueryBuilder.setLimit(indirect, 1_000);
 
-    return Promise.all([direct, indirect].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
+    return Promise.all([direct, indirect].map((q) => window.conseiljs.TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
         .then((responses) =>
             responses.reduce((result, r) => {
                 r.forEach((rr) => result.push(rr));

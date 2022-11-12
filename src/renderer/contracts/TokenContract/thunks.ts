@@ -1,17 +1,13 @@
-import { Tzip7ReferenceTokenHelper } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
 import { createTransaction, createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
-import { cloneDecryptedSigner } from '../../utils/wallet';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
 import { findTokenIndex } from '../../utils/token';
-
-const { transferBalance, mint, burn } = Tzip7ReferenceTokenHelper;
 
 const GAS = 125000; // TODO
 const FREIGHT = 1000;
@@ -33,9 +29,10 @@ export function transferThunk(destination: string, amount: number, fee: number, 
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await transferBalance(
+        const operationId: string | undefined = await window.conseiljs.Tzip7ReferenceTokenHelper.transferBalance(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             selectedAccountHash,
             fee,
@@ -95,9 +92,10 @@ export function mintThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const groupid: string = await mint(
+        const groupid: string = await window.conseiljs.Tzip7ReferenceTokenHelper.mint(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             selectedAccountHash,
             fee,
@@ -159,9 +157,10 @@ export function burnThunk(destination: string, amount: number, fee: number, pass
 
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const groupid: string = await burn(
+        const groupid: string = await window.conseiljs.Tzip7ReferenceTokenHelper.burn(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             selectedAccountHash,
             fee,

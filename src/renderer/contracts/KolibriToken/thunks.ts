@@ -1,11 +1,10 @@
-import { WrappedTezosHelper, OpenOvenResult, TezosNodeReader, TezosConseilClient, TezosNodeWriter, TezosParameterFormat, ConseilServerInfo } from 'conseiljs';
+import { OpenOvenResult, TezosParameterFormat, ConseilServerInfo } from 'conseiljs';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { updateTokensAction } from '../../reduxContent/wallet/actions';
 
 import { createTokenTransaction } from '../../utils/transaction';
 import { TRANSACTION } from '../../constants/TransactionTypes';
 
-import { cloneDecryptedSigner } from '../../utils/wallet';
 import { getSelectedKeyStore } from '../../utils/general';
 import { getMainNode, getMainPath } from '../../utils/settings';
 
@@ -30,9 +29,10 @@ export function transferThunk(destination: string, amount: number, fee: number, 
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.transferBalance(
+        const operationId: string | undefined = await window.conseiljs.WrappedTezosHelper.transferBalance(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             selectedAccountHash,
             fee,
@@ -96,9 +96,10 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
             coreContractAddress = token.vaultCoreAddress;
         }
 
-        const result = await WrappedTezosHelper.deployOven(
+        const result = await window.conseiljs.WrappedTezosHelper.deployOven(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             fee,
             coreContractAddress,
@@ -122,7 +123,7 @@ export function deployOven(fee: number, password: string, initialDelegate: strin
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, openOvenResult.operationHash, 5, 60);
+        await window.conseiljs.TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, openOvenResult.operationHash, 5, 60);
 
         dispatch(
             createMessageAction(
@@ -166,9 +167,10 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.depositToOven(
+        const operationId: string | undefined = await window.conseiljs.WrappedTezosHelper.depositToOven(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             ovenAddress,
             fee,
@@ -190,7 +192,7 @@ export function deposit(ovenAddress: string, amount: number, fee: number, passwo
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
+        await window.conseiljs.TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
@@ -231,7 +233,15 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.withdrawFromOven(tezosUrl, signer, keyStore, ovenAddress, fee, amount).catch((err) => {
+        const operationId: string | undefined = await window.conseiljs.WrappedTezosHelper.withdrawFromOven(
+            tezosUrl,
+            isLedger,
+            password,
+            keyStore,
+            ovenAddress,
+            fee,
+            amount
+        ).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(`withdraw failed with ${JSON.stringify(errorObj)}`);
             dispatch(createMessageAction(errorObj.name, true));
@@ -248,7 +258,7 @@ export function withdraw(ovenAddress: string, amount: number, fee: number, passw
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
+        await window.conseiljs.TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
@@ -289,9 +299,10 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
         const mainPath = getMainPath(pathsList, selectedPath);
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
-        const operationId: string | undefined = await WrappedTezosHelper.setOvenBaker(
+        const operationId: string | undefined = await window.conseiljs.WrappedTezosHelper.setOvenBaker(
             tezosUrl,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password),
+            isLedger,
+            password,
             keyStore,
             fee,
             ovenAddress,
@@ -313,7 +324,7 @@ export function setDelegateForOven(ovenAddress: string, newDelegate: string, fee
             apiKey: mainNode.apiKey,
             network: mainNode.network,
         };
-        await TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
+        await window.conseiljs.TezosConseilClient.awaitOperationConfirmation(conseilServerInfo, mainNode.network, operationId, 5, 60);
 
         const tokenIndex = findTokenIndex(tokens, selectedAccountHash);
         if (tokenIndex > -1) {
@@ -357,8 +368,8 @@ export function harvestRewards(password: string) {
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
         const activePools = await getActivePools(tezosUrl, selectedParentHash);
-        const ops = activePools.map((p) =>
-            TezosNodeWriter.constructContractInvocationOperation(
+        const opsPrs = activePools.map((p) =>
+            window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
                 selectedParentHash,
                 0,
                 p.contract,
@@ -371,18 +382,18 @@ export function harvestRewards(password: string) {
                 TezosParameterFormat.Micheline
             )
         );
-        const counter = await TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
 
-        const pricedOps = await TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
+        const ops = await Promise.all(opsPrs);
+        const counter = await window.conseiljs.TezosNodeReader.getCounterForAccount(tezosUrl, selectedParentHash);
 
-        const operationId = await TezosNodeWriter.sendOperation(tezosUrl, pricedOps, isLedger ? signer : await cloneDecryptedSigner(signer, password)).catch(
-            (err) => {
-                const errorObj = { name: err.message, ...err };
-                console.error(`Kolibri harvestRewards failed with ${JSON.stringify(errorObj)}`);
-                dispatch(createMessageAction(errorObj.name, true));
-                return undefined;
-            }
-        );
+        const pricedOps = await window.conseiljs.TezosNodeWriter.prepareOperationGroup(tezosUrl, keyStore, counter, ops, true);
+
+        const operationId = await window.conseiljs.TezosNodeWriter.sendOperation(tezosUrl, pricedOps, isLedger, password).catch((err) => {
+            const errorObj = { name: err.message, ...err };
+            console.error(`Kolibri harvestRewards failed with ${JSON.stringify(errorObj)}`);
+            dispatch(createMessageAction(errorObj.name, true));
+            return undefined;
+        });
 
         if (operationId === undefined) {
             return false;

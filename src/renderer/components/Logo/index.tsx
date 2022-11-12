@@ -14,7 +14,7 @@ const Tz = styled.div`
     width: ${ms(7)};
     height: ${ms(7)};
     background-color: ${({ theme: { colors } }) => colors.accent};
-    mask: url(${tezosLogo.default}) no-repeat;
+    mask: url(${tezosLogo}) no-repeat;
     mask-size: cover;
 `;
 
@@ -32,7 +32,7 @@ const ButtonContainer = styled(Button)`
 const Logo = () => (
     <ButtonContainer onClick={() => openLink(logoLink)} buttonTheme="plain">
         {logo.length === 0 && <Tz />}
-        {logo.length > 0 && <LogoImg src={customLogo.default} />}
+        {logo.length > 0 && <LogoImg src={customLogo} />}
     </ButtonContainer>
 );
 

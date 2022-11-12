@@ -140,7 +140,7 @@ function Delegate(props: Props) {
                         label={t('general.nouns.wallet_password')}
                         password={passPhrase}
                         onChange={(val) => setPassPhrase(val)}
-                        containerStyle={{ width: '60%', marginTop: '10px' }}
+                        containerStyle={{ width: '60%', marginTop: '10px', top: '30px' }}
                     />
                 )}
                 <InvokeButton buttonTheme="primary" disabled={isDisabled} onClick={() => onDelegate()}>
