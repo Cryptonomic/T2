@@ -20,6 +20,8 @@ import {
     SingleAssetTokenHelper,
     ConseilQuery,
     TzbtcTokenHelper,
+    ConseilDataClient,
+    KolibriTokenHelper,
 } from 'conseiljs';
 import { SoftSigner, KeyStoreUtils } from 'conseiljs-softsigner';
 import { onGetSigner, cloneDecryptedSigner } from './global';
@@ -100,6 +102,26 @@ ipcMain.handle('conseiljs-TezosNodeReader-isManagerKeyRevealedForAccount', async
 
 ipcMain.handle('conseiljs-TezosNodeReader-getCounterForAccount', async (event, server: string, accountHash: string, chainid?: string) => {
     const res = await TezosNodeReader.getCounterForAccount(server, accountHash, chainid);
+    return res;
+});
+
+ipcMain.handle('conseiljs-TezosNodeReader-getMempoolOperationsForAccount', async (event, server: string, accountHash: string, chainid?: string) => {
+    const res = await TezosNodeReader.getMempoolOperationsForAccount(server, accountHash, chainid);
+    return res;
+});
+
+ipcMain.handle('conseiljs-TezosNodeReader-estimateBranchTimeout', async (event, server: string, branch: string, chainid?: string) => {
+    const res = await TezosNodeReader.estimateBranchTimeout(server, branch, chainid);
+    return res;
+});
+
+ipcMain.handle('conseiljs-TezosNodeReader-getSpendableBalanceForAccount', async (event, server: string, accountHash: string, chainid?: string) => {
+    const res = await TezosNodeReader.getSpendableBalanceForAccount(server, accountHash, chainid);
+    return res;
+});
+
+ipcMain.handle('conseiljs-TezosNodeReader-getAccountForBlock', async (event, server: string, blockHash: string, accountHash: string, chainid?: string) => {
+    const res = await TezosNodeReader.getAccountForBlock(server, blockHash, accountHash, chainid);
     return res;
 });
 
@@ -200,6 +222,62 @@ ipcMain.handle(
         const si = onGetSigner();
         const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
         const res = await TezosNodeWriter.sendOperation(server, operations, signer, offset);
+        return res;
+    }
+);
+
+ipcMain.handle('conseiljs-TezosNodeWriter-estimateOperationGroup', async (event, server: string, chainid: string, operations: Array<StackableOperation>) => {
+    const res = await TezosNodeWriter.estimateOperationGroup(server, chainid, operations);
+    return res;
+});
+
+ipcMain.handle(
+    'conseiljs-TezosNodeWriter-appendRevealOperation',
+    async (event, server: string, publicKey: string, accountHash: string, accountOperationIndex: number, operations: StackableOperation[]) => {
+        const res = await TezosNodeWriter.appendRevealOperation(server, publicKey, accountHash, accountOperationIndex, operations);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-TezosNodeWriter-sendIdentityActivationOperation',
+    async (event, server: string, isLedger: boolean, password: string, keyStore: KeyStore, activationCode: string) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await TezosNodeWriter.sendIdentityActivationOperation(server, signer, keyStore, activationCode);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-TezosNodeWriter-testContractInvocationOperation',
+    async (
+        event,
+        server: string,
+        chainid: string,
+        keyStore: KeyStore,
+        contract: string,
+        amount: number,
+        fee: number,
+        storageLimit: number,
+        gasLimit: number,
+        entrypoint: string | undefined,
+        parameters: string | undefined,
+        parameterFormat?: TezosParameterFormat
+    ) => {
+        const res = await TezosNodeWriter.testContractInvocationOperation(
+            server,
+            chainid,
+            keyStore,
+            contract,
+            amount,
+            fee,
+            storageLimit,
+            gasLimit,
+            entrypoint,
+            parameters,
+            parameterFormat
+        );
         return res;
     }
 );
@@ -374,6 +452,24 @@ ipcMain.handle(
     }
 );
 
+ipcMain.handle('conseiljs-WrappedTezosHelper-getAccountBalance', async (event, server: string, mapid: number, account: string) => {
+    const res = await WrappedTezosHelper.getAccountBalance(server, mapid, account);
+    return res;
+});
+
+ipcMain.handle('conseiljs-WrappedTezosHelper-getSimpleStorage', async (event, server: string, address: string) => {
+    const res = await WrappedTezosHelper.getSimpleStorage(server, address);
+    return res;
+});
+
+ipcMain.handle(
+    'conseiljs-WrappedTezosHelper-listOvens',
+    async (event, serverInfo: ConseilServerInfo, coreContractAddress: string, ovenOwner: string, ovenListBigMapId: number) => {
+        const res = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, ovenOwner, ovenListBigMapId);
+        return res;
+    }
+);
+
 // TezosConseilClient
 ipcMain.handle(
     'conseiljs-TezosConseilClient-awaitOperationConfirmation',
@@ -385,6 +481,21 @@ ipcMain.handle(
 
 ipcMain.handle('conseiljs-TezosConseilClient-getOperations', async (event, serverInfo: ConseilServerInfo, network: string, query: ConseilQuery) => {
     const res = await TezosConseilClient.getOperations(serverInfo, network, query);
+    return res;
+});
+
+ipcMain.handle('conseiljs-TezosConseilClient-getBlockHead', async (event, serverInfo: ConseilServerInfo, network: string) => {
+    const res = await TezosConseilClient.getBlockHead(serverInfo, network);
+    return res;
+});
+
+ipcMain.handle('conseiljs-TezosConseilClient-getAccount', async (event, serverInfo: ConseilServerInfo, network: string, accountID: string) => {
+    const res = await TezosConseilClient.getAccount(serverInfo, network, accountID);
+    return res;
+});
+
+ipcMain.handle('conseiljs-TezosConseilClient-countKeysInMap', async (event, serverInfo: ConseilServerInfo, mapIndex: number) => {
+    const res = await TezosConseilClient.countKeysInMap(serverInfo, mapIndex);
     return res;
 });
 
@@ -467,6 +578,16 @@ ipcMain.handle(
     }
 );
 
+ipcMain.handle('conseiljs-Tzip7ReferenceTokenHelper-getAccountBalance', async (event, server: string, mapid: number, account: string, balancePath?: string) => {
+    const res = await Tzip7ReferenceTokenHelper.getAccountBalance(server, mapid, account, balancePath);
+    return res;
+});
+
+ipcMain.handle('conseiljs-Tzip7ReferenceTokenHelper-getSimpleStorage', async (event, server: string, address: string) => {
+    const res = await Tzip7ReferenceTokenHelper.getSimpleStorage(server, address);
+    return res;
+});
+
 // MultiAssetTokenHelper
 ipcMain.handle(
     'conseiljs-MultiAssetTokenHelper-transfer',
@@ -488,6 +609,19 @@ ipcMain.handle(
         return res;
     }
 );
+
+ipcMain.handle(
+    'conseiljs-MultiAssetTokenHelper-getAccountBalance',
+    async (event, server: string, mapid: number, account: string, tokenid: number, balancePath?: string) => {
+        const res = await MultiAssetTokenHelper.getAccountBalance(server, mapid, account, tokenid, balancePath);
+        return res;
+    }
+);
+
+ipcMain.handle('conseiljs-MultiAssetTokenHelper-getSimpleStorage', async (event, server: string, address: string) => {
+    const res = await MultiAssetTokenHelper.getSimpleStorage(server, address);
+    return res;
+});
 
 // SingleAssetTokenHelper
 ipcMain.handle(
@@ -512,6 +646,16 @@ ipcMain.handle(
     }
 );
 
+ipcMain.handle('conseiljs-SingleAssetTokenHelper-getAccountBalance', async (event, server: string, mapid: number, account: string, balancePath?: string) => {
+    const res = await SingleAssetTokenHelper.getAccountBalance(server, mapid, account, balancePath);
+    return res;
+});
+
+ipcMain.handle('conseiljs-SingleAssetTokenHelper-getSimpleStorage', async (event, server: string, address: string) => {
+    const res = await SingleAssetTokenHelper.getSimpleStorage(server, address);
+    return res;
+});
+
 // TzbtcTokenHelper
 ipcMain.handle(
     'conseiljs-TzbtcTokenHelper-transferBalance',
@@ -535,3 +679,38 @@ ipcMain.handle(
         return res;
     }
 );
+
+ipcMain.handle('conseiljs-TzbtcTokenHelper-getAccountBalance', async (event, server: string, mapid: number, account: string) => {
+    const res = await TzbtcTokenHelper.getAccountBalance(server, mapid, account);
+    return res;
+});
+
+ipcMain.handle('conseiljs-TzbtcTokenHelper-getTokenSupply', async (event, server: string, mapid: number) => {
+    const res = await TzbtcTokenHelper.getTokenSupply(server, mapid);
+    return res;
+});
+
+ipcMain.handle('conseiljs-TzbtcTokenHelper-getPaused', async (event, server: string, mapid: number) => {
+    const res = await TzbtcTokenHelper.getPaused(server, mapid);
+    return res;
+});
+
+// ConseilDataClient
+ipcMain.handle(
+    'conseiljs-ConseilDataClient-executeEntityQuery',
+    async (event, serverInfo: ConseilServerInfo, platform: string, network: string, entity: string, query: ConseilQuery) => {
+        const res = await ConseilDataClient.executeEntityQuery(serverInfo, platform, network, entity, query);
+        return res;
+    }
+);
+
+// KolibriTokenHelper
+ipcMain.handle('conseiljs-KolibriTokenHelper-getAccountBalance', async (event, server: string, mapid: number, account: string) => {
+    const res = await KolibriTokenHelper.getAccountBalance(server, mapid, account);
+    return res;
+});
+
+ipcMain.handle('conseiljs-KolibriTokenHelper-getSimpleStorage', async (event, server: string, address: string) => {
+    const res = await KolibriTokenHelper.getSimpleStorage(server, address);
+    return res;
+});

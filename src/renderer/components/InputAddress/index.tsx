@@ -5,7 +5,7 @@ import { debounce } from 'throttle-debounce';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@mui/material/IconButton';
 
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, ConseilDataClient } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection } from 'conseiljs';
 
 import TextField from '../TextField';
 import TezosIcon from '../TezosIcon';
@@ -83,7 +83,7 @@ function InputAddress(props: Props) {
         query = ConseilQueryBuilder.addOrdering(query, 'script', ConseilSortDirection.DESC);
         query = ConseilQueryBuilder.setLimit(query, 1);
 
-        const account = await ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'accounts', query).catch(() => []);
+        const account = await window.conseiljs.ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'accounts', query).catch(() => []);
         return account;
     }
 

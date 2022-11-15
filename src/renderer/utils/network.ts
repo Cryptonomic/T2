@@ -4,7 +4,7 @@ export async function fetchWithTimeout(resource, options) {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
 
-    const response = await fetch(resource, {
+    const response = await window.electron.fetch(resource, {
         ...options,
         signal: controller.signal,
     });

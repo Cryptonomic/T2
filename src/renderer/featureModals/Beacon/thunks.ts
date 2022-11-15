@@ -2,20 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 
-import {
-    TezosConstants,
-    TezosNodeReader,
-    TezosNodeWriter,
-    Delegation,
-    Origination,
-    Reveal,
-    ConseilQueryBuilder,
-    ConseilOperator,
-    ConseilFunction,
-    ConseilDataClient,
-} from 'conseiljs';
-
-import { cloneDecryptedSigner } from '../../utils/wallet';
+import { TezosConstants, TezosNodeWriter, Delegation, Origination, Reveal, ConseilQueryBuilder, ConseilOperator, ConseilFunction } from 'conseiljs';
 
 import { RootState } from '../../types/store';
 
@@ -39,7 +26,7 @@ export function estimateOperationGroupFee(publicKeyHash: string, operations: any
                 const keyStore = getSelectedKeyStore(identities, publicKeyHash, publicKeyHash, isLedger);
 
                 const formedOperations = await createOperationGroup(operations, tezosUrl, publicKeyHash, keyStore.publicKey);
-                const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
+                const estimate = await window.conseiljs.TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
                 const estimatedGas = estimate.operationResources.reduce((a, c) => (a += c.gas), 0);
                 const estimatedStorage = estimate.operationResources.reduce((a, c) => (a += c.storageCost), 0);
                 setFee({ estimatedFee: estimate.estimatedFee, estimatedGas, estimatedStorage, feeError: '' });
@@ -79,7 +66,7 @@ export function getAverageOperationGroupFee(publicKeyHash: string, operations: a
                 query = ConseilQueryBuilder.addAggregationFunction(query, 'gas_limit', ConseilFunction.avg);
                 query = ConseilQueryBuilder.setLimit(query, 1);
 
-                const result = await ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'operations', query).catch(() => []);
+                const result = await window.conseiljs.ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'operations', query).catch(() => []);
 
                 setFee(Math.ceil(Number(result[0].avg_fee)));
             } catch (e: any) {
@@ -111,7 +98,7 @@ export function sendOperations(password: string, operations: any[], fee = 0, gas
         }
 
         const formedOperations = await createOperationGroup(operations, tezosUrl, selectedParentHash, keyStore.publicKey);
-        const estimate = await TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
+        const estimate = await window.conseiljs.TezosNodeWriter.estimateOperationGroup(tezosUrl, 'main', formedOperations);
 
         formedOperations[0].fee = fee === 0 ? estimate.estimatedFee.toString() : fee.toString();
 
@@ -130,11 +117,7 @@ export function sendOperations(password: string, operations: any[], fee = 0, gas
             }
         }
 
-        const result: any = await TezosNodeWriter.sendOperation(
-            tezosUrl,
-            formedOperations,
-            isLedger ? signer : await cloneDecryptedSigner(signer, password)
-        ).catch((err) => {
+        const result: any = await window.conseiljs.TezosNodeWriter.sendOperation(tezosUrl, formedOperations, isLedger, password).catch((err) => {
             const errorObj = { name: err.message, ...err };
             console.error(err);
             dispatch(createMessageAction(errorObj.name, true));
@@ -168,7 +151,7 @@ export function sendOperations(password: string, operations: any[], fee = 0, gas
 }
 
 async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicKey) {
-    const networkCounter = await TezosNodeReader.getCounterForAccount(tezosUrl, publicKeyHash);
+    const networkCounter = await window.conseiljs.TezosNodeReader.getCounterForAccount(tezosUrl, publicKeyHash);
     const formedOperations: any[] = [];
 
     let counter = networkCounter;
@@ -259,7 +242,7 @@ async function createOperationGroup(operations, tezosUrl, publicKeyHash, publicK
         }
     }
 
-    return TezosNodeWriter.appendRevealOperation(tezosUrl, publicKey, publicKeyHash, networkCounter, formedOperations);
+    return window.conseiljs.TezosNodeWriter.appendRevealOperation(tezosUrl, publicKey, publicKeyHash, networkCounter, formedOperations);
 }
 
 export function queryHicEtNuncSwap(swapId: number) {
@@ -272,24 +255,24 @@ export function queryHicEtNuncSwap(swapId: number) {
             const { selectedNode, nodesList } = store.getState().settings;
             const { tezosUrl } = getMainNode(nodesList, selectedNode);
 
-            const packedSwapId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+            const packedSwapId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
                 window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(swapId, 'int'), 'hex')
             );
 
-            const swapInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 523, packedSwapId);
+            const swapInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, 523, packedSwapId);
 
             const source = JSONPath({ path: '$.args[0].args[0].string', json: swapInfo })[0];
             const stock = Number(JSONPath({ path: '$.args[0].args[1].int', json: swapInfo })[0]);
             const nftId = Number(JSONPath({ path: '$.args[1].int', json: swapInfo })[0]);
 
-            const packedNftId = window.conseiljs.TezosMessageUtils.encodeBigMapKey(
+            const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
                 window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(nftId, 'int'), 'hex')
             );
-            const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 514, packedNftId);
+            const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, 514, packedNftId);
             const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
             const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
 
-            const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+            const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
             const nftDetailJson = await nftDetails.json();
             const nftName = nftDetailJson.name;
             const nftDescription = nftDetailJson.description;

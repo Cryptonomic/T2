@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection, TezosConseilClient, TezosNodeReader } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator, ConseilSortDirection } from 'conseiljs';
 
 import * as status from '../constants/StatusTypes';
 import { Node, TokenTransaction, WalletTransaction } from '../types/general';
@@ -117,7 +117,7 @@ export async function getIndexedTransactions(accountHash, node: Node) {
     target = ConseilQueryBuilder.addOrdering(target, 'block_level', ConseilSortDirection.DESC);
     target = ConseilQueryBuilder.setLimit(target, 1_000);
 
-    return Promise.all([target, origin].map((q) => TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
+    return Promise.all([target, origin].map((q) => window.conseiljs.TezosConseilClient.getOperations({ url: conseilUrl, apiKey, network }, network, q)))
         .then((responses) => {
             return responses.reduce((result, r) => {
                 r.forEach((rr) => result.push(rr));
@@ -143,9 +143,9 @@ export async function getSyncTransactions(accountHash: string, node: Node, state
         return [];
     });
 
-    const pendingGroups: any[] = await TezosNodeReader.getMempoolOperationsForAccount(node.tezosUrl, accountHash);
+    const pendingGroups: any[] = await window.conseiljs.TezosNodeReader.getMempoolOperationsForAccount(node.tezosUrl, accountHash);
     const pendingTransactions = await Promise.all(
-        pendingGroups.map(async (g) => processNodeOperationGroup(g, await TezosNodeReader.estimateBranchTimeout(node.tezosUrl, g.branch)))
+        pendingGroups.map(async (g) => processNodeOperationGroup(g, await window.conseiljs.TezosNodeReader.estimateBranchTimeout(node.tezosUrl, g.branch)))
     );
 
     const transactions = indexedTransaction.map((t) => createTransaction({ ...t, status: status.READY })).concat(pendingTransactions);

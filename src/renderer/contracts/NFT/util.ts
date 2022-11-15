@@ -96,7 +96,7 @@ export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number)
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
     // Todo
-    const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+    const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
     const nftDetailJson = await nftDetails.json();
 
     const nftName = nftDetailJson.name;
@@ -144,7 +144,7 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
     // Todo Joe
-    const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+    const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
     const nftDetailJson = await nftDetails.json();
 
     const nftName = nftDetailJson.name;
@@ -586,7 +586,7 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     const ipfsUrlString = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString();
     const urlStart = ipfsUrlString.indexOf('ipfs://');
     const ipfsHash = ipfsUrlString.slice(urlStart + 7);
-    const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' }).catch((e) => {
+    const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' }).catch((e) => {
         console.log(`error fetching nft metadata ${objectId}, ${ipfsHash}`);
         return {
             json: () => {
@@ -683,7 +683,7 @@ export async function getDogamiDetails(tezosUrl: string, objectId: number | stri
     const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
-    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId);
+    const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId);
 
     const artifactUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const creatorBytes = JSONPath({ path: '$.args[1][2].args[1].bytes', json: nftInfo })[0];
@@ -822,11 +822,11 @@ export async function getPotusNFTObjectDetails(tezosUrl: string, objectId: numbe
     const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
-    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 5631, packedNftId); // TODO: store in token definition
+    const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, 5631, packedNftId); // TODO: store in token definition
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
 
-    const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+    const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
     const nftDetailJson = await nftDetails.json();
 
     const nftName = nftDetailJson.name;
@@ -1154,7 +1154,7 @@ export async function getHashThreeNFTDetails(tezosUrl: string, objectId: number 
     const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(`token_${objectId}_metadata`, 'string'), 'hex')
     );
-    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
+    const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
     const metadataBytes = JSONPath({ path: '$.bytes', json: nftInfo })[0];
     const metadataString = window.electron.buffer.from(metadataBytes, 'hex').toString();
     const nftDetailJson = JSON.parse(metadataString);
@@ -1289,7 +1289,7 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
         const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
             window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData('meta', 'string'), 'hex')
         );
-        const contractMetadataResult = await TezosNodeReader.getValueForBigMapKey(tezosNode, contractMetadataMapId, packedKey);
+        const contractMetadataResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosNode, contractMetadataMapId, packedKey);
         contractMetadataJson = JSON.parse(window.electron.buffer.from(contractMetadataResult.bytes, 'hex').toString());
 
         if (contractMetadataJson.homepage) {
@@ -1308,11 +1308,11 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
             const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
                 window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData('', 'string'), 'hex')
             );
-            const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosNode, metadataMapId, packedNftId);
+            const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosNode, metadataMapId, packedNftId);
             const ipfsUrlBytes = JSONPath({ path: '$.bytes', json: nftInfo })[0];
             const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
 
-            const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+            const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
             const nftDetailJson = await nftDetails.json();
 
             if (nftDetailJson.homepage) {

@@ -1,4 +1,4 @@
-import { ConseilDataClient, ConseilQueryBuilder, ConseilOperator } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator } from 'conseiljs';
 import { getMainNode } from '../../utils/settings';
 
 export function publicKeyThunk(address: string) {
@@ -17,7 +17,7 @@ export function publicKeyThunk(address: string) {
         publicKeyQuery = ConseilQueryBuilder.setLimit(publicKeyQuery, 1);
 
         try {
-            return (await ConseilDataClient.executeEntityQuery(serverInfo, 'tezos', network, 'operations', publicKeyQuery))[0]?.public_key;
+            return (await window.conseiljs.ConseilDataClient.executeEntityQuery(serverInfo, 'tezos', network, 'operations', publicKeyQuery))[0]?.public_key;
         } catch (e) {
             throw Error('Public key not revealed on chain.');
         }

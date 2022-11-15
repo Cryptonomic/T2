@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import * as fs from 'fs';
 import os from 'os';
 import path from 'path';
+import fetch from 'electron-fetch';
 
 ipcMain.handle('os-platform', (event) => {
     const res = os.platform();
@@ -29,5 +30,10 @@ ipcMain.on('node-buffer-from', async (event, data: string, encoding = 'utf8') =>
 
 ipcMain.handle('node-buffer-alloc', async (event, val: number) => {
     const res = Buffer.alloc(val);
+    return res;
+});
+
+ipcMain.handle('electron-fetch', async (event, url: string, options) => {
+    const res = await fetch(url, options);
     return res;
 });

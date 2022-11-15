@@ -94,6 +94,9 @@ contextBridge.exposeInMainWorld('electron', {
             return ipcRenderer.invoke('node-buffer-alloc', val);
         },
     },
+    fetch(url, options) {
+        return ipcRenderer.invoke('electron-fetch', url, options);
+    },
     // conseiljsSoftSigner: conseiljsSoftSigner
 });
 
@@ -151,6 +154,18 @@ contextBridge.exposeInMainWorld('conseiljs', {
         },
         getCounterForAccount(server: string, accountHash: string, chainid?: string) {
             return ipcRenderer.invoke('conseiljs-TezosNodeReader-getCounterForAccount', server, accountHash, chainid);
+        },
+        getMempoolOperationsForAccount(server: string, accountHash: string, chainid?: string) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeReader-getMempoolOperationsForAccount', server, accountHash, chainid);
+        },
+        estimateBranchTimeout(server: string, branch: string, chainid?: string) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeReader-estimateBranchTimeout', server, branch, chainid);
+        },
+        getSpendableBalanceForAccount(server: string, accountHash: string, chainid?: string) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeReader-getSpendableBalanceForAccount', server, accountHash, chainid);
+        },
+        getAccountForBlock(server: string, blockHash: string, accountHash: string, chainid?: string) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeReader-getAccountForBlock', server, blockHash, accountHash, chainid);
         },
     },
     TezosNodeWriter: {
@@ -243,6 +258,43 @@ contextBridge.exposeInMainWorld('conseiljs', {
         },
         sendOperation(server: string, operations: Operation[], isLedger: boolean, password: string, offset?: number) {
             return ipcRenderer.invoke('conseiljs-TezosNodeWriter-sendOperation', server, operations, isLedger, password, offset);
+        },
+        estimateOperationGroup(server: string, chainid: string, operations: Array<StackableOperation>) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeWriter-estimateOperationGroup', server, chainid, operations);
+        },
+        appendRevealOperation(server: string, publicKey: string, accountHash: string, accountOperationIndex: number, operations: StackableOperation[]) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeWriter-appendRevealOperation', server, publicKey, accountHash, accountOperationIndex, operations);
+        },
+        sendIdentityActivationOperation(server: string, isLedger: boolean, password: string, keyStore: KeyStore, activationCode: string) {
+            return ipcRenderer.invoke('conseiljs-TezosNodeWriter-sendIdentityActivationOperation', server, isLedger, password, keyStore, activationCode);
+        },
+        testContractInvocationOperation(
+            server: string,
+            chainid: string,
+            keyStore: KeyStore,
+            contract: string,
+            amount: number,
+            fee: number,
+            storageLimit: number,
+            gasLimit: number,
+            entrypoint: string | undefined,
+            parameters: string | undefined,
+            parameterFormat?: TezosParameterFormat
+        ) {
+            return ipcRenderer.invoke(
+                'conseiljs-TezosNodeWriter-testContractInvocationOperation',
+                server,
+                chainid,
+                keyStore,
+                contract,
+                amount,
+                fee,
+                storageLimit,
+                gasLimit,
+                entrypoint,
+                parameters,
+                parameterFormat
+            );
         },
     },
     BabylonDelegationHelper: {
@@ -406,6 +458,15 @@ contextBridge.exposeInMainWorld('conseiljs', {
                 storageLimit
             );
         },
+        getAccountBalance(server: string, mapid: number, account: string) {
+            return ipcRenderer.invoke('conseiljs-WrappedTezosHelper-getAccountBalance', server, mapid, account);
+        },
+        getSimpleStorage(server: string, address: string) {
+            return ipcRenderer.invoke('conseiljs-WrappedTezosHelper-getSimpleStorage', server, address);
+        },
+        listOvens(serverInfo: ConseilServerInfo, coreContractAddress: string, ovenOwner: string, ovenListBigMapId: number) {
+            return ipcRenderer.invoke('conseiljs-WrappedTezosHelper-listOvens', serverInfo, coreContractAddress, ovenOwner, ovenListBigMapId);
+        },
     },
     TezosConseilClient: {
         awaitOperationConfirmation(serverInfo: ConseilServerInfo, network: string, hash: string, duration?: number, blocktime?: number) {
@@ -413,6 +474,15 @@ contextBridge.exposeInMainWorld('conseiljs', {
         },
         getOperations(serverInfo: ConseilServerInfo, network: string, query: ConseilQuery) {
             return ipcRenderer.invoke('conseiljs-TezosConseilClient-getOperations', serverInfo, network, query);
+        },
+        getBlockHead(serverInfo: ConseilServerInfo, network: string) {
+            return ipcRenderer.invoke('conseiljs-TezosConseilClient-getBlockHead', serverInfo, network);
+        },
+        getAccount(serverInfo: ConseilServerInfo, network: string, accountID: string) {
+            return ipcRenderer.invoke('conseiljs-TezosConseilClient-getAccount', serverInfo, network, accountID);
+        },
+        countKeysInMap(serverInfo: ConseilServerInfo, mapIndex: number) {
+            return ipcRenderer.invoke('conseiljs-TezosConseilClient-countKeysInMap', serverInfo, mapIndex);
         },
     },
     Tzip7ReferenceTokenHelper: {
@@ -496,6 +566,12 @@ contextBridge.exposeInMainWorld('conseiljs', {
                 freight
             );
         },
+        getAccountBalance(server: string, mapid: number, account: string, balancePath?: string) {
+            return ipcRenderer.invoke('conseiljs-Tzip7ReferenceTokenHelper-getAccountBalance', server, mapid, account, balancePath);
+        },
+        getSimpleStorage(server: string, address: string) {
+            return ipcRenderer.invoke('conseiljs-Tzip7ReferenceTokenHelper-getSimpleStorage', server, address);
+        },
     },
     MultiAssetTokenHelper: {
         transfer(
@@ -510,6 +586,12 @@ contextBridge.exposeInMainWorld('conseiljs', {
             freight?: number
         ) {
             return ipcRenderer.invoke('conseiljs-MultiAssetTokenHelper-transfer', server, address, isLedger, password, keystore, fee, transfers, gas, freight);
+        },
+        getAccountBalance(server: string, mapid: number, account: string, tokenid: number, balancePath?: string) {
+            return ipcRenderer.invoke('conseiljs-MultiAssetTokenHelper-getAccountBalance', server, mapid, account, tokenid, balancePath);
+        },
+        getSimpleStorage(server: string, address: string) {
+            return ipcRenderer.invoke('conseiljs-MultiAssetTokenHelper-getSimpleStorage', server, address);
         },
     },
     SingleAssetTokenHelper: {
@@ -538,6 +620,12 @@ contextBridge.exposeInMainWorld('conseiljs', {
                 gas,
                 freight
             );
+        },
+        getAccountBalance(server: string, mapid: number, account: string, balancePath?: string) {
+            return ipcRenderer.invoke('conseiljs-SingleAssetTokenHelper-getAccountBalance', server, mapid, account, balancePath);
+        },
+        getSimpleStorage(server: string, address: string) {
+            return ipcRenderer.invoke('conseiljs-SingleAssetTokenHelper-getSimpleStorage', server, address);
         },
     },
     TzbtcTokenHelper: {
@@ -568,6 +656,28 @@ contextBridge.exposeInMainWorld('conseiljs', {
                 gas,
                 freight
             );
+        },
+        getAccountBalance(server: string, mapid: number, account: string) {
+            return ipcRenderer.invoke('conseiljs-TzbtcTokenHelper-getAccountBalance', server, mapid, account);
+        },
+        getTokenSupply(server: string, mapid?: number) {
+            return ipcRenderer.invoke('conseiljs-TzbtcTokenHelper-getTokenSupply', server, mapid);
+        },
+        getPaused(server: string, mapid?: number) {
+            return ipcRenderer.invoke('conseiljs-TzbtcTokenHelper-getPaused', server, mapid);
+        },
+    },
+    ConseilDataClient: {
+        executeEntityQuery(serverInfo: ConseilServerInfo, platform: string, network: string, entity: string, query: ConseilQuery) {
+            return ipcRenderer.invoke('conseiljs-ConseilDataClient-executeEntityQuery', serverInfo, platform, network, entity, query);
+        },
+    },
+    KolibriTokenHelper: {
+        getAccountBalance(server: string, mapid: number, account: string) {
+            return ipcRenderer.invoke('conseiljs-KolibriTokenHelper-getAccountBalance', server, mapid, account);
+        },
+        getSimpleStorage(server: string, address: string) {
+            return ipcRenderer.invoke('conseiljs-KolibriTokenHelper-getSimpleStorage', server, address);
         },
     },
 });

@@ -1,20 +1,5 @@
 import { push } from '@lagunovsky/redux-react-router';
-import {
-    TezosNodeWriter,
-    KeyStoreType,
-    Tzip7ReferenceTokenHelper,
-    MultiAssetTokenHelper,
-    SingleAssetTokenHelper,
-    TzbtcTokenHelper,
-    WrappedTezosHelper,
-    KolibriTokenHelper,
-    ConseilServerInfo,
-    TezosConseilClient,
-    ConseilQueryBuilder,
-    ConseilOperator,
-    ConseilDataClient,
-    TezosNodeReader,
-} from 'conseiljs';
+import { KeyStoreType, ConseilServerInfo, ConseilQueryBuilder, ConseilOperator } from 'conseiljs';
 import { JSONPath } from 'jsonpath-plus';
 import { createMessageAction } from '../message/actions';
 import { CREATE, IMPORT } from '../../constants/CreationTypes';
@@ -29,15 +14,7 @@ import { findIdentity, findIdentityIndex, createIdentity, getSyncIdentity, syncI
 
 import { clearOperationId, getNodesStatus, getNodesError, getSelectedKeyStore } from '../../utils/general';
 
-import {
-    saveUpdatedWallet,
-    loadPersistedState,
-    saveIdentitiesToLocal,
-    loadWalletFromLedger,
-    loadTokens,
-    cloneDecryptedSigner,
-    createWallet,
-} from '../../utils/wallet';
+import { saveUpdatedWallet, loadPersistedState, saveIdentitiesToLocal, loadWalletFromLedger, loadTokens, createWallet } from '../../utils/wallet';
 
 import { findTokenIndex } from '../../utils/token';
 
@@ -69,7 +46,6 @@ import * as tzbtcUtil from '../../contracts/TzBtcToken/util';
 import * as plentyUtil from '../../contracts/Plenty/util';
 import { getLocalData } from '../../utils/localData';
 
-const { sendIdentityActivationOperation } = TezosNodeWriter;
 let currentAccountRefreshInterval: any = null;
 
 export function clearAutomaticAccountRefresh() {
@@ -200,9 +176,14 @@ export function syncTokenThunk(tokenAddress) {
             const mapid = tokens[tokenIndex].mapid || 0;
 
             if (tokens[tokenIndex].kind === TokenKind.tzip7 || tokens[tokenIndex].kind === TokenKind.usdtz || tokens[tokenIndex].kind === TokenKind.ethtz) {
-                balanceAsync = Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].balancePath);
-                detailsAsync = Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                balanceAsync = window.conseiljs.Tzip7ReferenceTokenHelper.getAccountBalance(
+                    mainNode.tezosUrl,
+                    mapid,
+                    selectedParentHash,
+                    tokens[tokenIndex].balancePath
+                );
+                detailsAsync = window.conseiljs.Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, mapid);
                     if (tokens[tokenIndex].address === 'KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH') {
                         // TODO
                         return { ...d, holders: keyCount, supply: 1000000000000000000000000 };
@@ -223,11 +204,11 @@ export function syncTokenThunk(tokenAddress) {
                 //     tokens[tokenIndex].kind
                 // );
             } else if (tokens[tokenIndex].kind === TokenKind.tzbtc) {
-                balanceAsync = TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                balanceAsync = window.conseiljs.TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
-                detailsAsync = TzbtcTokenHelper.getTokenSupply(mainNode.tezosUrl).then(async (supply) => {
-                    const paused = await TzbtcTokenHelper.getPaused(mainNode.tezosUrl);
-                    const keyCount = (await TezosConseilClient.countKeysInMap(serverInfo, mapid)) - 3; // paused, totalSupply, operators
+                detailsAsync = window.conseiljs.TzbtcTokenHelper.getTokenSupply(mainNode.tezosUrl).then(async (supply) => {
+                    const paused = await window.conseiljs.TzbtcTokenHelper.getPaused(mainNode.tezosUrl);
+                    const keyCount = (await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, mapid)) - 3; // paused, totalSupply, operators
 
                     return { supply, paused, holders: keyCount };
                 });
@@ -236,23 +217,23 @@ export function syncTokenThunk(tokenAddress) {
                 const coreContractAddress = vaultToken.vaultCoreAddress;
                 const vaultListBigMapId = vaultToken.vaultRegistryMapId;
 
-                balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                balanceAsync = window.conseiljs.WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 transAsync = [];
                 // tzbtcUtil.syncTokenTransactions(tokenAddress, selectedParentHash, mainNode, tokens[tokenIndex].transactions);
-                detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                detailsAsync = window.conseiljs.WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, mapid);
                     return { ...d, holders: keyCount };
                 });
 
                 try {
-                    ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
+                    ovenAddresses = await window.conseiljs.WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
                 } catch {
                     // ignore empty list
                 }
             } else if (tokens[tokenIndex].kind === TokenKind.kusd) {
-                balanceAsync = KolibriTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                detailsAsync = KolibriTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                balanceAsync = window.conseiljs.KolibriTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                detailsAsync = window.conseiljs.KolibriTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, mapid);
                     return { ...d, holders: keyCount };
                 });
                 transAsync = []; // tzip7Util.syncTokenTransactions(
@@ -263,9 +244,9 @@ export function syncTokenThunk(tokenAddress) {
                 //     tokens[tokenIndex].kind
                 // );
             } else if (tokens[tokenIndex].kind === TokenKind.blnd) {
-                balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                balanceAsync = window.conseiljs.WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                detailsAsync = window.conseiljs.WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, mapid);
 
                     return { ...d, holders: keyCount };
                 });
@@ -277,9 +258,9 @@ export function syncTokenThunk(tokenAddress) {
                 //     tokens[tokenIndex].kind
                 // );
             } else if (tokens[tokenIndex].kind === TokenKind.stkr) {
-                balanceAsync = WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
-                detailsAsync = WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                balanceAsync = window.conseiljs.WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
+                detailsAsync = window.conseiljs.WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, mapid);
 
                     return { ...d, holders: keyCount };
                 });
@@ -293,7 +274,7 @@ export function syncTokenThunk(tokenAddress) {
             } else if (tokens[tokenIndex].kind === TokenKind.plenty) {
                 balanceAsync = plentyUtil.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash);
                 detailsAsync = plentyUtil.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address).then(async (d) => {
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, mapid);
 
                     return { ...d, holders: keyCount };
                 });
@@ -306,7 +287,7 @@ export function syncTokenThunk(tokenAddress) {
                 // );
             } else if (tokens[tokenIndex].kind === TokenKind.tzip12) {
                 if (tokens[tokenIndex].tokenIndex !== undefined) {
-                    balanceAsync = MultiAssetTokenHelper.getAccountBalance(
+                    balanceAsync = await window.conseiljs.MultiAssetTokenHelper.getAccountBalance(
                         mainNode.tezosUrl,
                         mapid,
                         selectedParentHash,
@@ -314,7 +295,12 @@ export function syncTokenThunk(tokenAddress) {
                         tokens[tokenIndex].balancePath
                     );
                 } else {
-                    balanceAsync = SingleAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, tokens[tokenIndex].balancePath);
+                    balanceAsync = await window.conseiljs.SingleAssetTokenHelper.getAccountBalance(
+                        mainNode.tezosUrl,
+                        mapid,
+                        selectedParentHash,
+                        tokens[tokenIndex].balancePath
+                    );
                 }
 
                 if (tokens[tokenIndex].symbol.toLowerCase() === 'btctz' || tokens[tokenIndex].symbol.toLowerCase() === 'oldbtctz') {
@@ -322,15 +308,15 @@ export function syncTokenThunk(tokenAddress) {
                     detailsAsync = token2Util
                         .getSimpleStorageYV(mainNode.tezosUrl, tokens[tokenIndex].address, selectedParentHash)
                         .then(async (d) => {
-                            const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                            const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, mapid);
 
                             return { ...d, holders: keyCount };
                         })
                         .catch(() => undefined);
                 } else {
-                    detailsAsync = MultiAssetTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address)
+                    detailsAsync = window.conseiljs.MultiAssetTokenHelper.getSimpleStorage(mainNode.tezosUrl, tokens[tokenIndex].address)
                         .then(async (d) => {
-                            const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, mapid);
+                            const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, mapid);
 
                             return { ...d, holders: keyCount };
                         })
@@ -361,8 +347,8 @@ export function syncTokenThunk(tokenAddress) {
             if (ovenAddresses.length > 0) {
                 // TODO: move up
                 const ovenPromises = ovenAddresses.map(async (ovenAddress: string) => {
-                    const ovenBalance = await TezosNodeReader.getSpendableBalanceForAccount(mainNode.tezosUrl, ovenAddress);
-                    const block: any = await TezosNodeReader.getAccountForBlock(mainNode.tezosUrl, 'head', ovenAddress);
+                    const ovenBalance = await window.conseiljs.TezosNodeReader.getSpendableBalanceForAccount(mainNode.tezosUrl, ovenAddress);
+                    const block: any = await window.conseiljs.TezosNodeReader.getAccountForBlock(mainNode.tezosUrl, 'head', ovenAddress);
                     const baker = block.delegate as string;
 
                     return {
@@ -425,14 +411,19 @@ export function syncWalletThunk(): any {
                     const mapid = token.mapid || -1;
                     let { administrator } = token;
 
-                    let details: any = await Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
+                    let details: any = await window.conseiljs.Tzip7ReferenceTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(
+                        () => undefined
+                    );
                     administrator = details?.administrator || '';
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
 
-                    const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(mainNode.tezosUrl, mapid, selectedParentHash, token.balancePath).catch(
-                        () => 0
-                    );
+                    const balance = await window.conseiljs.Tzip7ReferenceTokenHelper.getAccountBalance(
+                        mainNode.tezosUrl,
+                        mapid,
+                        selectedParentHash,
+                        token.balancePath
+                    ).catch(() => 0);
 
                     if (token.address === 'KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH' && details) {
                         // TODO
@@ -440,7 +431,7 @@ export function syncWalletThunk(): any {
                     }
 
                     if (token.address === 'KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4' && details) {
-                        const storage = await TezosNodeReader.getContractStorage(mainNode.tezosUrl, token.address);
+                        const storage = await window.conseiljs.TezosNodeReader.getContractStorage(mainNode.tezosUrl, token.address);
                         details.supply = Number(JSONPath({ path: '$.args[3].int', json: storage })[0]);
                     }
 
@@ -451,7 +442,9 @@ export function syncWalletThunk(): any {
                 if (token.kind === TokenKind.tzbtc) {
                     const administrator = token.administrator || '';
 
-                    const balance = await TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
+                    const balance = await window.conseiljs.TzbtcTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(
+                        () => 0
+                    );
                     const transactions = [];
                     // await tzbtcUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions); /* TODO */
 
@@ -460,7 +453,9 @@ export function syncWalletThunk(): any {
                 if (token.kind === TokenKind.wxtz) {
                     const vaultToken = token as VaultToken;
 
-                    const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
+                    const balance = await window.conseiljs.WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(
+                        () => 0
+                    );
                     const transactions = [];
                     // await wxtzUtil.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions);
 
@@ -470,11 +465,16 @@ export function syncWalletThunk(): any {
 
                     let vaultList: any[] = [];
                     try {
-                        const ovenAddresses = await WrappedTezosHelper.listOvens(serverInfo, coreContractAddress, selectedParentHash, vaultListBigMapId);
+                        const ovenAddresses = await window.conseiljs.WrappedTezosHelper.listOvens(
+                            serverInfo,
+                            coreContractAddress,
+                            selectedParentHash,
+                            vaultListBigMapId
+                        );
                         if (ovenAddresses.length > 0) {
                             const ovenPromises = ovenAddresses.map(async (ovenAddress: string) => {
-                                const ovenBalance = await TezosNodeReader.getSpendableBalanceForAccount(mainNode.tezosUrl, ovenAddress);
-                                const block: any = await TezosNodeReader.getAccountForBlock(mainNode.tezosUrl, 'head', ovenAddress);
+                                const ovenBalance = await window.conseiljs.TezosNodeReader.getSpendableBalanceForAccount(mainNode.tezosUrl, ovenAddress);
+                                const block: any = await window.conseiljs.TezosNodeReader.getAccountForBlock(mainNode.tezosUrl, 'head', ovenAddress);
                                 const baker = block.delegate as string;
 
                                 return {
@@ -494,11 +494,13 @@ export function syncWalletThunk(): any {
                 }
                 if (token.kind === TokenKind.kusd) {
                     const { administrator } = token;
-                    let details: any = await KolibriTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
+                    let details: any = await window.conseiljs.KolibriTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
 
-                    const balance = await KolibriTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
+                    const balance = await window.conseiljs.KolibriTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(
+                        () => 0
+                    );
                     const transactions = [];
                     // await tzip7Util.syncTokenTransactions(token.address, selectedParentHash, mainNode, token.transactions, token.kind);
 
@@ -512,15 +514,17 @@ export function syncWalletThunk(): any {
                 if (token.kind === TokenKind.stkr || token.kind === TokenKind.blnd) {
                     let { administrator } = token;
 
-                    let details: any = await WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch((e) => {
+                    let details: any = await window.conseiljs.WrappedTezosHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch((e) => {
                         return undefined;
                     });
                     administrator = details?.administrator || '';
 
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
 
-                    const balance = await WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(() => 0);
+                    const balance = await window.conseiljs.WrappedTezosHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash).catch(
+                        () => 0
+                    );
                     const transactions = []; // await tzip7Util.syncTokenTransactions(
                     //     token.address,
                     //     selectedParentHash,
@@ -537,10 +541,10 @@ export function syncWalletThunk(): any {
                     let details: any = await plentyUtil.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined);
                     administrator = details?.administrator || '';
 
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
 
-                    const balance = await Tzip7ReferenceTokenHelper.getAccountBalance(
+                    const balance = await window.conseiljs.Tzip7ReferenceTokenHelper.getAccountBalance(
                         mainNode.tezosUrl,
                         token.mapid,
                         selectedParentHash,
@@ -559,17 +563,17 @@ export function syncWalletThunk(): any {
                         // TODO
                         details = await token2Util.getSimpleStorageYV(mainNode.tezosUrl, token.address, selectedParentHash).catch(() => undefined);
                     } else {
-                        details = await MultiAssetTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined); // supply, paused
+                        details = await window.conseiljs.MultiAssetTokenHelper.getSimpleStorage(mainNode.tezosUrl, token.address).catch(() => undefined); // supply, paused
                     }
 
                     administrator = details?.administrator || '';
 
-                    const keyCount = await TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
+                    const keyCount = await window.conseiljs.TezosConseilClient.countKeysInMap(serverInfo, token.mapid);
                     details = { ...details, holders: keyCount };
 
                     let balance = 0;
                     if (token.tokenIndex !== undefined) {
-                        balance = await MultiAssetTokenHelper.getAccountBalance(
+                        balance = await window.conseiljs.MultiAssetTokenHelper.getAccountBalance(
                             mainNode.tezosUrl,
                             token.mapid,
                             selectedParentHash,
@@ -577,9 +581,12 @@ export function syncWalletThunk(): any {
                             token.balancePath
                         ).catch(() => 0);
                     } else {
-                        balance = await SingleAssetTokenHelper.getAccountBalance(mainNode.tezosUrl, token.mapid, selectedParentHash, token.balancePath).catch(
-                            () => 0
-                        );
+                        balance = await window.conseiljs.SingleAssetTokenHelper.getAccountBalance(
+                            mainNode.tezosUrl,
+                            token.mapid,
+                            selectedParentHash,
+                            token.balancePath
+                        ).catch(() => 0);
                     }
 
                     const transactions = []; // await tzip12Util.syncTokenTransactions(
@@ -668,6 +675,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
     return async (dispatch, state) => {
         const { walletLocation, walletFileName, walletPassword, identities } = state().wallet;
         const { selectedNode, nodesList } = state().settings;
+        const { isLedger, password } = state().app;
         const mainNode = getMainNode(nodesList, selectedNode);
         const { network, conseilUrl, tezosUrl, apiKey } = mainNode;
 
@@ -698,7 +706,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     query = ConseilQueryBuilder.addPredicate(query, 'kind', ConseilOperator.EQ, ['activate_account'], false);
                     query = ConseilQueryBuilder.setLimit(query, 1);
 
-                    const account = await ConseilDataClient.executeEntityQuery(
+                    const account = await window.conseiljs.ConseilDataClient.executeEntityQuery(
                         { url: conseilUrl, apiKey, network },
                         'tezos',
                         network,
@@ -708,9 +716,10 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     if (!account || account.length === 0) {
                         const keyStore = getSelectedKeyStore([identity], identity.publicKeyHash, identity.publicKeyHash, false);
                         const newKeyStore = { ...keyStore, storeType: KeyStoreType.Fundraiser };
-                        activating = await sendIdentityActivationOperation(
+                        activating = await window.conseiljs.TezosNodeWriter.sendIdentityActivationOperation(
                             tezosUrl,
-                            await cloneDecryptedSigner(state().app.signer, walletPassword),
+                            isLedger,
+                            password,
                             newKeyStore,
                             activationCode
                         ).catch((err) => {
@@ -738,9 +747,11 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     };
                     identity.storeType = storeTypesMap[identity.storeType];
                     await dispatch(setSignerThunk(identity.secretKey, walletPassword));
-                    const account = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, identity.publicKeyHash).catch(
-                        () => false
-                    );
+                    const account = await window.conseiljs.TezosConseilClient.getAccount(
+                        { url: conseilUrl, apiKey, network },
+                        network,
+                        identity.publicKeyHash
+                    ).catch(() => false);
 
                     break;
                 }

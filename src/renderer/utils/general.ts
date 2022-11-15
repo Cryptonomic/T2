@@ -1,4 +1,4 @@
-import { TezosConseilClient, TezosNodeReader, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
+import { KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
 import moment from 'moment';
 import { Node, NodeStatus } from '../types/general';
 
@@ -14,12 +14,12 @@ const { Mnemonic, Hardware } = KeyStoreType;
 
 export async function getNodesStatus(node: Node): Promise<NodeStatus> {
     const { tezosUrl, conseilUrl, apiKey, network } = node;
-    const tezRes: any = await TezosNodeReader.getBlockHead(tezosUrl).catch((err) => {
+    const tezRes: any = await window.conseiljs.TezosNodeReader.getBlockHead(tezosUrl).catch((err) => {
         console.error(err);
         return false;
     });
 
-    const consRes = await TezosConseilClient.getBlockHead({ url: conseilUrl, apiKey, network }, network).catch((err) => {
+    const consRes = await window.conseiljs.TezosConseilClient.getBlockHead({ url: conseilUrl, apiKey, network }, network).catch((err) => {
         console.error(err);
         return false;
     });
@@ -76,11 +76,13 @@ export async function activateAndUpdateAccount(account, node: Node) {
     const { conseilUrl, network, apiKey } = node;
     const accountHash = account.publicKeyHash || account.account_id;
     if (account.status === status.READY || account.status === status.CREATED) {
-        const updatedAccount: any = await TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, accountHash).catch((error) => {
-            console.log(`-debug: Error in: status.READY for:${accountHash}`);
-            console.error(error);
-            return null;
-        });
+        const updatedAccount: any = await window.conseiljs.TezosConseilClient.getAccount({ url: conseilUrl, apiKey, network }, network, accountHash).catch(
+            (error) => {
+                console.log(`-debug: Error in: status.READY for:${accountHash}`);
+                console.error(error);
+                return null;
+            }
+        );
 
         if (updatedAccount) {
             return {
@@ -151,7 +153,7 @@ export function clearOperationId(operationId: string) {
 
 export const getDataFromApi = async (url: string) => {
     try {
-        const response = await fetch(url, { cache: 'no-store' });
+        const response = await window.electron.fetch(url, { cache: 'no-store' });
         const responseJson = await response.json();
         return responseJson;
     } catch (error) {

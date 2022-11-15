@@ -1,16 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
-import {
-    TezosConseilClient,
-    TezosNodeReader,
-    TezosNodeWriter,
-    OperationKindType,
-    TezosParameterFormat,
-    KeyStore,
-    KeyStoreCurve,
-    KeyStoreType,
-} from 'conseiljs';
+import { TezosConseilClient, OperationKindType, TezosParameterFormat, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
 // import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
 import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
 
@@ -151,7 +142,7 @@ export const estimateContractCall = (
                 const { selectedNode, nodesList } = store.getState().settings;
                 const { tezosUrl } = getMainNode(nodesList, selectedNode);
 
-                const estimate = await TezosNodeWriter.testContractInvocationOperation(
+                const estimate = await window.conseiljs.TezosNodeWriter.testContractInvocationOperation(
                     tezosUrl,
                     'main',
                     { ...emptyKeyStore, publicKeyHash: accountAddress },

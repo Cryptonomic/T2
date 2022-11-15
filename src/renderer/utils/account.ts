@@ -1,4 +1,4 @@
-import { ConseilQueryBuilder, ConseilOperator, ConseilDataClient } from 'conseiljs';
+import { ConseilQueryBuilder, ConseilOperator } from 'conseiljs';
 import * as blakejs from 'blakejs';
 
 import * as status from '../constants/StatusTypes';
@@ -43,7 +43,7 @@ export async function getAccountsForIdentity(node: Node, pkh: string) {
     originationQuery = ConseilQueryBuilder.addPredicate(originationQuery, 'status', ConseilOperator.EQ, ['applied'], false);
     originationQuery = ConseilQueryBuilder.setLimit(originationQuery, 1000);
 
-    const originations = await ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'operations', originationQuery);
+    const originations = await window.conseiljs.ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'operations', originationQuery);
 
     if (originations.length === 0) {
         return [];
@@ -63,7 +63,7 @@ export async function getAccountsForIdentity(node: Node, pkh: string) {
     }
 
     accountQuery = ConseilQueryBuilder.setLimit(accountQuery, originations.length);
-    const accounts = await ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'accounts', accountQuery);
+    const accounts = await window.conseiljs.ConseilDataClient.executeEntityQuery(serverInfo, platform, network, 'accounts', accountQuery);
 
     return accounts;
 }

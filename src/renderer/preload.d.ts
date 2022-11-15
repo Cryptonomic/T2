@@ -15,6 +15,9 @@ import {
     TransferPair,
     ConseilQuery,
     TezosBlock,
+    Contract,
+    MultiAssetSimpleStorage,
+    WrappedTezosStorage,
 } from 'conseiljs';
 import { SoftSigner } from 'conseiljs-softsigner';
 
@@ -54,6 +57,8 @@ declare global {
                 from: (data, encoding) => Buffer;
                 alloc: (val: number) => Buffer;
             };
+
+            fetch: (url: string, options?) => Promise<any>;
         };
 
         conseiljsSoftSigner: {
@@ -121,6 +126,10 @@ declare global {
                 getValueForBigMapKey: (server: string, index: number, key: string, block?: string, chainid?: string) => Promise<any>;
                 isManagerKeyRevealedForAccount: (server: string, accountHash: string) => Promise<boolean>;
                 getCounterForAccount: (server: string, accountHash: string, chainid?: string) => Promise<number>;
+                getMempoolOperationsForAccount: (server: string, accountHash: string, chainid?: string) => Promise<any>;
+                estimateBranchTimeout: (server: string, branch: string, chainid?: string) => Promise<number>;
+                getSpendableBalanceForAccount: (server: string, accountHash: string, chainid?: string) => Promise<number>;
+                getAccountForBlock: (server: string, blockHash: string, accountHash: string, chainid?: string) => Promise<Contract>;
             };
             TezosNodeWriter: {
                 sendTransactionOperation: (
@@ -170,6 +179,39 @@ declare global {
                     optimizeFee?: boolean
                 ) => Promise<(Transaction | Delegation | Reveal)[]>;
                 sendOperation(server: string, operations: Operation[], isLedger: boolean, password: string, offset?: number): Promise<OperationResult>;
+                estimateOperationGroup: (server: string, chainid: string, operations: Array<StackableOperation>) => Promise<any>;
+                appendRevealOperation: (
+                    server: string,
+                    publicKey: string,
+                    accountHash: string,
+                    accountOperationIndex: number,
+                    operations: StackableOperation[]
+                ) => Promise<(Transaction | Delegation | Reveal)[]>;
+                sendIdentityActivationOperation(
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    activationCode: string
+                ): Promise<OperationResult>;
+                testContractInvocationOperation: (
+                    server: string,
+                    chainid: string,
+                    keyStore: KeyStore,
+                    contract: string,
+                    amount: number,
+                    fee: number,
+                    storageLimit: number,
+                    gasLimit: number,
+                    entrypoint: string | undefined,
+                    parameters: string | undefined,
+                    parameterFormat?: TezosParameterFormat
+                ) => Promise<{
+                    gas: number;
+                    storageCost: number;
+                    estimatedFee: number;
+                    estimatedStorageBurn: number;
+                }>;
             };
             BabylonDelegationHelper: {
                 unSetDelegate: (
@@ -276,6 +318,9 @@ declare global {
                     gasLimit?: number,
                     storageLimit?: number
                 ) => Promise<string>;
+                getAccountBalance: (server: string, mapid: number, account: string) => Promise<number>;
+                getSimpleStorage: (server: string, address: string) => Promise<WrappedTezosStorage>;
+                listOvens: (serverInfo: ConseilServerInfo, coreContractAddress: string, ovenOwner: string, ovenListBigMapId: number) => Promise<Array<string>>;
             };
             TezosConseilClient: {
                 awaitOperationConfirmation: (
@@ -286,6 +331,9 @@ declare global {
                     blocktime?: number
                 ) => Promise<any>;
                 getOperations: (serverInfo: ConseilServerInfo, network: string, query: ConseilQuery) => Promise<any[]>;
+                getBlockHead: (serverInfo: ConseilServerInfo, network: string) => Promise<any>;
+                getAccount: (serverInfo: ConseilServerInfo, network: string, accountID: string) => Promise<any>;
+                countKeysInMap: (serverInfo: ConseilServerInfo, mapIndex: number) => Promise<number>;
             };
             Tzip7ReferenceTokenHelper: {
                 transferBalance: (
@@ -325,6 +373,16 @@ declare global {
                     gas: number,
                     freight: number
                 ) => Promise<string>;
+                getAccountBalance: (server: string, mapid: number, account: string, balancePath?: string) => Promise<number>;
+                getSimpleStorage: (
+                    server: string,
+                    address: string
+                ) => Promise<{
+                    mapid: number;
+                    supply: number;
+                    administrator: string;
+                    paused: boolean;
+                }>;
             };
             MultiAssetTokenHelper: {
                 transfer(
@@ -338,6 +396,8 @@ declare global {
                     gas?: number,
                     freight?: number
                 ): Promise<string>;
+                getAccountBalance: (server: string, mapid: number, account: string, tokenid: number, balancePath?: string) => Promise<number>;
+                getSimpleStorage: (server: string, address: string) => Promise<MultiAssetSimpleStorage>;
             };
             SingleAssetTokenHelper: {
                 transfer(
@@ -352,6 +412,16 @@ declare global {
                     gas?: number,
                     freight?: number
                 ): Promise<string>;
+                getAccountBalance: (server: string, mapid: number, account: string, balancePath?: string) => Promise<number>;
+                getSimpleStorage: (
+                    server: string,
+                    address: string
+                ) => Promise<{
+                    mapid: number;
+                    supply: number;
+                    administrator: string;
+                    paused: boolean;
+                }>;
             };
             TzbtcTokenHelper: {
                 transferBalance: (
@@ -367,6 +437,24 @@ declare global {
                     gas?: number,
                     freight?: number
                 ) => Promise<string>;
+                getAccountBalance: (server: string, mapid: number, account: string) => Promise<number>;
+                getTokenSupply: (server: string, mapid?: number) => Promise<number>;
+                getPaused: (server: string, mapid?: number) => Promise<boolean>;
+            };
+            ConseilDataClient: {
+                executeEntityQuery: (serverInfo: ConseilServerInfo, platform: string, network: string, entity: string, query: ConseilQuery) => Promise<any[]>;
+            };
+            KolibriTokenHelper: {
+                getAccountBalance: (server: string, mapid: number, account: string) => Promise<number>;
+                getSimpleStorage: (
+                    server: string,
+                    address: string
+                ) => Promise<{
+                    mapid: number;
+                    supply: number;
+                    administrator: string;
+                    paused: boolean;
+                }>;
             };
         };
         pngJS: {
