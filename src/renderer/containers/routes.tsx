@@ -31,13 +31,4 @@ export const routes: RouteObject[] = [
     { path: '/login/import', element: <LoginImport /> },
     { path: '/login/home', element: <LoginHome /> },
     { path: '/login/create', element: <LoginCreate /> },
-    // {
-    //     path: "/login",
-    //     element: <Login />,
-    //     children: [
-    //         { index: true, element: <LoginHome /> },
-    //         // { path: "/courses/:id", element: <Course /> },
-    //     ],
-    // },
-    // { path: "*", element: <NoMatch /> }
 ];

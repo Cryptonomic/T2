@@ -90,11 +90,11 @@ async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: s
  */
 export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number) {
     const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        await window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
     const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, 514, packedNftId);
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
-    const ipfsHash = await window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
+    const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
     // Todo
     const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
     const nftDetailJson = await nftDetails.json();
@@ -140,10 +140,10 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
     const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
-    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, 860, packedNftId);
+    const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, 860, packedNftId);
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
-
+    // Todo Joe
     const nftDetails = await fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
     const nftDetailJson = await nftDetails.json();
 
@@ -580,7 +580,7 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
-    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
+    const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId); // TODO: store in token definition
 
     const ipfsUrlBytes = JSONPath({ path: urlPath, json: nftInfo })[0];
     const ipfsUrlString = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString();
@@ -651,7 +651,7 @@ export async function get8bidouDetails(tezosUrl: string, objectId: number | stri
     const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
         window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(objectId, 'int'), 'hex')
     );
-    const nftInfo = await TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId);
+    const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, metadataMap, packedNftId);
 
     const creatorBytes = JSONPath({ path: '$.args[2].bytes', json: nftInfo })[0]; // $.args[1].string
     const descriptionBytes = JSONPath({ path: '$.args[4].bytes', json: nftInfo })[0];

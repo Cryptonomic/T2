@@ -864,7 +864,11 @@ export function loginThunk(loginType, walletLocation, walletFileName, password):
 
             dispatch(automaticAccountRefresh());
             dispatch(setIsLoadingAction(false));
-            dispatch(push('/'));
+            if (identities.length > 0) {
+                dispatch(push('/'));
+            } else {
+                dispatch(push('/add'));
+            }
             await dispatch(syncWalletThunk());
         } catch (e: any) {
             console.error(e);

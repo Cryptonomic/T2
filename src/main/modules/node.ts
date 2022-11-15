@@ -22,9 +22,9 @@ ipcMain.handle('node-fs-readfile', async (event, filename) => {
     return res;
 });
 
-ipcMain.handle('node-buffer-from', async (event, data: string, encoding = 'utf8') => {
+ipcMain.on('node-buffer-from', async (event, data: string, encoding = 'utf8') => {
     const res = Buffer.from(data, encoding);
-    return res;
+    event.returnValue = res;
 });
 
 ipcMain.handle('node-buffer-alloc', async (event, val: number) => {

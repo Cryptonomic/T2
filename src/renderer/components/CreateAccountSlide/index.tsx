@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
@@ -16,11 +16,12 @@ function CreateAccountSlide() {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [isDisabled, setIsDisabled] = useState(false);
-    const [seed, setSeed] = useState(generateNewMnemonic());
+    const [seed, setSeed] = useState('');
     const [currentSlide, setCurrentSlide] = useState(0);
 
-    function updateMnemonic() {
-        setSeed(generateNewMnemonic());
+    async function updateMnemonic() {
+        const newSeeds = await generateNewMnemonic();
+        setSeed(newSeeds);
     }
 
     function onImport() {
@@ -63,6 +64,14 @@ function CreateAccountSlide() {
                 return createAccount();
         }
     }
+
+    useEffect(() => {
+        const onInitSeeds = async () => {
+            const newSeeds = await generateNewMnemonic();
+            setSeed(newSeeds);
+        };
+        onInitSeeds();
+    }, []);
 
     useEventListener('keydown', onKeyPressed);
 

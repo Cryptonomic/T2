@@ -185,7 +185,7 @@ async function readPoolStorage(server, address) {
 
 async function readUserPoolRecord(server, mapid, address) {
     const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        await window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
+        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
     );
     const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 

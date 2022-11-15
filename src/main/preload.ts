@@ -88,7 +88,7 @@ contextBridge.exposeInMainWorld('electron', {
     },
     buffer: {
         from(data, encoding) {
-            return ipcRenderer.invoke('node-buffer-from', data, encoding);
+            return ipcRenderer.sendSync('node-buffer-from', data, encoding);
         },
         alloc(val: number) {
             return ipcRenderer.invoke('node-buffer-alloc', val);
@@ -633,7 +633,6 @@ contextBridge.exposeInMainWorld('conseiljsSoftSigner', {
             return ipcRenderer.invoke('conseiljs-softsigner-main-cloneDecryptedSigner', signer, password);
         },
     },
-    test: 'aaaaa',
 });
 
 contextBridge.exposeInMainWorld('conseiljsLedgerSigner', {

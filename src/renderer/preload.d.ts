@@ -58,7 +58,7 @@ declare global {
 
         conseiljsSoftSigner: {
             KeyStoreUtils: {
-                generateMnemonic: (strength?: number) => string;
+                generateMnemonic: (strength?: number) => Promise<string>;
                 generateIdentity: (strength?: number, password?: string, mnemonic?: string) => Promise<KeyStore>;
                 restoreIdentityFromSecretKey: (secretKey: string) => Promise<KeyStore>;
                 restoreIdentityFromMnemonic: (
