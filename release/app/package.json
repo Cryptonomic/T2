@@ -16,7 +16,7 @@
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
   "dependencies": {
-    "@ledgerhq/hw-transport-node-hid": "5.29.0",
+    "@ledgerhq/hw-transport-node-hid": "^6.27.6",
     "conseiljs-ledgersigner": "^5.0.5-beta.1",
     "conseiljs-softsigner": "^5.0.5-beta.1"
   }

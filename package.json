@@ -121,22 +121,23 @@
     },
     "win": {
       "target": [
-        "msi"
+        "nsis"
       ]
     },
     "linux": {
       "target": [
-        "snap"
+        "AppImage"
       ],
       "category": "Finance"
     },
     "directories": {
       "app": "release/app",
-      "buildResources": "resources",
+      "buildResources": "assets",
       "output": "release/build"
     },
     "extraResources": [
-      "./resources/**"
+      "./resources/**",
+      "./assets/**"
     ]
   },
   "repository": {
