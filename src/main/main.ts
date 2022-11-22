@@ -59,12 +59,14 @@ ipcMain.on('open-enternal-link', async (event, url) => {
     shell.openExternal(url);
 });
 
-ipcMain.on('conseiljs-ledgersigner-KeyStoreUtils-unlockAddress', async (event, derivationPath: string) => {
-    event.returnValue = await KeyStoreUtilsLedger.unlockAddress(derivationPath);
+ipcMain.handle('conseiljs-ledgersigner-KeyStoreUtils-unlockAddress', async (event, derivationPath: string) => {
+    const res = await KeyStoreUtilsLedger.unlockAddress(derivationPath);
+    return res;
 });
 
-ipcMain.on('conseiljs-ledgersigner-KeyStoreUtils-getTezosPublicKey', async (event, derivationPath: string) => {
-    event.returnValue = await KeyStoreUtilsLedger.getTezosPublicKey(derivationPath);
+ipcMain.handle('conseiljs-ledgersigner-KeyStoreUtils-getTezosPublicKey', async (event, derivationPath: string) => {
+    const res = await KeyStoreUtilsLedger.getTezosPublicKey(derivationPath);
+    return res;
 });
 
 ipcMain.on('electron-pngjs-get', async (event, imageDataBytes) => {
@@ -79,8 +81,9 @@ ipcMain.on('os-platform', (event) => {
     event.returnValue = os.platform();
 });
 
-ipcMain.on('transportNodeHid-device-lists', async (event) => {
-    event.returnValue = await TransportNodeHid.list();
+ipcMain.handle('transportNodeHid-device-lists', async (event) => {
+    const res = await TransportNodeHid.list();
+    return res;
 });
 
 ipcMain.on('wallet', (event, data) => {

@@ -43,8 +43,6 @@ function HomePage() {
         onDetectLedger();
     }, []);
 
-    const redirectTo = isIdentities ? '/home/main' : '/home/add';
-
     BigNumber.config({ EXPONENTIAL_AT: 54 });
 
     return (

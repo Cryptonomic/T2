@@ -57,7 +57,7 @@ contextBridge.exposeInMainWorld('electron', {
     },
     transportNodeHid: {
         getList() {
-            return ipcRenderer.sendSync('transportNodeHid-device-lists');
+            return ipcRenderer.invoke('transportNodeHid-device-lists');
         },
     },
     clipboard: {
@@ -748,10 +748,10 @@ contextBridge.exposeInMainWorld('conseiljsSoftSigner', {
 contextBridge.exposeInMainWorld('conseiljsLedgerSigner', {
     KeyStoreUtils: {
         unlockAddress(derivationPath: string) {
-            return ipcRenderer.sendSync('conseiljs-ledgersigner-KeyStoreUtils-unlockAddress', derivationPath);
+            return ipcRenderer.invoke('conseiljs-ledgersigner-KeyStoreUtils-unlockAddress', derivationPath);
         },
         getTezosPublicKey(derivationPath: string) {
-            return ipcRenderer.sendSync('conseiljs-ledgersigner-KeyStoreUtils-getTezosPublicKey', derivationPath);
+            return ipcRenderer.invoke('conseiljs-ledgersigner-KeyStoreUtils-getTezosPublicKey', derivationPath);
         },
     },
 });
