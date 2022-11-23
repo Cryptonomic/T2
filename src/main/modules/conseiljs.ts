@@ -22,6 +22,7 @@ import {
     TzbtcTokenHelper,
     ConseilDataClient,
     KolibriTokenHelper,
+    OperationKindType,
 } from 'conseiljs';
 import { SoftSigner, KeyStoreUtils } from 'conseiljs-softsigner';
 import { onGetSigner, cloneDecryptedSigner } from './global';
@@ -62,7 +63,8 @@ ipcMain.handle('conseiljs-tezosmessageutils-readPackedData', async (event, hex: 
     return TezosMessageUtils.readPackedData(hex, type);
 });
 
-ipcMain.handle('conseiljs-tezosmessageutils-encodeBigMapKey', async (event, key: Buffer) => {
+ipcMain.handle('conseiljs-tezosmessageutils-encodeBigMapKey', async (event, value: string | number | Buffer, type: string, encoding?: BufferEncoding) => {
+    const key = Buffer.from(TezosMessageUtils.writePackedData(value, type), encoding);
     return TezosMessageUtils.encodeBigMapKey(key);
 });
 
@@ -282,6 +284,46 @@ ipcMain.handle(
     }
 );
 
+ipcMain.handle(
+    'conseiljs-TezosNodeWriter-sendContractOriginationOperation',
+    async (
+        event,
+        server: string,
+        isLedger: boolean,
+        password: string,
+        keyStore: KeyStore,
+        amount: number,
+        delegate: string | undefined,
+        fee: number,
+        storageLimit: number,
+        gasLimit: number,
+        code: string,
+        storage: string,
+        codeFormat?: TezosParameterFormat,
+        offset?: number,
+        optimizeFee?: boolean
+    ) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await TezosNodeWriter.sendContractOriginationOperation(
+            server,
+            signer,
+            keyStore,
+            amount,
+            delegate,
+            fee,
+            storageLimit,
+            gasLimit,
+            code,
+            storage,
+            codeFormat,
+            offset,
+            optimizeFee
+        );
+        return res;
+    }
+);
+
 // BabylonDelegationHelper
 
 ipcMain.handle(
@@ -330,6 +372,16 @@ ipcMain.handle(
         const si = onGetSigner();
         const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
         const res = await BabylonDelegationHelper.sendDelegatedFunds(server, signer, keyStore, contract, fee, amount, destination);
+        return res;
+    }
+);
+
+ipcMain.handle(
+    'conseiljs-BabylonDelegationHelper-deployManagerContract',
+    async (event, server: string, isLedger, password, keyStore: KeyStore, delegate: string, fee: number, amount: number, optimizeFee?: boolean) => {
+        const si = onGetSigner();
+        const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+        const res = await BabylonDelegationHelper.deployManagerContract(server, signer, keyStore, delegate, fee, amount, optimizeFee);
         return res;
     }
 );
@@ -498,6 +550,21 @@ ipcMain.handle('conseiljs-TezosConseilClient-countKeysInMap', async (event, serv
     const res = await TezosConseilClient.countKeysInMap(serverInfo, mapIndex);
     return res;
 });
+
+ipcMain.handle(
+    'conseiljs-TezosConseilClient-getTezosEntityData',
+    async (event, serverInfo: ConseilServerInfo, network: string, entity: string, query: ConseilQuery) => {
+        const res = await TezosConseilClient.getTezosEntityData(serverInfo, network, entity, query);
+        return res;
+    }
+);
+ipcMain.handle(
+    'conseiljs-TezosConseilClient-getFeeStatistics',
+    async (event, serverInfo: ConseilServerInfo, network: string, operationType: OperationKindType) => {
+        const res = await TezosConseilClient.getFeeStatistics(serverInfo, network, operationType);
+        return res;
+    }
+);
 
 // Tzip7ReferenceTokenHelper
 ipcMain.handle(

@@ -28,6 +28,11 @@ ipcMain.on('node-buffer-from', async (event, data: string, encoding = 'utf8') =>
     event.returnValue = res;
 });
 
+ipcMain.on('node-buffer-from-string', async (event, data: string, type = 'utf8', encoding?: BufferEncoding) => {
+    const res = Buffer.from(data, type);
+    event.returnValue = res.toString(encoding);
+});
+
 ipcMain.handle('node-buffer-alloc', async (event, val: number) => {
     const res = Buffer.alloc(val);
     return res;

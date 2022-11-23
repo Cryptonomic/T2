@@ -197,17 +197,9 @@ export async function syncTokenTransactions(tokenAddress: string, managerAddress
  */
 export async function getSimpleStorageYV(tezosUrl: string, tokenAddress: string, accountAddress?: string) {
     const storageResult = await window.conseiljs.TezosNodeReader.getContractStorage(tezosUrl, tokenAddress);
-
-    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(
-            await window.conseiljs.TezosMessageUtils.writePackedData(
-                `
-    { "prim": "Pair", "args": [ { "bytes": "${await window.conseiljs.TezosMessageUtils.writeAddress(accountAddress || '')}" }, { "int": "0" } ] }`,
-                ''
-            ),
-            'hex'
-        )
-    );
+    const obj = `
+    { "prim": "Pair", "args": [ { "bytes": "${await window.conseiljs.TezosMessageUtils.writeAddress(accountAddress || '')}" }, { "int": "0" } ] }`;
+    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(obj, '', 'hex');
     const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, 16593, packedKey);
     let administrator = '';
     if (mapResult !== undefined) {

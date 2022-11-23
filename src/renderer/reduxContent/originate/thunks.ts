@@ -1,4 +1,4 @@
-import { TezosNodeWriter, BabylonDelegationHelper, TezosParameterFormat } from 'conseiljs';
+import { TezosParameterFormat } from 'conseiljs';
 import { createMessageAction } from '../message/actions';
 import { updateIdentityAction } from '../wallet/actions';
 import { displayError } from '../../utils/formValidation';
@@ -12,9 +12,6 @@ import { createTransaction } from '../../utils/transaction';
 import { ORIGINATION } from '../../constants/TransactionTypes';
 
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
-
-const { sendContractOriginationOperation } = TezosNodeWriter;
-const { deployManagerContract } = BabylonDelegationHelper;
 
 export function originateContractThunk(
     delegate: string,
@@ -74,9 +71,10 @@ export function originateContractThunk(
         let newAddress;
 
         if (isSmartContract) {
-            newAddress = await sendContractOriginationOperation(
+            newAddress = await window.conseiljs.TezosNodeWriter.sendContractOriginationOperation(
                 tezosUrl,
-                isLedger ? signer : await cloneDecryptedSigner(signer, passPhrase),
+                isLedger,
+                passPhrase,
                 keyStore,
                 amountInUtez,
                 delegate.length > 0 ? delegate : undefined,
@@ -93,9 +91,10 @@ export function originateContractThunk(
                 return false;
             });
         } else {
-            newAddress = await deployManagerContract(
+            newAddress = await window.conseiljs.BabylonDelegationHelper.deployManagerContract(
                 tezosUrl,
-                isLedger ? signer : await cloneDecryptedSigner(signer, passPhrase),
+                isLedger,
+                passPhrase,
                 keyStore,
                 delegate,
                 fee,

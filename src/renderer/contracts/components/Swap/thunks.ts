@@ -71,7 +71,8 @@ async function callMarket(
     const operationId: string | undefined = await marketFunction(
         tezosUrl,
         keyStore,
-        isLedger ? signer : await cloneDecryptedSigner(signer, password),
+        isLedger,
+        password,
         tokenAddress,
         tokenIndex,
         marketAddress,

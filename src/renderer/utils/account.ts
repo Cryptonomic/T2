@@ -95,7 +95,7 @@ export function getAddressType(address: string, script: string | undefined): Add
     }
 
     if (script !== undefined && script.length > 0 && address.startsWith('KT1')) {
-        const k = window.electron.buffer.from(blakejs.blake2s(script.toString(), undefined, 16), 'utf8').toString('hex');
+        const k = window.electron.buffer.fromString(blakejs.blake2s(script.toString(), undefined, 16), 'utf8', 'hex');
 
         if (k === '023fc21b332d338212185c817801f288') {
             // TODO: use const from BabylonDelegationHelper

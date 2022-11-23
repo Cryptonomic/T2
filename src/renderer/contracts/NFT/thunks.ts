@@ -22,7 +22,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
  *
  * @return {Promise<boolean>}
  */
-export const transferNFT =
+export const transferNFT: any =
     (tokenAddress: string, destination: string, amount: number, tokenid: number | string, password: string, fee = 0, gas = 0, storage = 0) =>
     async (dispatch, state): Promise<boolean> => {
         const { selectedNode, nodesList, selectedPath, pathsList } = state().settings;
@@ -41,12 +41,11 @@ export const transferNFT =
         const keyStore = getSelectedKeyStore(identities, selectedParentHash, selectedParentHash, isLedger, mainPath);
 
         try {
-            const theSigner = isLedger ? signer : await cloneDecryptedSigner(signer, password);
-
             const operationId = await NFTUtil.transferNFT(
                 tezosUrl,
                 tokenAddress,
-                theSigner,
+                isLedger,
+                password,
                 keyStore,
                 fee,
                 selectedParentHash,

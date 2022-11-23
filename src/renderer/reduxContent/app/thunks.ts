@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
-import { TezosConseilClient, OperationKindType, TezosParameterFormat, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
+import { OperationKindType, TezosParameterFormat, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
 // import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
 
 import { changeAccountAction, addNewVersionAction, setSignerAction } from './actions';
@@ -70,9 +70,11 @@ export const useFetchFees = (operationKind: OperationKindType, isReveal = false,
             try {
                 const { selectedNode, nodesList } = store.getState().settings;
                 const { conseilUrl, apiKey, network, tezosUrl } = getMainNode(nodesList, selectedNode);
-                const serverFees = await TezosConseilClient.getFeeStatistics({ url: conseilUrl, apiKey, network }, network, operationKind).catch(() => [
-                    AVERAGEFEES,
-                ]);
+                const serverFees = await window.conseiljs.TezosConseilClient.getFeeStatistics(
+                    { url: conseilUrl, apiKey, network },
+                    network,
+                    operationKind
+                ).catch(() => [AVERAGEFEES]);
 
                 const fees = {
                     low: serverFees[0].low,
@@ -229,12 +231,10 @@ const queryHarpoon = async (accountAddress: string): Promise<HarpoonInfo> => {
 
 export const queryTezosDomains = async (nodeUrl: string, address: string): Promise<string> => {
     try {
-        const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-            window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
-        );
+        const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(address, 'address', 'hex');
         const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(nodeUrl, 1265, packedKey);
         const domainBytes = JSONPath({ path: '$.args[0].args[1].args[0].bytes', json: mapResult })[0];
-        return window.electron.buffer.from(domainBytes, 'hex').toString();
+        return window.electron.buffer.fromString(domainBytes, 'hex');
     } catch (err) {
         return '';
     }

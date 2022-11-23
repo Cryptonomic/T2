@@ -255,9 +255,7 @@ export function queryHicEtNuncSwap(swapId: number) {
             const { selectedNode, nodesList } = store.getState().settings;
             const { tezosUrl } = getMainNode(nodesList, selectedNode);
 
-            const packedSwapId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-                window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(swapId, 'int'), 'hex')
-            );
+            const packedSwapId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(swapId, 'int', 'hex');
 
             const swapInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, 523, packedSwapId);
 
@@ -265,12 +263,10 @@ export function queryHicEtNuncSwap(swapId: number) {
             const stock = Number(JSONPath({ path: '$.args[0].args[1].int', json: swapInfo })[0]);
             const nftId = Number(JSONPath({ path: '$.args[1].int', json: swapInfo })[0]);
 
-            const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-                window.electron.buffer.from(window.conseiljs.TezosMessageUtils.writePackedData(nftId, 'int'), 'hex')
-            );
+            const packedNftId = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(nftId, 'int', 'hex');
             const nftInfo = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(tezosUrl, 514, packedNftId);
             const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
-            const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
+            const ipfsHash = window.electron.buffer.fromString(ipfsUrlBytes, 'hex').slice(7);
 
             const nftDetailJson = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
             // const nftDetailJson = await nftDetails.json();

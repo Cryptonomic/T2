@@ -18,6 +18,7 @@ import {
     Contract,
     MultiAssetSimpleStorage,
     WrappedTezosStorage,
+    OperationKindType,
 } from 'conseiljs';
 import { SoftSigner } from 'conseiljs-softsigner';
 
@@ -55,6 +56,7 @@ declare global {
             };
             buffer: {
                 from: (data, encoding) => Buffer;
+                fromString: (data, type, encoding?: BufferEncoding) => string;
                 alloc: (val: number) => Buffer;
             };
 
@@ -122,7 +124,7 @@ declare global {
                 readBufferWithHint: (b: Buffer | Uint8Array, hint?: string) => string;
                 writePackedData: (value: string | number | Buffer, type: string, format?: TezosParameterFormat) => string;
                 readPackedData: (hex: string, type: string) => string | number;
-                encodeBigMapKey: (key: Buffer) => string;
+                encodeBigMapKey: (objectId: string | number | Buffer, type: string, encoding?: BufferEncoding) => string;
                 simpleHash: (payload: Buffer, length: number) => Buffer;
             };
             TezosNodeReader: {
@@ -184,7 +186,7 @@ declare global {
                     operations: StackableOperation[],
                     optimizeFee?: boolean
                 ) => Promise<(Transaction | Delegation | Reveal)[]>;
-                sendOperation(server: string, operations: Operation[], isLedger: boolean, password: string, offset?: number): Promise<OperationResult>;
+                sendOperation: (server: string, operations: Operation[], isLedger: boolean, password: string, offset?: number) => Promise<OperationResult>;
                 estimateOperationGroup: (server: string, chainid: string, operations: Array<StackableOperation>) => Promise<any>;
                 appendRevealOperation: (
                     server: string,
@@ -218,6 +220,22 @@ declare global {
                     estimatedFee: number;
                     estimatedStorageBurn: number;
                 }>;
+                sendContractOriginationOperation: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    amount: number,
+                    delegate: string | undefined,
+                    fee: number,
+                    storageLimit: number,
+                    gasLimit: number,
+                    code: string,
+                    storage: string,
+                    codeFormat?: TezosParameterFormat,
+                    offset?: number,
+                    optimizeFee?: boolean
+                ) => Promise<OperationResult>;
             };
             BabylonDelegationHelper: {
                 unSetDelegate: (
@@ -246,7 +264,7 @@ declare global {
                     fee: number,
                     amount: number
                 ) => Promise<OperationResult>;
-                depositDelegatedFunds(
+                depositDelegatedFunds: (
                     server: string,
                     isLedger: boolean,
                     password: string,
@@ -254,8 +272,8 @@ declare global {
                     contract: string,
                     fee: number,
                     amount: number
-                ): Promise<OperationResult>;
-                sendDelegatedFunds(
+                ) => Promise<OperationResult>;
+                sendDelegatedFunds: (
                     server: string,
                     isLedger: boolean,
                     password: string,
@@ -264,7 +282,17 @@ declare global {
                     fee: number,
                     amount: number,
                     destination: string
-                ): Promise<OperationResult>;
+                ) => Promise<OperationResult>;
+                deployManagerContract: (
+                    server: string,
+                    isLedger: boolean,
+                    password: string,
+                    keyStore: KeyStore,
+                    delegate: string,
+                    fee: number,
+                    amount: number,
+                    optimizeFee?: boolean
+                ) => Promise<OperationResult>;
             };
             WrappedTezosHelper: {
                 transferBalance(
@@ -340,6 +368,8 @@ declare global {
                 getBlockHead: (serverInfo: ConseilServerInfo, network: string) => Promise<any>;
                 getAccount: (serverInfo: ConseilServerInfo, network: string, accountID: string) => Promise<any>;
                 countKeysInMap: (serverInfo: ConseilServerInfo, mapIndex: number) => Promise<number>;
+                getTezosEntityData: (serverInfo: ConseilServerInfo, network: string, entity: string, query: ConseilQuery) => Promise<any[]>;
+                getFeeStatistics: (serverInfo: ConseilServerInfo, network: string, operationType: OperationKindType) => Promise<any[]>;
             };
             Tzip7ReferenceTokenHelper: {
                 transferBalance: (

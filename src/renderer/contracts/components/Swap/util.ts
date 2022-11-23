@@ -2,7 +2,7 @@ import { JSONPath } from 'jsonpath-plus';
 import bigInt from 'big-integer';
 import { BigNumber } from 'bignumber.js';
 
-import { KeyStore, Signer, TezosNodeReader, TezosConstants, TezosNodeWriter, TezosParameterFormat, Transaction } from 'conseiljs';
+import { KeyStore, TezosConstants, TezosParameterFormat, Transaction } from 'conseiljs';
 
 import { knownTokenContracts } from '../../../constants/Token';
 import { ArtToken, VaultToken, Token, TokenKind } from '../../../types/general';
@@ -174,7 +174,8 @@ export function applyFees(amount: number, side: string, slippage = 0.01) {
 export async function sendDexterBuy(
     tezosNode: string,
     keyStore: KeyStore,
-    signer: Signer,
+    isLedger: boolean,
+    password: string,
     tokenAddress: string,
     tokenIndex: number,
     poolAddress: string,
@@ -193,9 +194,10 @@ export async function sendDexterBuy(
     }
 
     try {
-        const r = await TezosNodeWriter.sendContractInvocationOperation(
+        const r = await window.conseiljs.TezosNodeWriter.sendContractInvocationOperation(
             tezosNode,
-            signer,
+            isLedger,
+            password,
             keyStore,
             poolAddress,
             Number(notional),
@@ -218,17 +220,18 @@ export async function sendDexterBuy(
 export async function sendDexterSell(
     tezosNode: string,
     keyStore: KeyStore,
-    signer: Signer,
+    isLedger: boolean,
+    password: string,
     tokenAddress: string,
     tokenIndex: number,
     poolAddress: string,
     notional: string,
     size: string
 ): Promise<string | undefined> {
-    const nextCounter = (await TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
+    const nextCounter = (await window.conseiljs.TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
 
     const approveParams = `{ "prim": "Pair", "args": [ { "string": "${poolAddress}" }, { "int": "${size}" } ] }`;
-    const approveOp = TezosNodeWriter.constructContractInvocationOperation(
+    const approveOp = await window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
         keyStore.publicKeyHash,
         nextCounter,
         tokenAddress,
@@ -254,7 +257,7 @@ export async function sendDexterSell(
         }" } ] }, {"int": "${size}" }, { "int": "${notional}" }, { "string": "${expiration.toISOString()}" } ] }`;
     }
 
-    const sellOp = TezosNodeWriter.constructContractInvocationOperation(
+    const sellOp = await window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
         keyStore.publicKeyHash,
         nextCounter + 1,
         poolAddress,
@@ -267,8 +270,8 @@ export async function sendDexterSell(
     );
 
     try {
-        const opGroup = await TezosNodeWriter.prepareOperationGroup(tezosNode, keyStore, nextCounter - 1, [approveOp, sellOp], true);
-        const r = await TezosNodeWriter.sendOperation(tezosNode, opGroup, signer);
+        const opGroup = await window.conseiljs.TezosNodeWriter.prepareOperationGroup(tezosNode, keyStore, nextCounter - 1, [approveOp, sellOp], true);
+        const r = await window.conseiljs.TezosNodeWriter.sendOperation(tezosNode, opGroup, isLedger, password);
 
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {
@@ -279,7 +282,8 @@ export async function sendDexterSell(
 export async function sendVortexBuy(
     tezosNode: string,
     keyStore: KeyStore,
-    signer: Signer,
+    isLedger: boolean,
+    password: string,
     tokenAddress: string,
     tokenIndex: number,
     poolAddress: string,
@@ -293,9 +297,10 @@ export async function sendVortexBuy(
     }" }, { "int": "${size}" }, { "string":"${expiration.toISOString()}" } ] }`;
 
     try {
-        const r = await TezosNodeWriter.sendContractInvocationOperation(
+        const r = await window.conseiljs.TezosNodeWriter.sendContractInvocationOperation(
             tezosNode,
-            signer,
+            isLedger,
+            password,
             keyStore,
             poolAddress,
             Number(notional),
@@ -318,17 +323,18 @@ export async function sendVortexBuy(
 export async function sendVortexSell(
     tezosNode: string,
     keyStore: KeyStore,
-    signer: Signer,
+    isLedger: boolean,
+    password: string,
     tokenAddress: string,
     tokenIndex: number,
     poolAddress: string,
     notional: string,
     size: string
 ): Promise<string | undefined> {
-    const nextCounter = (await TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
+    const nextCounter = (await window.conseiljs.TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
 
     const approveParams = `{ "prim": "Pair", "args": [ { "string": "${poolAddress}" }, { "int": "${size}" } ] }`;
-    const approveOp = TezosNodeWriter.constructContractInvocationOperation(
+    const approveOp = await window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
         keyStore.publicKeyHash,
         nextCounter,
         tokenAddress,
@@ -346,7 +352,7 @@ export async function sendVortexSell(
         keyStore.publicKeyHash
     }" }, { "int": "${size}" }, { "int": "${notional}" }, { "string": "${expiration.toISOString()}" } ] }`;
 
-    const sellOp = TezosNodeWriter.constructContractInvocationOperation(
+    const sellOp = await window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
         keyStore.publicKeyHash,
         nextCounter + 1,
         poolAddress,
@@ -359,8 +365,8 @@ export async function sendVortexSell(
     );
 
     try {
-        const opGroup = await TezosNodeWriter.prepareOperationGroup(tezosNode, keyStore, nextCounter - 1, [approveOp, sellOp], true);
-        const r = await TezosNodeWriter.sendOperation(tezosNode, opGroup, signer);
+        const opGroup = await window.conseiljs.TezosNodeWriter.prepareOperationGroup(tezosNode, keyStore, nextCounter - 1, [approveOp, sellOp], true);
+        const r = await window.conseiljs.TezosNodeWriter.sendOperation(tezosNode, opGroup, isLedger, password);
 
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {
@@ -371,7 +377,8 @@ export async function sendVortexSell(
 export async function sendQuipuBuy(
     tezosNode: string,
     keyStore: KeyStore,
-    signer: Signer,
+    isLedger: boolean,
+    password: string,
     tokenAddress: string,
     tokenIndex: number,
     poolAddress: string,
@@ -381,9 +388,10 @@ export async function sendQuipuBuy(
     const params = `{ "prim": "Pair","args": [ { "int": "${size}" }, { "string": "${keyStore.publicKeyHash}" } ] }`;
 
     try {
-        const r = await TezosNodeWriter.sendContractInvocationOperation(
+        const r = await window.conseiljs.TezosNodeWriter.sendContractInvocationOperation(
             tezosNode,
-            signer,
+            isLedger,
+            password,
             keyStore,
             poolAddress,
             Number(notional),
@@ -406,7 +414,8 @@ export async function sendQuipuBuy(
 export async function sendQuipuSell(
     tezosNode: string,
     keyStore: KeyStore,
-    signer: Signer,
+    isLedger: boolean,
+    password: string,
     tokenAddress: string,
     tokenIndex: number,
     poolAddress: string,
@@ -421,11 +430,11 @@ export async function sendQuipuSell(
         selectedToken = knownTokenContracts.filter((t) => t.address === tokenAddress)[0];
     }
 
-    const nextCounter = (await TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
+    const nextCounter = (await window.conseiljs.TezosNodeReader.getCounterForAccount(tezosNode, keyStore.publicKeyHash)) + 1;
 
     let approveOp: Transaction;
     if (selectedToken.kind === TokenKind.tzip12 || selectedToken.kind === TokenKind.objkt) {
-        approveOp = constructFA2ApprovalOperation(
+        approveOp = await constructFA2ApprovalOperation(
             keyStore.publicKeyHash,
             nextCounter,
             { fee: 0, gas: 0, storage: 0 },
@@ -434,11 +443,11 @@ export async function sendQuipuSell(
             selectedToken.tokenIndex?.toString() || '0'
         );
     } else {
-        approveOp = constructFA1ApprovalOperation(keyStore.publicKeyHash, nextCounter, { fee: 0, gas: 0, storage: 0 }, tokenAddress, poolAddress, size);
+        approveOp = await constructFA1ApprovalOperation(keyStore.publicKeyHash, nextCounter, { fee: 0, gas: 0, storage: 0 }, tokenAddress, poolAddress, size);
     }
 
     const sellParams = `{ "prim": "Pair", "args": [ { "prim": "Pair", "args": [ { "int": "${size}" }, { "int": "${notional}" } ] }, { "string": "${keyStore.publicKeyHash}" } ] }`;
-    const sellOp = TezosNodeWriter.constructContractInvocationOperation(
+    const sellOp = await window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
         keyStore.publicKeyHash,
         nextCounter + 1,
         poolAddress,
@@ -451,8 +460,8 @@ export async function sendQuipuSell(
     );
 
     try {
-        const opGroup = await TezosNodeWriter.prepareOperationGroup(tezosNode, keyStore, nextCounter - 1, [approveOp, sellOp], true);
-        const r = await TezosNodeWriter.sendOperation(tezosNode, opGroup, signer);
+        const opGroup = await window.conseiljs.TezosNodeWriter.prepareOperationGroup(tezosNode, keyStore, nextCounter - 1, [approveOp, sellOp], true);
+        const r = await window.conseiljs.TezosNodeWriter.sendOperation(tezosNode, opGroup, isLedger, password);
 
         return r.operationGroupID.replace(/\\|"|\n|\r/g, '');
     } catch (err) {
@@ -506,7 +515,7 @@ export async function getPoolState(server: string, address: string, storageMap: 
     if (!address || address.length === 0) {
         return undefined;
     }
-    const storageResult = await TezosNodeReader.getContractStorage(server, address);
+    const storageResult = await window.conseiljs.TezosNodeReader.getContractStorage(server, address);
 
     const tokenBalance = JSONPath({ path: storageMap.tokenBalancePath, json: storageResult })[0];
     const xtzBalance = JSONPath({ path: storageMap.coinBalancePath, json: storageResult })[0];
@@ -529,7 +538,7 @@ export function constructFA1ApprovalOperation(
 ) {
     const params = `{ "prim": "Pair", "args": [ { "string": "${destinationAddress}" }, { "int": "${amount}" } ] }`;
 
-    return TezosNodeWriter.constructContractInvocationOperation(
+    return window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
         sourceAddress,
         counter,
         tokenAddress,
@@ -552,7 +561,7 @@ export function constructFA2ApprovalOperation(
 ) {
     const params = `[{"prim":"Left","args":[{"prim":"Pair","args":[{"string":"${sourceAddress}"},{"prim":"Pair","args":[{"string":"${destinationAddress}"},{"int":"${tokenIndex}"}]}]}]}]`;
 
-    return TezosNodeWriter.constructContractInvocationOperation(
+    return window.conseiljs.TezosNodeWriter.constructContractInvocationOperation(
         sourceAddress,
         counter,
         tokenAddress,

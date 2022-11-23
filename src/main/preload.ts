@@ -1,5 +1,16 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { SignerCurve, TezosParameterFormat, Signer, KeyStore, ConseilServerInfo, StackableOperation, Operation, TransferPair, ConseilQuery } from 'conseiljs';
+import {
+    SignerCurve,
+    TezosParameterFormat,
+    Signer,
+    KeyStore,
+    ConseilServerInfo,
+    StackableOperation,
+    Operation,
+    TransferPair,
+    ConseilQuery,
+    OperationKindType,
+} from 'conseiljs';
 import { SoftSigner } from 'conseiljs-softsigner';
 import * as fs from 'fs';
 import path from 'path';
@@ -90,6 +101,9 @@ contextBridge.exposeInMainWorld('electron', {
         from(data, encoding) {
             return ipcRenderer.sendSync('node-buffer-from', data, encoding);
         },
+        fromString(data, type, encoding) {
+            return ipcRenderer.sendSync('node-buffer-from-string', data, type, encoding);
+        },
         alloc(val: number) {
             return ipcRenderer.invoke('node-buffer-alloc', val);
         },
@@ -132,8 +146,8 @@ contextBridge.exposeInMainWorld('conseiljs', {
         readPackedData(hex: string, type: string) {
             return ipcRenderer.invoke('conseiljs-tezosmessageutils-readPackedData', hex, type);
         },
-        encodeBigMapKey(key: Buffer) {
-            return ipcRenderer.invoke('conseiljs-tezosmessageutils-encodeBigMapKey', key);
+        encodeBigMapKey(objectId: string, type: string, encoding?: BufferEncoding) {
+            return ipcRenderer.invoke('conseiljs-tezosmessageutils-encodeBigMapKey', objectId, type, encoding);
         },
         simpleHash(payload: Buffer, length: number) {
             return ipcRenderer.invoke('conseiljs-tezosmessageutils-simpleHash', payload, length);
@@ -299,6 +313,40 @@ contextBridge.exposeInMainWorld('conseiljs', {
                 parameterFormat
             );
         },
+        sendContractOriginationOperation(
+            server: string,
+            isLedger: boolean,
+            password: string,
+            keyStore: KeyStore,
+            amount: number,
+            delegate: string | undefined,
+            fee: number,
+            storageLimit: number,
+            gasLimit: number,
+            code: string,
+            storage: string,
+            codeFormat?: TezosParameterFormat,
+            offset?: number,
+            optimizeFee?: boolean
+        ) {
+            return ipcRenderer.invoke(
+                'conseiljs-TezosNodeWriter-sendContractOriginationOperation',
+                server,
+                isLedger,
+                password,
+                keyStore,
+                amount,
+                delegate,
+                fee,
+                storageLimit,
+                gasLimit,
+                code,
+                storage,
+                codeFormat,
+                offset,
+                optimizeFee
+            );
+        },
     },
     BabylonDelegationHelper: {
         unSetDelegate(server, isLedger, password, keyStore, selectedAccountHash, fee) {
@@ -333,6 +381,19 @@ contextBridge.exposeInMainWorld('conseiljs', {
                 fee,
                 amount,
                 destination
+            );
+        },
+        deployManagerContract(server: string, isLedger, password, keyStore: KeyStore, delegate: string, fee: number, amount: number, optimizeFee?: boolean) {
+            return ipcRenderer.invoke(
+                'conseiljs-BabylonDelegationHelper-deployManagerContract',
+                server,
+                isLedger,
+                password,
+                keyStore,
+                delegate,
+                fee,
+                amount,
+                optimizeFee
             );
         },
     },
@@ -486,6 +547,12 @@ contextBridge.exposeInMainWorld('conseiljs', {
         },
         countKeysInMap(serverInfo: ConseilServerInfo, mapIndex: number) {
             return ipcRenderer.invoke('conseiljs-TezosConseilClient-countKeysInMap', serverInfo, mapIndex);
+        },
+        getTezosEntityData(serverInfo: ConseilServerInfo, network: string, entity: string, query: ConseilQuery) {
+            return ipcRenderer.invoke('conseiljs-TezosConseilClient-getTezosEntityData', serverInfo, network, entity, query);
+        },
+        getFeeStatistics(serverInfo: ConseilServerInfo, network: string, operationType: OperationKindType) {
+            return ipcRenderer.invoke('conseiljs-TezosConseilClient-getFeeStatistics', serverInfo, network, operationType);
         },
     },
     Tzip7ReferenceTokenHelper: {

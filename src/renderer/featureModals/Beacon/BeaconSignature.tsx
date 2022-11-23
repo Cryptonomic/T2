@@ -54,6 +54,8 @@ const BeaconSignature = ({ open, onClose }: Props) => {
         }
     };
 
+    // Todo Joe
+
     const onSignature = async () => {
         try {
             dispatch(setBeaconLoading(true));

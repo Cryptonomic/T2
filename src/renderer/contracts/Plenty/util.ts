@@ -67,9 +67,7 @@ export async function getSimpleStorage(server: string, address: string): Promise
 }
 
 export async function getAccountBalance(server: string, mapid: number, account: string): Promise<number> {
-    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
-    );
+    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(account, 'address', 'hex');
     const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
@@ -81,9 +79,7 @@ export async function getAccountBalance(server: string, mapid: number, account: 
 }
 
 export async function getAccountAllowance(server: string, mapid: number, account: string, source: string) {
-    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(source, 'address'), 'hex')
-    );
+    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(source, 'address', 'hex');
     const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
@@ -102,9 +98,7 @@ export async function getActivePools(server: string, account: string): Promise<{
     const hasKey = await Promise.all(
         maps.map(async (m) => {
             try {
-                const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-                    window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(account, 'address'), 'hex')
-                );
+                const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(account, 'address', 'hex');
                 const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, m, packedKey);
 
                 return mapResult !== undefined && JSONPath({ path: '$.args[0].args[1].int', json: mapResult }).toString() !== '0';
@@ -184,9 +178,7 @@ async function readPoolStorage(server, address) {
 }
 
 async function readUserPoolRecord(server, mapid, address) {
-    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(
-        window.electron.buffer.from(await window.conseiljs.TezosMessageUtils.writePackedData(address, 'address'), 'hex')
-    );
+    const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(address, 'address', 'hex');
     const mapResult = await window.conseiljs.TezosNodeReader.getValueForBigMapKey(server, mapid, packedKey);
 
     if (mapResult === undefined) {
