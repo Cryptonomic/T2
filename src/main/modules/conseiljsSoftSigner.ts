@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { KeyStoreUtils, CryptoUtils, SoftSigner } from 'conseiljs-softsigner';
 import { TezosMessageUtils } from 'conseiljs';
-import { onGetSigner, onSetSigner } from './global';
+import { onGetSigner, onSetSigner, cloneDecryptedSigner } from './global';
 
 ipcMain.handle('conseiljs-softsigner-generateMnemonic', async (event, val) => {
     return KeyStoreUtils.generateMnemonic(val);
@@ -82,9 +82,16 @@ ipcMain.handle('conseiljs-softsigner-main-createSigner', async (event, secretKey
     return res;
 });
 
-ipcMain.handle('conseiljs-softsigner-main-getKey', async (event, signer: SoftSigner, password: string) => {
-    console.log('11111111', signer);
-    const res = await signer.getKey(password);
+ipcMain.handle('conseiljs-softsigner-main-getKey', async (event, password: string) => {
+    const si = onGetSigner();
+    const res = await si.getKey(password);
+    return res;
+});
+
+ipcMain.handle('conseiljs-softsigner-main-signText', async (event, message: string, password: string) => {
+    const si = onGetSigner();
+    const signer = await cloneDecryptedSigner(si, password);
+    const res = await signer.signText(message);
     return res;
 });
 

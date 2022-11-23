@@ -46,7 +46,7 @@ const Verify = () => {
         }
 
         try {
-            const isVerified = await KeyStoreUtils.checkTextSignature(signature, message, publicKey);
+            const isVerified = await window.conseiljsSoftSigner.KeyStoreUtils.checkTextSignature(signature, message, publicKey);
 
             if (!isVerified) {
                 setResult(t('components.signVerifyModal.no_match'));

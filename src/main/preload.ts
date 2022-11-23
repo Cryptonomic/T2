@@ -62,7 +62,7 @@ contextBridge.exposeInMainWorld('electron', {
     },
     clipboard: {
         text(text: string) {
-            return ipcRenderer.sendSync('electron-clipboard', text);
+            return ipcRenderer.invoke('electron-clipboard', text);
         },
     },
     dialog: {
@@ -745,6 +745,9 @@ contextBridge.exposeInMainWorld('conseiljsSoftSigner', {
         cloneDecryptedSigner(signer: SoftSigner, password: string) {
             return ipcRenderer.invoke('conseiljs-softsigner-main-cloneDecryptedSigner', signer, password);
         },
+        signText(message: string, password: string) {
+            return ipcRenderer.invoke('conseiljs-softsigner-main-signText', message, password);
+        },
     },
 });
 
@@ -755,6 +758,11 @@ contextBridge.exposeInMainWorld('conseiljsLedgerSigner', {
         },
         getTezosPublicKey(derivationPath: string) {
             return ipcRenderer.invoke('conseiljs-ledgersigner-KeyStoreUtils-getTezosPublicKey', derivationPath);
+        },
+    },
+    LedgerSigner: {
+        signText(message: string) {
+            return ipcRenderer.invoke('conseiljs-ledgersigner-main-signText', message);
         },
     },
 });

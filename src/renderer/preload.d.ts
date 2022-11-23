@@ -95,15 +95,20 @@ declare global {
                 signDetached: (payload: Buffer, secretKey: Buffer) => Promise<Buffer>;
             };
             SoftSigner: {
-                createSigner: (secretKey: string, password?: string) => void;
+                createSigner: (secretKey: string, password?: string) => Promise<Signer>;
                 getKey: (signer: SoftSigner, password?: string) => Promise<Buffer>;
                 cloneDecryptedSigner: (signer: SoftSigner, password?: string) => any;
+                signText: (message: string, password: string) => Promise<string>;
             };
         };
         conseiljsLedgerSigner: {
             KeyStoreUtils: {
                 unlockAddress: (derivationPath: string) => Promise<KeyStore>;
                 getTezosPublicKey: (derivationPath: string) => Promise<string>;
+            };
+            LedgerSigner: {
+                createSigner: (path: string) => Promise<Signer>;
+                signText: (message: string) => Promise<string>;
             };
         };
         conseiljs: {

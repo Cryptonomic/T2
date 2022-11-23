@@ -15,8 +15,6 @@ import log from 'electron-log';
 import Store from 'electron-store';
 import * as png from 'pngjs';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-
-import { KeyStoreUtils as KeyStoreUtilsLedger } from 'conseiljs-ledgersigner';
 import os from 'os';
 
 import { registerFetch, registerLogger } from 'conseiljs';
@@ -31,6 +29,7 @@ import config from '../renderer/config.json';
 import './modules/conseiljs';
 import './modules/conseiljsSoftSigner';
 import './modules/node';
+import './modules/conseiljsLedgerSigner';
 
 const logger = loglevel.getLogger('conseiljs');
 logger.setLevel(config.logLevel as loglevel.LogLevelDesc, false);
@@ -59,16 +58,6 @@ ipcMain.on('open-enternal-link', async (event, url) => {
     shell.openExternal(url);
 });
 
-ipcMain.handle('conseiljs-ledgersigner-KeyStoreUtils-unlockAddress', async (event, derivationPath: string) => {
-    const res = await KeyStoreUtilsLedger.unlockAddress(derivationPath);
-    return res;
-});
-
-ipcMain.handle('conseiljs-ledgersigner-KeyStoreUtils-getTezosPublicKey', async (event, derivationPath: string) => {
-    const res = await KeyStoreUtilsLedger.getTezosPublicKey(derivationPath);
-    return res;
-});
-
 ipcMain.on('electron-pngjs-get', async (event, imageDataBytes) => {
     const image = new png.PNG({ width: 8, height: 8, bitDepth: 8, colorType: 2, inputColorType: 2, inputHasAlpha: false });
     image.data = Buffer.from(imageDataBytes, 'hex');
@@ -90,8 +79,9 @@ ipcMain.on('wallet', (event, data) => {
     event.sender.send('wallet', data);
 });
 
-ipcMain.on('electron-clipboard', async (event, text) => {
-    clipboard.writeText(text);
+ipcMain.handle('electron-clipboard', async (event, text) => {
+    await clipboard.writeText(text);
+    return '';
 });
 
 ipcMain.handle('electron-dialog-open', async (event, dialogFilters) => {

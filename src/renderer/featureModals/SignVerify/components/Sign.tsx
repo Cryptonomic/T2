@@ -68,12 +68,12 @@ const Sign = () => {
         if (isLedger) {
             try {
                 setLedgerModalOpen(true);
-                signature = await signer.signText(message);
+                signature = await window.conseiljsLedgerSigner.LedgerSigner.signText(message);
             } finally {
                 setLedgerModalOpen(false);
             }
         } else {
-            signature = await (await cloneDecryptedSigner(signer as any, password)).signText(message);
+            signature = await window.conseiljsSoftSigner.SoftSigner.signText(message, password);
         }
 
         setError(false);

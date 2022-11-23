@@ -47,10 +47,10 @@ function CopyButton(props: Props) {
 
     const [isShowed, setIsShowed] = useState(false);
 
-    function copyToClipboard() {
+    async function copyToClipboard() {
         try {
             // clipboard.writeText(text);
-            window.electron.clipboard.text(text);
+            await window.electron.clipboard.text(text);
             setIsShowed(true);
         } catch (e) {
             console.error(e);

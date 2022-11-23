@@ -3,7 +3,6 @@ import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 import { TezosConseilClient, OperationKindType, TezosParameterFormat, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
 // import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
-import { LedgerSigner, TezosLedgerConnector } from 'conseiljs-ledgersigner';
 
 import { changeAccountAction, addNewVersionAction, setSignerAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
@@ -361,13 +360,14 @@ export function setSignerThunk(key: string, password: string) {
     }
 
     return async (dispatch: any) => {
-        await window.conseiljsSoftSigner.SoftSigner.createSigner(key, password);
+        const signer = await window.conseiljsSoftSigner.SoftSigner.createSigner(key, password);
+        dispatch(setSignerAction(signer));
     };
 }
 
 export function setLedgerSignerThunk(path: string) {
     return async (dispatch: any) => {
-        const signer = new LedgerSigner(await TezosLedgerConnector.getInstance(), path);
+        const signer = await window.conseiljsLedgerSigner.LedgerSigner.createSigner(path);
         dispatch(setSignerAction(signer));
     };
 }
