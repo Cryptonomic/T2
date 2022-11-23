@@ -892,13 +892,13 @@ export function loginThunk(loginType, walletLocation, walletFileName, password):
 export function connectLedgerThunk(): any {
     return async (dispatch, state) => {
         const { selectedPath, pathsList } = state().settings;
-        const osPlatform = window.osPlatform.get();
+        const osPlatform = window.electron.osPlatform.get();
         const derivation = getMainPath(pathsList, selectedPath);
         dispatch(setLedgerAction(true));
         dispatch(setIsLedgerConnectingAction(true));
         dispatch(setIsLoadingAction(true));
         dispatch(createMessageAction('', false));
-        const devicesList = await window.transportNodeHid.getList();
+        const devicesList = await window.electron.transportNodeHid.getList();
         if (devicesList.length === 0) {
             dispatch(createMessageAction('general.errors.no_ledger_detected', true));
         } else {

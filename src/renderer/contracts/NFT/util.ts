@@ -667,7 +667,7 @@ export async function get8bidouDetails(tezosUrl: string, objectId: number | stri
     // image.data = window.electron.buffer.from(imageDataBytes, 'hex');
     // const buffer = png.PNG.sync.write(image, { width: 8, height: 8, bitDepth: 8, colorType: 2, inputColorType: 2, inputHasAlpha: false });
     // const artifactUrl = `data:image/png;base64,${buffer.toString('base64')}`;
-    const artifactUrl = window.pngJS.get(imageDataBytes);
+    const artifactUrl = window.electron.pngJS.get(imageDataBytes);
 
     return {
         name: nftName,

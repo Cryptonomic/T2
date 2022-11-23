@@ -62,6 +62,15 @@ declare global {
 
             fetch: (url: string, options?) => Promise<any>;
             fetchTimeout: (url: string, options?) => Promise<any>;
+            pngJS: {
+                get: (imageDataBytes) => any;
+            };
+            osPlatform: {
+                get: () => string;
+            };
+            transportNodeHid: {
+                getList: () => Promise<any[]>;
+            };
         };
 
         conseiljsSoftSigner: {
@@ -492,15 +501,6 @@ declare global {
                     paused: boolean;
                 }>;
             };
-        };
-        pngJS: {
-            get: (imageDataBytes) => any;
-        };
-        osPlatform: {
-            get: () => string;
-        };
-        transportNodeHid: {
-            getList: () => Promise<any[]>;
         };
     }
 }
