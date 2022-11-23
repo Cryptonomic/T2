@@ -96,8 +96,8 @@ export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number)
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
     // Todo
-    const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
-    const nftDetailJson = await nftDetails.json();
+    const nftDetailJson = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+    // const nftDetailJson = await nftDetails.json();
 
     const nftName = nftDetailJson.name;
     const nftDescription = nftDetailJson.description;
@@ -144,8 +144,8 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
     // Todo Joe
-    const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
-    const nftDetailJson = await nftDetails.json();
+    const nftDetailJson = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+    // const nftDetailJson = await nftDetails.json();
 
     const nftName = nftDetailJson.name;
     const nftDescription = nftDetailJson.description;
@@ -586,7 +586,7 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
     const ipfsUrlString = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString();
     const urlStart = ipfsUrlString.indexOf('ipfs://');
     const ipfsHash = ipfsUrlString.slice(urlStart + 7);
-    const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' }).catch((e) => {
+    const nftDetailJson = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' }).catch((e) => {
         console.log(`error fetching nft metadata ${objectId}, ${ipfsHash}`);
         return {
             json: () => {
@@ -594,7 +594,7 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
             },
         };
     });
-    const nftDetailJson = await nftDetails.json();
+    // const nftDetailJson = await nftDetails.json();
 
     const nftName = nftDetailJson.name;
     const nftDescription = nftDetailJson.description;
@@ -826,8 +826,8 @@ export async function getPotusNFTObjectDetails(tezosUrl: string, objectId: numbe
     const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
     const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
 
-    const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
-    const nftDetailJson = await nftDetails.json();
+    const nftDetailJson = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+    // const nftDetailJson = await nftDetails.json();
 
     const nftName = nftDetailJson.name;
     const nftDescription = nftDetailJson.description;
@@ -1312,8 +1312,8 @@ export async function parseObjktContract(tezosNode: string, contractAddress: str
             const ipfsUrlBytes = JSONPath({ path: '$.bytes', json: nftInfo })[0];
             const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
 
-            const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
-            const nftDetailJson = await nftDetails.json();
+            const nftDetailJson = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+            // const nftDetailJson = await nftDetails.json();
 
             if (nftDetailJson.homepage) {
                 tokenDefinition.displayHelpLink = nftDetailJson.homepage;

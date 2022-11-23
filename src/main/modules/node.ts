@@ -34,6 +34,26 @@ ipcMain.handle('node-buffer-alloc', async (event, val: number) => {
 });
 
 ipcMain.handle('electron-fetch', async (event, url: string, options) => {
-    const res = await fetch(url, options);
-    return res;
+    try {
+        const res = await fetch(url, options);
+        const result = await res.json();
+        return result;
+    } catch (e) {
+        throw new Error('error');
+    }
+});
+ipcMain.handle('electron-fetch-timeout', async (event, url: string, options) => {
+    const { timeout = 5000 } = options;
+
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    console.log('1111111111');
+    const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+    });
+    clearTimeout(id);
+    console.log('2222222');
+
+    return response;
 });

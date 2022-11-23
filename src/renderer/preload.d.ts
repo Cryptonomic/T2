@@ -59,6 +59,7 @@ declare global {
             };
 
             fetch: (url: string, options?) => Promise<any>;
+            fetchTimeout: (url: string, options?) => Promise<any>;
         };
 
         conseiljsSoftSigner: {

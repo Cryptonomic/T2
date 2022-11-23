@@ -272,8 +272,8 @@ export function queryHicEtNuncSwap(swapId: number) {
             const ipfsUrlBytes = JSONPath({ path: '$.args[1][0].args[1].bytes', json: nftInfo })[0];
             const ipfsHash = window.electron.buffer.from(ipfsUrlBytes, 'hex').toString().slice(7);
 
-            const nftDetails = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
-            const nftDetailJson = await nftDetails.json();
+            const nftDetailJson = await window.electron.fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsHash}`, { cache: 'no-store' });
+            // const nftDetailJson = await nftDetails.json();
             const nftName = nftDetailJson.name;
             const nftDescription = nftDetailJson.description;
             const nftCreators = nftDetailJson.creators.join(', ');

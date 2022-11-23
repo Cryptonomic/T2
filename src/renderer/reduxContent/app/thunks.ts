@@ -174,8 +174,8 @@ export const estimateContractCall = (
 
 const queryBakingBad = async (address: string): Promise<BakingBadInfo> => {
     try {
-        const response = await fetchWithTimeout(`https://api.baking-bad.org/v2/bakers/${address}`, { timeout: 5000 });
-        const responseJSON = await response.json();
+        const responseJSON = await window.electron.fetchTimeout(`https://api.baking-bad.org/v2/bakers/${address}`, { timeout: 5000 });
+        // const responseJSON = await response.json();
 
         if (responseJSON.error !== undefined && responseJSON.error.length > 0) {
             throw new Error(`BakingBad failed with ${responseJSON.error} for ${address}`);
@@ -242,7 +242,8 @@ export const queryTezosDomains = async (nodeUrl: string, address: string): Promi
 };
 
 export const queryPrices = async () => {
-    return fetchWithTimeout(`https://api.coingecko.com/api/v3/simple/price?ids=tezos&vs_currencies=usd,eur,jpy`, { timeout: 5000 })
+    return window.electron
+        .fetchTimeout(`https://api.coingecko.com/api/v3/simple/price?ids=tezos&vs_currencies=usd,eur,jpy`, { timeout: 5000 })
         .then((r) => r.json())
         .then((j) => j.tezos)
         .catch((e) => {

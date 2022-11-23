@@ -97,6 +97,9 @@ contextBridge.exposeInMainWorld('electron', {
     fetch(url, options) {
         return ipcRenderer.invoke('electron-fetch', url, options);
     },
+    fetchTimeout(url, options) {
+        return ipcRenderer.invoke('electron-fetch-timeout', url, options);
+    },
     // conseiljsSoftSigner: conseiljsSoftSigner
 });
 
