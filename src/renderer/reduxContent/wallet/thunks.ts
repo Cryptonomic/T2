@@ -782,7 +782,11 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     await saveUpdatedWallet(state().wallet.identities, walletLocation, walletFileName, walletPassword);
                     await saveIdentitiesToLocal(state().wallet.identities);
                     dispatch(setIsLoadingAction(false));
-                    dispatch(push('/home'));
+                    if (identities.length > 0) {
+                        dispatch(push('/'));
+                    } else {
+                        dispatch(push('/add'));
+                    }
                     await dispatch(syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash, AddressType.Manager));
                 } else {
                     dispatch(createMessageAction('components.messageBar.messages.identity_exist', true));
@@ -825,7 +829,11 @@ export function importSecretKeyThunk(key): any {
 
                     await saveIdentitiesToLocal(state().wallet.identities);
                     dispatch(setIsLoadingAction(false));
-                    dispatch(push('/home'));
+                    if (identities.length > 0) {
+                        dispatch(push('/'));
+                    } else {
+                        dispatch(push('/add'));
+                    }
                     await dispatch(syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash, AddressType.Manager));
                 } else {
                     dispatch(createMessageAction('components.messageBar.messages.identity_exist', true));
