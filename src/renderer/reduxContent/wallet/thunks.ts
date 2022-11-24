@@ -910,7 +910,7 @@ export function connectLedgerThunk(): any {
                 dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
                 dispatch(setLedgerSignerThunk(derivation));
                 dispatch(automaticAccountRefresh());
-                dispatch(push('/home'));
+                dispatch(push('/'));
                 await dispatch(syncWalletThunk());
             } catch (e: any) {
                 console.error(e);
