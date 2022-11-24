@@ -175,9 +175,11 @@ export const estimateContractCall = (
 
 const queryBakingBad = async (address: string): Promise<BakingBadInfo> => {
     try {
+        if (!address) {
+            return { address, name: '', fee: 0, logoUrl: '', estimatedRoi: 0 };
+        }
         const responseJSON = await window.electron.fetchTimeout(`https://api.baking-bad.org/v2/bakers/${address}`, { timeout: 5000 });
         // const responseJSON = await response.json();
-
         if (responseJSON.error !== undefined && responseJSON.error.length > 0) {
             throw new Error(`BakingBad failed with ${responseJSON.error} for ${address}`);
         }
@@ -243,7 +245,6 @@ export const queryTezosDomains = async (nodeUrl: string, address: string): Promi
 export const queryPrices = async () => {
     return window.electron
         .fetchTimeout(`https://api.coingecko.com/api/v3/simple/price?ids=tezos&vs_currencies=usd,eur,jpy`, { timeout: 5000 })
-        .then((r) => r.json())
         .then((j) => j.tezos)
         .catch((e) => {
             return { usd: '-1', eur: '-1', jpy: '-1' };
@@ -284,10 +285,8 @@ export const getTezosDomains = (accountAddress: string): string => {
         let isSubscribed = true;
         const getData = async () => {
             const domainResponse = await queryTezosDomains(tezosUrl, accountAddress);
-            console.log('44444444', domainResponse);
 
             if (isSubscribed) {
-                console.log('5555555', domainResponse);
                 setDomainName(domainResponse);
             }
         };
@@ -367,7 +366,7 @@ export function setSignerThunk(key: string, password: string) {
 
 export function setLedgerSignerThunk(path: string) {
     return async (dispatch: any) => {
-        const signer = await window.conseiljsLedgerSigner.LedgerSigner.createSigner(path);
-        dispatch(setSignerAction(signer));
+        await window.conseiljsLedgerSigner.LedgerSigner.createSigner(path);
+        // dispatch(setSignerAction(signer));
     };
 }

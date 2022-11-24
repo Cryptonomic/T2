@@ -1,6 +1,5 @@
 import { createMessageAction } from '../../../reduxContent/message/actions';
 
-import { cloneDecryptedSigner } from '../../../utils/wallet';
 import { getSelectedKeyStore } from '../../../utils/general';
 import { getMainNode, getMainPath } from '../../../utils/settings';
 

@@ -15,7 +15,7 @@ ipcMain.handle('conseiljs-ledgersigner-KeyStoreUtils-getTezosPublicKey', async (
 ipcMain.handle('conseiljs-ledgersigner-main-createSigner', async (event, path: string) => {
     const signer = new LedgerSigner(await TezosLedgerConnector.getInstance(), path);
     onSetSigner(signer);
-    return signer;
+    return '';
 });
 
 ipcMain.handle('conseiljs-ledgersigner-main-signText', async (event, message: string) => {

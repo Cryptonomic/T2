@@ -29,8 +29,12 @@ ipcMain.on('node-buffer-from', async (event, data: string, encoding = 'utf8') =>
 });
 
 ipcMain.on('node-buffer-from-string', async (event, data: string, type = 'utf8', encoding?: BufferEncoding) => {
-    const res = Buffer.from(data, type);
-    event.returnValue = res.toString(encoding);
+    try {
+        const res = Buffer.from(data, type);
+        event.returnValue = res.toString(encoding);
+    } catch (e) {
+        event.returnValue = '';
+    }
 });
 
 ipcMain.handle('node-buffer-alloc', async (event, val: number) => {
@@ -48,17 +52,19 @@ ipcMain.handle('electron-fetch', async (event, url: string, options) => {
     }
 });
 ipcMain.handle('electron-fetch-timeout', async (event, url: string, options) => {
-    const { timeout = 5000 } = options;
+    try {
+        const { timeout = 5000 } = options;
 
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-    console.log('1111111111');
-    const response = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-    });
-    clearTimeout(id);
-    console.log('2222222');
-
-    return response;
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal,
+        });
+        clearTimeout(id);
+        const result = await response.json();
+        return result;
+    } catch (e) {
+        throw new Error('error');
+    }
 });

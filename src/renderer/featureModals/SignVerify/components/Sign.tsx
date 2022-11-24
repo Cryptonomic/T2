@@ -58,7 +58,7 @@ const Sign = () => {
             setKeyRevealed(false);
         }
 
-        if (signer == null) {
+        if (signer == null && !isLedger) {
             setError(true);
             setResult('No signing mechanism available');
             return;
