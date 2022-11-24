@@ -831,5 +831,8 @@ contextBridge.exposeInMainWorld('conseiljsLedgerSigner', {
         signText(message: string) {
             return ipcRenderer.invoke('conseiljs-ledgersigner-main-signText', message);
         },
+        createSigner(val: string) {
+            return ipcRenderer.invoke('conseiljs-ledgersigner-main-createSigner', val);
+        },
     },
 });
