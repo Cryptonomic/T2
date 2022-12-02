@@ -60,7 +60,7 @@ const configuration: webpack.Configuration = {
             vm: false,
             // url: require.resolve("url"),
             // path: require.resolve("path-browserify"),
-            // buffer: require.resolve("buffer"),
+            buffer: require.resolve('buffer'),
             // process: require.resolve("process/browser")
         },
     },
@@ -68,6 +68,9 @@ const configuration: webpack.Configuration = {
     plugins: [
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
+        }),
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
         }),
     ],
 };
