@@ -3,7 +3,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { beaconClient } from './BeaconMessageRouter';
+// import { beaconClient } from './BeaconMessageRouter';
 import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
 
@@ -53,12 +53,12 @@ const BeaconInfoModal = ({ open, onClose }: Props) => {
         const beaconInfo = {};
         const readState = async () => {
             try {
-                const apps = await beaconClient.getAppMetadataList();
+                const apps = await window.electron.beacon.getAppMetadataList();
                 for (const app of apps) {
                     beaconInfo[app.senderId] = { name: app.name };
                 }
 
-                const permissions = await beaconClient.getPermissions();
+                const permissions = await window.electron.beacon.getPermissions();
                 const isValid = permissions.filter((p) => p.address === selectedAccountHash).length;
 
                 if (!isValid) {

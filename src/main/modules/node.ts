@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import os from 'os';
 import path from 'path';
 import fetch from 'electron-fetch';
+import bs58check from 'bs58check';
 
 ipcMain.handle('os-platform', (event) => {
     const res = os.platform();
@@ -67,4 +68,9 @@ ipcMain.handle('electron-fetch-timeout', async (event, url: string, options) => 
     } catch (e) {
         throw new Error('error');
     }
+});
+
+ipcMain.handle('bs58check-decode-string', async (event, val) => {
+    const res = await bs58check.decode(val).toString();
+    return res;
 });

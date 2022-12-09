@@ -1,5 +1,5 @@
 import type { RouteObject } from 'react-router-dom';
-import { Outlet, Link, useRoutes, redirect } from 'react-router-dom';
+import { Outlet, Link, useRoutes, redirect, Navigate } from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Settings from './Settings';
@@ -15,20 +15,27 @@ import RequireAuth from './Auth';
 
 export const routes: RouteObject[] = [
     {
-        path: '/',
+        path: '/home',
         element: (
             <RequireAuth>
                 <Home />
             </RequireAuth>
         ),
-        children: [
-            { index: true, element: <HomeMain /> },
-            { path: '/add', element: <HomeAdd /> },
-        ],
+        children: [{ index: true, element: <HomeMain /> }],
+    },
+    {
+        path: '/home/add',
+        element: (
+            <RequireAuth>
+                <Home />
+            </RequireAuth>
+        ),
+        children: [{ index: true, element: <HomeAdd /> }],
     },
     { path: '/settings', element: <Settings /> },
     { path: '/walletNodesRequired', element: <WalletNodesRequired /> },
     { path: '/login/import', element: <LoginImport /> },
     { path: '/login/home', element: <LoginHome /> },
     { path: '/login/create', element: <LoginCreate /> },
+    { path: '/', element: <Navigate to="/home" replace /> },
 ];

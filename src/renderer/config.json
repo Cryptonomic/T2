@@ -1,5 +1,5 @@
 {
-    "name": "Tezori",
+    "name": "Galleon",
     "version": "1.3.2-beta",
     "blockExplorerHost": "https://arronax.io/tezos",
     "logo": "tezosLogo.png",
@@ -19,7 +19,7 @@
     "imageProxyURL": "",
     "imageAPIKey": "",
     "wertUrl": "",
-    "customProtocols": ["tezori", "tezos"],
+    "customProtocols": ["galleon", "tezori", "tezos"],
     "beaconEnable": true,
     "fullVersionUrl": "https://github.com/Cryptonomic/T2",
     "versionUpdateUrl": "https://github.com/Cryptonomic/T2",

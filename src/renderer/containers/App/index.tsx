@@ -82,12 +82,13 @@ const App = () => {
             try {
                 if (searchParams.has('type') && searchParams.get('type') === 'tzip10') {
                     const beaconRequest = searchParams.get('data') || '';
+                    const decodedVal = await window.electron.bs58check.decodeToString(beaconRequest);
 
                     if (config.beaconEnable) {
-                        // dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconRegistration'));
+                        dispatch(setModalValue(JSON.parse(decodedVal), 'beaconRegistration'));
                         dispatch(setModalOpen(true, 'beaconRegistration'));
                     } else {
-                        // dispatch(setModalValue(JSON.parse(base58check.decode(beaconRequest)), 'beaconDisable'));
+                        dispatch(setModalValue(JSON.parse(decodedVal), 'beaconDisable'));
                         dispatch(setModalOpen(true, 'beaconDisable'));
                     }
 

@@ -10,7 +10,7 @@ import { getMainNode } from '../../utils/settings';
 
 import { RootState } from '../../types/store';
 
-export const beaconClient = new WalletClient({ name: 'Beacon Wallet Client' });
+// export const beaconClient = new WalletClient({ name: 'Beacon Wallet Client' });
 
 const { isAppStore } = config;
 
@@ -57,7 +57,7 @@ export const BeaconMessageRouter = () => {
 
             if (connectedBlockchainNode.network !== message.network.type) {
                 dispatch(createMessageAction(`Beacon unexpected network: ${message.network.type}`, true));
-                beaconClient.respond({ id: message.id, type: BeaconMessageType.Error, errorType: BeaconErrorType.NETWORK_NOT_SUPPORTED });
+                window.electron.beacon.respond({ id: message.id, type: BeaconMessageType.Error, errorType: BeaconErrorType.NETWORK_NOT_SUPPORTED });
                 return;
             }
 
@@ -68,7 +68,7 @@ export const BeaconMessageRouter = () => {
 
             if (!message.operationDetails.filter((o) => o.kind === 'transaction' || o.kind === 'delegation' || o.kind === 'origination').length) {
                 dispatch(createMessageAction(`Unsupported Beacon operation, ${message.operationDetails[0].kind}`, true));
-                beaconClient.respond({ id: message.id, type: BeaconMessageType.Error, errorType: BeaconErrorType.UNKNOWN_ERROR });
+                window.electron.beacon.respond({ id: message.id, type: BeaconMessageType.Error, errorType: BeaconErrorType.UNKNOWN_ERROR });
                 return;
             }
 
@@ -107,23 +107,40 @@ export const BeaconMessageRouter = () => {
         }
 
         dispatch(setBeaconClientAction(true));
-
-        const init = async () => {
-            try {
-                await beaconClient.init();
-                await beaconClient.connect((message, connection) => {
-                    const isMac = platform.indexOf('Mac') === 0;
-                    if (isMac && isAppStore) {
-                        dispatch(setModalOpen(true, 'DisableBeaconModal'));
-                    } else {
-                        dispatch(setBeaconMessageAction(message, connection));
-                    }
-                });
-            } catch (e) {
-                console.log('BeaconMessageRouter Error', e);
+        window.electron.ipcRenderer.on('beacon', (message: any, connection: any) => {
+            const isMac = platform.indexOf('Mac') === 0;
+            if (isMac && isAppStore) {
+                dispatch(setModalOpen(true, 'DisableBeaconModal'));
+            } else {
+                dispatch(setBeaconMessageAction(message, connection));
             }
-        };
-        init();
+        });
+        // const init = async () => {
+        //     try {
+        //         await window.electron.beacon.init();
+        //     } catch (e) {
+        //         window.electron.dialog.showMessageBox('3333333', JSON.stringify(e));
+        //     }
+        // };
+
+        // init();
+
+        // const init = async () => {
+        //     try {
+        //         await beaconClient.init();
+        //         beaconClient.connect((message, connection) => {
+        //             const isMac = platform.indexOf('Mac') === 0;
+        //             if (isMac && isAppStore) {
+        //                 dispatch(setModalOpen(true, 'DisableBeaconModal'));
+        //             } else {
+        //                 dispatch(setBeaconMessageAction(message, connection));
+        //             }
+        //         });
+        //     } catch (e) {
+        //         console.log('BeaconMessageRouter Error', e);
+        //     }
+        // };
+        // init();
     }, []);
 
     return null;

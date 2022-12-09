@@ -58,7 +58,7 @@ export function goHomeAndClearState(): any {
         dispatch(clearNFTCollectionsAction());
         dispatch(endNFTSyncAction(new Date(0)));
         clearAutomaticAccountRefresh();
-        dispatch(push('/'));
+        dispatch(push('/home'));
     };
 }
 
@@ -783,9 +783,9 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     await saveIdentitiesToLocal(state().wallet.identities);
                     dispatch(setIsLoadingAction(false));
                     if (identities.length > 0) {
-                        dispatch(push('/'));
+                        dispatch(push('/home'));
                     } else {
-                        dispatch(push('/add'));
+                        dispatch(push('/home/add'));
                     }
                     await dispatch(syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash, AddressType.Manager));
                 } else {
@@ -830,9 +830,9 @@ export function importSecretKeyThunk(key): any {
                     await saveIdentitiesToLocal(state().wallet.identities);
                     dispatch(setIsLoadingAction(false));
                     if (identities.length > 0) {
-                        dispatch(push('/'));
+                        dispatch(push('/home'));
                     } else {
-                        dispatch(push('/add'));
+                        dispatch(push('/home/add'));
                     }
                     await dispatch(syncAccountOrIdentityThunk(publicKeyHash, publicKeyHash, AddressType.Manager));
                 } else {
@@ -884,9 +884,9 @@ export function loginThunk(loginType, walletLocation, walletFileName, password):
             dispatch(automaticAccountRefresh());
             dispatch(setIsLoadingAction(false));
             if (identities.length > 0) {
-                dispatch(push('/'));
+                dispatch(push('/home'));
             } else {
-                dispatch(push('/add'));
+                dispatch(push('/home/add'));
             }
             await dispatch(syncWalletThunk());
         } catch (e: any) {
@@ -918,7 +918,7 @@ export function connectLedgerThunk(): any {
                 dispatch(changeAccountAction(publicKeyHash, publicKeyHash, 0, 0, AddressType.Manager));
                 dispatch(setLedgerSignerThunk(derivation));
                 dispatch(automaticAccountRefresh());
-                dispatch(push('/'));
+                dispatch(push('/home'));
                 await dispatch(syncWalletThunk());
             } catch (e: any) {
                 console.error(e);

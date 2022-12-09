@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, clipboard, dialog } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain, clipboard, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import Store from 'electron-store';
@@ -23,6 +23,8 @@ import * as loglevel from 'loglevel';
 import { schema, defaultStore } from '../renderer/utils/localData';
 import { resolveHtmlPath } from './util';
 import MenuBuilder from './menu';
+import { onSetMainWindow, onSetBeaconClient } from './modules/global';
+import './modules/beacon';
 
 import config from '../renderer/config.json';
 
@@ -30,6 +32,20 @@ import './modules/conseiljs';
 import './modules/conseiljsSoftSigner';
 import './modules/node';
 import './modules/conseiljsLedgerSigner';
+
+const openCustomProtocol = (url, appWindow) => {
+    const currentURL = appWindow.webContents.getURL().match(/#(\/\w+\/?\w+)/);
+
+    if (!currentURL) {
+        return null;
+    }
+    if (currentURL[1] === '/login/home') {
+        appWindow.webContents.send('login', 'Please open a wallet and retry the operation', url); // TODO: localization
+    } else if (currentURL[1] === '/home') {
+        appWindow.webContents.send('wallet', url);
+    }
+    return null;
+};
 
 const logger = loglevel.getLogger('conseiljs');
 logger.setLevel(config.logLevel as loglevel.LogLevelDesc, false);
@@ -106,6 +122,11 @@ ipcMain.handle('electron-dialog-save', async (event, dialogFilters) => {
     };
 });
 
+ipcMain.handle('electron-dialog-show-message', async (event, title, message) => {
+    await dialog.showMessageBoxSync({ title, message });
+    return '';
+});
+
 // ipcMain.on('electron-remote-dialog-showSaveDialog', async (event, text) => {
 
 // });
@@ -147,7 +168,10 @@ if (process.env.NODE_ENV === 'production') {
     sourceMapSupport.install();
 }
 
-const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+const isMac = process.platform === 'darwin';
+const isWindows = process.platform === 'win32';
+
+const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true' || config.name.toLowerCase() === 'tezori';
 
 if (isDebug) {
     require('electron-debug')();
@@ -188,6 +212,27 @@ const createWindow = async () => {
         },
     });
 
+    onSetMainWindow(mainWindow);
+    onSetBeaconClient();
+
+    if (!app.requestSingleInstanceLock()) {
+        app.quit();
+    } else {
+        app.on('second-instance', (event, argv) => {
+            if (mainWindow) {
+                if (mainWindow.isMinimized()) {
+                    mainWindow.restore();
+                }
+                mainWindow.focus();
+
+                const protocolUrls = argv.filter((s) => config.customProtocols.map((p) => s.startsWith(p)).reduce((a, c) => a || c));
+                if (protocolUrls && protocolUrls.length > 0) {
+                    openCustomProtocol(protocolUrls[0], mainWindow);
+                }
+            }
+        });
+    }
+
     mainWindow.loadURL(resolveHtmlPath('index.html'));
 
     mainWindow.on('ready-to-show', () => {
@@ -200,6 +245,17 @@ const createWindow = async () => {
             mainWindow.show();
         }
     });
+
+    if (isMac) {
+        //
+    } else if (isWindows) {
+        openCustomProtocol(process.argv.slice(1), mainWindow);
+    } else {
+        const protocolUrls = process.argv.filter((s) => config.customProtocols.map((p) => s.startsWith(p)).reduce((a, c) => a || c));
+        if (protocolUrls && protocolUrls.length > 0) {
+            openCustomProtocol(protocolUrls[0], mainWindow);
+        }
+    }
 
     mainWindow.on('closed', () => {
         mainWindow = null;
@@ -230,6 +286,14 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
+
+app.on('open-url', (event, url) => {
+    // Protocol handler for osx
+    event.preventDefault();
+    openCustomProtocol(url, mainWindow);
+});
+
+config.customProtocols.map((s) => app.setAsDefaultProtocolClient(s));
 
 app.whenReady()
     .then(() => {

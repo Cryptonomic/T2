@@ -34,7 +34,7 @@ import { ModalWrapper, ModalContainer, Container, ButtonContainer, InvokeButton,
 
 import { estimateOperationGroupFee, sendOperations, queryHicEtNuncSwap } from './thunks';
 import { WrapPassword, OperationDetailHeader, LabelText } from './style';
-import { beaconClient } from './BeaconMessageRouter';
+// import { beaconClient } from './BeaconMessageRouter';
 
 interface Props {
     open: boolean;
@@ -80,7 +80,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                 errorType: BeaconErrorType.ABORTED_ERROR,
                 // senderId:
             };
-            await beaconClient.respond(response);
+            await window.electron.beacon.respond(response);
         } finally {
             onClose();
         }
@@ -164,7 +164,7 @@ const BeaconAuthorize = ({ open, managerBalance, onClose }: Props) => {
                     id,
                     transactionHash: operationHash,
                 };
-                await beaconClient.respond(response);
+                await window.electron.beacon.respond(response);
 
                 dispatch(setBeaconLoading());
                 dispatch(setModalOpen(false, activeModal));

@@ -11,7 +11,7 @@ import { RootState, ModalState } from '../../types/store';
 
 import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
-import { beaconClient } from './BeaconMessageRouter';
+// import { beaconClient } from './BeaconMessageRouter';
 
 import { ModalWrapper, ModalContainer, CloseIconWrapper, Container, ButtonContainer, InvokeButton, Footer, WhiteBtn } from '../style';
 
@@ -57,8 +57,8 @@ const BeaconPermission = ({ open, onClose }: Props) => {
                 id: authorizationRequestId,
                 publicKey: keyStore.publicKey,
             };
-            await beaconClient.respond(response);
-            const permissions = await beaconClient.getPermissions();
+            await window.electron.beacon.respond(response);
+            const permissions = await window.electron.beacon.getPermissions();
             dispatch(setBeaconLoading());
             if (!permissions.length && !permissions.find((p) => p.address === keyStore.publicKeyHash)) {
                 throw Error('No permission');

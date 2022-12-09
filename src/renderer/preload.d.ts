@@ -46,6 +46,7 @@ declare global {
             dialog: {
                 openDialog: (filters) => Promise<any>;
                 saveDialog: (filters) => Promise<any>;
+                showMessageBox: (title, message) => void;
             };
             path: {
                 join: (str1, str2) => string;
@@ -70,6 +71,16 @@ declare global {
             };
             transportNodeHid: {
                 getList: () => Promise<any[]>;
+            };
+            bs58check: {
+                decodeToString: (val) => Promise<string>;
+            };
+            beacon: {
+                init: () => void;
+                respond: (res) => void;
+                addPeer: (peer) => Promise<string>;
+                getPermissions: () => Promise<any>;
+                getAppMetadataList: () => Promise<any>;
             };
         };
 

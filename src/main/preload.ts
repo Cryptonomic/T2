@@ -17,7 +17,7 @@ import path from 'path';
 
 // console.log('conseiljsSoftSigner', KeyStoreUtils)
 
-export type Channels = 'ipc-example' | 'showMessage' | 'login' | 'wallet';
+export type Channels = 'ipc-example' | 'showMessage' | 'login' | 'wallet' | 'beacon';
 
 contextBridge.exposeInMainWorld('electron', {
     ipcRenderer: {
@@ -83,6 +83,9 @@ contextBridge.exposeInMainWorld('electron', {
         saveDialog(filters) {
             return ipcRenderer.invoke('electron-dialog-save', filters);
         },
+        showMessageBox(title, message) {
+            return ipcRenderer.invoke('electron-dialog-show-message', title, message);
+        },
     },
     path: {
         join(str1, str2) {
@@ -113,6 +116,28 @@ contextBridge.exposeInMainWorld('electron', {
     },
     fetchTimeout(url, options) {
         return ipcRenderer.invoke('electron-fetch-timeout', url, options);
+    },
+    bs58check: {
+        decodeToString(val) {
+            return ipcRenderer.invoke('bs58check-decode-string', val);
+        },
+    },
+    beacon: {
+        init() {
+            return ipcRenderer.invoke('beacon-init');
+        },
+        respond(res) {
+            return ipcRenderer.invoke('beacon-respond', res);
+        },
+        addPeer(peer) {
+            return ipcRenderer.invoke('beacon-addpeer', peer);
+        },
+        getPermissions() {
+            return ipcRenderer.invoke('beacon-getPermissions');
+        },
+        getAppMetadataList() {
+            return ipcRenderer.invoke('beacon-getAppMetadataList');
+        },
     },
     // conseiljsSoftSigner: conseiljsSoftSigner
 });

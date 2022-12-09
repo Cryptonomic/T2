@@ -8,7 +8,7 @@ import config from '../../config.json';
 import { RootState, ModalState } from '../../types/store';
 import { ModalWrapper, ModalContainer, Container, ButtonContainer, Footer, WhiteBtn } from '../style';
 
-import { beaconClient } from './BeaconMessageRouter';
+// import { beaconClient } from './BeaconMessageRouter';
 
 export const PromptContainer = styled.div`
     align-items: center;
@@ -40,7 +40,7 @@ const BeaconDisabled = ({ open, onClose }: Props) => {
                 type: BeaconMessageType.Error,
                 errorType: BeaconErrorType.ABORTED_ERROR,
             };
-            await beaconClient.respond(response);
+            await window.electron.beacon.respond(response);
         } finally {
             onClose();
         }
