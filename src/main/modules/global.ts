@@ -1,7 +1,7 @@
 import { dialog } from 'electron';
 import { Signer } from 'conseiljs';
 import { SoftSigner } from 'conseiljs-softsigner';
-import { WalletClient } from '@airgap/beacon-sdk';
+// import { WalletClient } from '@airgap/beacon-sdk';
 
 let globalSigner;
 let beaconClient;
@@ -29,7 +29,7 @@ export async function cloneDecryptedSigner(signer: SoftSigner, password: string)
 }
 
 export async function onSetBeaconClient() {
-    beaconClient = new WalletClient({ name: 'Beacon Wallet Client' });
+    // beaconClient = new WalletClient({ name: 'Beacon Wallet Client' });
     await beaconClient.init();
     dialog.showMessageBoxSync({ title: 'init', message: 'success' });
     await beaconClient.connect((message, connection) => {

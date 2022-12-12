@@ -212,8 +212,8 @@ const createWindow = async () => {
         },
     });
 
-    onSetMainWindow(mainWindow);
-    onSetBeaconClient();
+    // onSetMainWindow(mainWindow);
+    // onSetBeaconClient();
 
     if (!app.requestSingleInstanceLock()) {
         app.quit();

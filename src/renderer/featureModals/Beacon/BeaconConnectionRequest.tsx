@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { setBeaconLoading } from '../../reduxContent/app/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
 
-// import { beaconClient } from './BeaconMessageRouter';
+import { beaconClient } from './BeaconMessageRouter';
 import Loader from '../../components/Loader';
 import { RootState, ModalState } from '../../types/store';
 import { getMainNode } from '../../utils/settings';
@@ -43,7 +43,7 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
         try {
             dispatch(setBeaconLoading(true));
             const beaconRequest = modalValues[activeModal];
-            const aa = await window.electron.beacon.addPeer(beaconRequest);
+            const aa = await beaconClient.addPeer(beaconRequest);
             window.electron.dialog.showMessageBox('222222', aa);
         } catch (e) {
             console.log('BeaconConnectionRequest error', e);

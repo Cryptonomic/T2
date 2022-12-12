@@ -4,7 +4,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { BeaconMessageType, SignPayloadResponse, BeaconErrorType, BeaconResponseInputMessage, SigningType } from '@airgap/beacon-sdk';
 // import { SoftSigner } from 'conseiljs-softsigner';
 
-// import { beaconClient } from './BeaconMessageRouter';
+import { beaconClient } from './BeaconMessageRouter';
 
 import Loader from '../../components/Loader';
 import PasswordInput from '../../components/PasswordInput';
@@ -48,7 +48,7 @@ const BeaconSignature = ({ open, onClose }: Props) => {
                 errorType: BeaconErrorType.ABORTED_ERROR,
                 // senderId:
             };
-            await window.electron.beacon.respond(response);
+            await beaconClient.respond(response);
         } finally {
             onClose();
         }
@@ -132,7 +132,7 @@ const BeaconSignature = ({ open, onClose }: Props) => {
                     version: '',
                 };
 
-                await window.electron.beacon.respond(response);
+                await beaconClient.respond(response);
 
                 dispatch(setBeaconLoading(false));
                 dispatch(setModalOpen(false, activeModal));
