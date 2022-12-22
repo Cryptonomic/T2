@@ -214,6 +214,9 @@ const createWindow = async () => {
 
     // onSetMainWindow(mainWindow);
     // onSetBeaconClient();
+    if (process.env.DEBUG_PROD === 'true') {
+        mainWindow.webContents.openDevTools();
+    }
 
     if (!app.requestSingleInstanceLock()) {
         app.quit();

@@ -74,3 +74,7 @@ ipcMain.handle('bs58check-decode-string', async (event, val) => {
     const res = await bs58check.decode(val).toString();
     return res;
 });
+ipcMain.handle('bs58check-encode-string', async (event, str) => {
+    const res = await bs58check.encode(Buffer.from(str));
+    return res;
+});

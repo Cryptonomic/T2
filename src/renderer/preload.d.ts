@@ -74,6 +74,7 @@ declare global {
             };
             bs58check: {
                 decodeToString: (val) => Promise<string>;
+                encodeToString: (val) => Promise<string>;
             };
             beacon: {
                 init: () => void;
@@ -81,6 +82,17 @@ declare global {
                 addPeer: (peer) => Promise<string>;
                 getPermissions: () => Promise<any>;
                 getAppMetadataList: () => Promise<any>;
+                getSenderId: (publicKey) => Promise<string>;
+                getAccountIdentifier: (data) => Promise<string>;
+                utils: {
+                    toHex: (data) => Promise<string>;
+                    generateGUID: () => Promise<string>;
+                    getHexHash: (data) => Promise<string>;
+                    getAddressFromPublicKey: (data) => Promise<string>;
+                };
+                core: {
+                    encryptMessageAsymmetric: (recipientPublicKey: string, message: string) => Promise<string>;
+                };
             };
         };
 

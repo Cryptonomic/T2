@@ -121,6 +121,9 @@ contextBridge.exposeInMainWorld('electron', {
         decodeToString(val) {
             return ipcRenderer.invoke('bs58check-decode-string', val);
         },
+        encodeToString(val) {
+            return ipcRenderer.invoke('bs58check-encode-string', val);
+        },
     },
     beacon: {
         init() {
@@ -137,6 +140,31 @@ contextBridge.exposeInMainWorld('electron', {
         },
         getAppMetadataList() {
             return ipcRenderer.invoke('beacon-getAppMetadataList');
+        },
+        getSenderId(publicKey) {
+            return ipcRenderer.invoke('beacon-getSenderId', publicKey);
+        },
+        getAccountIdentifier(data) {
+            return ipcRenderer.invoke('beacon-getAccountIdentifier', data);
+        },
+        utils: {
+            toHex(data) {
+                return ipcRenderer.invoke('beacon-utils-toHex', data);
+            },
+            generateGUID() {
+                return ipcRenderer.invoke('beacon-utils-generateGUID');
+            },
+            getHexHash(data) {
+                return ipcRenderer.invoke('beacon-utils-getHexHash', data);
+            },
+            getAddressFromPublicKey(data) {
+                return ipcRenderer.invoke('beacon-utils-getAddressFromPublicKey', data);
+            },
+        },
+        core: {
+            encryptMessageAsymmetric(recipientPublicKey: string, message: string) {
+                return ipcRenderer.invoke('beacon-core-CommunicationClient-encryptMessageAsymmetric', recipientPublicKey, message);
+            },
         },
     },
     // conseiljsSoftSigner: conseiljsSoftSigner

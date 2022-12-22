@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { WalletClient, BeaconMessageType, BeaconRequestOutputMessage, ConnectionContext, BeaconErrorType } from '@airgap/beacon-sdk';
+import { BeaconMessageType, BeaconRequestOutputMessage, ConnectionContext, BeaconErrorType } from '@airgap/beacon-sdk';
+import { WalletClient } from '../../beacon/wallet';
 import { setBeaconMessageAction, setBeaconLoading, setBeaconClientAction } from '../../reduxContent/app/actions';
 import { setModalOpen, setModalValue } from '../../reduxContent/modal/actions';
 import { createMessageAction } from '../../reduxContent/message/actions';
