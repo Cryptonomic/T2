@@ -36,13 +36,15 @@ export abstract class CommunicationClient {
      */
     // eslint-disable-next-line class-methods-use-this
     protected async createCryptoBoxServer(otherPublicKey: string, selfKeypair: KeyPair): Promise<SessionKeys> {
-        return serverSessionKeys(
+        const test = serverSessionKeys(
             {
                 publicKey: convertPublicKeyToX25519(selfKeypair.publicKey),
                 secretKey: convertSecretKeyToX25519(selfKeypair.secretKey),
             },
             convertPublicKeyToX25519(window.electron.buffer.from(otherPublicKey, 'hex'))
         );
+        console.log('1111111111--createCryptoBoxServer', test);
+        return test;
     }
 
     /**
@@ -53,13 +55,15 @@ export abstract class CommunicationClient {
      */
     // eslint-disable-next-line class-methods-use-this
     protected async createCryptoBoxClient(otherPublicKey: string, selfKeypair: KeyPair): Promise<SessionKeys> {
-        return clientSessionKeys(
+        const test = clientSessionKeys(
             {
                 publicKey: convertPublicKeyToX25519(selfKeypair.publicKey),
                 secretKey: convertSecretKeyToX25519(selfKeypair.secretKey),
             },
             convertPublicKeyToX25519(window.electron.buffer.from(otherPublicKey, 'hex'))
         );
+        console.log('1111111111--createCryptoBoxClient', test);
+        return test;
     }
 
     /**

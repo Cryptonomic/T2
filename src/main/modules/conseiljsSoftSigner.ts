@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 import { KeyStoreUtils, CryptoUtils, SoftSigner } from 'conseiljs-softsigner';
 import { TezosMessageUtils } from 'conseiljs';
+import { SigningType } from '@airgap/beacon-sdk';
 import { onGetSigner, onSetSigner, cloneDecryptedSigner } from './global';
 
 ipcMain.handle('conseiljs-softsigner-generateMnemonic', async (event, val) => {
@@ -106,4 +107,17 @@ ipcMain.handle('conseiljs-softsigner-main-signText', async (event, message: stri
 ipcMain.handle('conseiljs-softsigner-main-cloneDecryptedSigner', async (event, signer: SoftSigner, password: string) => {
     const res = await SoftSigner.createSigner(await signer.getKey(password));
     return res;
+});
+
+ipcMain.handle('beacon-Signature', async (event, isLedger, payload, signingType, password) => {
+    const si = onGetSigner();
+    const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+    let sig = '';
+    if (signingType === SigningType.RAW) {
+        sig = (await signer?.signText(payload)) || '';
+    } else {
+        const signatureBytes = (await signer?.signOperation(Buffer.from(payload, 'hex'))) || Buffer.from('0x0', 'hex');
+        sig = await TezosMessageUtils.readSignatureWithHint(signatureBytes, signer?.getSignerCurve() || 'edsig');
+    }
+    return sig;
 });

@@ -85,6 +85,7 @@ export abstract class MessageBasedClient extends CommunicationClient {
         const sharedKey = await this.createCryptoBoxServer(senderPublicKey, this.keyPair);
 
         const hexPayload = window.electron.buffer.from(payload, 'hex');
+        console.log('2222222-hexpayload', hexPayload);
 
         if (hexPayload.length >= secretbox_NONCEBYTES + secretbox_MACBYTES) {
             try {

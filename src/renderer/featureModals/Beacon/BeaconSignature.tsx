@@ -68,25 +68,27 @@ const BeaconSignature = ({ open, onClose }: Props) => {
             if (isLedger) {
                 try {
                     setLedgerModalOpen(true);
-                    if (signingType === SigningType.RAW) {
-                        sig = (await signer?.signText(payload)) || '';
-                    } else {
-                        const signatureBytes =
-                            (await signer?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
-                        sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, signer?.getSignerCurve() || 'edsig');
-                    }
+                    sig = await window.electron.beacon.getSignature(isLedger, payload, SigningType.RAW, password);
+                    // if (signingType === SigningType.RAW) {
+                    //     sig = (await signer?.signText(payload)) || '';
+                    // } else {
+                    //     const signatureBytes =
+                    //         (await signer?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
+                    //     sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, signer?.getSignerCurve() || 'edsig');
+                    // }
                 } finally {
                     setLedgerModalOpen(false);
                 }
             } else {
-                const plainSigner = await cloneDecryptedSigner(signer as any, password);
-                if (signingType === SigningType.RAW) {
-                    sig = (await plainSigner?.signText(payload)) || '';
-                } else {
-                    const signatureBytes =
-                        (await plainSigner?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
-                    sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, plainSigner?.getSignerCurve() || 'edsig');
-                }
+                sig = await window.electron.beacon.getSignature(isLedger, payload, SigningType.RAW, password);
+                // const plainSigner = await cloneDecryptedSigner(signer as any, password);
+                // if (signingType === SigningType.RAW) {
+                //     sig = (await plainSigner?.signText(payload)) || '';
+                // } else {
+                //     const signatureBytes =
+                //         (await plainSigner?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
+                //     sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, plainSigner?.getSignerCurve() || 'edsig');
+                // }
             }
 
             setSignature(sig);
@@ -103,8 +105,9 @@ const BeaconSignature = ({ open, onClose }: Props) => {
         const onInit = async () => {
             if (signingType === SigningType.MICHELINE || signingType === SigningType.OPERATION) {
                 try {
-                    const parsedContent = await window.conseiljs.TezosMessageUtils.readPackedData(payload, '').toString();
-                    setContent(parsedContent);
+                    const parsedContent = await window.conseiljs.TezosMessageUtils.readPackedData(payload, '');
+                    const convertedContent = typeof parsedContent === 'number' ? String(parsedContent) : parsedContent;
+                    setContent(convertedContent);
                 } catch {
                     setParseError('Could not parse signature request.');
                     setContent(payload);

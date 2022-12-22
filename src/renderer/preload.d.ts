@@ -84,6 +84,7 @@ declare global {
                 getAppMetadataList: () => Promise<any>;
                 getSenderId: (publicKey) => Promise<string>;
                 getAccountIdentifier: (data) => Promise<string>;
+                getSignature: (isLedger, payload, signingType, password) => Promise<string>;
                 utils: {
                     toHex: (data) => Promise<string>;
                     generateGUID: () => Promise<string>;

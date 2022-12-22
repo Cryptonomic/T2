@@ -147,6 +147,9 @@ contextBridge.exposeInMainWorld('electron', {
         getAccountIdentifier(data) {
             return ipcRenderer.invoke('beacon-getAccountIdentifier', data);
         },
+        getSignature(isLedger, payload, signingType, password) {
+            return ipcRenderer.invoke('beacon-Signature', isLedger, payload, signingType, password);
+        },
         utils: {
             toHex(data) {
                 return ipcRenderer.invoke('beacon-utils-toHex', data);
