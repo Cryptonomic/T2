@@ -43,8 +43,7 @@ const BeaconConnectionRequest = ({ open, onClose }: Props) => {
         try {
             dispatch(setBeaconLoading(true));
             const beaconRequest = modalValues[activeModal];
-            const aa = await beaconClient.addPeer(beaconRequest);
-            window.electron.dialog.showMessageBox('222222', aa);
+            await beaconClient.addPeer(beaconRequest);
         } catch (e) {
             console.log('BeaconConnectionRequest error', e);
             dispatch(setBeaconLoading());
