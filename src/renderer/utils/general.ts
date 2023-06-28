@@ -156,8 +156,8 @@ export const getDataFromApi = async (url: string) => {
         const response = await window.electron.fetch(url, { cache: 'no-store' });
         return response;
     } catch (error) {
-        console.log('dddddd----', error);
         console.error(error);
+        return '';
     }
 };
 
