@@ -6,7 +6,7 @@ import { CREATE, IMPORT } from '../../constants/CreationTypes';
 import { FUNDRAISER, GENERATE_MNEMONIC, RESTORE } from '../../constants/AddAddressTypes';
 import { CREATED } from '../../constants/StatusTypes';
 import { createTransaction } from '../../utils/transaction';
-import { TokenKind, VaultToken, ArtToken, Identity, Token, AddressType } from '../../types/general';
+import { TokenKind, VaultToken, ArtToken, Identity, AddressType } from '../../types/general';
 
 import { findAccountIndex, getSyncAccount, syncAccountWithState } from '../../utils/account';
 
@@ -35,7 +35,7 @@ import {
 
 import { clearNFTCollectionsAction, endNFTSyncAction } from '../nft/actions';
 
-import { setSignerThunk, setLedgerSignerThunk } from '../app/thunks';
+import { setSignerThunk, setLedgerSignerThunk, registerTracingEvent } from '../app/thunks';
 import { syncNFTThunk } from '../nft/thunks';
 
 import { getMainNode, getMainPath } from '../../utils/settings';
@@ -929,6 +929,8 @@ export function connectLedgerThunk(): any {
                 dispatch(createMessageAction(message, true, 'https://cryptonomic.zendesk.com/hc/en-us/articles/360039616411'));
             }
         }
+
+        dispatch(registerTracingEvent('connect_ledger'));
         dispatch(setIsLoadingAction(false));
         dispatch(setIsLedgerConnectingAction(false));
     };

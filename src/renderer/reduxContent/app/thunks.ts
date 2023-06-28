@@ -1,21 +1,20 @@
+import { OperationKindType, TezosParameterFormat, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
+import firebase from 'firebase';
+import { JSONPath } from 'jsonpath-plus';
 import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
-import { JSONPath } from 'jsonpath-plus';
-import { OperationKindType, TezosParameterFormat, KeyStore, KeyStoreCurve, KeyStoreType } from 'conseiljs';
-// import { KeyStoreUtils, SoftSigner } from 'conseiljs-softsigner';
+import uuid4 from 'uuid4';
 
 import { changeAccountAction, addNewVersionAction, setSignerAction } from './actions';
 import { syncAccountOrIdentityThunk } from '../wallet/thunks';
 import { getMainNode } from '../../utils/settings';
 import { getDataFromApi } from '../../utils/general';
+import { getLocalData, setLocalData } from '../../utils/localData';
 import { AVERAGEFEES, OPERATIONFEE, REVEALOPERATIONFEE } from '../../constants/FeeValue';
 import config from '../../config.json';
 
 import { AverageFees, AddressType } from '../../types/general';
 import { RootState } from '../../types/store';
-
-import { fetchWithTimeout } from '../../utils/network';
-import { SoftSigner } from '../../utils/softsigner';
 
 const { LocalVersionIndex, versionReferenceURL } = config;
 
@@ -198,39 +197,6 @@ const queryBakingBad = async (address: string): Promise<BakingBadInfo> => {
     }
 };
 
-const queryHarpoon = async (accountAddress: string): Promise<HarpoonInfo> => {
-    try {
-        const harpoonUrl = 'https://harpoon.arronax.io/info'; // TODO: settings
-
-        const query = {
-            table: 'baker_performance',
-            fields: ['baker', 'cycle', 'grade'],
-            predicates: [{ field: 'baker', op: 'eq', value: [accountAddress] }],
-            orderby: { field: 'cycle', dir: 'desc' },
-        };
-
-        const response = await fetchWithTimeout(harpoonUrl, {
-            method: 'POST',
-            body: JSON.stringify(query),
-            headers: { 'Content-Type': 'application/json' },
-            timeout: 5000,
-        });
-        const responseJSON = await response.json();
-
-        if (Array.isArray(responseJSON) && responseJSON.length > 0) {
-            return {
-                address: accountAddress,
-                grade: String(responseJSON[0].grade),
-                cycle: Number(responseJSON[0].cycle),
-            };
-        }
-        throw new Error(`Empty response from Harpoon for ${JSON.stringify(query)}`);
-    } catch (e) {
-        console.log('queryHarpoon failed with ', e);
-        return { address: accountAddress, grade: '', cycle: 0 };
-    }
-};
-
 export const queryTezosDomains = async (nodeUrl: string, address: string): Promise<string> => {
     try {
         const packedKey = await window.conseiljs.TezosMessageUtils.encodeBigMapKey(address, 'address', 'hex');
@@ -349,6 +315,37 @@ export function getNewVersionThunk(): any {
             if (RemoteVersionIndex > parseInt(LocalVersionIndex, 10)) {
                 dispatch(addNewVersionAction(result.currentVersionString));
             }
+        }
+    };
+}
+
+export function registerTracingEvent(eventType: string) {
+    if (!config.fireConf) {
+        return;
+    }
+
+    return async () => {
+        try {
+            let tracingId = getLocalData('tracingId');
+            if (!tracingId) {
+                tracingId = uuid4();
+                setLocalData('tracingId', tracingId);
+            }
+
+            firebase.initializeApp(config.fireConf);
+
+            const eventId = uuid4();
+            const ref = firebase.database().ref('users').child(tracingId).child('events').child(eventId);
+            const event = {
+                timestamp: Date.now(),
+                name: eventType,
+                version: LocalVersionIndex,
+            };
+            ref.set(event).catch((err: any) => {
+                console.log('firebase error', err);
+            });
+        } catch {
+            // eh
         }
     };
 }
