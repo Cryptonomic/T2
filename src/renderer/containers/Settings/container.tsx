@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import uuid4 from 'uuid4';
 
 import BackButton from '../../components/BackButton';
 import { H2 } from '../../components/Heading';
@@ -19,16 +20,17 @@ import { Node, Path } from '../../types/general';
 import { changeLocaleThunk, changeNodeThunk, addNodeThunk, removeNodeThunk, changePathThunk, addPathThunk, removePathThunk } from './duck/thunk';
 import { goHomeAndClearState } from '../../reduxContent/wallet/thunks';
 import { RootState, SettingsState } from '../../types/store';
+import { setLocalData } from '../../utils/localData';
 
 import config from '../../config.json';
 
-import { Container, BackButtonContainer, Content, Content6, ContentTitle, RowForParts, Part, ItemWrapper, AddIcon } from './styles';
+import { Container, BackButtonContainer, Content, Content6, ContentTitle, RowForParts, Part, ItemWrapper, AddIcon, SimpleButton } from './styles';
 
 const { name, version, LocalVersionIndex } = config;
 
 const defaultNodeList = getInitWalletSettings().nodesList;
 
-const SettingsContainer = () => {
+function SettingsContainer() {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -104,6 +106,10 @@ const SettingsContainer = () => {
         return true;
     };
 
+    const onResetTrackingId = () => {
+        setLocalData('tracingId', uuid4());
+    };
+
     const backTitle = isPathChanged ? t('containers.homeSettings.back_to_login') : t('containers.homeSettings.back_to_wallet');
 
     const pathName = getMainPath(pathsList, selectedPath);
@@ -154,6 +160,17 @@ const SettingsContainer = () => {
                                 {t('containers.homeSettings.add_custom_node')}
                             </ItemWrapper>
                         </CustomSelect>
+                    </Part>
+                </RowForParts>
+            </Content>
+
+            <Content>
+                <ContentTitle>{t('containers.homeSettings.reset_tracking_id')}</ContentTitle>
+                <RowForParts>
+                    <Part>
+                    <SimpleButton color="secondary" variant="extended" onClick={() => onResetTrackingId()}>
+                            {t('containers.homeSettings.reset_tracking_id') as string}
+                        </SimpleButton>
                     </Part>
                 </RowForParts>
             </Content>

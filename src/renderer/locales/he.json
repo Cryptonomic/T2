@@ -565,12 +565,13 @@
             "hardware_settings": "Hardware Wallet Settings",
             "choose_derivation_path": "Choose Derivation Path",
             "add_derivation_path": "Add a Derivation Path",
-            "back_to_login": "Back to Login"
+            "back_to_login": "Back to Login",
+            "reset_tracking_id": "Reset Tracking Identifier"
         },
         "loginHome": {
             "description": "I acknowledge that I have read and accepted the<1> Terms of Service </1>and<3> Privacy Policy</3>.",
             "create_new_wallet_btn": "Create New Wallet",
-            "open_exisiting_wallet_btn": "Open Existing Wallet",
+            "open_existing_wallet_btn": "Open Existing Wallet",
             "want_to_import_fundraiser_paper_wallet": "Want to import your Fundraiser paper wallet?",
             "create_named_wallet": " <0>Create a wallet</0> first.",
             "tagline": "A community wallet for Tezos",

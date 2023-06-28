@@ -565,12 +565,13 @@
             "hardware_settings": "Настройки хардвер кошелька",
             "choose_derivation_path": "Выбрать Путь Вывода",
             "add_derivation_path": "Добавить Путь Вывода",
-            "back_to_login": "Вернуться в Кошелёк"
+            "back_to_login": "Вернуться в Кошелёк",
+            "reset_tracking_id": "Reset Tracking Identifier"
         },
         "loginHome": {
             "description": "Я подтверждаю, что я прочёл и согласился с<1>Условиями Обслуживания</1>и<3> Принципами Конфиденциальности</3>",
             "create_new_wallet_btn": "Создать Новый Кошелёк",
-            "open_exisiting_wallet_btn": "Открыть Существующий Кошелёк",
+            "open_existing_wallet_btn": "Открыть Существующий Кошелёк",
             "want_to_import_fundraiser_paper_wallet": "Хотите импортировать вашего бумажного кошелька Фандрейзера?",
             "create_named_wallet": " <0>Создайте кошелёк</0> сначала.",
             "tagline": "Коммьюнити кошелёк для Tezos",

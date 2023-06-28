@@ -565,12 +565,13 @@
             "hardware_settings": "Configurações da carteira de hardware",
             "choose_derivation_path": "Escolha o caminho de derivação",
             "add_derivation_path": "Adicionar um caminho de derivação",
-            "back_to_login": "Retornar ao Login"
+            "back_to_login": "Retornar ao Login",
+            "reset_tracking_id": "Reset Tracking Identifier"
         },
         "loginHome": {
             "description": "Eu confirmo que li e aceitei os <1>Termos de Serviço</1> e <3>Política de Privacidade</3>",
             "create_new_wallet_btn": "Criar Nova Carteira",
-            "open_exisiting_wallet_btn": "Abrir Carteira Existente",
+            "open_existing_wallet_btn": "Abrir Carteira Existente",
             "want_to_import_fundraiser_paper_wallet": "Deseja importar sua paper wallet do Fundraiser?",
             "create_named_wallet": " <0>Criar uma carteira</0> primeiro.",
             "tagline": "Uma carteira de Tezos da comunidade",

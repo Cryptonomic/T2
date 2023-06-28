@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import MenuItem from '@mui/material/MenuItem';
+import Fab from '@mui/material/Fab';
 import IconButton from '@mui/material/IconButton';
 import AddCircle from '@mui/icons-material/AddCircle';
 import Check from '@mui/icons-material/Check';
@@ -122,5 +123,13 @@ export const CheckIcon = styled(Check)`
         width: 21px;
         position: absolute;
         left: 16px;
+    }
+`;
+
+export const SimpleButton = styled(Fab)`
+    &&& {
+        width: 74%;
+        height: 9.5%;
+        margin-top: 8%;
     }
 `;

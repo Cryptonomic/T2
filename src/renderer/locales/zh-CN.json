@@ -564,12 +564,13 @@
             "hardware_settings": "硬件钱包设置",
             "choose_derivation_path": "选择派生路径",
             "add_derivation_path": "添加一个派生路径",
-            "back_to_login": "返回到登录"
+            "back_to_login": "返回到登录",
+            "reset_tracking_id": "Reset Tracking Identifier"
         },
         "loginHome": {
             "description": "我承认我已经阅读过并接受<1>服务条款</1>和<3>隐私政策</3>。",
             "create_new_wallet_btn": "创建新钱包",
-            "open_exisiting_wallet_btn": "打开已有钱包",
+            "open_existing_wallet_btn": "打开已有钱包",
             "want_to_import_fundraiser_paper_wallet": "想要导入你的资金筹集活动纸钱包吗?",
             "create_named_wallet": " <0>首先创建一个钱包。</0><",
             "tagline": "为Tezos而生的社区钱包",

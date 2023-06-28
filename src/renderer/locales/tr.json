@@ -564,12 +564,13 @@
             "hardware_settings": "Donanım Cüzdan Ayarları",
             "choose_derivation_path": "Derivasyon Seçimi",
             "add_derivation_path": "Derivasyon Ekleyin",
-            "back_to_login": "Girişe Geri Dön"
+            "back_to_login": "Girişe Geri Dön",
+            "reset_tracking_id": "Reset Tracking Identifier"
         },
         "loginHome": {
             "description": "<1> Kullanım Şartları </1>ve<3> Gizlilik Politikasını</3> okudum ve kabul ediyorum.",
             "create_new_wallet_btn": "Yeni Cüzdan Oluştur",
-            "open_exisiting_wallet_btn": "Varolan Cüzdan'ı Aç",
+            "open_existing_wallet_btn": "Varolan Cüzdan'ı Aç",
             "want_to_import_fundraiser_paper_wallet": "Proje Destek zamanı oluşturulan kağıt cüzdana mı erişmek istiyorsun?",
             "create_named_wallet": " Öncelikle <0>yeni bir cüzdanı oluştur</0>.",
             "tagline": "Tezos ailesi için bir cüzdan",

@@ -565,12 +565,13 @@
             "hardware_settings": "Ajustes de la Billetera",
             "choose_derivation_path": "Escoger una Trayectoria de Derivación",
             "add_derivation_path": "Agregar una trayectoria de derivación",
-            "back_to_login": "Volver a Inicio de Sesión"
+            "back_to_login": "Volver a Inicio de Sesión",
+            "reset_tracking_id": "Reset Tracking Identifier"
         },
         "loginHome": {
             "description": "Yo reconozco que he leído y aceptado los<1> Términos del Servicio</1> y la<3> Política de Privacidad</3> ",
             "create_new_wallet_btn": "Crear una nueva billetera",
-            "open_exisiting_wallet_btn": "Abrir billetera existente",
+            "open_existing_wallet_btn": "Abrir billetera existente",
             "want_to_import_fundraiser_paper_wallet": "¿Quieres importar tu billetera de papel de la Fundraiser?",
             "create_named_wallet": " <0>Crear una billetera</0> primero.",
             "tagline": "Una billetera comunitaria para Tezos",

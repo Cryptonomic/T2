@@ -10,7 +10,7 @@ import MessageBar from '../../components/MessageBar';
 import { createMessageAction } from '../../reduxContent/message/actions';
 import { setLaunchUrl, setPlatformAction } from '../../reduxContent/app/actions';
 import { setModalOpen, setModalValue, setModalActiveTab } from '../../reduxContent/modal/actions';
-import { getNewVersionThunk } from '../../reduxContent/app/thunks';
+import { getNewVersionThunk, registerTracingEvent } from '../../reduxContent/app/thunks';
 import { getWalletName } from '../../reduxContent/wallet/selectors';
 import { getLoggedIn } from '../../utils/login';
 import { getWalletSettings } from '../../utils/settings';
@@ -34,13 +34,10 @@ const App = () => {
     const walletName = useSelector(getWalletName);
     const isLoggedIn = getLoggedIn(wallet);
 
-    localStorage.removeItem('initIndex');
-    localStorage.removeItem('isTos');
-    localStorage.removeItem('isPP');
-
     useEffect(() => {
         dispatch(getNewVersionThunk());
         dispatch(setPlatformAction(navigator.platform));
+        dispatch(registerTracingEvent('application_launch'));
 
         window.electron.ipcRenderer.on('showMessage', (msg: any) => {
             dispatch(createMessageAction(msg, false));

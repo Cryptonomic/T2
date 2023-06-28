@@ -145,7 +145,7 @@ function LoginHome() {
                         <CardImg src={keystoreImg} />
                         <CardTitle>{t('containers.loginHome.keystore_wallet') as string}</CardTitle>
                         <UnlockWalletButton color="secondary" variant="extended" onClick={() => goTo('/login/import')} disabled={!isAgreement}>
-                            {t('containers.loginHome.open_exisiting_wallet_btn') as string}
+                            {t('containers.loginHome.open_existing_wallet_btn') as string}
                         </UnlockWalletButton>
                         <CreateWalletButton color="primary" variant="outlined" onClick={() => goTo('/login/create')} disabled={!isAgreement}>
                             {t('containers.loginHome.create_new_wallet_btn') as string}
