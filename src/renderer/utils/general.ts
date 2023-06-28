@@ -152,13 +152,9 @@ export function clearOperationId(operationId: string) {
 }
 
 export const getDataFromApi = async (url: string) => {
-    try {
-        const response = await window.electron.fetch(url, { cache: 'no-store' });
-        return response;
-    } catch (error) {
-        console.error(error);
+    return window.electron.fetch(url, { cache: 'no-store' }).catch((err) => {
         return '';
-    }
+    });
 };
 
 export function formatDate(d) {

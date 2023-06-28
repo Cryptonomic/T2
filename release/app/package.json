@@ -1,6 +1,6 @@
 {
-  "name": "galleon",
-  "productName": "Galleon",
+  "name": "tezori",
+  "productName": "Tezori",
   "version": "1.4.0-beta",
   "description": "An open-source wallet framework for the Tezos blockchain.",
   "license": "GPL-3.0-only",

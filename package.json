@@ -1,5 +1,5 @@
 {
-  "name": "galleon",
+  "name": "tezori",
   "version": "1.4.0-beta",
   "description": "An open-source wallet framework for the Tezos blockchain.",
   "main": "./src/main/main.ts",
@@ -70,9 +70,9 @@
   "build": {
     "protocols": [
       {
-        "name": "galleon",
+        "name": "tezori",
         "schemes": [
-          "galleon"
+          "tezori"
         ]
       },
       {
@@ -82,7 +82,7 @@
         ]
       }
     ],
-    "productName": "Galleon",
+    "productName": "Tezori",
     "appId": "tech.cryptonomic.tezori",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",

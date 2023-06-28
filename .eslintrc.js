@@ -40,6 +40,8 @@ module.exports = {
         'jsx-a11y/no-static-element-interactions': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         'no-underscore-dangle': 'off',
+        'react/jsx-filename-extension': [1, { extensions: ['.tsx', '.jsx'] }],
+        'import/extensions': [1, 'ignorePackages', { ts: 'never', tsx: 'never' }],
     },
     parserOptions: {
         ecmaVersion: 2020,

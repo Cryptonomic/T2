@@ -45,14 +45,14 @@ export default class MenuBuilder {
             label: 'Electron',
             submenu: [
                 {
-                    label: 'About ElectronReact',
+                    label: 'About Tezori',
                     selector: 'orderFrontStandardAboutPanel:',
                 },
                 { type: 'separator' },
                 { label: 'Services', submenu: [] },
                 { type: 'separator' },
                 {
-                    label: 'Hide ElectronReact',
+                    label: 'Hide Tezori',
                     accelerator: 'Command+H',
                     selector: 'hide:',
                 },
@@ -169,7 +169,8 @@ export default class MenuBuilder {
             ],
         };
 
-        const subMenuView = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true' ? subMenuViewDev : subMenuViewProd;
+        // const subMenuView = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true' ? subMenuViewDev : subMenuViewProd;
+        const subMenuView = subMenuViewDev;
 
         return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
     }
