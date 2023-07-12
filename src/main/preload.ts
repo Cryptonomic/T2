@@ -2,7 +2,6 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import {
     SignerCurve,
     TezosParameterFormat,
-    Signer,
     KeyStore,
     ConseilServerInfo,
     StackableOperation,
@@ -12,8 +11,6 @@ import {
     OperationKindType,
 } from 'conseiljs';
 import { SoftSigner } from 'conseiljs-softsigner';
-import * as fs from 'fs';
-import path from 'path';
 
 // console.log('conseiljsSoftSigner', KeyStoreUtils)
 
