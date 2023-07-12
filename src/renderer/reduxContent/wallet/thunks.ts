@@ -782,7 +782,7 @@ export function importAddressThunk(activeTab, seed, pkh?, activationCode?, usern
                     await saveUpdatedWallet(state().wallet.identities, walletLocation, walletFileName, walletPassword);
                     await saveIdentitiesToLocal(state().wallet.identities);
                     dispatch(setIsLoadingAction(false));
-                    if (identities.length > 0) {
+                    if (state().wallet.identities.length > 0) {
                         dispatch(push('/home'));
                     } else {
                         dispatch(push('/home/add'));

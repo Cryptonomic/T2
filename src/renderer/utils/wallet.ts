@@ -58,12 +58,12 @@ export async function saveWallet(filename: string, wallet: Wallet, passphrase: s
         kdf: 'Argon2',
     };
 
-    const p = await window.electron.fs.writeFile(filename, JSON.stringify(encryptedWallet));
+    await window.electron.fs.writeFile(filename, JSON.stringify(encryptedWallet));
     return loadWallet(filename, passphrase);
 }
 
 export async function saveUpdatedWallet(identities, walletLocation, walletFileName, password) {
-    const completeWalletPath = window.electron.path.join(walletLocation, walletFileName);
+    const completeWalletPath = await window.electron.path.join(walletLocation, walletFileName);
     return saveWallet(completeWalletPath, { identities }, password);
 }
 
@@ -113,12 +113,9 @@ export async function loadPersistedState(walletPath: string, password: string): 
 
 export async function loadWalletFromLedger(derivationPath: string): Promise<Identity[]> {
     const identity = await window.conseiljsLedgerSigner.KeyStoreUtils.unlockAddress(derivationPath).catch((err) => {
-        const errorObj = {
-            name: 'components.messageBar.messages.ledger_not_connect',
-        };
+        err.name = 'components.messageBar.messages.ledger_not_connect';
         console.error('TezosLedgerWallet.unlockAddress', err);
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        throw errorObj;
+        throw err;
     });
 
     identity.storeType = KeyStoreType.Hardware;
