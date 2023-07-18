@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { BeaconMessageType, SignPayloadResponse, BeaconErrorType, BeaconResponseInputMessage, SigningType } from '@airgap/beacon-sdk';
-// import { SoftSigner } from 'conseiljs-softsigner';
 
 import { beaconClient } from './BeaconMessageRouter';
 
@@ -10,7 +9,6 @@ import Loader from '../../components/Loader';
 import PasswordInput from '../../components/PasswordInput';
 
 import { RootState, ModalState } from '../../types/store';
-import { cloneDecryptedSigner } from '../../utils/wallet';
 
 import { setModalOpen } from '../../reduxContent/modal/actions';
 import { setBeaconLoading } from '../../reduxContent/app/actions';
@@ -54,8 +52,6 @@ const BeaconSignature = ({ open, onClose }: Props) => {
         }
     };
 
-    // Todo Joe
-
     const onSignature = async () => {
         try {
             dispatch(setBeaconLoading(true));
@@ -69,31 +65,38 @@ const BeaconSignature = ({ open, onClose }: Props) => {
                 try {
                     setLedgerModalOpen(true);
                     sig = await window.electron.beacon.getSignature(isLedger, payload, SigningType.RAW, password);
-                    // if (signingType === SigningType.RAW) {
-                    //     sig = (await signer?.signText(payload)) || '';
-                    // } else {
-                    //     const signatureBytes =
-                    //         (await signer?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
-                    //     sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, signer?.getSignerCurve() || 'edsig');
-                    // }
+                    if (signingType === SigningType.RAW) {
+                        sig = (await signer?.signText(payload)) || '';
+                    } else {
+                        const signatureBytes =
+                            (await signer?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
+                        sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, signer?.getSignerCurve() || 'edsig');
+                    }
                 } finally {
                     setLedgerModalOpen(false);
                 }
             } else {
-                sig = await window.electron.beacon.getSignature(isLedger, payload, SigningType.RAW, password);
-                // const plainSigner = await cloneDecryptedSigner(signer as any, password);
-                // if (signingType === SigningType.RAW) {
-                //     sig = (await plainSigner?.signText(payload)) || '';
-                // } else {
-                //     const signatureBytes =
-                //         (await plainSigner?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
-                //     sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, plainSigner?.getSignerCurve() || 'edsig');
-                // }
+                sig = await window.electron.beacon.getSignature(isLedger, payload, signingType, password);
             }
 
-            setSignature(sig);
+            try {
+                const response: SignPayloadResponse = {
+                    type: BeaconMessageType.SignPayloadResponse,
+                    id,
+                    signingType,
+                    signature: sig,
+                    senderId: '',
+                    version: '',
+                };
+
+                await beaconClient.respond(response);
+
+                dispatch(setModalOpen(false, activeModal));
+            } catch (e: any) {
+                dispatch(createMessageAction(`Beacon signature failed with "${e.message}"`, true));
+            }
         } catch (e: any) {
-            console.log('Transaction.Error', e);
+            console.log('Error generating signature for Beacon request', e);
             dispatch(createMessageAction(e.message || e.toString(), true));
             setLedgerModalOpen(false);
         } finally {
@@ -118,34 +121,6 @@ const BeaconSignature = ({ open, onClose }: Props) => {
         };
         onInit();
     }, [content]);
-
-    useEffect(() => {
-        if (!signature || !beaconLoading) {
-            return;
-        }
-
-        const sendBeaconResponse = async () => {
-            try {
-                const response: SignPayloadResponse = {
-                    type: BeaconMessageType.SignPayloadResponse,
-                    id,
-                    signingType,
-                    signature,
-                    senderId: '',
-                    version: '',
-                };
-
-                await beaconClient.respond(response);
-
-                dispatch(setBeaconLoading(false));
-                dispatch(setModalOpen(false, activeModal));
-            } catch (e: any) {
-                dispatch(createMessageAction(`Beacon signature failed with "${e.message}"`, true));
-            }
-        };
-
-        sendBeaconResponse();
-    }, [signature, beaconLoading]);
 
     return (
         <ModalWrapper open={open}>
