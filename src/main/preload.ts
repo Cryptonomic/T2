@@ -12,9 +12,7 @@ import {
 } from 'conseiljs';
 import { SoftSigner } from 'conseiljs-softsigner';
 
-// console.log('conseiljsSoftSigner', KeyStoreUtils)
-
-export type Channels = 'ipc-example' | 'showMessage' | 'login' | 'wallet' | 'beacon';
+export type Channels = 'showMessage' | 'login' | 'wallet' | 'beacon';
 
 contextBridge.exposeInMainWorld('electron', {
     ipcRenderer: {
@@ -167,7 +165,6 @@ contextBridge.exposeInMainWorld('electron', {
             },
         },
     },
-    // conseiljsSoftSigner: conseiljsSoftSigner
 });
 
 contextBridge.exposeInMainWorld('conseiljs', {
