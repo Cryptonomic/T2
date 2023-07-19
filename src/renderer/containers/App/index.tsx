@@ -115,7 +115,7 @@ const App = () => {
         const onGetWalletSettings = async () => {
             try {
                 const walletSettings = getWalletSettings();
-                console.log('walletsettings', walletSettings);
+
                 dispatch(initWalltSettingsThunk(walletSettings));
             } catch (err) {
                 window.setTimeout(() => {

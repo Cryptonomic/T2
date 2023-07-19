@@ -21,7 +21,7 @@ export function getInitWalletSettings() {
 
 export function getWalletSettings() {
     const localSettings = getLocalData('settings');
-    console.log('localSettings----', localSettings);
+
     if ((!localSettings.selectedNode && localSettings.nodesList.length === 0) || (!localSettings.selectedPath && localSettings.pathsList.length === 0)) {
         resetLocalData('settings');
         return getInitWalletSettings();
