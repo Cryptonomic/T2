@@ -47,12 +47,16 @@ function makeLastPriceQuery(operations) {
  */
 async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: string | null): Promise<{ content: string; moderationMessage: string } | null> {
     if (!artifactType || !proxySupportedTypes.includes(artifactType) || !artifactUrl || !imageProxyURL) {
+        if (artifactType && !proxySupportedTypes.includes(artifactType)) {
+            console.warn(`image proxy doesn't support ${artifactType} on ${artifactUrl}`);
+        }
         return null;
     }
 
     const server: ImageProxyServer = { url: imageProxyURL, apikey: imageAPIKey, version: '1.0.0' };
     let content = artifactUrl;
     let moderationMessage = '';
+    let timeout = true;
 
     const fetchPromise = proxyFetch(server, artifactUrl, ImageProxyDataType.Json, false)
         .then((response: any) => {
@@ -62,17 +66,33 @@ async function getNFTArtifactProxy(artifactUrl?: string | null, artifactType?: s
                 } else if (response.result.moderation_status === 'Blocked') {
                     moderationMessage = `Image was hidden due to: ${response.result.categories.join(', ')}`;
                 }
+                if (content.length < 1000) {
+                    console.warn(`image proxy is likely missing ${artifactUrl}`);
+                } else {
+                    console.info(`image proxy returned ${artifactUrl}`);
+                }
+            } else if (response.error) {
+                console.error(`image proxy error for ${artifactUrl}`, response.error.reason);
+            } else {
+                console.error(`image proxy error for ${artifactUrl}`);
             }
+
+            timeout = false;
+
             return { content, moderationMessage };
         })
         .catch((err) => {
+            timeout = false;
+            console.error(`failed to query image proxy for ${artifactUrl}`, err);
             return { content, moderationMessage };
         });
 
     const fakePromise = new Promise(() => {
         setTimeout(() => {
-            console.log('image proxy timeout');
-        }, 15_000);
+            if (timeout) {
+                console.log(`image proxy timeout for ${artifactUrl}`);
+            }
+        }, 20_000);
     }).then(() => {
         return { content, moderationMessage };
     });
@@ -121,6 +141,7 @@ export async function getHENNFTObjectDetails(tezosUrl: string, objectId: number)
         nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
     } else {
         nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+        console.log(`could not fetch NFT content from proxy, using ${nftArtifact}`);
     }
 
     return {
@@ -161,6 +182,9 @@ export async function getKalamintNFTObjectDetails(tezosUrl: string, objectId: nu
         // content returned from proxy directly
         nftArtifact = artifactProxy.content;
         nftArtifactModerationMessage = artifactProxy.moderationMessage;
+    } else {
+        nftArtifact = makeUrl(nftDetailJson.artifactUri.toString());
+        console.log(`could not fetch NFT content from proxy, using ${nftArtifact}`);
     }
 
     return {
@@ -286,7 +310,10 @@ export async function getHicEtNuncCollection(
         network,
         'big_map_contents',
         collectionQuery
-    );
+    ).catch((e) => {
+        console.log(`failed to getHicEtNuncCollection at ${tokenAddress}/${tokenMapId}`, e);
+        return [];
+    });
 
     const operationGroupIds = collectionResult
         .filter((r) => {
@@ -475,7 +502,10 @@ export async function getKalamintCollection(
         network,
         'big_map_contents',
         collectionQuery
-    );
+    ).catch((e) => {
+        console.log(`failed to getKalamintCollection at ${tokenAddress}/${tokenMapId}`, e);
+        return [];
+    });
 
     const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
     const queryChunks = chunkArray(operationGroupIds, 30);
@@ -637,6 +667,7 @@ export async function getObjktNFTDetails(tezosUrl: string, objectId: number | st
         }
 
         nftArtifact = makeUrl(nftDetailJson.artifactUri.toString());
+        console.log(`could not fetch NFT content from proxy, using ${nftArtifact}`);
     }
 
     return {
@@ -756,7 +787,10 @@ export async function getPotusCollection(
         network,
         'big_map_contents',
         collectionQuery
-    );
+    ).catch((e) => {
+        console.log(`failed to getPotusCollection at ${tokenAddress}/${tokenMapId}`, e);
+        return [];
+    });
 
     const priceMap: any = {};
 
@@ -847,6 +881,7 @@ export async function getPotusNFTObjectDetails(tezosUrl: string, objectId: numbe
         nftArtifactModerationMessage = artifactProxy.moderationMessage;
     } else {
         nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.artifactUri.slice(7)}`;
+        console.log(`could not fetch NFT content from proxy, using ${nftArtifact}`);
     }
 
     return {
@@ -902,7 +937,10 @@ export async function getCollection(
         network,
         'big_map_contents',
         collectionQuery
-    );
+    ).catch((e) => {
+        console.log(`failed to getCollection at ${tokenAddress}/${tokenMapId}`, e);
+        return [];
+    });
 
     const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
     const queryChunks = chunkArray(operationGroupIds, 30);
@@ -1057,7 +1095,10 @@ export async function getHashThreeCollection(
         network,
         'big_map_contents',
         collectionQuery
-    );
+    ).catch((e) => {
+        console.log(`failed to getHashThreeCollection at ${tokenAddress}/${tokenMapId}`, e);
+        return [];
+    });
 
     const operationGroupIds = collectionResult.map((r) => r.operation_group_id);
     const queryChunks = chunkArray(operationGroupIds, 30);
@@ -1190,6 +1231,7 @@ export async function getHashThreeNFTDetails(tezosUrl: string, objectId: number 
         nftArtifact = `https://ipfs.io/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
     } else {
         nftArtifact = `https://cloudflare-ipfs.com/ipfs/${nftDetailJson.formats[0].uri.toString().slice(7)}`;
+        console.log(`could not fetch NFT content from proxy, using ${nftArtifact}`);
     }
 
     return {
