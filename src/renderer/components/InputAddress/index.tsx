@@ -143,16 +143,14 @@ function InputAddress(props: Props) {
         }
 
         if (!errorState && addressText && addressPrefixes.test(addressText)) {
-            console.log('1111111');
             const account = await getAccountFromServer(addressText);
-            console.log('22222');
 
             if (!account || account.length === 0) {
                 newError = t('components.inputAddress.errors.not_exist');
                 errorState = false;
             } else {
                 addressType = getAddressType(addressText, account[0].script);
-                if (addressType === AddressType.Smart && operationType !== ('invoke' && 'addNFT')) {
+                if (addressType === AddressType.Smart && !['invoke', 'addNFT'].includes(operationType)) {
                     newError = t('components.inputAddress.errors.use_interact');
                     errorState = true;
                 }
@@ -172,11 +170,10 @@ function InputAddress(props: Props) {
         setError(newError);
 
         if (!errorState && addressText !== '') {
-            console.log('333333');
             const mainNode = getMainNode(nodesList, selectedNode);
             const { tezosUrl } = mainNode;
             const domainResponse = await queryTezosDomains(tezosUrl, String(addressText));
-            console.log('444444', domainResponse);
+
             setDomainName(domainResponse);
         } else {
             setDomainName('');
