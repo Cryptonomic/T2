@@ -58,9 +58,8 @@ const BeaconPermission = ({ open, onClose }: Props) => {
                 publicKey: keyStore.publicKey,
             };
             await beaconClient.respond(response);
-            console.log('3333333');
+
             const permissions = await beaconClient.getPermissions();
-            console.log('444444', permissions);
             dispatch(setBeaconLoading());
             if (!permissions.length && !permissions.find((p) => p.address === keyStore.publicKeyHash)) {
                 throw Error('No permission');

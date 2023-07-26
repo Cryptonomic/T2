@@ -188,10 +188,10 @@ function BalanceBanner(props: Props) {
                                 <TezosAddress address={delegatedAddress} color="white" size={ms(0)} weight={400} shorten />
                             </span>
                         )}
-                        <LinkContainer onClick={() => openHarpoonUrl()}>
+                        {/* <LinkContainer onClick={() => openHarpoonUrl()}>
                             view baker details on Harpoon
                             <LinkIcon iconName="new-window" color="white" />
-                        </LinkContainer>
+                        </LinkContainer> */}
                     </DelegateContainer>
                 )}
             </BottomRow>

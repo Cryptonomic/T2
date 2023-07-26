@@ -44,8 +44,6 @@ export class IncomingRequestInterceptor {
      * @param config
      */
     public static async intercept(config: IncomingRequestInterceptorOptions): Promise<void> {
-        console.log('INTERCEPTING REQUEST', config.message);
-
         if (config.message.version === '2') {
             IncomingRequestInterceptor.handleV2Message(config as IncomingRequestInterceptorOptionsV2);
         } else if (config.message.version === '3') {

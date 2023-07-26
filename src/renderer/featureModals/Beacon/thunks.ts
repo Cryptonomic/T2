@@ -2,7 +2,17 @@ import { useState, useEffect } from 'react';
 import { useStore } from 'react-redux';
 import { JSONPath } from 'jsonpath-plus';
 
-import { TezosConstants, TezosNodeWriter, Delegation, Origination, Reveal, ConseilQueryBuilder, ConseilOperator, ConseilFunction } from 'conseiljs';
+import {
+    TezosConstants,
+    TezosNodeWriter,
+    Delegation,
+    Origination,
+    Reveal,
+    ConseilQueryBuilder,
+    ConseilOperator,
+    ConseilFunction,
+    StackableOperation,
+} from 'conseiljs';
 
 import { RootState } from '../../types/store';
 
@@ -10,7 +20,7 @@ import { createMessageAction } from '../../reduxContent/message/actions';
 import { getSelectedKeyStore, clearOperationId } from '../../utils/general';
 import { getMainNode } from '../../utils/settings';
 
-export function estimateOperationGroupFee(publicKeyHash: string, operations: any[]): any {
+export function estimateOperationGroupFee(publicKeyHash: string, operations: StackableOperation[]): any {
     // TODO: type
     const store = useStore<RootState>();
     const [fee, setFee] = useState({ estimatedFee: 0, estimatedGas: 0, estimatedStorage: 0, feeError: '' });
@@ -70,7 +80,7 @@ export function getAverageOperationGroupFee(publicKeyHash: string, operations: a
 
                 setFee(Math.ceil(Number(result[0].avg_fee)));
             } catch (e: any) {
-                console.log('estimateInvocation failed with ', e);
+                console.log('estimateAverageFee failed with ', e);
                 setFee(e.message);
             }
         };
