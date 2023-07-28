@@ -9,8 +9,6 @@ import { EncryptedWalletVersionOne, Wallet, Identity } from '../types/general';
 import { knownTokenContracts } from '../constants/Token';
 import { SoftSigner } from './softsigner';
 
-// const { unlockAddress } = KeyStoreUtils;
-
 /**
  * Loads a wallet from a given file.
  *
