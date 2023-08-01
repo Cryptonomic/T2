@@ -5,9 +5,7 @@ import {
     SignerCurve,
     TezosParameterFormat,
     TezosNodeWriter,
-    Signer,
     KeyStore,
-    TezosConstants,
     BabylonDelegationHelper,
     WrappedTezosHelper,
     TezosConseilClient,
@@ -24,7 +22,7 @@ import {
     KolibriTokenHelper,
     OperationKindType,
 } from 'conseiljs';
-import { SoftSigner, KeyStoreUtils } from 'conseiljs-softsigner';
+
 import { onGetSigner, cloneDecryptedSigner } from './global';
 
 ipcMain.handle('conseiljs-tezosmessageutils-readAddress', async (event, hex: string) => {
