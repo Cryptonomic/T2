@@ -22,10 +22,10 @@ interface Props {
     onClose: () => void;
 }
 
-const BeaconSignature = ({ open, onClose }: Props) => {
+function BeaconSignature({ open, onClose }: Props) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { signer, isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
+    const { isLedger } = useSelector((rootState: RootState) => rootState.app, shallowEqual);
     const activeModal = useSelector<RootState, string>((state: RootState) => state.modal.activeModal);
     const modalValues = useSelector<RootState, ModalState>((state) => state.modal.values, shallowEqual);
     const beaconLoading = useSelector((state: RootState) => state.app.beaconLoading);
@@ -34,7 +34,6 @@ const BeaconSignature = ({ open, onClose }: Props) => {
     const [ledgerModalOpen, setLedgerModalOpen] = useState(false);
     const [parseError, setParseError] = useState('');
     const [content, setContent] = useState('');
-    const [signature, setSignature] = useState('');
 
     const { id, payload, website, appMetadata, signingType } = modalValues[activeModal];
 
