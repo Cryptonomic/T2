@@ -66,7 +66,6 @@ export class IncomingRequestInterceptor {
         switch (message.type) {
             case BeaconMessageType.PermissionRequest:
                 {
-                    console.log('PERMISSION REQUEST V*', message);
                     // TODO: Remove v1 compatibility in later version
                     if ((message.appMetadata as any).beaconId && !message.appMetadata.senderId) {
                         message.appMetadata.senderId = (message.appMetadata as any).beaconId;
