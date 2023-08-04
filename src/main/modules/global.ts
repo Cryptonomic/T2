@@ -6,11 +6,11 @@ import { SoftSigner } from 'conseiljs-softsigner';
 let globalSigner;
 let beaconClient;
 
-export function onGetSigner() {
+export function onGetSigner(): Signer {
     return globalSigner;
 }
 
-export function onSetSigner(si) {
+export function onSetSigner(si: Signer) {
     globalSigner = si;
 }
 

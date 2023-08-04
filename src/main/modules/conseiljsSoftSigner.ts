@@ -85,13 +85,13 @@ ipcMain.handle('conseiljs-softsigner-main-createSigner', async (event, secretKey
 
 ipcMain.handle('conseiljs-softsigner-main-getKey', async (event, password: string) => {
     const si = onGetSigner();
-    const res = await si.getKey(password);
+    const res = await (si as SoftSigner).getKey(password);
     return res;
 });
 
 ipcMain.handle('conseiljs-softsigner-main-signText', async (event, message: string, password: string) => {
     const si = onGetSigner();
-    const signer = await cloneDecryptedSigner(si, password);
+    const signer = await cloneDecryptedSigner(si as SoftSigner, password);
     const res = await signer.signText(message);
     return res;
 });
@@ -111,12 +111,12 @@ ipcMain.handle('conseiljs-softsigner-main-cloneDecryptedSigner', async (event, s
 
 ipcMain.handle('beacon-Signature', async (event, isLedger, payload, signingType, password) => {
     const si = onGetSigner();
-    const signer = isLedger ? si : await cloneDecryptedSigner(si, password);
+    const signer = isLedger ? si : await cloneDecryptedSigner(si as SoftSigner, password);
     let sig = '';
     if (signingType === SigningType.RAW) {
-        sig = (await signer?.signText(payload)) || '';
+        sig = await signer.signText(payload);
     } else {
-        const signatureBytes = (await signer?.signOperation(Buffer.from(payload, 'hex'))) || Buffer.from('0x0', 'hex');
+        const signatureBytes = await signer.signOperation(Buffer.from(payload, 'hex'));
         sig = await TezosMessageUtils.readSignatureWithHint(signatureBytes, signer?.getSignerCurve() || 'edsig');
     }
     return sig;

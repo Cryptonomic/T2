@@ -64,19 +64,12 @@ const BeaconSignature = ({ open, onClose }: Props) => {
             if (isLedger) {
                 try {
                     setLedgerModalOpen(true);
-                    sig = await window.electron.beacon.getSignature(isLedger, payload, SigningType.RAW, password);
-                    if (signingType === SigningType.RAW) {
-                        sig = (await signer?.signText(payload)) || '';
-                    } else {
-                        const signatureBytes =
-                            (await signer?.signOperation(window.electron.buffer.from(payload, 'hex'))) || window.electron.buffer.from('0x0', 'hex');
-                        sig = await window.conseiljs.TezosMessageUtils.readSignatureWithHint(signatureBytes, signer?.getSignerCurve() || 'edsig');
-                    }
+                    sig = await window.electron.beacon.getSignature(true, payload, signingType, password);
                 } finally {
                     setLedgerModalOpen(false);
                 }
             } else {
-                sig = await window.electron.beacon.getSignature(isLedger, payload, signingType, password);
+                sig = await window.electron.beacon.getSignature(false, payload, signingType, password);
             }
 
             try {
