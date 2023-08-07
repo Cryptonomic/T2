@@ -1,0 +1,23 @@
+{
+  "name": "tezori",
+  "productName": "Tezori",
+  "version": "1.4.0-beta",
+  "description": "An open-source wallet framework for the Tezos blockchain.",
+  "license": "GPL-3.0-only",
+  "author": {
+    "name": "Cryptonomic Inc",
+    "email": "info@cryptonomic.tech",
+    "url": "https://github.com/cryptonomic/T2"
+  },
+  "main": "./dist/main/main.js",
+  "scripts": {
+    "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "postinstall": "npm run rebuild && npm run link-modules",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
+  },
+  "dependencies": {
+    "@ledgerhq/hw-transport-node-hid": "6.27.17",
+    "conseiljs-ledgersigner": "5.0.6-beta.1",
+    "conseiljs-softsigner": "5.0.6-beta.1"
+  }
+}

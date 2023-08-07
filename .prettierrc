@@ -1,5 +1,18 @@
 {
-    "singleQuote": true,
+  "singleQuote": true,
+    "tabWidth": 4,
+    "parser": false,
+    "prefer-destructuring": ["error", {"object": true, "array": false}],
     "printWidth": 160,
-    "tabWidth": 4
+    "overrides": [
+      {
+        "files": [
+          ".prettierrc",
+          ".eslintrc"
+        ],
+        "options": {
+          "parser": "json"
+        }
+      }
+    ]
 }
