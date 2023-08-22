@@ -96,14 +96,6 @@ ipcMain.handle('conseiljs-softsigner-main-signText', async (event, message: stri
     return res;
 });
 
-// function async getKey(password: string = '', isEncrypted: boolean, secretKey, salt) {
-//     if (isEncrypted && password.length > 0) {
-//         return await CryptoUtils.decryptMessage(secretKey, password, salt);
-//     }
-
-//     return secretKey;
-// }
-
 ipcMain.handle('conseiljs-softsigner-main-cloneDecryptedSigner', async (event, signer: SoftSigner, password: string) => {
     const res = await SoftSigner.createSigner(await signer.getKey(password));
     return res;

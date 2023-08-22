@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import InputAdornment from '@mui/material/InputAdornment';
-import { SoftSigner } from 'conseiljs-softsigner';
 import styled from 'styled-components';
 
-import { cloneDecryptedSigner } from '../../../utils/wallet';
 import TextField from '../../../components/TextField';
 import PasswordInput from '../../../components/PasswordInput';
 import CustomTextArea from '../../../components/CustomTextArea';

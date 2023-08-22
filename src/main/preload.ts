@@ -856,8 +856,8 @@ contextBridge.exposeInMainWorld('conseiljsSoftSigner', {
         createSigner(secretKey: string, password?: string) {
             return ipcRenderer.invoke('conseiljs-softsigner-main-createSigner', secretKey, password);
         },
-        getKey(signer: SoftSigner, password: string) {
-            return ipcRenderer.invoke('conseiljs-softsigner-main-getKey', signer, password);
+        getKey(password: string) {
+            return ipcRenderer.invoke('conseiljs-softsigner-main-getKey', password);
         },
         cloneDecryptedSigner(signer: SoftSigner, password: string) {
             return ipcRenderer.invoke('conseiljs-softsigner-main-cloneDecryptedSigner', signer, password);
