@@ -1,7 +1,7 @@
 {
     "name": "tezori",
     "version": "1.4.2-beta",
-  "description": "An open-source wallet framework for the Tezos blockchain.",
+    "description": "An open-source wallet framework for the Tezos blockchain.",
     "main": "./src/main/main.ts",
     "scripts": {
       "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -70,9 +70,9 @@
     "build": {
       "protocols": [
         {
-          "name": "galleon",
+          "name": "tezori",
           "schemes": [
-            "galleon"
+            "tezori"
           ]
         },
         {
@@ -82,9 +82,8 @@
           ]
         }
       ],
-      "productName": "Galleon",
-      "buildVersion": "66",
-      "appId": "tech.galleon-wallet.galleon",
+      "productName": "Tezori",
+      "appId": "tech.cryptonomic.tezori",
       "asar": true,
       "asarUnpack": "**\\*.{node,dll}",
       "files": [
@@ -108,43 +107,28 @@
         "entitlements": "resources/entitlements.mas.plist"
       },
       "dmg": {
-        "background": "./assets/background.png",
         "contents": [
           {
             "x": 130,
-            "y": 180
+            "y": 220
           },
           {
             "x": 410,
-            "y": 180,
+            "y": 220,
             "type": "link",
             "path": "/Applications"
           }
         ],
         "sign": false
       },
-      "appx": {
-        "backgroundColor": "#fdf7ed",
-        "displayName": "Galleon",
-        "identityName": "Cryptonomic.Galleon",
-        "languages": [
-          "en-US"
-        ],
-        "publisherDisplayName": "Cryptonomic",
-        "publisher": "CN=9C32EF6F-E6BC-4F24-A1B0-94EE444371C8",
-        "setBuildNumber": true
-      },
       "win": {
-        "publisherName": "Cryptonomic",
         "target": [
-            "msi",
-            "appx"
+          "nsis"
         ]
       },
       "linux": {
         "target": [
-            "snap",
-            "deb"
+          "AppImage"
         ],
         "category": "Finance"
       },
@@ -165,7 +149,7 @@
     "author": {
       "name": "Cryptonomic Inc",
       "email": "info@cryptonomic.tech",
-      "url": "https://cryptonomic.tech/galleon.html"
+      "url": "https://github.com/cryptonomic/tezori"
     },
     "license": "GPL-3.0-only",
     "devDependencies": {
@@ -199,7 +183,6 @@
       "electron-builder": "^23.3.3",
       "electron-devtools-installer": "^3.2.0",
       "electron-rebuild": "^3.2.9",
-      "electron-windows-store": "2.1.0",
       "electronmon": "^2.0.2",
       "eslint": "^8.22.0",
       "eslint-config-airbnb-base": "^15.0.0",
@@ -303,4 +286,3 @@
       "logLevel": "quiet"
     }
   }
-  
