@@ -1,4 +1,10 @@
-# Tezori (T2)
+# Tezori v2 (DEPRECATED!)
+
+## Deprecation
+
+**This repository is now deprecated! The successor repo is located at https://github.com/Cryptonomic/Galleon.**
+
+## Introducton
 
 A wallet for the Tezos blockchain based on [ConseilJS](https://github.com/Cryptonomic/ConseilJS). T2 is a rewrite of the original [Tezori codebase](https://github.com/Cryptonomic/Tezori) into Typescript. Along the way we re-architected to code to make it more resilient and extensible. The wallet uses ConseilJS to interact with the Tezos blockchain for operation submission and with the Conseil indexer for fast aggregated data, like the full list of transactions for an account, or the collection of contracts a given account has deployed. ConseilJS also provides a software signer and a Ledger device interface for increased security.
 
